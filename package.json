@@ -1,0 +1,22 @@
+{
+  "name": "earthjs",
+  "version": "0.0.1",
+  "description": "D3 Earth JS using SVG, build with plugins.",
+  "main": "earthjs.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/earthjs/earthjs.git"
+  },
+  "keywords": [
+    "D3js",
+    "globe",
+    "earth",
+    "dataviz",
+    "visualization"
+  ],
+  "author": "Widi Harsojo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/earthjs/earthjs/issues"
+  }
+}
