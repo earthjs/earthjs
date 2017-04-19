@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link type="text/css" rel="stylesheet" href="./css/earthjs.css">
+<svg id="earth"></svg><br/>
+<label for="ocean">Country</label>
+<input id="ocean" type="checkbox" onclick="oceanClick()"/>
+<script src="./js/d3.v3.min.js"></script>
+<script src="./js/queue.v1.min.js"></script>
+<script src="./js/topojson.v1.min.js"></script>
+<script src="../src/earthjs.js"></script>
+<script>
+var p = earthjs({
+    // drawTick: 500,
+    // showOcean: false,
+    showCountries: false,
+    // showGraticule: false,
+    // showGlobeShadow: false,
+    // showGlobeShading: false,
+    // globeHighlighted: false,
+    world: './d/world-110m.json',
+    // places: './d/places.json',
+    ready: function() {
+        console.log(this);
+    }
+});
+p.register(earthjs.plugins.configPlugin());
+p.register(earthjs.plugins.placesPlugin());
+p.register(earthjs.plugins.autorotatePlugin(10));
+
+var toggle = false;
+var oceanClick = function(e) {
+    toggle = !toggle;
+    console.log('99:'+toggle);
+    p.fn.config({showCountries: toggle});
+}
+</script>

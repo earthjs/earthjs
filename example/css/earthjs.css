@@ -1,0 +1,37 @@
+.land {
+  fill: rgb(117, 87, 57);
+  stroke-opacity: 1;
+}
+.countries path {
+  stroke: rgb(80, 64, 39);
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+  fill: rgb(117, 87, 57);
+  opacity: 1;
+}
+/*.countries path:hover {
+  fill-opacity:.1;
+  stroke-width:1;
+  opacity: 1;
+}*/
+.countries path:not([d]),
+.points path:not([d]) {
+    opacity: 0;
+}
+.graticule {
+  fill: none;
+  stroke: black;
+  stroke-width:.5;
+  opacity:.2;
+}
+.labels {
+    font: 8px sans-serif;
+    fill: black;
+    opacity: .5;
+}
+.noclicks {
+  pointer-events:none;
+}
+.point{
+  opacity:.6;
+}

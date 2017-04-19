@@ -1,0 +1,2521 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 1,
+        "featurecla": "Populated place",
+        "name": "San Francisco",
+        "nameascii": "San Francisco",
+        "adm0name": "United States of America",
+        "adm0_a3": "USA",
+        "adm1name": "California",
+        "iso_a2": "US",
+        "note": null,
+        "latitude": 37.7400077505,
+        "longitude": -122.459977663,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 3450000,
+        "pop_min": 732072,
+        "pop_other": 27400,
+        "rank_max": 12,
+        "rank_min": 11,
+        "geonameid": 5391959,
+        "meganame": "San Francisco-Oakland",
+        "ls_name": "San Francisco1",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.41716877355225,
+          37.76919562968743
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 1,
+        "featurecla": "Admin-1 capital",
+        "name": "Denver",
+        "nameascii": "Denver",
+        "adm0name": "United States of America",
+        "adm0_a3": "USA",
+        "adm1name": "Colorado",
+        "iso_a2": "US",
+        "note": null,
+        "latitude": 39.7391880484,
+        "longitude": -104.984015952,
+        "changed": 5,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 2313000,
+        "pop_min": 1548599,
+        "pop_other": 1521278,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 5419384,
+        "meganame": "Denver-Aurora",
+        "ls_name": "Denver",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -104.9859618109682,
+          39.7411339069655
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 1,
+        "featurecla": "Populated place",
+        "name": "Houston",
+        "nameascii": "Houston",
+        "adm0name": "United States of America",
+        "adm0_a3": "USA",
+        "adm1name": "Texas",
+        "iso_a2": "US",
+        "note": null,
+        "latitude": 29.8199743846,
+        "longitude": -95.3399792905,
+        "changed": 5,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 4459000,
+        "pop_min": 3647574,
+        "pop_other": 3607616,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 4699066,
+        "meganame": "Houston",
+        "ls_name": "Houston",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.341925149146,
+          29.821920243188856
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 1,
+        "featurecla": "Populated place",
+        "name": "Miami",
+        "nameascii": "Miami",
+        "adm0name": "United States of America",
+        "adm0_a3": "USA",
+        "adm1name": "Florida",
+        "iso_a2": "US",
+        "note": null,
+        "latitude": 25.7876106964,
+        "longitude": -80.2241060808,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 5585000,
+        "pop_min": 382894,
+        "pop_other": 1037811,
+        "rank_max": 13,
+        "rank_min": 10,
+        "geonameid": 4164138,
+        "meganame": "Miami",
+        "ls_name": "Miami",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.22605193945003,
+          25.789556555021534
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 1,
+        "featurecla": "Admin-1 capital",
+        "name": "Atlanta",
+        "nameascii": "Atlanta",
+        "adm0name": "United States of America",
+        "adm0_a3": "USA",
+        "adm1name": "Georgia",
+        "iso_a2": "US",
+        "note": null,
+        "latitude": 33.830013854,
+        "longitude": -84.3999493833,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 4506000,
+        "pop_min": 422908,
+        "pop_other": 2874096,
+        "rank_max": 12,
+        "rank_min": 10,
+        "geonameid": 4180439,
+        "meganame": "Atlanta",
+        "ls_name": "Atlanta",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.40189524187565,
+          33.83195971260585
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 1,
+        "featurecla": "Populated place",
+        "name": "Chicago",
+        "nameascii": "Chicago",
+        "adm0name": "United States of America",
+        "adm0_a3": "USA",
+        "adm1name": "Illinois",
+        "iso_a2": "US",
+        "note": null,
+        "latitude": 41.8299906607,
+        "longitude": -87.7500549741,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 8990000,
+        "pop_min": 2841952,
+        "pop_other": 3635101,
+        "rank_max": 13,
+        "rank_min": 12,
+        "geonameid": 4887398,
+        "meganame": "Chicago",
+        "ls_name": "Chicago",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -87.75200083270931,
+          41.83193651927843
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 6,
+        "featurecla": "Admin-0 capital",
+        "name": "Caracas",
+        "nameascii": "Caracas",
+        "adm0name": "Venezuela",
+        "adm0_a3": "VEN",
+        "adm1name": "Distrito Capital",
+        "iso_a2": "VE",
+        "note": null,
+        "latitude": 10.5009985544,
+        "longitude": -66.9170371924,
+        "changed": 4,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 2985000,
+        "pop_min": 1815679,
+        "pop_other": 2764555,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 3646738,
+        "meganame": "Caracas",
+        "ls_name": "Caracas",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.91898305105042,
+          10.502944413033333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 5,
+        "featurecla": "Admin-0 capital",
+        "name": "Kiev",
+        "nameascii": "Kiev",
+        "adm0name": "Ukraine",
+        "adm0_a3": "UKR",
+        "adm1name": "Kiev",
+        "iso_a2": "UA",
+        "note": null,
+        "latitude": 50.433367329,
+        "longitude": 30.5166279691,
+        "changed": 5,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 2709000,
+        "pop_min": 1662508,
+        "pop_other": 1611692,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 703448,
+        "meganame": "Kyiv",
+        "ls_name": "Kiev",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.514682110472165,
+          50.43531318760722
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 8,
+        "featurecla": "Admin-1 capital",
+        "name": "Dubai",
+        "nameascii": "Dubai",
+        "adm0name": "United Arab Emirates",
+        "adm0_a3": "ARE",
+        "adm1name": "Dubay",
+        "iso_a2": "AE",
+        "note": null,
+        "latitude": 25.2299961538,
+        "longitude": 55.2799743234,
+        "changed": 1,
+        "namediff": 1,
+        "diffnote": "Name changed.",
+        "pop_max": 1379000,
+        "pop_min": 1137347,
+        "pop_other": 1166878,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 292223,
+        "meganame": "Dubayy",
+        "ls_name": "Dubayy",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          55.27802846473787,
+          25.231942012376066
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 6,
+        "featurecla": "Admin-0 capital",
+        "name": "Tashkent",
+        "nameascii": "Tashkent",
+        "adm0name": "Uzbekistan",
+        "adm0_a3": "UZB",
+        "adm1name": "Tashkent",
+        "iso_a2": "UZ",
+        "note": null,
+        "latitude": 41.311701883,
+        "longitude": 69.2949328195,
+        "changed": 5,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 2184000,
+        "pop_min": 1978028,
+        "pop_other": 2806287,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 1512569,
+        "meganame": "Tashkent",
+        "ls_name": "Tashkent",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          69.29298696088779,
+          41.31364774160721
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 3,
+        "featurecla": "Admin-0 capital",
+        "name": "Madrid",
+        "nameascii": "Madrid",
+        "adm0name": "Spain",
+        "adm0_a3": "ESP",
+        "adm1name": "Comunidad de Madrid",
+        "iso_a2": "ES",
+        "note": null,
+        "latitude": 40.4000262645,
+        "longitude": -3.683351686,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 5567000,
+        "pop_min": 50437,
+        "pop_other": 3673427,
+        "rank_max": 13,
+        "rank_min": 8,
+        "geonameid": 3675707,
+        "meganame": "Madrid",
+        "ls_name": "Madrid",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.685297544612524,
+          40.40197212311381
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 7,
+        "featurecla": "Admin-1 capital",
+        "name": "Geneva",
+        "nameascii": "Geneva",
+        "adm0name": "Switzerland",
+        "adm0_a3": "CHE",
+        "adm1name": "Genève",
+        "iso_a2": "CH",
+        "note": null,
+        "latitude": 46.2100075471,
+        "longitude": 6.14002803409,
+        "changed": 4,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 1240000,
+        "pop_min": 192385,
+        "pop_other": 508284,
+        "rank_max": 12,
+        "rank_min": 9,
+        "geonameid": 2660646,
+        "meganame": null,
+        "ls_name": "Geneva",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.140028034091699,
+          46.21000754707626
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 7,
+        "featurecla": "Admin-0 capital",
+        "name": "Stockholm",
+        "nameascii": "Stockholm",
+        "adm0name": "Sweden",
+        "adm0_a3": "SWE",
+        "adm1name": "Stockholm",
+        "iso_a2": "SE",
+        "note": null,
+        "latitude": 59.3507599543,
+        "longitude": 18.0973347328,
+        "changed": 4,
+        "namediff": 0,
+        "diffnote": "Location adjusted.",
+        "pop_max": 1264000,
+        "pop_min": 1253309,
+        "pop_other": 0,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 2673730,
+        "meganame": "Stockholm",
+        "ls_name": "Stockholm",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.095388874180912,
+          59.35270581286585
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 5,
+        "featurecla": "Admin-0 capital",
+        "name": "Bangkok",
+        "nameascii": "Bangkok",
+        "adm0name": "Thailand",
+        "adm0_a3": "THA",
+        "adm1name": "Bangkok Metropolis",
+        "iso_a2": "TH",
+        "note": null,
+        "latitude": 13.7499992055,
+        "longitude": 100.516644652,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 6704000,
+        "pop_min": 5104476,
+        "pop_other": 5082758,
+        "rank_max": 13,
+        "rank_min": 13,
+        "geonameid": 1609350,
+        "meganame": "Krung Thep",
+        "ls_name": "Bangkok",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.51469879369489,
+          13.751945064087977
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 5,
+        "featurecla": "Admin-0 capital",
+        "name": "Lima",
+        "nameascii": "Lima",
+        "adm0name": "Peru",
+        "adm0_a3": "PER",
+        "adm1name": "Lima",
+        "iso_a2": "PE",
+        "note": null,
+        "latitude": -12.0480126761,
+        "longitude": -77.0500620948,
+        "changed": 5,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 8012000,
+        "pop_min": 6758234,
+        "pop_other": 6068380,
+        "rank_max": 13,
+        "rank_min": 13,
+        "geonameid": 3936456,
+        "meganame": "Lima",
+        "ls_name": "Lima2",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.05200795343472,
+          -12.04606681752557
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 8,
+        "featurecla": "Admin-0 capital",
+        "name": "Dakar",
+        "nameascii": "Dakar",
+        "adm0name": "Senegal",
+        "adm0_a3": "SEN",
+        "adm1name": "Dakar",
+        "iso_a2": "SM",
+        "note": null,
+        "latitude": 14.715831725,
+        "longitude": -17.4731301284,
+        "changed": 5,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 2604000,
+        "pop_min": 2476400,
+        "pop_other": 2470140,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 2253354,
+        "meganame": "Dakar",
+        "ls_name": "Dakar",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -17.47507598705056,
+          14.717777583623274
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 3,
+        "featurecla": "Admin-0 capital",
+        "name": "Johannesburg",
+        "nameascii": "Johannesburg",
+        "adm0name": "South Africa",
+        "adm0_a3": "ZAF",
+        "adm1name": "Gauteng",
+        "iso_a2": "ZA",
+        "note": null,
+        "latitude": -26.17004474,
+        "longitude": 28.0300097236,
+        "changed": 4,
+        "namediff": 0,
+        "diffnote": "Changed feature class.",
+        "pop_max": 3435000,
+        "pop_min": 2026469,
+        "pop_other": 3852246,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 993800,
+        "meganame": "Johannesburg",
+        "ls_name": "Johannesburg",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.028063865019476,
+          -26.16809888138414
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 8,
+        "featurecla": "Admin-0 capital",
+        "name": "Amsterdam",
+        "nameascii": "Amsterdam",
+        "adm0name": "Netherlands",
+        "adm0_a3": "NLD",
+        "adm1name": "Noord-Holland",
+        "iso_a2": "NL",
+        "note": null,
+        "latitude": 52.3499686881,
+        "longitude": 4.91664017601,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 1031000,
+        "pop_min": 741636,
+        "pop_other": 962488,
+        "rank_max": 12,
+        "rank_min": 11,
+        "geonameid": 2759794,
+        "meganame": "Amsterdam",
+        "ls_name": "Amsterdam",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.914694317400972,
+          52.35191454666443
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 5,
+        "featurecla": "Admin-1 capital",
+        "name": "Casablanca",
+        "nameascii": "Casablanca",
+        "adm0name": "Morocco",
+        "adm0_a3": "MAR",
+        "adm1name": "Grand Casablanca",
+        "iso_a2": "MA",
+        "note": null,
+        "latitude": 33.5999762156,
+        "longitude": -7.61636743309,
+        "changed": 4,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 3181000,
+        "pop_min": 3144909,
+        "pop_other": 3718797,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 2553604,
+        "meganame": "Dar-el-Beida",
+        "ls_name": "Casablanca",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.618313291698712,
+          33.60192207425848
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 3,
+        "featurecla": "Admin-0 capital",
+        "name": "Seoul",
+        "nameascii": "Seoul",
+        "adm0name": "South Korea",
+        "adm0_a3": "KOR",
+        "adm1name": "Seoul",
+        "iso_a2": "KR",
+        "note": null,
+        "latitude": 37.5663490998,
+        "longitude": 126.999730997,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 9796000,
+        "pop_min": 9796000,
+        "pop_other": 12018058,
+        "rank_max": 13,
+        "rank_min": 13,
+        "geonameid": 1835848,
+        "meganame": "Seoul",
+        "ls_name": "Seoul",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.99778513820195,
+          37.56829495838895
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 5,
+        "featurecla": "Admin-0 capital",
+        "name": "Manila",
+        "nameascii": "Manila",
+        "adm0name": "Philippines",
+        "adm0_a3": "PHL",
+        "adm1name": "Metropolitan Manila",
+        "iso_a2": "PH",
+        "note": null,
+        "latitude": 14.6041589548,
+        "longitude": 120.982217162,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 11100000,
+        "pop_min": 3077575,
+        "pop_other": 2381280,
+        "rank_max": 14,
+        "rank_min": 12,
+        "geonameid": 1701668,
+        "meganame": "Manila",
+        "ls_name": "Manila",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.9802713035424,
+          14.606104813440538
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 2,
+        "featurecla": "Admin-1 capital",
+        "name": "Monterrey",
+        "nameascii": "Monterrey",
+        "adm0name": "Mexico",
+        "adm0_a3": "MEX",
+        "adm1name": "Nuevo León",
+        "iso_a2": "MX",
+        "note": null,
+        "latitude": 25.6699951365,
+        "longitude": -100.329984784,
+        "changed": 5,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 3712000,
+        "pop_min": 1122874,
+        "pop_other": 3225636,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 3995465,
+        "meganame": "Monterrey",
+        "ls_name": "Monterrey",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.33193064232995,
+          25.671940995125283
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 8,
+        "featurecla": "Admin-1 capital",
+        "name": "Auckland",
+        "nameascii": "Auckland",
+        "adm0name": "New Zealand",
+        "adm0_a3": "NZL",
+        "adm1name": "Auckland",
+        "iso_a2": "NZ",
+        "note": null,
+        "latitude": -36.8500130018,
+        "longitude": 174.764980834,
+        "changed": 4,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 1245000,
+        "pop_min": 274020,
+        "pop_other": 243794,
+        "rank_max": 12,
+        "rank_min": 10,
+        "geonameid": 2193733,
+        "meganame": "Auckland",
+        "ls_name": "Auckland",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.76303497563254,
+          -36.84806714314567
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 3,
+        "featurecla": "Admin-0 capital",
+        "name": "Berlin",
+        "nameascii": "Berlin",
+        "adm0name": "Germany",
+        "adm0_a3": "DEU",
+        "adm1name": "Berlin",
+        "iso_a2": "DE",
+        "note": null,
+        "latitude": 52.5218186636,
+        "longitude": 13.4015486233,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 3406000,
+        "pop_min": 3094014,
+        "pop_other": 3013258,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 2950159,
+        "meganame": "Berlin",
+        "ls_name": "Berlin",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.399602764700546,
+          52.523764522251156
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 1,
+        "featurecla": "Admin-1 capital",
+        "name": "Urumqi",
+        "nameascii": "Urumqi",
+        "adm0name": "China",
+        "adm0_a3": "CHN",
+        "adm1name": "Xinjiang Uygur",
+        "iso_a2": "CN",
+        "note": null,
+        "latitude": 43.8050122264,
+        "longitude": 87.5750056549,
+        "changed": 5,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 2151000,
+        "pop_min": 1508225,
+        "pop_other": 2044401,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 1529102,
+        "meganame": "Ürümqi (Wulumqi)",
+        "ls_name": "Urumqi",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.57305979624726,
+          43.8069580850418
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 1,
+        "featurecla": "Admin-1 capital",
+        "name": "Chengdu",
+        "nameascii": "Chengdu",
+        "adm0name": "China",
+        "adm0_a3": "CHN",
+        "adm1name": "Sichuan",
+        "iso_a2": "CN",
+        "note": null,
+        "latitude": 30.6700000193,
+        "longitude": 104.07001949,
+        "changed": 5,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 4123000,
+        "pop_min": 3950437,
+        "pop_other": 11622929,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 1815286,
+        "meganame": "Chengdu",
+        "ls_name": "Chengdu",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.06807363094873,
+          30.671945877957796
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 2,
+        "featurecla": "Admin-1 region capital",
+        "name": "Osaka",
+        "nameascii": "Osaka",
+        "adm0name": "Japan",
+        "adm0_a3": "JPN",
+        "adm1name": "Osaka",
+        "iso_a2": "JP",
+        "note": null,
+        "latitude": 34.7500352163,
+        "longitude": 135.460144815,
+        "changed": 4,
+        "namediff": 0,
+        "diffnote": "Changed feature to Admin-0 region capital.",
+        "pop_max": 11294000,
+        "pop_min": 2592413,
+        "pop_other": 9630783,
+        "rank_max": 14,
+        "rank_min": 12,
+        "geonameid": 1853909,
+        "meganame": "Osaka-Kobe",
+        "ls_name": "Osaka",
+        "ls_match": 1,
+        "checkme": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.4581989565952,
+          34.75198107491417
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 3,
+        "featurecla": "Admin-0 capital",
+        "name": "Kinshasa",
+        "nameascii": "Kinshasa",
+        "adm0name": "Congo (Kinshasa)",
+        "adm0_a3": "COD",
+        "adm1name": "Kinshasa City",
+        "iso_a2": "CD",
+        "note": null,
+        "latitude": -4.32972410189,
+        "longitude": 15.3149718818,
+        "changed": 5,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 7843000,
+        "pop_min": 5565703,
+        "pop_other": 4738154,
+        "rank_max": 13,
+        "rank_min": 13,
+        "geonameid": 2314302,
+        "meganame": "Kinshasa",
+        "ls_name": "Kinshasa",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.313026023171744,
+          -4.327778243275986
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 1,
+        "featurecla": "Admin-0 capital",
+        "name": "New Delhi",
+        "nameascii": "New Delhi",
+        "adm0name": "India",
+        "adm0_a3": "IND",
+        "adm1name": "Delhi",
+        "iso_a2": "IN",
+        "note": null,
+        "latitude": 28.6000230092,
+        "longitude": 77.1999800201,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 317797,
+        "pop_min": 317797,
+        "pop_other": 8060107,
+        "rank_max": 10,
+        "rank_min": 10,
+        "geonameid": 1261481,
+        "meganame": null,
+        "ls_name": "New Delhi",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.19998002005303,
+          28.600023009245433
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 1,
+        "featurecla": "Admin-1 capital",
+        "name": "Bangalore",
+        "nameascii": "Bangalore",
+        "adm0name": "India",
+        "adm0_a3": "IND",
+        "adm1name": "Karnataka",
+        "iso_a2": "IN",
+        "note": null,
+        "latitude": 12.9699951365,
+        "longitude": 77.5600097238,
+        "changed": 3,
+        "namediff": 1,
+        "diffnote": "Name changed. Changed scale rank.",
+        "pop_max": 6787000,
+        "pop_min": 5104047,
+        "pop_other": 8102712,
+        "rank_max": 13,
+        "rank_min": 13,
+        "geonameid": 1277333,
+        "meganame": "Bangalore",
+        "ls_name": "Bangalore",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.55806386521755,
+          12.97194099507442
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 6,
+        "featurecla": "Admin-0 capital",
+        "name": "Athens",
+        "nameascii": "Athens",
+        "adm0name": "Greece",
+        "adm0_a3": "GRC",
+        "adm1name": "Attiki",
+        "iso_a2": "GR",
+        "note": null,
+        "latitude": 37.9833262319,
+        "longitude": 23.7333210843,
+        "changed": 4,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 3242000,
+        "pop_min": 729137,
+        "pop_other": 112572,
+        "rank_max": 12,
+        "rank_min": 11,
+        "geonameid": 264371,
+        "meganame": "Athínai",
+        "ls_name": "Athens2",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.731375225679358,
+          37.98527209055226
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 5,
+        "featurecla": "Admin-0 capital",
+        "name": "Baghdad",
+        "nameascii": "Baghdad",
+        "adm0name": "Iraq",
+        "adm0_a3": "IRQ",
+        "adm1name": "Baghdad",
+        "iso_a2": "IQ",
+        "note": null,
+        "latitude": 33.3386484975,
+        "longitude": 44.3938687732,
+        "changed": 5,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 5054000,
+        "pop_min": 5054000,
+        "pop_other": 4959534,
+        "rank_max": 13,
+        "rank_min": 13,
+        "geonameid": 98182,
+        "meganame": "Baghdad",
+        "ls_name": "Baghdad",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          44.391922914564134,
+          33.34059435615865
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 3,
+        "featurecla": "Admin-0 capital",
+        "name": "Addis Ababa",
+        "nameascii": "Addis Ababa",
+        "adm0name": "Ethiopia",
+        "adm0_a3": "ETH",
+        "adm1name": "Addis Ababa",
+        "iso_a2": "ET",
+        "note": null,
+        "latitude": 9.03331036268,
+        "longitude": 38.700004434,
+        "changed": 5,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 3100000,
+        "pop_min": 2757729,
+        "pop_other": 3013653,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 344979,
+        "meganame": "Addis Ababa",
+        "ls_name": "Addis Ababa",
+        "ls_match": 1,
+        "checkme": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          38.69805857534868,
+          9.035256221295754
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 5,
+        "featurecla": "Admin-0 capital",
+        "name": "Tehran",
+        "nameascii": "Tehran",
+        "adm0name": "Iran",
+        "adm0_a3": "IRN",
+        "adm1name": "Tehran",
+        "iso_a2": "IR",
+        "note": null,
+        "latitude": 35.6719427684,
+        "longitude": 51.4243440336,
+        "changed": 5,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 7873000,
+        "pop_min": 7153309,
+        "pop_other": 8209012,
+        "rank_max": 13,
+        "rank_min": 13,
+        "geonameid": 112931,
+        "meganame": "Tehran",
+        "ls_name": "Tehran",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          51.42239817500899,
+          35.673888627001304
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 2,
+        "featurecla": "Populated place",
+        "name": "Vancouver",
+        "nameascii": "Vancouver",
+        "adm0name": "Canada",
+        "adm0_a3": "CAN",
+        "adm1name": "British Columbia",
+        "iso_a2": "CA",
+        "note": null,
+        "latitude": 49.2734165841,
+        "longitude": -123.121644218,
+        "changed": 5,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 2313328,
+        "pop_min": 603502,
+        "pop_other": 482002,
+        "rank_max": 12,
+        "rank_min": 11,
+        "geonameid": 6173331,
+        "meganame": "Vancouver",
+        "ls_name": "Vancouver2",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1235900763943,
+          49.27536244271175
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 2,
+        "featurecla": "Admin-1 capital",
+        "name": "Toronto",
+        "nameascii": "Toronto",
+        "adm0name": "Canada",
+        "adm0_a3": "CAN",
+        "adm1name": "Ontario",
+        "iso_a2": "CA",
+        "note": null,
+        "latitude": 43.6999798778,
+        "longitude": -79.4200207944,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 5213000,
+        "pop_min": 3934421,
+        "pop_other": 3749229,
+        "rank_max": 13,
+        "rank_min": 12,
+        "geonameid": 6167865,
+        "meganame": "Toronto",
+        "ls_name": "Toronto",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.42196665298843,
+          43.70192573640844
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 3,
+        "featurecla": "Admin-0 capital",
+        "name": "Buenos Aires",
+        "nameascii": "Buenos Aires",
+        "adm0name": "Argentina",
+        "adm0_a3": "ARG",
+        "adm1name": "Ciudad de Buenos Aires",
+        "iso_a2": "AR",
+        "note": null,
+        "latitude": -34.6025016085,
+        "longitude": -58.3975313737,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 12795000,
+        "pop_min": 10929146,
+        "pop_other": 10271457,
+        "rank_max": 14,
+        "rank_min": 14,
+        "geonameid": 3435910,
+        "meganame": "Buenos Aires",
+        "ls_name": "Buenos Aires",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -58.399477232331435,
+          -34.600555749907414
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 5,
+        "featurecla": "Admin-0 capital",
+        "name": "Kabul",
+        "nameascii": "Kabul",
+        "adm0name": "Afghanistan",
+        "adm0_a3": "AFG",
+        "adm1name": "Kabul",
+        "iso_a2": "AF",
+        "note": null,
+        "latitude": 34.5166902863,
+        "longitude": 69.1832600493,
+        "changed": 5,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 3277000,
+        "pop_min": 3043532,
+        "pop_other": 3475519,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 1138958,
+        "meganame": "Kabul",
+        "ls_name": "Kabul",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          69.18131419070505,
+          34.51863614490031
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 7,
+        "featurecla": "Admin-0 capital",
+        "name": "Vienna",
+        "nameascii": "Vienna",
+        "adm0name": "Austria",
+        "adm0_a3": "AUT",
+        "adm1name": "Wien",
+        "iso_a2": "AT",
+        "note": null,
+        "latitude": 48.2000152782,
+        "longitude": 16.3666389554,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 2400000,
+        "pop_min": 1731000,
+        "pop_other": 1480886,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 2761369,
+        "meganame": "Wien",
+        "ls_name": "Vienna",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.364693096743736,
+          48.20196113681686
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 3,
+        "featurecla": "Admin-1 capital",
+        "name": "Melbourne",
+        "nameascii": "Melbourne",
+        "adm0name": "Australia",
+        "adm0_a3": "AUS",
+        "adm1name": "Victoria",
+        "iso_a2": "AU",
+        "note": null,
+        "latitude": -37.8200313123,
+        "longitude": 144.975016235,
+        "changed": 4,
+        "namediff": 0,
+        "diffnote": "Changed feature class. Changed scale rank.",
+        "pop_max": 4170000,
+        "pop_min": 93625,
+        "pop_other": 1805353,
+        "rank_max": 12,
+        "rank_min": 8,
+        "geonameid": 2158177,
+        "meganame": "Melbourne",
+        "ls_name": "Melbourne2",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          144.97307037590406,
+          -37.81808545369631
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 1,
+        "labelrank": 8,
+        "featurecla": "Admin-0 capital",
+        "name": "Taipei",
+        "nameascii": "Taipei",
+        "adm0name": "Taiwan",
+        "adm0_a3": "TWN",
+        "adm1name": "Taipei City",
+        "iso_a2": "TW",
+        "note": null,
+        "latitude": 25.03583333333,
+        "longitude": 121.56833333333,
+        "changed": 1,
+        "namediff": 0,
+        "diffnote": "Corrected coordinates.",
+        "pop_max": 6900273,
+        "pop_min": 2618772,
+        "pop_other": 5698241,
+        "rank_max": 13,
+        "rank_min": 12,
+        "geonameid": 1668341,
+        "meganame": "Taipei",
+        "ls_name": "Taipei",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.568333333333,
+          25.0358333333333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 1,
+        "featurecla": "Populated place",
+        "name": "Los Angeles",
+        "nameascii": "Los Angeles",
+        "adm0name": "United States of America",
+        "adm0_a3": "USA",
+        "adm1name": "California",
+        "iso_a2": "US",
+        "note": null,
+        "latitude": 33.9899782502,
+        "longitude": -118.179980511,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 12500000,
+        "pop_min": 3694820,
+        "pop_other": 142265,
+        "rank_max": 14,
+        "rank_min": 12,
+        "geonameid": 5368361,
+        "meganame": "Los Angeles-Long Beach-Santa Ana",
+        "ls_name": "Los Angeles1",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.18192636994041,
+          33.99192410876543
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 1,
+        "featurecla": "Admin-0 capital",
+        "name": "Washington, D.C.",
+        "nameascii": "Washington, D.C.",
+        "adm0name": "United States of America",
+        "adm0_a3": "USA",
+        "adm1name": "District of Columbia",
+        "iso_a2": "US",
+        "note": null,
+        "latitude": 38.8995493765,
+        "longitude": -77.0094185808,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 4338000,
+        "pop_min": 552433,
+        "pop_other": 2175991,
+        "rank_max": 12,
+        "rank_min": 11,
+        "geonameid": 4140963,
+        "meganame": "Washington, D.C.",
+        "ls_name": "Washington, D.C.",
+        "ls_match": 1,
+        "checkme": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.01136443943716,
+          38.901495235087054
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 1,
+        "featurecla": "Populated place",
+        "name": "New York",
+        "nameascii": "New York",
+        "adm0name": "United States of America",
+        "adm0_a3": "USA",
+        "adm1name": "New York",
+        "iso_a2": "US",
+        "note": null,
+        "latitude": 40.749979064,
+        "longitude": -73.9800169288,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 19040000,
+        "pop_min": 8008278,
+        "pop_other": 9292603,
+        "rank_max": 14,
+        "rank_min": 13,
+        "geonameid": 5128581,
+        "meganame": "New York-Newark",
+        "ls_name": "New York",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.98196278740681,
+          40.75192492259464
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 5,
+        "featurecla": "Admin-0 capital",
+        "name": "London",
+        "nameascii": "London",
+        "adm0name": "United Kingdom",
+        "adm0_a3": "GBR",
+        "adm1name": "Westminster",
+        "iso_a2": "GB",
+        "note": null,
+        "latitude": 51.4999947297,
+        "longitude": -0.11672184386,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 8567000,
+        "pop_min": 7421209,
+        "pop_other": 326670,
+        "rank_max": 13,
+        "rank_min": 13,
+        "geonameid": 2643743,
+        "meganame": "London",
+        "ls_name": "London2",
+        "ls_match": 1,
+        "checkme": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.118667702475932,
+          51.5019405883275
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 5,
+        "featurecla": "Admin-1 capital",
+        "name": "Istanbul",
+        "nameascii": "Istanbul",
+        "adm0name": "Turkey",
+        "adm0_a3": "TUR",
+        "adm1name": "Istanbul",
+        "iso_a2": "TR",
+        "note": null,
+        "latitude": 41.1049961538,
+        "longitude": 29.0100015856,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 10061000,
+        "pop_min": 9945610,
+        "pop_other": 9651488,
+        "rank_max": 14,
+        "rank_min": 13,
+        "geonameid": 745044,
+        "meganame": "Istanbul",
+        "ls_name": "Istanbul",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.008055727002613,
+          41.10694201243979
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 5,
+        "featurecla": "Admin-0 capital",
+        "name": "Riyadh",
+        "nameascii": "Riyadh",
+        "adm0name": "Saudi Arabia",
+        "adm0_a3": "SAU",
+        "adm1name": "Ar Riyad",
+        "iso_a2": "SA",
+        "note": null,
+        "latitude": 24.6408331492,
+        "longitude": 46.7727416573,
+        "changed": 4,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 4465000,
+        "pop_min": 4205961,
+        "pop_other": 5148778,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 108410,
+        "meganame": "Ar-Riyadh",
+        "ls_name": "Riyadh",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          46.770795798688255,
+          24.642779007816443
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 3,
+        "featurecla": "Admin-0 capital",
+        "name": "Cape Town",
+        "nameascii": "Cape Town",
+        "adm0name": "South Africa",
+        "adm0_a3": "ZAF",
+        "adm1name": "Western Cape",
+        "iso_a2": "ZA",
+        "note": null,
+        "latitude": -33.9200109672,
+        "longitude": 18.4349881578,
+        "changed": 4,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 3215000,
+        "pop_min": 2432858,
+        "pop_other": 2401318,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 3369157,
+        "meganame": "Cape Town",
+        "ls_name": "Cape Town",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.43304229922603,
+          -33.91806510862875
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 2,
+        "featurecla": "Admin-0 capital",
+        "name": "Moscow",
+        "nameascii": "Moscow",
+        "adm0name": "Russia",
+        "adm0_a3": "RUS",
+        "adm1name": "Moskva",
+        "iso_a2": "RU",
+        "note": null,
+        "latitude": 55.7521641226,
+        "longitude": 37.6155228259,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 10452000,
+        "pop_min": 10452000,
+        "pop_other": 10585385,
+        "rank_max": 14,
+        "rank_min": 14,
+        "geonameid": 524901,
+        "meganame": "Moskva",
+        "ls_name": "Moscow",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          37.6135769672714,
+          55.75410998124818
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 2,
+        "featurecla": "Admin-0 capital",
+        "name": "Mexico City",
+        "nameascii": "Mexico City",
+        "adm0name": "Mexico",
+        "adm0_a3": "MEX",
+        "adm1name": "Distrito Federal",
+        "iso_a2": "MX",
+        "note": null,
+        "latitude": 19.4424424428,
+        "longitude": -99.1309882017,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 19028000,
+        "pop_min": 10811002,
+        "pop_other": 10018444,
+        "rank_max": 14,
+        "rank_min": 14,
+        "geonameid": 3530597,
+        "meganame": "Ciudad de México",
+        "ls_name": "Mexico City",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.1329340602939,
+          19.444388301415472
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 2,
+        "featurecla": "Admin-0 capital alt",
+        "name": "Lagos",
+        "nameascii": "Lagos",
+        "adm0name": "Nigeria",
+        "adm0_a3": "NGA",
+        "adm1name": "Lagos",
+        "iso_a2": "NG",
+        "note": null,
+        "latitude": 6.44326165348,
+        "longitude": 3.39153107121,
+        "changed": 4,
+        "namediff": 0,
+        "diffnote": "Location adjusted. Changed scale rank.",
+        "pop_max": 9466000,
+        "pop_min": 1536,
+        "pop_other": 6567892,
+        "rank_max": 13,
+        "rank_min": 3,
+        "geonameid": 735497,
+        "meganame": "Lagos",
+        "ls_name": "Lagos",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.389585212598433,
+          6.445207512093191
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 3,
+        "featurecla": "Admin-0 capital",
+        "name": "Rome",
+        "nameascii": "Rome",
+        "adm0name": "Italy",
+        "adm0_a3": "ITA",
+        "adm1name": "Lazio",
+        "iso_a2": "IT",
+        "note": null,
+        "latitude": 41.8959556265,
+        "longitude": 12.4832584215,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 3339000,
+        "pop_min": 35452,
+        "pop_other": 2050212,
+        "rank_max": 12,
+        "rank_min": 7,
+        "geonameid": 4219762,
+        "meganame": "Rome",
+        "ls_name": "Rome",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.481312562873995,
+          41.89790148509894
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 1,
+        "featurecla": "Admin-0 capital",
+        "name": "Beijing",
+        "nameascii": "Beijing",
+        "adm0name": "China",
+        "adm0_a3": "CHN",
+        "adm1name": "Beijing",
+        "iso_a2": "CN",
+        "note": null,
+        "latitude": 39.9288922313,
+        "longitude": 116.388285684,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 11106000,
+        "pop_min": 7480601,
+        "pop_other": 9033231,
+        "rank_max": 14,
+        "rank_min": 13,
+        "geonameid": 1816670,
+        "meganame": "Beijing",
+        "ls_name": "Beijing",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.38633982565943,
+          39.93083808990906
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 5,
+        "featurecla": "Admin-0 capital",
+        "name": "Nairobi",
+        "nameascii": "Nairobi",
+        "adm0name": "Kenya",
+        "adm0_a3": "KEN",
+        "adm1name": "Nairobi",
+        "iso_a2": "KE",
+        "note": null,
+        "latitude": -1.28334674185,
+        "longitude": 36.8166568591,
+        "changed": 4,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 3010000,
+        "pop_min": 2750547,
+        "pop_other": 3400962,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 184745,
+        "meganame": "Nairobi",
+        "ls_name": "Nairobi",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          36.81471100047145,
+          -1.281400883237779
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 1,
+        "featurecla": "Admin-0 capital",
+        "name": "Jakarta",
+        "nameascii": "Jakarta",
+        "adm0name": "Indonesia",
+        "adm0_a3": "IDN",
+        "adm1name": "Jakarta Raya",
+        "iso_a2": "ID",
+        "note": null,
+        "latitude": -6.17441770541,
+        "longitude": 106.829437621,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 9125000,
+        "pop_min": 8540121,
+        "pop_other": 9129613,
+        "rank_max": 13,
+        "rank_min": 13,
+        "geonameid": 1642911,
+        "meganame": "Jakarta",
+        "ls_name": "Jakarta",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.82749176247012,
+          -6.172471846798885
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 5,
+        "featurecla": "Admin-0 capital",
+        "name": "Bogota",
+        "nameascii": "Bogota",
+        "adm0name": "Colombia",
+        "adm0_a3": "COL",
+        "adm1name": "Bogota",
+        "iso_a2": "CO",
+        "note": null,
+        "latitude": 4.59642356253,
+        "longitude": -74.0833439552,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 7772000,
+        "pop_min": 6333661,
+        "pop_other": 5754084,
+        "rank_max": 13,
+        "rank_min": 13,
+        "geonameid": 3688689,
+        "meganame": "Bogotá",
+        "ls_name": "Bogota",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.08528981377441,
+          4.598369421147822
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 3,
+        "featurecla": "Admin-0 capital",
+        "name": "Cairo",
+        "nameascii": "Cairo",
+        "adm0name": "Egypt",
+        "adm0_a3": "EGY",
+        "adm1name": "Al Qahirah",
+        "iso_a2": "EG",
+        "note": null,
+        "latitude": 30.0499603465,
+        "longitude": 31.2499682197,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 11893000,
+        "pop_min": 7734614,
+        "pop_other": 13720557,
+        "rank_max": 14,
+        "rank_min": 13,
+        "geonameid": 360630,
+        "meganame": "Al-Qahirah",
+        "ls_name": "Cairo",
+        "ls_match": 1,
+        "checkme": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.248022361126118,
+          30.051906205103705
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 1,
+        "featurecla": "Admin-1 capital",
+        "name": "Shanghai",
+        "nameascii": "Shanghai",
+        "adm0name": "China",
+        "adm0_a3": "CHN",
+        "adm1name": "Shanghai",
+        "iso_a2": "CN",
+        "note": null,
+        "latitude": 31.2164524526,
+        "longitude": 121.436504678,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 14987000,
+        "pop_min": 14608512,
+        "pop_other": 16803572,
+        "rank_max": 14,
+        "rank_min": 14,
+        "geonameid": 1796236,
+        "meganame": "Shanghai",
+        "ls_name": "Shanghai",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.43455881982015,
+          31.218398311228327
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 2,
+        "featurecla": "Admin-0 capital",
+        "name": "Tokyo",
+        "nameascii": "Tokyo",
+        "adm0name": "Japan",
+        "adm0_a3": "JPN",
+        "adm1name": "Tokyo",
+        "iso_a2": "JP",
+        "note": null,
+        "latitude": 35.6850169058,
+        "longitude": 139.751407429,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 35676000,
+        "pop_min": 8336599,
+        "pop_other": 12945252,
+        "rank_max": 14,
+        "rank_min": 13,
+        "geonameid": 1850147,
+        "meganame": "Tokyo",
+        "ls_name": "Tokyo",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.74946157054467,
+          35.686962764371174
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 1,
+        "featurecla": "Admin-1 capital",
+        "name": "Mumbai",
+        "nameascii": "Mumbai",
+        "adm0name": "India",
+        "adm0_a3": "IND",
+        "adm1name": "Maharashtra",
+        "iso_a2": "IN",
+        "note": null,
+        "latitude": 19.0169903757,
+        "longitude": 72.8569892974,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 18978000,
+        "pop_min": 12691836,
+        "pop_other": 12426085,
+        "rank_max": 14,
+        "rank_min": 14,
+        "geonameid": 1275339,
+        "meganame": "Mumbai",
+        "ls_name": "Mumbai",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.85504343876647,
+          19.0189362343566
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 3,
+        "featurecla": "Admin-0 capital",
+        "name": "Paris",
+        "nameascii": "Paris",
+        "adm0name": "France",
+        "adm0_a3": "FRA",
+        "adm1name": "Île-de-France",
+        "iso_a2": "FR",
+        "note": null,
+        "latitude": 48.8666929312,
+        "longitude": 2.33333532574,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 9904000,
+        "pop_min": 11177,
+        "pop_other": 7142744,
+        "rank_max": 13,
+        "rank_min": 6,
+        "geonameid": 6942553,
+        "meganame": "Paris",
+        "ls_name": "Paris",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.33138946713035,
+          48.86863878981461
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 3,
+        "featurecla": "Admin-0 capital",
+        "name": "Santiago",
+        "nameascii": "Santiago",
+        "adm0name": "Chile",
+        "adm0_a3": "CHL",
+        "adm1name": "Región Metropolitana de Santiago",
+        "iso_a2": "CL",
+        "note": null,
+        "latitude": -33.4500138155,
+        "longitude": -70.6670408546,
+        "changed": 4,
+        "namediff": 0,
+        "diffnote": "Changed scale rank.",
+        "pop_max": 5720000,
+        "pop_min": 46611,
+        "pop_other": 3066651,
+        "rank_max": 13,
+        "rank_min": 7,
+        "geonameid": 3449741,
+        "meganame": "Santiago",
+        "ls_name": "Santiago3",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.66898671317483,
+          -33.448067956934096
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 1,
+        "featurecla": "Admin-1 capital",
+        "name": "Kolkata",
+        "nameascii": "Kolkata",
+        "adm0name": "India",
+        "adm0_a3": "IND",
+        "adm1name": "West Bengal",
+        "iso_a2": "IN",
+        "note": null,
+        "latitude": 22.4949692983,
+        "longitude": 88.3246756581,
+        "changed": 4,
+        "namediff": 1,
+        "diffnote": "Name changed. Changed scale rank.",
+        "pop_max": 14787000,
+        "pop_min": 4631392,
+        "pop_other": 7783716,
+        "rank_max": 14,
+        "rank_min": 12,
+        "geonameid": 1275004,
+        "meganame": "Kolkata",
+        "ls_name": "Calcutta",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          88.32272979950551,
+          22.49691515689642
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 1,
+        "featurecla": "Populated place",
+        "name": "Rio de Janeiro",
+        "nameascii": "Rio de Janeiro",
+        "adm0name": "Brazil",
+        "adm0_a3": "BRA",
+        "adm1name": "Rio de Janeiro",
+        "iso_a2": "BR",
+        "note": null,
+        "latitude": -22.9250231742,
+        "longitude": -43.2250207942,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 11748000,
+        "pop_min": 2010175,
+        "pop_other": 1821489,
+        "rank_max": 14,
+        "rank_min": 12,
+        "geonameid": 3451190,
+        "meganame": "Rio de Janeiro",
+        "ls_name": "Rio de Janeiro",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -43.22696665284366,
+          -22.923077315615956
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 1,
+        "featurecla": "Admin-1 capital",
+        "name": "Sao Paulo",
+        "nameascii": "Sao Paulo",
+        "adm0name": "Brazil",
+        "adm0_a3": "BRA",
+        "adm1name": "São Paulo",
+        "iso_a2": "BR",
+        "note": null,
+        "latitude": -23.558679587,
+        "longitude": -46.6250199804,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 18845000,
+        "pop_min": 10021295,
+        "pop_other": 11522944,
+        "rank_max": 14,
+        "rank_min": 14,
+        "geonameid": 3448439,
+        "meganame": "São Paulo",
+        "ls_name": "Sao Paolo",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.62696583905523,
+          -23.55673372837896
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 3,
+        "featurecla": "Admin-1 capital",
+        "name": "Sydney",
+        "nameascii": "Sydney",
+        "adm0name": "Australia",
+        "adm0_a3": "AUS",
+        "adm1name": "New South Wales",
+        "iso_a2": "AU",
+        "note": null,
+        "latitude": -33.9200109672,
+        "longitude": 151.185179809,
+        "changed": 4,
+        "namediff": 0,
+        "diffnote": "Changed feature class.",
+        "pop_max": 4630000,
+        "pop_min": 3641422,
+        "pop_other": 2669348,
+        "rank_max": 12,
+        "rank_min": 12,
+        "geonameid": 2147714,
+        "meganame": "Sydney",
+        "ls_name": "Sydney1",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          151.1832339501475,
+          -33.91806510862875
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 0,
+        "featurecla": "Admin-0 capital",
+        "name": "Singapore",
+        "nameascii": "Singapore",
+        "adm0name": "Singapore",
+        "adm0_a3": "SGP",
+        "adm1name": null,
+        "iso_a2": "SG",
+        "note": null,
+        "latitude": 1.29303346649,
+        "longitude": 103.855820678,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 5183700,
+        "pop_min": 3289529,
+        "pop_other": 3314179,
+        "rank_max": 13,
+        "rank_min": 12,
+        "geonameid": 1880252,
+        "meganame": "Singapore",
+        "ls_name": "Singapore",
+        "ls_match": 1,
+        "checkme": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.85387481909902,
+          1.294979325105942
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scalerank": 0,
+        "labelrank": 0,
+        "featurecla": "Admin-0 region capital",
+        "name": "Hong Kong",
+        "nameascii": "Hong Kong",
+        "adm0name": "Hong Kong S.A.R.",
+        "adm0_a3": "HKG",
+        "adm1name": null,
+        "iso_a2": "HK",
+        "note": null,
+        "latitude": 22.304980895,
+        "longitude": 114.185009317,
+        "changed": 0,
+        "namediff": 0,
+        "diffnote": null,
+        "pop_max": 7206000,
+        "pop_min": 4551579,
+        "pop_other": 4549026,
+        "rank_max": 13,
+        "rank_min": 12,
+        "geonameid": 1819729,
+        "meganame": "Hong Kong",
+        "ls_name": "Hong Kong",
+        "ls_match": 1,
+        "checkme": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          114.18306345846304,
+          22.30692675357551
+        ]
+      }
+    }
+  ]
+}
