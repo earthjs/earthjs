@@ -71,13 +71,8 @@ window.earthjs = function(){
         }
         q.await(ready);
 
-        if (options.showGlobeShadow) {
-            addGlobeDropShadow(planet);
-        }
-
-        if (options.showOcean) {
-            addOcean(planet);
-        }
+        addGlobeDropShadow(planet, options);
+        addOcean(planet, options);
 
         setInterval(function(){
             if (_.onDrawKeys.length>0) {
@@ -94,23 +89,12 @@ window.earthjs = function(){
         //----------------------------------------
         function ready(error, world, places) {
             planet._world = world, planet._places = places;
-
             addWorldOrCountries(planet, options);
-            if (options.places && options.showPlaces) {
-                addPlaces(planet);
-            }
+            addPlaces(planet, options);
 
-            if (options.globeHighlighted) {
-                addGlobeHighlight(planet);
-            }
-
-            if (options.showGlobeShading) {
-                addGlobeShading(planet);
-            }
-
-            if (options.showGraticule) {
-                addGraticule(planet);
-            }
+            addGlobeHighlight(planet, options);
+            addGlobeShading(planet, options);
+            addGraticule(planet, options);
 
             planet.loaded = true;
             planet.ready.call(planet);
@@ -122,10 +106,10 @@ window.earthjs = function(){
             } else {
                 planet.world.attr("d", planet.path);
             }
-            if (options.showGraticule) {
+            if (planet.graticule && options.showGraticule) {
                 planet.graticule.attr("d", planet.path);
             }
-            if (options.places) {
+            if (planet.points && options.places && options.places) {
                 planet.points.attr("d", planet.path);
                 position_labels(planet);
             }
@@ -202,117 +186,124 @@ window.earthjs = function(){
 
     // add svg element
     function addWorldOrCountries(planet, options) {
+        planet.svg.selectAll('.land,.countries').remove();
         if (options.showCountries) {
-            addCountries(planet);
+            planet.countries = planet.svg.append("g").attr("class","countries").selectAll("path")
+            .data(topojson.feature(planet._world, planet._world.objects.countries).features).enter().append("path")
+            .attr("d", planet.path);
         } else {
-            addWorld(planet);
+            planet.world = planet.svg.append("path")
+            .datum(topojson.feature(planet._world, planet._world.objects.land))
+            .attr("class", "land")
+            .attr("d", planet.path);
         }
     }
 
-    function addPlaces(planet) {
-        planet.points = planet.svg.append("g").attr("class","points").selectAll("text").data(planet._places.features).enter().append("path")
-            .attr("class", "point")
+    function addPlaces(planet, options) {
+        planet.svg.selectAll('.points,.labels').remove();
+        if (options.places && options.showPlaces) {
+            planet.points = planet.svg.append("g").attr("class","points").selectAll("text").data(planet._places.features).enter().append("path")
+                .attr("class", "point")
+                .attr("d", planet.path);
+            planet.labels = planet.svg.append("g").attr("class","labels").selectAll("text").data(planet._places.features).enter().append("text")
+                .attr("class", "label")
+                .text(function(d) { return d.properties.name });
+            position_labels(planet);
+        }
+    }
+
+    function addOcean(planet, options) {
+        planet.svg.selectAll('.ocean_fill,.ocean_fill_circle').remove();
+        if (options.showOcean) {
+            var ocean_fill = planet.svg.append("defs").append("radialGradient")
+                .attr("id", "ocean_fill")
+                .attr("cx", "75%")
+                .attr("cy", "25%");
+            ocean_fill.append("stop")
+                .attr("offset", "5%")
+                .attr("stop-color", "#ddf");
+            ocean_fill.append("stop")
+                .attr("offset", "100%")
+                .attr("stop-color", "#9ab");
+            planet.svg.append("circle")
+                .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
+                .attr("r",  planet.proj.scale())
+                .attr("class", "ocean_fill_circle noclicks")
+                .style("fill", "url(#ocean_fill)");
+        }
+    }
+
+    function addGlobeHighlight(planet, options) {
+        planet.svg.selectAll('.globe_highlight,.globe_highlight_circle').remove();
+        if (options.globeHighlighted) {
+            var globe_highlight = planet.svg.append("defs").append("radialGradient")
+                  .attr("id", "globe_highlight")
+                  .attr("cx", "75%")
+                  .attr("cy", "25%");
+                globe_highlight.append("stop")
+                  .attr("offset", "5%").attr("stop-color", "#ffd")
+                  .attr("stop-opacity","0.6");
+                globe_highlight.append("stop")
+                  .attr("offset", "100%").attr("stop-color", "#ba9")
+                  .attr("stop-opacity","0.2");
+            planet.svg.append("circle")
+                .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
+                .attr("r",  planet.proj.scale())
+                .attr("class","globe_highlight_circle noclicks")
+                .style("fill", "url(#globe_highlight)");
+        }
+    }
+
+    function addGlobeShading(planet, options) {
+        planet.svg.selectAll('.globe_shading,.globe_shading_circle').remove();
+        if (options.showGlobeShading) {
+            var globe_shading = planet.svg.append("defs").append("radialGradient")
+                  .attr("id", "globe_shading")
+                  .attr("cx", "50%")
+                  .attr("cy", "40%");
+                globe_shading.append("stop")
+                  .attr("offset","50%").attr("stop-color", "#9ab")
+                  .attr("stop-opacity","0")
+                globe_shading.append("stop")
+                  .attr("offset","100%").attr("stop-color", "#3e6184")
+                  .attr("stop-opacity","0.3")
+            planet.svg.append("circle")
+                .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
+                .attr("r",  planet.proj.scale())
+                .attr("class","globe_shading_circle noclicks")
+                .style("fill", "url(#globe_shading)");
+        }
+    }
+
+    function addGraticule(planet, options) {
+        planet.svg.selectAll('.graticule').remove();
+        if (options.showGraticule) {
+            planet.graticule = planet.svg.append("path").datum(planet.datumGraticule)
+            .attr("class", "graticule noclicks")
             .attr("d", planet.path);
-
-        planet.labels = planet.svg.append("g").attr("class","labels").selectAll("text").data(planet._places.features).enter().append("text")
-            .attr("class", "label")
-            .text(function(d) { return d.properties.name });
-        position_labels(planet);
+        }
     }
 
-    function addCountries(planet) {
-        planet.countries = planet.svg.append("g").attr("class","countries").selectAll("path")
-        .data(topojson.feature(planet._world, planet._world.objects.countries).features).enter().append("path")
-        .attr("d", planet.path);
-    }
-
-    function addWorld(planet) {
-        planet.world = planet.svg.append("path")
-        .datum(topojson.feature(planet._world, planet._world.objects.land))
-        .attr("class", "land")
-        .attr("d", planet.path);
-    }
-
-    function addGraticule(planet) {
-        planet.graticule = planet.svg.append("path").datum(planet.datumGraticule)
-        .attr("class", "graticule noclicks")
-        .attr("d", planet.path);
-    }
-
-    function addOcean(planet) {
-        var ocean_fill = planet.svg.append("defs").append("radialGradient")
-            .attr("id", "ocean_fill")
-            .attr("cx", "75%")
-            .attr("cy", "25%");
-        ocean_fill.append("stop")
-            .attr("offset", "5%")
-            .attr("stop-color", "#ddf");
-        ocean_fill.append("stop")
-            .attr("offset", "100%")
-            .attr("stop-color", "#9ab");
-
-        planet.svg.append("circle")
-            .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
-            .attr("r",  planet.proj.scale())
-            .attr("class", "noclicks")
-            .style("fill", "url(#ocean_fill)");
-    }
-
-    function addGlobeHighlight(planet) {
-        var globe_highlight = planet.svg.append("defs").append("radialGradient")
-              .attr("id", "globe_highlight")
-              .attr("cx", "75%")
-              .attr("cy", "25%");
-            globe_highlight.append("stop")
-              .attr("offset", "5%").attr("stop-color", "#ffd")
-              .attr("stop-opacity","0.6");
-            globe_highlight.append("stop")
-              .attr("offset", "100%").attr("stop-color", "#ba9")
-              .attr("stop-opacity","0.2");
-
-        planet.svg.append("circle")
-            .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
-            .attr("r",  planet.proj.scale())
-            .attr("class","noclicks")
-            .style("fill", "url(#globe_highlight)");
-    }
-
-    function addGlobeShading(planet) {
-        var globe_shading = planet.svg.append("defs").append("radialGradient")
-              .attr("id", "globe_shading")
-              .attr("cx", "50%")
-              .attr("cy", "40%");
-            globe_shading.append("stop")
-              .attr("offset","50%").attr("stop-color", "#9ab")
-              .attr("stop-opacity","0")
-            globe_shading.append("stop")
-              .attr("offset","100%").attr("stop-color", "#3e6184")
-              .attr("stop-opacity","0.3")
-        planet.svg.append("circle")
-            .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
-            .attr("r",  planet.proj.scale())
-            .attr("class","noclicks")
-            .style("fill", "url(#globe_shading)");
-    }
-
-    function addGlobeDropShadow(planet) {
-        var drop_shadow = planet.svg.append("defs").append("radialGradient")
-              .attr("id", "drop_shadow")
-              .attr("cx", "50%")
-              .attr("cy", "50%");
-            drop_shadow.append("stop")
-              .attr("offset","20%").attr("stop-color", "#000")
-              .attr("stop-opacity",".5")
-            drop_shadow.append("stop")
-              .attr("offset","100%").attr("stop-color", "#000")
-              .attr("stop-opacity","0")
-
-        planet.svg.append("ellipse")
-              .attr("cx", 440).attr("cy", 450)
-              .attr("rx", planet.proj.scale()*.90)
-              .attr("ry", planet.proj.scale()*.25)
-              .attr("class", "noclicks")
-              .style("fill", "url(#drop_shadow)");
+    function addGlobeDropShadow(planet, options) {
+        planet.svg.selectAll('.drop_shadow,.drop_shadow_ellipse').remove();
+        if (options.showGlobeShadow) {
+            var drop_shadow = planet.svg.append("defs").append("radialGradient")
+                  .attr("id", "drop_shadow")
+                  .attr("cx", "50%")
+                  .attr("cy", "50%");
+                drop_shadow.append("stop")
+                  .attr("offset","20%").attr("stop-color", "#000")
+                  .attr("stop-opacity",".5")
+                drop_shadow.append("stop")
+                  .attr("offset","100%").attr("stop-color", "#000")
+                  .attr("stop-opacity","0")
+            planet.svg.append("ellipse")
+                  .attr("cx", 440).attr("cy", 450)
+                  .attr("rx", planet.proj.scale()*.90)
+                  .attr("ry", planet.proj.scale()*.25)
+                  .attr("class", "drop_shadow_ellipse noclicks")
+                  .style("fill", "url(#drop_shadow)");
+        }
     }
 
     // Internal plugins
@@ -328,15 +319,17 @@ window.earthjs = function(){
                     .style("opacity", newOpt.showOcean ? 1 : 0);
                 }
                 if (newOpt.showCountries!==undefined) {
-                    planet.svg.selectAll('.land,.countries').remove();
                     options.showCountries = newOpt.showCountries;
                     addWorldOrCountries(planet, options);
+                    addGlobeHighlight(planet, options);
+                    addGlobeShading(planet, options);
+                    addGraticule(planet, options);
                 }
                 if (options.places && newOpt.showPlaces!==undefined) {
                     planet.svg.selectAll('.points,.labels').remove();
                     options.showPlaces = newOpt.showPlaces;
                     if (options.places && newOpt.showPlaces) {
-                        addPlaces(planet);
+                        addPlaces(planet, options);
                     }
                 }
                 planet.state.drag = false;
@@ -374,7 +367,7 @@ window.earthjs = function(){
                 options.places = true;
                 planet._places = places;
                 planet.svg.selectAll('.points,.labels').remove();
-                planet.addPlaces(planet);
+                planet.addPlaces(planet, options);
             },
             onInterval(planet, options) {
                 //code...
