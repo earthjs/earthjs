@@ -27,8 +27,8 @@ window.earthjs = function(){
             onRefreshKeys: [],
         };
         var svg =  d3.select(options.select).attr("width", options.width).attr("height", options.height);
-        var proj = d3.geoOrthographic().scale(options.width / 4.1).translate([options.width / 2, options.height / 2]).precision(1);
-        var path = d3.geoPath().projection(proj);
+        var proj = d3.geo.orthographic().scale(220).translate([options.width / 2, options.height / 2]).clipAngle(90);
+        var path = d3.geo.path().projection(proj).pointRadius(1.5);
         var planet = {
             svg,
             proj,
@@ -38,8 +38,7 @@ window.earthjs = function(){
             state: {drag: false},
             width: options.width,
             height: options.height,
-            // datumGraticule: d3.geo.graticule(),
-            datumGraticule: d3.geoGraticule(),
+            datumGraticule: d3.geo.graticule(),
             ready: ()=>{},
             register: function(obj) {
                 if (obj.onInterval) {
@@ -125,26 +124,28 @@ window.earthjs = function(){
     //=============================================
 
     function position_labels(planet) {
-        var centerPos = planet.proj.invert([planet.width / 2, planet.height/2]);
+      var centerPos = planet.proj.invert([planet.width / 2, planet.height/2]);
+      var arc = d3.geo.greatArc();
 
-        planet.svg.selectAll(".label")
-            .attr("text-anchor",function(d) {
-                var x = planet.proj(d.geometry.coordinates)[0];
-                return x < planet.width/2-20 ? "end" :
-                       x < planet.width/2+20 ? "middle" :
-                       "start"
-            })
-            .attr("transform", function(d) {
-                var loc = planet.proj(d.geometry.coordinates),
-                    x = loc[0],
-                    y = loc[1];
-                var offset = x < planet.width/2 ? -5 : 5;
-                return "translate(" + (x+offset) + "," + (y-2) + ")"
-            })
-            .style("display", function(d) {
-                return d3.geoDistance(d.geometry.coordinates, centerPos) > 1.57 ? 'none' : 'inline';
-            });
-    };
+      planet.svg.selectAll(".label")
+        .attr("text-anchor",function(d) {
+          var x = planet.proj(d.geometry.coordinates)[0];
+          return x < planet.width/2-20 ? "end" :
+                 x < planet.width/2+20 ? "middle" :
+                 "start"
+        })
+        .attr("transform", function(d) {
+          var loc = planet.proj(d.geometry.coordinates),
+            x = loc[0],
+            y = loc[1];
+          var offset = x < planet.width/2 ? -5 : 5;
+          return "translate(" + (x+offset) + "," + (y-2) + ")"
+        })
+        .style("display", function(d) {
+          var d = arc.distance({source: d.geometry.coordinates, target: centerPos});
+          return (d > 1.57) ? 'none' : 'inline';
+        })
+    }
 
     // events
     function rotateEarth(planet, options) {

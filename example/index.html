@@ -1,22 +1,27 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
-<svg id="earth"></svg><br/>
-<label for="shadow">Shadow</label>
-<input id="shadow" type="checkbox" onclick="shadowClick()" checked/><br/>
-<label for="hilight">Hilight</label>
-<input id="hilight" type="checkbox" onclick="hilightClick()" checked/><br/>
-<label for="ocean">Ocean</label>
-<input id="ocean" type="checkbox" onclick="oceanClick()" checked/><br/>
-<label for="shading">Shading</label>
-<input id="shading" type="checkbox" onclick="shadingClick()" checked/><br/>
-<label for="country">Country</label>
-<input id="country" type="checkbox" onclick="countryClick()" checked/><br/>
-<label for="graticule">Graticule</label>
-<input id="graticule" type="checkbox" onclick="graticuleClick()" checked/><br/>
-<label for="hideLand">Hide-Land</label>
-<input id="hideLand" type="checkbox" onclick="hideLandClick()"/><br/>
-<script src="./js/d3.v3.min.js"></script>
+<style>
+    .set-options {float: left;}
+</style>
+<div class="set-options">
+    <label for="shadow">Shadow</label>
+    <input id="shadow" type="checkbox" onclick="shadowClick()" checked/><br/>
+    <label for="hilight">Hilight</label>
+    <input id="hilight" type="checkbox" onclick="hilightClick()" checked/><br/>
+    <label for="ocean">Ocean</label>
+    <input id="ocean" type="checkbox" onclick="oceanClick()" checked/><br/>
+    <label for="shading">Shading</label>
+    <input id="shading" type="checkbox" onclick="shadingClick()" checked/><br/>
+    <label for="country">Country</label>
+    <input id="country" type="checkbox" onclick="countryClick()" checked/><br/>
+    <label for="graticule">Graticule</label>
+    <input id="graticule" type="checkbox" onclick="graticuleClick()" checked/><br/>
+    <label for="hideLand">Hide-Land</label>
+    <input id="hideLand" type="checkbox" onclick="hideLandClick()"/><br/>
+</div>
+<svg id="earth"></svg>
+<script src="./js/d3.min.js"></script>
 <script src="./js/queue.v1.min.js"></script>
 <script src="./js/topojson.v1.min.js"></script>
 <script src="../src/earthjs.js"></script>
