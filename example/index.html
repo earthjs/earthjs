@@ -2,8 +2,16 @@
 <meta charset="utf-8">
 <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
 <svg id="earth"></svg><br/>
-<label for="ocean">Country</label>
-<input id="ocean" type="checkbox" onclick="oceanClick()"/>
+<label for="shadow">Shadow</label>
+<input id="shadow" type="checkbox" onclick="shadowClick()" checked/><br/>
+<label for="ocean">Ocean</label>
+<input id="ocean" type="checkbox" onclick="oceanClick()" checked/><br/>
+<label for="shading">Shading</label>
+<input id="shading" type="checkbox" onclick="shadingClick()" checked/><br/>
+<label for="country">Country</label>
+<input id="country" type="checkbox" onclick="countryClick()" checked/><br/>
+<label for="graticule">Graticule</label>
+<input id="graticule" type="checkbox" onclick="graticuleClick()" checked/><br/>
 <script src="./js/d3.v3.min.js"></script>
 <script src="./js/queue.v1.min.js"></script>
 <script src="./js/topojson.v1.min.js"></script>
@@ -12,25 +20,45 @@
 var p = earthjs({
     // drawTick: 500,
     // showOcean: false,
-    showCountries: false,
+    // showCountries: false,
     // showGraticule: false,
     // showGlobeShadow: false,
     // showGlobeShading: false,
-    // globeHighlighted: false,
+    globeHighlighted: false,
     world: './d/world-110m.json',
-    // places: './d/places.json',
+    places: './d/places.json',
     ready: function() {
         console.log(this);
     }
 });
 p.register(earthjs.plugins.configPlugin());
-p.register(earthjs.plugins.placesPlugin());
+// p.register(earthjs.plugins.placesPlugin());
 p.register(earthjs.plugins.autorotatePlugin(10));
 
-var toggle = false;
+var shadowT = true;
+var shadowClick = function(e) {
+    shadowT = !shadowT;
+    p.fn.config({showGlobeShadow: shadowT});
+}
+var oceanT = true;
 var oceanClick = function(e) {
-    toggle = !toggle;
-    console.log('99:'+toggle);
-    p.fn.config({showCountries: toggle});
+    oceanT = !oceanT;
+    p.fn.config({showOcean: oceanT});
+}
+var countryT = true;
+var countryClick = function(e) {
+    countryT = !countryT;
+    p.fn.config({showCountries: countryT});
+}
+var shadingT = true;
+var shadingClick = function(e) {
+    shadingT = !shadingT;
+    p.fn.config({showGlobeShading: shadingT});
+}
+
+var graticuleT = true;
+var graticuleClick = function(e) {
+    graticuleT = !graticuleT;
+    p.fn.config({showGraticule: graticuleT});
 }
 </script>

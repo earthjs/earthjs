@@ -189,8 +189,8 @@ window.earthjs = function(){
         planet.svg.selectAll('.land,.countries').remove();
         if (options.showCountries) {
             planet.countries = planet.svg.append("g").attr("class","countries").selectAll("path")
-            .data(topojson.feature(planet._world, planet._world.objects.countries).features).enter().append("path")
-            .attr("d", planet.path);
+            .data(topojson.feature(planet._world, planet._world.objects.countries).features)
+            .enter().append("path").attr("d", planet.path);
         } else {
             planet.world = planet.svg.append("path")
             .datum(topojson.feature(planet._world, planet._world.objects.land))
@@ -213,7 +213,7 @@ window.earthjs = function(){
     }
 
     function addOcean(planet, options) {
-        planet.svg.selectAll('.ocean_fill,.ocean_fill_circle').remove();
+        planet.svg.selectAll('#ocean_fill,.ocean_fill_circle').remove();
         if (options.showOcean) {
             var ocean_fill = planet.svg.append("defs").append("radialGradient")
                 .attr("id", "ocean_fill")
@@ -234,7 +234,7 @@ window.earthjs = function(){
     }
 
     function addGlobeHighlight(planet, options) {
-        planet.svg.selectAll('.globe_highlight,.globe_highlight_circle').remove();
+        planet.svg.selectAll('#globe_highlight,.globe_highlight_circle').remove();
         if (options.globeHighlighted) {
             var globe_highlight = planet.svg.append("defs").append("radialGradient")
                   .attr("id", "globe_highlight")
@@ -255,7 +255,7 @@ window.earthjs = function(){
     }
 
     function addGlobeShading(planet, options) {
-        planet.svg.selectAll('.globe_shading,.globe_shading_circle').remove();
+        planet.svg.selectAll('#globe_shading,.globe_shading_circle').remove();
         if (options.showGlobeShading) {
             var globe_shading = planet.svg.append("defs").append("radialGradient")
                   .attr("id", "globe_shading")
@@ -313,10 +313,20 @@ window.earthjs = function(){
             name: 'config',
             fn(planet, options, newOpt={}) {
                 planet.state.drag = true;
+                if (newOpt.showGlobeShadow!==undefined) {
+                    options.showGlobeShadow = newOpt.showGlobeShadow;
+                    planet.svg.selectAll('.drop_shadow_ellipse')
+                    .style("opacity", newOpt.showGlobeShadow ? 1 : 0);
+                }
                 if (newOpt.showOcean!==undefined) {
                     options.showOcean = newOpt.showOcean;
-                    planet.svg.selectAll('#ocean_fill')
+                    planet.svg.selectAll('.ocean_fill_circle')
                     .style("opacity", newOpt.showOcean ? 1 : 0);
+                }
+                if (newOpt.showGlobeShading!==undefined) {
+                    options.showGlobeShading = newOpt.showGlobeShading;
+                    planet.svg.selectAll('.globe_shading_circle')
+                    .style("opacity", newOpt.showGlobeShading ? 1 : 0);
                 }
                 if (newOpt.showCountries!==undefined) {
                     options.showCountries = newOpt.showCountries;
@@ -325,12 +335,14 @@ window.earthjs = function(){
                     addGlobeShading(planet, options);
                     addGraticule(planet, options);
                 }
-                if (options.places && newOpt.showPlaces!==undefined) {
+                if (newOpt.showPlaces!==undefined && options.places) {
                     planet.svg.selectAll('.points,.labels').remove();
                     options.showPlaces = newOpt.showPlaces;
-                    if (options.places && newOpt.showPlaces) {
-                        addPlaces(planet, options);
-                    }
+                    addPlaces(planet, options);
+                }
+                if (newOpt.showGraticule!==undefined) {
+                    options.showGraticule = newOpt.showGraticule;
+                    addGraticule(planet, options);
                 }
                 planet.state.drag = false;
             }

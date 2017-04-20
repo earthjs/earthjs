@@ -5,10 +5,9 @@
 .countries path {
   stroke: rgb(80, 64, 39);
   stroke-linejoin: round;
-  stroke-width: .5;
-  /*fill: rgb(117, 87, 57);*/
-  stroke-opacity: 1;
-  opacity: 0;
+  stroke-width: 1.5;
+  fill: rgb(117, 87, 57);
+  opacity: 1;
 }
 /*.countries path:hover {
   fill-opacity:.1;
