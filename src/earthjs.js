@@ -328,6 +328,11 @@ window.earthjs = function(){
                     planet.svg.selectAll('.globe_shading_circle')
                     .style("opacity", newOpt.showGlobeShading ? 1 : 0);
                 }
+                if (newOpt.globeHighlighted!==undefined) {
+                    options.globeHighlighted = newOpt.globeHighlighted;
+                    planet.svg.selectAll('.globe_highlight_circle')
+                    .style("opacity", newOpt.globeHighlighted ? 1 : 0);
+                }
                 if (newOpt.showCountries!==undefined) {
                     options.showCountries = newOpt.showCountries;
                     addWorldOrCountries(planet, options);
@@ -343,6 +348,11 @@ window.earthjs = function(){
                 if (newOpt.showGraticule!==undefined) {
                     options.showGraticule = newOpt.showGraticule;
                     addGraticule(planet, options);
+                }
+                if (newOpt.hideLand!==undefined) {
+                    options.hideLand = newOpt.hideLand;
+                    planet.svg.selectAll('.land,.countries')
+                    .style("opacity", newOpt.hideLand ? 1 : 0);
                 }
                 planet.state.drag = false;
             }
