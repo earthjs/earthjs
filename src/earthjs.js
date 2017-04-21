@@ -38,10 +38,25 @@ window.earthjs = function(){
             state: {drag: false},
             width: options.width,
             height: options.height,
-            // datumGraticule: d3.geo.graticule(),
             datumGraticule: d3.geoGraticule(),
             ready: ()=>{},
             register: function(obj) {
+                var fn = {};
+                planet[obj.name] = fn;
+                Object.keys(obj).map(function(name) {
+                    if (['onInterval', 'onRefresh', 'ready', 'json'].indexOf(name)===-1) {
+                        if (typeof(obj[name])==='function') {
+                            fn[name] = function() {
+                                var args = [].slice.call(arguments);
+                                args.unshift(planet, options);
+                                obj[name].apply(null, args);
+                            }
+                        }
+                    }
+                });
+                if (obj.onInit) {
+                    obj.onInit(planet, options);
+                }
                 if (obj.onInterval) {
                     _.onDraw[obj.name] = obj.onInterval;
                     _.onDrawKeys = Object.keys(_.onDraw);
@@ -49,13 +64,6 @@ window.earthjs = function(){
                 if (obj.onRefresh) {
                     _.onRefresh[obj.name] = obj.onRefresh;
                     _.onRefreshKeys = Object.keys(_.onRefresh);
-                }
-                if (typeof(obj.fn)=='function') {
-                    planet.fn[obj.name] = function() {
-                        var args = [].slice.call(arguments);
-                        args.unshift(planet, options);
-                        obj.fn.apply(null, args);
-                    }
                 }
                 if (obj.json && obj.ready) {
                     queue().defer(d3.json, obj.json).await(function(err, data) {
@@ -83,7 +91,6 @@ window.earthjs = function(){
             }
         }, options.drawTick);
         //----------------------------------------
-        rotateEarth(planet, options);
         planet.addPlaces = addPlaces;
         planet.refresh = refresh;
         return planet;
@@ -123,7 +130,6 @@ window.earthjs = function(){
     };
 
     //=============================================
-
     function position_labels(planet) {
         var centerPos = planet.proj.invert([planet.width / 2, planet.height/2]);
 
@@ -146,44 +152,7 @@ window.earthjs = function(){
             });
     };
 
-    // events
-    function rotateEarth(planet, options) {
-        var win = d3.select(window);
-        win.on("mouseup",   mouseup);
-        win.on("mousemove", mousemove);
-        planet.svg.on("mousedown", mousedown);
-
-        var m0, o0;
-
-        function mousedown() {
-          m0 = [d3.event.pageX, d3.event.pageY];
-          o0 = planet.proj.rotate();
-          planet.state.drag = true;
-          d3.event.preventDefault();
-        }
-
-        function mousemove() {
-          if (m0) {
-            var m1 = [d3.event.pageX, d3.event.pageY]
-              , o1 = [o0[0] + (m1[0] - m0[0]) / 6, o0[1] + (m0[1] - m1[1]) / 6];
-            o1[1] = o1[1] > 30  ? 30  :
-                    o1[1] < -30 ? -30 :
-                    o1[1];
-            planet.proj.rotate(o1);
-            planet.refresh(planet, options);
-          }
-        }
-
-        function mouseup() {
-          if (m0) {
-            mousemove();
-            m0 = null;
-            planet.state.drag = false;
-          }
-        }
-    }
-
-    // add svg element
+    // add/remove svg element
     function addWorldOrCountries(planet, options) {
         planet.svg.selectAll('.land,.countries').remove();
         if (options.showCountries) {
@@ -196,6 +165,12 @@ window.earthjs = function(){
             .attr("class", "land")
             .attr("d", planet.path);
         }
+    }
+
+    function removeLand(planet, options) {
+        planet.svg.selectAll('.land,.countries').remove();
+        planet.countries = planet.svg.selectAll('.countries');
+        planet.world = planet.svg.selectAll('.land')
     }
 
     function addPlaces(planet, options) {
@@ -310,7 +285,7 @@ window.earthjs = function(){
     earthjs.plugins.configPlugin = function() {
         return {
             name: 'config',
-            fn(planet, options, newOpt={}) {
+            set(planet, options, newOpt={}) {
                 planet.state.drag = true;
                 if (newOpt.showGlobeShadow!==undefined) {
                     options.showGlobeShadow = newOpt.showGlobeShadow;
@@ -348,20 +323,65 @@ window.earthjs = function(){
                     options.showGraticule = newOpt.showGraticule;
                     addGraticule(planet, options);
                 }
-                if (newOpt.hideLand!==undefined) {
-                    options.hideLand = newOpt.hideLand;
-                    planet.svg.selectAll('.land,.countries')
-                    .style("opacity", newOpt.hideLand ? 1 : 0);
-                }
+                planet.state.drag = false;
+            },
+            removeLand(planet, options) {
+                planet.state.drag = true;
+                removeLand(planet, options);
                 planet.state.drag = false;
             }
         }
     };
+    // events
+    earthjs.plugins.dragPlugin = function(degPerSec) {
+        return {
+            name: 'drag',
+            bind(planet, options) {
+                var win = d3.select(window);
+                win.on("mouseup",   mouseup);
+                win.on("mousemove", mousemove);
+                planet.svg.on("mousedown", mousedown);
+
+                var m0, o0;
+
+                function mousedown() {
+                  m0 = [d3.event.pageX, d3.event.pageY];
+                  o0 = planet.proj.rotate();
+                  planet.state.drag = true;
+                  d3.event.preventDefault();
+                }
+
+                function mousemove() {
+                  if (m0) {
+                    var m1 = [d3.event.pageX, d3.event.pageY]
+                      , o1 = [o0[0] + (m1[0] - m0[0]) / 6, o0[1] + (m0[1] - m1[1]) / 6];
+                    o1[1] = o1[1] > 30  ? 30  :
+                            o1[1] < -30 ? -30 :
+                            o1[1];
+                    planet.proj.rotate(o1);
+                    planet.refresh(planet, options);
+                  }
+                }
+
+                function mouseup() {
+                  if (m0) {
+                    mousemove();
+                    m0 = null;
+                    planet.state.drag = false;
+                  }
+                }
+            },
+        }
+    }
 
     earthjs.plugins.autorotatePlugin = function(degPerSec) {
         var lastTick = null;
         return {
             name: 'autorotate',
+            onInit(planet, options) {
+                planet.degPerSec = degPerSec;
+                planet.state.drag = true;
+            },
             onInterval(planet, options) {
                 var now = new Date();
                 if (planet.state.drag || !lastTick) {
@@ -369,13 +389,22 @@ window.earthjs = function(){
                 } else {
                     var delta = now - lastTick;
                     var rotation = planet.proj.rotate();
-                    rotation[0] += degPerSec * delta / 1000;
+                    rotation[0] += planet.degPerSec * delta / 1000;
                     if (rotation[0] >= 180)
                         rotation[0] -= 360;
                     planet.proj.rotate(rotation);
                     planet.refresh(planet, options);
                     lastTick = now;
                 }
+            },
+            speed(planet, options, degPerSec) {
+                planet.degPerSec = degPerSec;
+            },
+            start(planet, options) {
+                planet.state.drag = false;
+            },
+            stop(planet, options) {
+                planet.state.drag = true;
             }
         };
     };

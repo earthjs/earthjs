@@ -9,21 +9,22 @@
 <script src="../src/earthjs.js"></script>
 <script>
 var checker = [
-    'shadow:Shadow:showGlobeShadow',
-    'hilight:Hilight:globeHighlighted',
     'ocean:Ocean:showOcean',
+    'hilight:Hilight:globeHighlighted',
     'shading:Shading:showGlobeShading',
     'country:Country:showCountries',
+    'places:Places:showPlaces',
     'graticule:Graticule:showGraticule',
-    'hideLand:Hide-Land:hideLand'
+    'removeLand:Remove-Land:removeLand',
+    'shadow:Shadow:showGlobeShadow',
 ].map((d)=>(d.split(':')));
 d3.select('.set-options').selectAll('label').data(checker).enter()
     .append('button').text((d)=>(d[1])).attr('onclick',(d)=>(`buttonClick("${d.join(':')}")`));
 
 var options = {
         // drawTick: 500,
-        hideLand: false,
         showOcean: true,
+        showPlaces: true,
         showCountries: true,
         showGraticule: true,
         showGlobeShadow: true,
@@ -31,21 +32,29 @@ var options = {
         globeHighlighted: true,
         world: './d/world-110m.json',
         places: './d/places.json',
+        removeLand: false,
         ready: function() {
             console.log(this);
         }
     };
 var p = earthjs(options);
+p.register(earthjs.plugins.dragPlugin());
+p.drag.bind();
+
 p.register(earthjs.plugins.configPlugin());
 // p.register(earthjs.plugins.placesPlugin());
 p.register(earthjs.plugins.autorotatePlugin(10));
 
 var buttonClick = function(str) {
-    var arr = str.split(':'),
-        key = arr[2],
-        resultx = {};
-    options[key] = !options[key];
-    resultx[key] =  options[key];
-    p.fn.config(resultx);
+    var arr = str.split(':'), key = arr[2];
+    if (key==='removeLand') {
+        p.config.removeLand();
+        options.showCountries = false;
+    } else {
+        var resultx = {};
+        options[key] = !options[key];
+        resultx[key] =  options[key];
+        p.config.set(resultx);
+    }
 }
 </script>
