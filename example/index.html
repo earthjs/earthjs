@@ -1,82 +1,51 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
-<style>
-    .set-options {float: left;}
-</style>
-<div class="set-options">
-    <label for="shadow">Shadow</label>
-    <input id="shadow" type="checkbox" onclick="shadowClick()" checked/><br/>
-    <label for="hilight">Hilight</label>
-    <input id="hilight" type="checkbox" onclick="hilightClick()" checked/><br/>
-    <label for="ocean">Ocean</label>
-    <input id="ocean" type="checkbox" onclick="oceanClick()" checked/><br/>
-    <label for="shading">Shading</label>
-    <input id="shading" type="checkbox" onclick="shadingClick()" checked/><br/>
-    <label for="country">Country</label>
-    <input id="country" type="checkbox" onclick="countryClick()" checked/><br/>
-    <label for="graticule">Graticule</label>
-    <input id="graticule" type="checkbox" onclick="graticuleClick()" checked/><br/>
-    <label for="hideLand">Hide-Land</label>
-    <input id="hideLand" type="checkbox" onclick="hideLandClick()"/><br/>
-</div>
 <svg id="earth"></svg>
+<div class="set-options"></div>
 <script src="./js/d3.min.js"></script>
 <script src="./js/queue.v1.min.js"></script>
 <script src="./js/topojson.v1.min.js"></script>
 <script src="../src/earthjs.js"></script>
 <script>
-var p = earthjs({
-    // drawTick: 500,
-    // showOcean: false,
-    // showCountries: false,
-    // showGraticule: false,
-    // showGlobeShadow: false,
-    // showGlobeShading: false,
-    // globeHighlighted: false,
-    world: './d/world-110m.json',
-    places: './d/places.json',
-    ready: function() {
-        console.log(this);
-    }
-});
+var checker = [
+    'shadow:Shadow:showGlobeShadow',
+    'hilight:Hilight:globeHighlighted',
+    'ocean:Ocean:showOcean',
+    'shading:Shading:showGlobeShading',
+    'country:Country:showCountries',
+    'graticule:Graticule:showGraticule',
+    'hideLand:Hide-Land:hideLand'
+].map((d)=>(d.split(':')));
+d3.select('.set-options').selectAll('label').data(checker).enter()
+    .append('button').text((d)=>(d[1])).attr('onclick',(d)=>(`buttonClick("${d.join(':')}")`));
+
+var options = {
+        // drawTick: 500,
+        hideLand: false,
+        showOcean: true,
+        showCountries: true,
+        showGraticule: true,
+        showGlobeShadow: true,
+        showGlobeShading: true,
+        globeHighlighted: true,
+        world: './d/world-110m.json',
+        places: './d/places.json',
+        ready: function() {
+            console.log(this);
+        }
+    };
+var p = earthjs(options);
 p.register(earthjs.plugins.configPlugin());
 // p.register(earthjs.plugins.placesPlugin());
 p.register(earthjs.plugins.autorotatePlugin(10));
 
-var shadowT = true;
-var shadowClick = function(e) {
-    shadowT = !shadowT;
-    p.fn.config({showGlobeShadow: shadowT});
-}
-var hilightT = true;
-var hilightClick = function(e) {
-    hilightT = !hilightT;
-    p.fn.config({globeHighlighted: hilightT});
-}
-var oceanT = true;
-var oceanClick = function(e) {
-    oceanT = !oceanT;
-    p.fn.config({showOcean: oceanT});
-}
-var countryT = true;
-var countryClick = function(e) {
-    countryT = !countryT;
-    p.fn.config({showCountries: countryT});
-}
-var shadingT = true;
-var shadingClick = function(e) {
-    shadingT = !shadingT;
-    p.fn.config({showGlobeShading: shadingT});
-}
-var graticuleT = true;
-var graticuleClick = function(e) {
-    graticuleT = !graticuleT;
-    p.fn.config({showGraticule: graticuleT});
-}
-var hideLandT = true;
-var hideLandClick = function(e) {
-    hideLandT = !hideLandT;
-    p.fn.config({hideLand: hideLandT});
+var buttonClick = function(str) {
+    var arr = str.split(':'),
+        key = arr[2],
+        resultx = {};
+    options[key] = !options[key];
+    resultx[key] =  options[key];
+    p.fn.config(resultx);
 }
 </script>
