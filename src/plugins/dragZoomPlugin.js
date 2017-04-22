@@ -30,7 +30,7 @@ earthjs.plugins.dragZoomPlugin = function() {
             var zoomSettings = d3.zoomIdentity.translate(0, 0).scale(planet.proj.scale());
             var rotateScale  = d3.scaleLinear()
                 .domain([-1500, 0, 1500])
-                .range([-80, 0, 80]);
+                .range([-250, 0, 250]);
 
             planet.svg
                 .call(zoom)

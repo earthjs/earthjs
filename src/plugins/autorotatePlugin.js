@@ -4,10 +4,11 @@ earthjs.plugins.autorotatePlugin = function(degPerSec) {
         name: 'autorotatePlugin',
         onInit(planet, options) {
             planet.degPerSec = degPerSec;
+            options.stop = false;
         },
         onInterval(planet, options) {
             var now = new Date();
-            if (planet.state.drag || !lastTick) {
+            if (planet.state.drag || options.stop || !lastTick) {
                 lastTick = now;
             } else {
                 var delta = now - lastTick;
@@ -24,10 +25,10 @@ earthjs.plugins.autorotatePlugin = function(degPerSec) {
             planet.degPerSec = degPerSec;
         },
         start(planet, options) {
-            planet.state.drag = false;
+            options.stop = false;
         },
         stop(planet, options) {
-            planet.state.drag = true;
+            options.stop = true;
         }
     };
 };

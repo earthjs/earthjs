@@ -46,6 +46,7 @@ var checker = [
     'country:Country:hideCountries',
     'places:Places:hidePlaces',
     'shadow:Shadow:hideGlobeShadow',
+    'stop:Stop:stop',
 ].map(function(d) {return d.split(':')});
 var opt = d3.select('.set-options');
 opt.selectAll('button').data(checker).enter().append('button')

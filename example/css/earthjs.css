@@ -13,11 +13,12 @@
     fill: rgb(117, 87, 57);
     opacity: 1;
 }
-/*.countries path:hover {
-    fill-opacity:.1;
+.countries path:hover {
+    /*fill-opacity:.1;*/
     stroke-width:1;
+    fill: rgb(187, 187, 27);
     opacity: 1;
-}*/
+}
 .countries path:not([d]),
 .points path:not([d]) {
     opacity: 0;
