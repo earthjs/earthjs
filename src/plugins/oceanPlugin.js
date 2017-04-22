@@ -12,9 +12,9 @@ earthjs.plugins.oceanPlugin = function(initOptions={}) {
             ocean_fill.append("stop")
                 .attr("offset", "100%")
                 .attr("stop-color", "#9ab");
-            planet.svg.append("circle")
-                .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
-                .attr("r",  planet.proj.scale())
+            planet.ocean = planet.svg.append("circle")
+                .attr("cx",planet.width / 2).attr("cy", planet.height / 2)
+                .attr("r", planet.proj.scale())
                 .attr("class", "ocean_fill_circle noclicks")
                 .style("fill", "url(#ocean_fill)");
         }
@@ -30,5 +30,10 @@ earthjs.plugins.oceanPlugin = function(initOptions={}) {
             Object.assign(options, initOptions);
             planet.addOcean = addOcean;
         },
+        onResize(planet, options) {
+            if (planet.ocean && !options.hideOcean) {
+                planet.ocean.attr("r", planet.proj.scale());
+            }
+        }
     }
 }

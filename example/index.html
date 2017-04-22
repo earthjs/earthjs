@@ -5,7 +5,7 @@
 <script src="./js/queue.v1.min.js"></script>
 <script src="./js/topojson.v1.min.js"></script>
 <script src="../src/earthjs.js"></script>
-<script src="../src/plugins/dragPlugin.js"></script>
+<script src="../src/plugins/dragZoomPlugin.js"></script>
 <script src="../src/plugins/oceanPlugin.js"></script>
 <script src="../src/plugins/configPlugin.js"></script>
 <script src="../src/plugins/graticulePlugin.js"></script>
@@ -17,7 +17,7 @@
 <svg id="earth"></svg>
 <script>
 var p = earthjs();
-p.register(earthjs.plugins.dragPlugin());
+p.register(earthjs.plugins.dragZoomPlugin());
 p.register(earthjs.plugins.oceanPlugin());
 p.register(earthjs.plugins.configPlugin());
 p.register(earthjs.plugins.graticulePlugin());

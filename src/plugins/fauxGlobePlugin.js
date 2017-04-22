@@ -34,7 +34,7 @@ earthjs.plugins.fauxGlobePlugin = function(initOptions={}) {
                 globe_shading.append("stop")
                   .attr("offset","100%").attr("stop-color", "#3e6184")
                   .attr("stop-opacity","0.3")
-            planet.svg.append("circle")
+            planet.globeShading = planet.svg.append("circle")
                 .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
                 .attr("r",  planet.proj.scale())
                 .attr("class","globe_shading_circle noclicks")
@@ -55,7 +55,7 @@ earthjs.plugins.fauxGlobePlugin = function(initOptions={}) {
                 globe_highlight.append("stop")
                   .attr("offset", "100%").attr("stop-color", "#ba9")
                   .attr("stop-opacity","0.2");
-            planet.svg.append("circle")
+            planet.globeHilight = planet.svg.append("circle")
                 .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
                 .attr("r",  planet.proj.scale())
                 .attr("class","globe_highlight_circle noclicks")
@@ -77,5 +77,13 @@ earthjs.plugins.fauxGlobePlugin = function(initOptions={}) {
             planet.addGlobeHilight = addGlobeHilight;
             planet.addGlobeShading = addGlobeShading;
         },
+        onResize(planet, options) {
+            if (planet.globeShading && !options.hideGlobeShading) {
+                planet.globeShading.attr("r", planet.proj.scale());
+            }
+            if (planet.globeHilight && !options.hideGlobeHilight) {
+                planet.globeHilight.attr("r", planet.proj.scale());
+            }
+        }
     }
 };

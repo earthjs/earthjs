@@ -1,6 +1,6 @@
 {
   "name": "earthjs",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "D3 Earth JS using SVG, build with plugins.",
   "main": "earthjs.js",
   "scripts": {
@@ -16,6 +16,7 @@
     "globe",
     "earth",
     "dataviz",
+    "orthographic",
     "visualization"
   ],
   "author": "Widi Harsojo",

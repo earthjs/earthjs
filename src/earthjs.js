@@ -6,14 +6,18 @@ window.earthjs = function(){
         options = Object.assign({
             select: '#earth',
             drawTick: 50,
-            height: 560,
-            width: 960,
+            height: 870,
+            width: 1700,
         }, options);
         var _ = {
-            onInterval: {},
+            onResize: {},
+            onResizeKeys: [],
+
             onRefresh: {},
-            onIntervalKeys: [],
             onRefreshKeys: [],
+
+            onInterval: {},
+            onIntervalKeys: [],
         };
         var svg  = d3.select(options.select).attr("width", options.width).attr("height", options.height);
         var proj = d3.geoOrthographic().scale(options.width / 4.1).translate([options.width / 2, options.height / 2]).precision(1);
@@ -29,7 +33,7 @@ window.earthjs = function(){
                 var fn = {};
                 planet[obj.name] = fn;
                 Object.keys(obj).map(function(name) {
-                    if (['onInterval', 'onRefresh', 'ready', 'json'].indexOf(name)===-1) {
+                    if (['onResize', 'onInterval', 'onRefresh', 'ready', 'json'].indexOf(name)===-1) {
                         if (typeof(obj[name])==='function') {
                             fn[name] = function() {
                                 var args = [].slice.call(arguments);
@@ -42,14 +46,9 @@ window.earthjs = function(){
                 if (obj.onInit) {
                     obj.onInit(planet, options);
                 }
-                if (obj.onInterval) {
-                    _.onInterval[obj.name] = obj.onInterval;
-                    _.onIntervalKeys = Object.keys(_.onInterval);
-                }
-                if (obj.onRefresh) {
-                    _.onRefresh[obj.name] = obj.onRefresh;
-                    _.onRefreshKeys = Object.keys(_.onRefresh);
-                }
+                qEvent(obj,'onResize');
+                qEvent(obj,'onRefresh');
+                qEvent(obj,'onInterval');
                 if (obj.json && obj.ready) {
                     queue().defer(d3.json, obj.json).await(function(err, data) {
                         obj.ready(planet, options, err, data);
@@ -59,6 +58,7 @@ window.earthjs = function(){
             }
         };
         //----------------------------------------
+        planet.resize = resize;
         planet.refresh = refresh;
         planet.recreateSvg = recreateSvg;
         planet.svgCreateOrder = [
@@ -83,6 +83,13 @@ window.earthjs = function(){
 
         return planet;
         //----------------------------------------
+        function qEvent(obj, qname) {
+            var qkey = qname+'Keys';
+            if (obj[qname]) {
+                _[qname][obj.name] = obj[qname];
+                _[qkey] = Object.keys(_[qname]);
+            }
+        }
 
         function recreateSvg(planet) {
             planet.svgCreateOrder.forEach(function(svgCreateKey) {
@@ -94,6 +101,14 @@ window.earthjs = function(){
             if (_.onRefreshKeys.length>0) {
                 _.onRefreshKeys.map(function(key, index) {
                     _.onRefresh[key](planet, options);
+                });
+            }
+        }
+
+        function resize(planet, options) {
+            if (_.onResizeKeys.length>0) {
+                _.onResizeKeys.map(function(key, index) {
+                    _.onResize[key](planet, options);
                 });
             }
         }
