@@ -1,6 +1,6 @@
-earthjs.plugins.dragZoomPlugin = function() {
+earthjs.plugins.zoomPlugin = function() {
     return {
-        name: 'dragZoomPlugin',
+        name: 'zoomPlugin',
         onInit(planet, options) {
             var zoom = d3.zoom()
                 .scaleExtent([planet.proj.scale(), 1000])

@@ -5,7 +5,7 @@
 <script src="./js/queue.v1.min.js"></script>
 <script src="./js/topojson.v1.min.js"></script>
 <script src="../src/earthjs.js"></script>
-<script src="../src/plugins/dragZoomPlugin.js"></script>
+<script src="../src/plugins/wheelZoomPlugin.js"></script>
 <script src="../src/plugins/oceanPlugin.js"></script>
 <script src="../src/plugins/configPlugin.js"></script>
 <script src="../src/plugins/graticulePlugin.js"></script>
@@ -17,7 +17,7 @@
 <svg id="earth"></svg>
 <script>
 var p = earthjs();
-p.register(earthjs.plugins.dragZoomPlugin());
+p.register(earthjs.plugins.wheelZoomPlugin());
 p.register(earthjs.plugins.oceanPlugin());
 p.register(earthjs.plugins.configPlugin());
 p.register(earthjs.plugins.graticulePlugin());
@@ -25,7 +25,8 @@ p.register(earthjs.plugins.fauxGlobePlugin());
 p.register(earthjs.plugins.autorotatePlugin(10));
 p.register(earthjs.plugins.placesPlugin('./d/places.json'));
 p.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
-p.draw();
+p.autorotatePlugin.stop();
+p.ticker();
 
 var options = {removeLand: true};
 var buttonClick = function(str) {

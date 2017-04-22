@@ -5,7 +5,6 @@ window.earthjs = function(){
     earthjs = function (options={}) {
         options = Object.assign({
             select: '#earth',
-            drawTick: 50,
             height: 870,
             width: 1700,
         }, options);
@@ -70,14 +69,18 @@ window.earthjs = function(){
             'addGraticule',
             'addPlaces',
         ];
-        planet.draw = function() {
+        planet.ticker = function(interval) {
+            if (!options.interval) {
+                interval = interval || 50;
+                options.interval = interval;
+            }
             setInterval(function(){
                 if (_.onIntervalKeys.length>0) {
                     _.onIntervalKeys.map(function(key, index) {
                         _.onInterval[key](planet, options);
                     });
                 }
-            }, options.drawTick);
+            }, options.interval);
             return planet;
         }
 
@@ -95,6 +98,7 @@ window.earthjs = function(){
             planet.svgCreateOrder.forEach(function(svgCreateKey) {
                 planet[svgCreateKey] && planet[svgCreateKey](planet, options);
             });
+            return planet;
         }
 
         function refresh(planet, options) {
@@ -103,6 +107,7 @@ window.earthjs = function(){
                     _.onRefresh[key](planet, options);
                 });
             }
+            return planet;
         }
 
         function resize(planet, options) {
@@ -111,6 +116,7 @@ window.earthjs = function(){
                     _.onResize[key](planet, options);
                 });
             }
+            return planet;
         }
     };
 
