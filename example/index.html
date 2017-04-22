@@ -5,6 +5,14 @@
 <script src="./js/queue.v1.min.js"></script>
 <script src="./js/topojson.v1.min.js"></script>
 <script src="../src/earthjs.js"></script>
+<script src="../src/plugins/dragPlugin.js"></script>
+<script src="../src/plugins/oceanPlugin.js"></script>
+<script src="../src/plugins/configPlugin.js"></script>
+<script src="../src/plugins/graticulePlugin.js"></script>
+<script src="../src/plugins/fauxGlobePlugin.js"></script>
+<script src="../src/plugins/autorotatePlugin.js"></script>
+<script src="../src/plugins/placesPlugin.js"></script>
+<script src="../src/plugins/worldPlugin.js"></script>
 <div class="set-options"></div>
 <svg id="earth"></svg>
 <script>
@@ -45,4 +53,6 @@ opt.selectAll('button').data(checker).enter().append('button')
     .attr('onclick', function(d) {
         return 'buttonClick("'+d.join(':')+'")';
     });
+
+// opt.selectAll('input').data([1]).enter().append('input');
 </script>
