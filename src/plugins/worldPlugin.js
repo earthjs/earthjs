@@ -1,9 +1,8 @@
 earthjs.plugins.worldPlugin = function(jsonUrl='./d/world-110m.json') {
     function addWorldOrCountries(planet, options) {
         if (!options.hideLand) {
-            planet.svg.selectAll('.land,.countries').remove();
+            planet.svg.selectAll('.land,.lakes,.countries').remove();
             if (planet._world) {
-                planet.svg.selectAll('.land,.countries').remove();
                 if (!options.hideCountries) {
                     planet.countries = planet.svg.append("g").attr("class","countries").selectAll("path")
                     .data(topojson.feature(planet._world, planet._world.objects.countries).features)
@@ -14,6 +13,10 @@ earthjs.plugins.worldPlugin = function(jsonUrl='./d/world-110m.json') {
                     .attr("class", "land")
                     .attr("d", planet.path);
                 }
+                planet.lakes = planet.svg.append("path")
+                .datum(topojson.feature(planet._world, planet._world.objects.ne_110m_lakes))
+                .attr("class", "lakes")
+                .attr("d", planet.path);
             }
         }
     }
@@ -37,6 +40,7 @@ earthjs.plugins.worldPlugin = function(jsonUrl='./d/world-110m.json') {
             } else {
                 planet.world.attr("d", planet.path);
             }
+            planet.lakes.attr("d", planet.path);
         }
     };
 };
