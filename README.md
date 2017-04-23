@@ -1,12 +1,12 @@
 # Earthjs
 D3 Earth JS
 
-earthjs.js is a javascript library for easy building orthographic of earth using D3.v4. This library was originally inspired by [planetary.js](https://github.com/BinaryMuse/planetary.js) and [Faux-3d Shaded Globe](http://bl.ocks.org/dwtkns/4686432). Both library & sample code  was created using early version of D3(v3).
+Earthjs.js is a javascript library for easy building earth orthographic. Originally inspired by [planetary.js](https://github.com/BinaryMuse/planetary.js) (canvas) and [Faux-3d Shaded Globe](http://bl.ocks.org/dwtkns/4686432) (svg) and it was created using early version of D3.v3.
 
-To make it easy of a new comer of D3.v4 use and build awesome orthographic globe, this library was created with plugins architecture.
+To make it easy for D3.v4 users to create (svg) orthographic globe, this library was created with plugins architecture in mind. Svg graphic components will be automatically created when user register the plugins.
 
-## Internal plugins
-Selected plugins bundled into earthjs.js library:
+## Internal Plugins
+Selected plugins bundled into library:
 
 * versorDragPlugin,
 * wheelZoomPlugin,
@@ -20,7 +20,7 @@ Selected plugins bundled into earthjs.js library:
 * countryTooltipPlugin
 
 ## Quick Start
-This sample need to run on the webserver, you can install [nodejs web-server](https://www.npmjs.com/package/http-server).
+This sample need to run on the webserver, you can use [nodejs web-server](https://www.npmjs.com/package/http-server) or [python simple http server](http://2ality.com/2014/06/simple-http-server.html).
 ```html
 <html>
 <head>
