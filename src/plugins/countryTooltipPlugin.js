@@ -1,13 +1,11 @@
-export default function(initOptions={}) {
+// KoGor’s Block http://bl.ocks.org/KoGor/5994804
+//
+export default function() {
     var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
-
-    initOptions = Object.assign({
-        hideCountryTooltip: false,
-    }, initOptions);
 
     return {
         name: 'countryTooltipPlugin',
-        onInit(planet, options) {
+        onInit(planet) {
             var originalAddCountries = planet.addCountries;
             planet.addCountries  = function(planet, options) {
                 originalAddCountries(planet, options)
@@ -21,11 +19,11 @@ export default function(initOptions={}) {
                     .style("display", "block")
                     .style("opacity", 1);
                 })
-                .on("mouseout", function(d) {
+                .on("mouseout", function() {
                     countryTooltip.style("opacity", 0)
                     .style("display", "none");
                 })
-                .on("mousemove", function(d) {
+                .on("mousemove", function() {
                     countryTooltip.style("left", (d3.event.pageX + 7) + "px")
                     .style("top", (d3.event.pageY - 15) + "px");
                 });

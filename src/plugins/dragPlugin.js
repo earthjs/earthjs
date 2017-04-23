@@ -1,4 +1,4 @@
-export default function(degPerSec) {
+export default function() {
     return {
         name: 'dragPlugin',
         onInit(planet, options) {

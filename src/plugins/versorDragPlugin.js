@@ -1,7 +1,12 @@
+// Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
+//
+import versorFn from '../versor.js';
+
+var versor = versorFn();
 export default function() {
     return {
         name: 'versorDragPlugin',
-        onInit(planet, options) {
+        onInit(planet) {
             planet.svg.call(d3.drag()
                 .on('start', dragstarted)
                 .on('end',   dragsended)

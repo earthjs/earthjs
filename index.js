@@ -9,8 +9,7 @@ import autorotatePlugin from './src/plugins/autorotatePlugin.js';
 import placesPlugin from './src/plugins/placesPlugin.js';
 import worldPlugin from './src/plugins/worldPlugin.js';
 import countryTooltipPlugin from './src/plugins/countryTooltipPlugin.js';
-
-app.plugins = {
+app.plugins= {
     versorDragPlugin,
     wheelZoomPlugin,
     oceanPlugin,
@@ -21,5 +20,5 @@ app.plugins = {
     placesPlugin,
     worldPlugin,
     countryTooltipPlugin
-}
+};
 export default app;

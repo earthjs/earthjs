@@ -1,3 +1,5 @@
+// Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
+//
 export default function(initOptions={}) {
     function addGlobeDropShadow(planet, options) {
         planet.svg.selectAll('#drop_shadow,.drop_shadow').remove();
@@ -14,8 +16,8 @@ export default function(initOptions={}) {
                   .attr("stop-opacity","0")
             planet.dropShadow = planet.svg.append("ellipse")
                   .attr("cx", planet.width/2).attr("cy", planet.height-50)
-                  .attr("rx", planet.proj.scale()*.90)
-                  .attr("ry", planet.proj.scale()*.25)
+                  .attr("rx", planet.proj.scale()*0.90)
+                  .attr("ry", planet.proj.scale()*0.25)
                   .attr("class", "drop_shadow noclicks")
                   .style("fill", "url(#drop_shadow)");
             planet.dropShadow;

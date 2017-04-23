@@ -5,6 +5,6 @@ export default {
   format: "umd",
   plugins: [node()],
   moduleName: "earthjs",
-  dest: "build/earthjs.js",
+  dest: "dist/earthjs.js",
   sourceMap: true
 };

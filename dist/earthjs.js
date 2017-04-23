@@ -56,7 +56,7 @@ var app$1 = function (options={}) {
                     var ext = data.split('.').pop();
                     q.defer(d3[ext], data);
                 });
-                q.await(function(err, data) {
+                q.await(function() {
                     var args = [].slice.call(arguments);
                     args.unshift(planet, options);
                     obj.ready.apply(null, args);
@@ -86,7 +86,7 @@ var app$1 = function (options={}) {
         }
         setInterval(function(){
             if (_.onIntervalKeys.length>0) {
-                _.onIntervalKeys.map(function(key, index) {
+                _.onIntervalKeys.map(function(key) {
                     _.onInterval[key](planet, options);
                 });
             }
@@ -126,7 +126,7 @@ var app$1 = function (options={}) {
 
     function refresh(planet, options) {
         if (_.onRefreshKeys.length>0) {
-            _.onRefreshKeys.map(function(key, index) {
+            _.onRefreshKeys.map(function(key) {
                 _.onRefresh[key](planet, options);
             });
         }
@@ -135,7 +135,7 @@ var app$1 = function (options={}) {
 
     function resize(planet, options) {
         if (_.onResizeKeys.length>0) {
-            _.onResizeKeys.map(function(key, index) {
+            _.onResizeKeys.map(function(key) {
                 _.onResize[key](planet, options);
             });
         }
@@ -143,10 +143,88 @@ var app$1 = function (options={}) {
     }
 };
 
+// Version 0.0.0. Copyright 2017 Mike Bostock.
+var versorFn = function() {
+    var acos = Math.acos,
+        asin = Math.asin,
+        atan2 = Math.atan2,
+        cos = Math.cos,
+        max = Math.max,
+        min = Math.min,
+        PI = Math.PI,
+        sin = Math.sin,
+        sqrt = Math.sqrt,
+        radians = PI / 180,
+        degrees = 180 / PI;
+
+    // Returns the unit quaternion for the given Euler rotation angles [λ, φ, γ].
+    function versor(e) {
+      var l = e[0] / 2 * radians, sl = sin(l), cl = cos(l), // λ / 2
+          p = e[1] / 2 * radians, sp = sin(p), cp = cos(p), // φ / 2
+          g = e[2] / 2 * radians, sg = sin(g), cg = cos(g); // γ / 2
+      return [
+        cl * cp * cg + sl * sp * sg,
+        sl * cp * cg - cl * sp * sg,
+        cl * sp * cg + sl * cp * sg,
+        cl * cp * sg - sl * sp * cg
+      ];
+    }
+
+    // Returns Cartesian coordinates [x, y, z] given spherical coordinates [λ, φ].
+    versor.cartesian = function(e) {
+      var l = e[0] * radians, p = e[1] * radians, cp = cos(p);
+      return [cp * cos(l), cp * sin(l), sin(p)];
+    };
+
+    // Returns the Euler rotation angles [λ, φ, γ] for the given quaternion.
+    versor.rotation = function(q) {
+      return [
+        atan2(2 * (q[0] * q[1] + q[2] * q[3]), 1 - 2 * (q[1] * q[1] + q[2] * q[2])) * degrees,
+        asin(max(-1, min(1, 2 * (q[0] * q[2] - q[3] * q[1])))) * degrees,
+        atan2(2 * (q[0] * q[3] + q[1] * q[2]), 1 - 2 * (q[2] * q[2] + q[3] * q[3])) * degrees
+      ];
+    };
+
+    // Returns the quaternion to rotate between two cartesian points on the sphere.
+    versor.delta = function(v0, v1) {
+      var w = cross(v0, v1), l = sqrt(dot(w, w));
+      if (!l) return [1, 0, 0, 0];
+      var t = acos(max(-1, min(1, dot(v0, v1)))) / 2, s = sin(t); // t = θ / 2
+      return [cos(t), w[2] / l * s, -w[1] / l * s, w[0] / l * s];
+    };
+
+    // Returns the quaternion that represents q0 * q1.
+    versor.multiply = function(q0, q1) {
+      return [
+        q0[0] * q1[0] - q0[1] * q1[1] - q0[2] * q1[2] - q0[3] * q1[3],
+        q0[0] * q1[1] + q0[1] * q1[0] + q0[2] * q1[3] - q0[3] * q1[2],
+        q0[0] * q1[2] - q0[1] * q1[3] + q0[2] * q1[0] + q0[3] * q1[1],
+        q0[0] * q1[3] + q0[1] * q1[2] - q0[2] * q1[1] + q0[3] * q1[0]
+      ];
+    };
+
+    function cross(v0, v1) {
+      return [
+        v0[1] * v1[2] - v0[2] * v1[1],
+        v0[2] * v1[0] - v0[0] * v1[2],
+        v0[0] * v1[1] - v0[1] * v1[0]
+      ];
+    }
+
+    function dot(v0, v1) {
+      return v0[0] * v1[0] + v0[1] * v1[1] + v0[2] * v1[2];
+    }
+
+    return versor;
+};
+
+// Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
+//
+var versor = versorFn();
 var versorDragPlugin = function() {
     return {
         name: 'versorDragPlugin',
-        onInit(planet, options) {
+        onInit(planet) {
             planet.svg.call(d3.drag()
                 .on('start', dragstarted)
                 .on('end',   dragsended)
@@ -180,7 +258,7 @@ var versorDragPlugin = function() {
 var wheelZoomPlugin = function() {
     return {
         name: 'wheelZoomPlugin',
-        onInit(planet, options) {
+        onInit(planet) {
             planet.svg.on('wheel', function() {
                 var y = d3.event.deltaY+ planet.proj.scale();
                 // var y = (y>=4 ? y/4 : y) + planet.proj.scale();
@@ -276,6 +354,8 @@ var graticulePlugin = function(initOptions={}) {
     }
 };
 
+// Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
+//
 var fauxGlobePlugin = function(initOptions={}) {
     function addGlobeDropShadow(planet, options) {
         planet.svg.selectAll('#drop_shadow,.drop_shadow').remove();
@@ -292,8 +372,8 @@ var fauxGlobePlugin = function(initOptions={}) {
                   .attr("stop-opacity","0");
             planet.dropShadow = planet.svg.append("ellipse")
                   .attr("cx", planet.width/2).attr("cy", planet.height-50)
-                  .attr("rx", planet.proj.scale()*.90)
-                  .attr("ry", planet.proj.scale()*.25)
+                  .attr("rx", planet.proj.scale()*0.90)
+                  .attr("ry", planet.proj.scale()*0.25)
                   .attr("class", "drop_shadow noclicks")
                   .style("fill", "url(#drop_shadow)");
             planet.dropShadow;
@@ -416,7 +496,7 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
         }
     }
 
-    function addPlacePoints(planet, options) {
+    function addPlacePoints(planet) {
         planet.placePoints = planet.svg.append("g").attr("class","points").selectAll("path")
             .data(planet._places.features).enter().append("path")
             .attr("class", "point")
@@ -424,7 +504,7 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
         return planet.placePoints;
     }
 
-    function addPlaceLabels(planet, options) {
+    function addPlaceLabels(planet) {
         planet.placeLabels = planet.svg.append("g").attr("class","labels").selectAll("text")
             .data(planet._places.features).enter().append("text")
             .attr("class", "label")
@@ -476,8 +556,8 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
 };
 
 var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
-    var countryClick = function(d) {
-        console.log(d);
+    var countryClick = function() {
+        // console.log(d);
     };
 
     function addWorldOrCountries(planet, options) {
@@ -494,7 +574,7 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         }
     }
 
-    function addCountries(planet, options) {
+    function addCountries(planet) {
         planet.countries = planet.svg.append("g").attr("class","countries").selectAll("path")
         .data(topojson.feature(planet._world, planet._world.objects.countries).features)
         .enter().append("path").attr("id",function(d) {return 'x'+d.id})
@@ -503,14 +583,14 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         return planet.countries;
     }
 
-    function addWorld(planet, options) {
+    function addWorld(planet) {
         planet.world = planet.svg.append("g").attr("class","land").append("path")
         .datum(topojson.feature(planet._world, planet._world.objects.land))
         .attr("d", planet.path);
         return planet.world;
     }
 
-    function addLakes(planet, options) {
+    function addLakes(planet) {
         planet.lakes = planet.svg.append("g").attr("class","lakes").append("path")
         .datum(topojson.feature(planet._world, planet._world.objects.ne_110m_lakes))
         .attr("d", planet.path);
@@ -551,16 +631,14 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
     };
 };
 
-var countryTooltipPlugin = function(initOptions={}) {
+// KoGor’s Block http://bl.ocks.org/KoGor/5994804
+//
+var countryTooltipPlugin = function() {
     var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
-
-    initOptions = Object.assign({
-        hideCountryTooltip: false,
-    }, initOptions);
 
     return {
         name: 'countryTooltipPlugin',
-        onInit(planet, options) {
+        onInit(planet) {
             var originalAddCountries = planet.addCountries;
             planet.addCountries  = function(planet, options) {
                 originalAddCountries(planet, options)
@@ -574,11 +652,11 @@ var countryTooltipPlugin = function(initOptions={}) {
                     .style("display", "block")
                     .style("opacity", 1);
                 })
-                .on("mouseout", function(d) {
+                .on("mouseout", function() {
                     countryTooltip.style("opacity", 0)
                     .style("display", "none");
                 })
-                .on("mousemove", function(d) {
+                .on("mousemove", function() {
                     countryTooltip.style("left", (d3.event.pageX + 7) + "px")
                     .style("top", (d3.event.pageY - 15) + "px");
                 });
@@ -588,7 +666,7 @@ var countryTooltipPlugin = function(initOptions={}) {
     }
 };
 
-app$1.plugins = {
+app$1.plugins= {
     versorDragPlugin,
     wheelZoomPlugin,
     oceanPlugin,

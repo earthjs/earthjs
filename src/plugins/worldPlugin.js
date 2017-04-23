@@ -1,6 +1,6 @@
 export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
-    var countryClick = function(d) {
-        console.log(d);
+    var countryClick = function() {
+        // console.log(d);
     }
 
     function addWorldOrCountries(planet, options) {
@@ -17,7 +17,7 @@ export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         }
     }
 
-    function addCountries(planet, options) {
+    function addCountries(planet) {
         planet.countries = planet.svg.append("g").attr("class","countries").selectAll("path")
         .data(topojson.feature(planet._world, planet._world.objects.countries).features)
         .enter().append("path").attr("id",function(d) {return 'x'+d.id})
@@ -26,14 +26,14 @@ export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         return planet.countries;
     }
 
-    function addWorld(planet, options) {
+    function addWorld(planet) {
         planet.world = planet.svg.append("g").attr("class","land").append("path")
         .datum(topojson.feature(planet._world, planet._world.objects.land))
         .attr("d", planet.path);
         return planet.world;
     }
 
-    function addLakes(planet, options) {
+    function addLakes(planet) {
         planet.lakes = planet.svg.append("g").attr("class","lakes").append("path")
         .datum(topojson.feature(planet._world, planet._world.objects.ne_110m_lakes))
         .attr("d", planet.path);

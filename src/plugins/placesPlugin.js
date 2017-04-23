@@ -10,7 +10,7 @@ export default function(jsonUrl='./d/places.json') {
         }
     }
 
-    function addPlacePoints(planet, options) {
+    function addPlacePoints(planet) {
         planet.placePoints = planet.svg.append("g").attr("class","points").selectAll("path")
             .data(planet._places.features).enter().append("path")
             .attr("class", "point")
@@ -18,7 +18,7 @@ export default function(jsonUrl='./d/places.json') {
         return planet.placePoints;
     }
 
-    function addPlaceLabels(planet, options) {
+    function addPlaceLabels(planet) {
         planet.placeLabels = planet.svg.append("g").attr("class","labels").selectAll("text")
             .data(planet._places.features).enter().append("text")
             .attr("class", "label")
@@ -46,7 +46,7 @@ export default function(jsonUrl='./d/places.json') {
             .style("display", function(d) {
                 return d3.geoDistance(d.geometry.coordinates, centerPos) > 1.57 ? 'none' : 'inline';
             });
-    };
+    }
 
     return {
         name: 'placesPlugin',

@@ -50,7 +50,7 @@ export default function (options={}) {
                     var ext = data.split('.').pop();
                     q.defer(d3[ext], data);
                 });
-                q.await(function(err, data) {
+                q.await(function() {
                     var args = [].slice.call(arguments);
                     args.unshift(planet, options);
                     obj.ready.apply(null, args);
@@ -80,7 +80,7 @@ export default function (options={}) {
         }
         setInterval(function(){
             if (_.onIntervalKeys.length>0) {
-                _.onIntervalKeys.map(function(key, index) {
+                _.onIntervalKeys.map(function(key) {
                     _.onInterval[key](planet, options);
                 });
             }
@@ -120,7 +120,7 @@ export default function (options={}) {
 
     function refresh(planet, options) {
         if (_.onRefreshKeys.length>0) {
-            _.onRefreshKeys.map(function(key, index) {
+            _.onRefreshKeys.map(function(key) {
                 _.onRefresh[key](planet, options);
             });
         }
@@ -129,7 +129,7 @@ export default function (options={}) {
 
     function resize(planet, options) {
         if (_.onResizeKeys.length>0) {
-            _.onResizeKeys.map(function(key, index) {
+            _.onResizeKeys.map(function(key) {
                 _.onResize[key](planet, options);
             });
         }

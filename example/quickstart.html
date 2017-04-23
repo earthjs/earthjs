@@ -1,0 +1,33 @@
+<html>
+<head>
+  <script type='text/javascript' src='http://d3js.org/d3.v4.min.js'></script>
+  <script type='text/javascript' src="http://d3js.org/queue.v1.min.js"></script>
+  <script type='text/javascript' src='http://d3js.org/topojson.v1.min.js'></script>
+  <script type='text/javascript' src='../dist/earthjs.min.js'></script>
+  <style media="screen">
+  .countries path {
+      stroke: rgb(80, 64, 39);
+      stroke-linejoin: round;
+      stroke-width: 1.5;
+      fill: rgb(117, 87, 57);
+      opacity: 1;
+  }
+  .graticule path {
+      fill: none;
+      stroke: black;
+      stroke-width:.5;
+      opacity:.2;
+  }
+  </style>
+</head>
+<body>
+  <svg id="earth"></svg>
+  <script>
+    var p = earthjs({width: 250, height: 250});
+    p.register(earthjs.plugins.graticulePlugin());
+    p.register(earthjs.plugins.autorotatePlugin(10));
+    p.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
+    p.ticker();
+  </script>
+</body>
+</html>

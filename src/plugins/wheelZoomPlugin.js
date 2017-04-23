@@ -1,7 +1,7 @@
 export default function() {
     return {
         name: 'wheelZoomPlugin',
-        onInit(planet, options) {
+        onInit(planet) {
             planet.svg.on('wheel', function() {
                 var y = d3.event.deltaY+ planet.proj.scale();
                 // var y = (y>=4 ? y/4 : y) + planet.proj.scale();
