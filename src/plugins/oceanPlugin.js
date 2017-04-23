@@ -17,6 +17,7 @@ earthjs.plugins.oceanPlugin = function(initOptions={}) {
                 .attr("r", planet.proj.scale())
                 .attr("class", "ocean noclicks")
                 .style("fill", "url(#ocean)");
+            return planet.ocean;
         }
     }
 

@@ -40,3 +40,15 @@
     opacity:.6;
     fill: #A80;
 }
+.countryTooltip {
+    background: #fff;
+    border: solid #ccc 1px;
+    color: #666;
+    display: none;
+    font-family: sans-serif;
+    font-size: 14px;
+    padding: 5px;
+    pointer-events: none;
+    position: absolute;
+    text-align: left;
+}

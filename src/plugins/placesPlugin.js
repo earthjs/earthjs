@@ -3,21 +3,33 @@ earthjs.plugins.placesPlugin = function(jsonUrl='./d/places.json') {
         planet.svg.selectAll('.points,.labels').remove();
         if (planet._places) {
             if (options.places && !options.hidePlaces) {
-                planet.points = planet.svg.append("g").attr("class","points").selectAll("text").data(planet._places.features).enter().append("path")
-                    .attr("class", "point")
-                    .attr("d", planet.path);
-                planet.labels = planet.svg.append("g").attr("class","labels").selectAll("text").data(planet._places.features).enter().append("text")
-                    .attr("class", "label")
-                    .text(function(d) { return d.properties.name });
+                addPlacePoints(planet, options);
+                addPlaceLabels(planet, options);
                 position_labels(planet);
             }
         }
     }
 
+    function addPlacePoints(planet, options) {
+        planet.placePoints = planet.svg.append("g").attr("class","points").selectAll("path")
+            .data(planet._places.features).enter().append("path")
+            .attr("class", "point")
+            .attr("d", planet.path);
+        return planet.placePoints;
+    }
+
+    function addPlaceLabels(planet, options) {
+        planet.placeLabels = planet.svg.append("g").attr("class","labels").selectAll("text")
+            .data(planet._places.features).enter().append("text")
+            .attr("class", "label")
+            .text(function(d) { return d.properties.name });
+        return planet.placeLabels;
+    }
+
     function position_labels(planet) {
         var centerPos = planet.proj.invert([planet.width / 2, planet.height/2]);
 
-        planet.svg.selectAll(".label")
+        planet.placeLabels
             .attr("text-anchor",function(d) {
                 var x = planet.proj(d.geometry.coordinates)[0];
                 return x < planet.width/2-20 ? "end" :
@@ -49,8 +61,8 @@ earthjs.plugins.placesPlugin = function(jsonUrl='./d/places.json') {
             planet.addPlaces = addPlaces;
         },
         onRefresh(planet, options) {
-            if (planet.points && options.places && options.places) {
-                planet.points.attr("d", planet.path);
+            if (planet.placePoints && options.places) {
+                planet.placePoints.attr("d", planet.path);
                 position_labels(planet);
             }
         }

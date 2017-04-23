@@ -3,9 +3,10 @@ earthjs.plugins.graticulePlugin = function(initOptions={}) {
         planet.svg.selectAll('.graticule').remove();
         if (!options.hideGraticule) {
             planet.graticule = planet.svg.append("g").attr("class","graticule").append("path")
-            .datum(planet.datumGraticule)
-            .attr("class", "noclicks")
-            .attr("d", planet.path);
+                .datum(planet.datumGraticule)
+                .attr("class", "noclicks")
+                .attr("d", planet.path);
+            return planet.graticule;
         }
     }
 

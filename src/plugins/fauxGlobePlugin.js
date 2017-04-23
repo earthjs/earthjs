@@ -12,12 +12,13 @@ earthjs.plugins.fauxGlobePlugin = function(initOptions={}) {
                 drop_shadow.append("stop")
                   .attr("offset","100%").attr("stop-color", "#000")
                   .attr("stop-opacity","0")
-            planet.svg.append("ellipse")
+            planet.dropShadow = planet.svg.append("ellipse")
                   .attr("cx", planet.width/2).attr("cy", planet.height-50)
                   .attr("rx", planet.proj.scale()*.90)
                   .attr("ry", planet.proj.scale()*.25)
                   .attr("class", "drop_shadow noclicks")
                   .style("fill", "url(#drop_shadow)");
+            planet.dropShadow;
         }
     }
 
@@ -39,6 +40,7 @@ earthjs.plugins.fauxGlobePlugin = function(initOptions={}) {
                 .attr("r",  planet.proj.scale())
                 .attr("class","globe_shading noclicks")
                 .style("fill", "url(#globe_shading)");
+            return planet.globeShading;
         }
     }
 
@@ -60,6 +62,7 @@ earthjs.plugins.fauxGlobePlugin = function(initOptions={}) {
                 .attr("r",  planet.proj.scale())
                 .attr("class","globe_hilight noclicks")
                 .style("fill", "url(#globe_hilight)");
+            return planet.globeHilight;
         }
     }
 

@@ -15,6 +15,7 @@
 <script src="../src/plugins/autorotatePlugin.js"></script>
 <script src="../src/plugins/placesPlugin.js"></script>
 <script src="../src/plugins/worldPlugin.js"></script>
+<script src="../src/plugins/countryTooltipPlugin.js"></script>
 <div class="set-options"></div>
 <svg id="earth"></svg>
 <script>
@@ -27,7 +28,8 @@ p.register(earthjs.plugins.oceanPlugin());
 p.register(earthjs.plugins.graticulePlugin());
 p.register(earthjs.plugins.fauxGlobePlugin());
 p.register(earthjs.plugins.placesPlugin('./d/places.json'));
-p.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
+p.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
+p.register(earthjs.plugins.countryTooltipPlugin());
 p.ticker().autorotatePlugin.stop();
 
 var options = {removeLand: true};
