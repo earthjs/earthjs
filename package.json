@@ -1,11 +1,11 @@
 {
   "name": "earthjs",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "D3 Earth JS using SVG, build with plugins.",
   "main": "earthjs.js",
   "scripts": {
     "test": "tape 'test/**/*-test.js' && mkdir -p test/output && eslint src",
-    "mini": "uglifyjs src/earthjs.js -c negate_iife=false -m -o build/earthjs.min.js"
+    "build": "rollup -c && uglifyjs build/earthjs.js -c -m -o build/earthjs.min.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,8 @@
     "url": "https://github.com/earthjs/earthjs/issues"
   },
   "devDependencies": {
+    "rollup": "^0.41.6",
+    "rollup-plugin-node-resolve": "^3.0.0",
     "tape": "^4.6.3",
     "uglify-js": "github:mishoo/UglifyJS2#harmony"
   }

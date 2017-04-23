@@ -1,4 +1,4 @@
-earthjs.plugins.oceanPlugin = function(initOptions={}) {
+export default function(initOptions={}) {
     function addOcean(planet, options) {
         planet.svg.selectAll('#ocean,.ocean').remove();
         if (!options.hideOcean) {

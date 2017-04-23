@@ -1,4 +1,4 @@
-earthjs.plugins.versorDragPlugin = function() {
+export default function() {
     return {
         name: 'versorDragPlugin',
         onInit(planet, options) {
@@ -30,4 +30,4 @@ earthjs.plugins.versorDragPlugin = function() {
             }
         }
     }
-};
+}

@@ -1,4 +1,4 @@
-earthjs.plugins.autorotatePlugin = function(degPerSec) {
+export default function(degPerSec) {
     var lastTick = null;
     return {
         name: 'autorotatePlugin',
@@ -31,4 +31,4 @@ earthjs.plugins.autorotatePlugin = function(degPerSec) {
             options.stop = true;
         }
     };
-};
+}

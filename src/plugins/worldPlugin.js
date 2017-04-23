@@ -1,4 +1,8 @@
-earthjs.plugins.worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
+export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
+    var countryClick = function(d) {
+        console.log(d);
+    }
+
     function addWorldOrCountries(planet, options) {
         planet.svg.selectAll('.land,.lakes,.countries').remove();
         if (!options.hideLand) {
@@ -17,6 +21,7 @@ earthjs.plugins.worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCount
         planet.countries = planet.svg.append("g").attr("class","countries").selectAll("path")
         .data(topojson.feature(planet._world, planet._world.objects.countries).features)
         .enter().append("path").attr("id",function(d) {return 'x'+d.id})
+        .on('click', countryClick)
         .attr("d", planet.path);
         return planet.countries;
     }
@@ -67,4 +72,4 @@ earthjs.plugins.worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCount
             }
         }
     };
-};
+}

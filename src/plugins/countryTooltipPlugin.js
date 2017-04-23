@@ -1,4 +1,4 @@
-earthjs.plugins.countryTooltipPlugin = function(initOptions={}) {
+export default function(initOptions={}) {
     var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
 
     initOptions = Object.assign({
@@ -20,7 +20,6 @@ earthjs.plugins.countryTooltipPlugin = function(initOptions={}) {
                     .style("top", (d3.event.pageY - 15) + "px")
                     .style("display", "block")
                     .style("opacity", 1);
-                    console.log('draw tooltip');
                 })
                 .on("mouseout", function(d) {
                     countryTooltip.style("opacity", 0)

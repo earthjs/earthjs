@@ -1,4 +1,4 @@
-earthjs.plugins.placesPlugin = function(jsonUrl='./d/places.json') {
+export default function(jsonUrl='./d/places.json') {
     function addPlaces(planet, options) {
         planet.svg.selectAll('.points,.labels').remove();
         if (planet._places) {
@@ -67,4 +67,4 @@ earthjs.plugins.placesPlugin = function(jsonUrl='./d/places.json') {
             }
         }
     };
-};
+}

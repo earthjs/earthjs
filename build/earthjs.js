@@ -1,0 +1,607 @@
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.earthjs = factory());
+}(this, (function () { 'use strict';
+
+var app$1 = function (options={}) {
+    options = Object.assign({
+        select: '#earth',
+        height: 870,
+        width: 1700,
+    }, options);
+    var _ = {
+        onResize: {},
+        onResizeKeys: [],
+
+        onRefresh: {},
+        onRefreshKeys: [],
+
+        onInterval: {},
+        onIntervalKeys: [],
+    };
+    var svg  = d3.select(options.select).attr("width", options.width).attr("height", options.height);
+    var proj = d3.geoOrthographic().scale(options.width / 4.1).translate([options.width / 2, options.height / 2]).precision(0.1);
+    var path = d3.geoPath().projection(proj);
+    var planet = {
+        svg,
+        proj,
+        path,
+        state: {drag: false},
+        width: options.width,
+        height: options.height,
+        register: function(obj) {
+            var fn = {};
+            planet[obj.name] = fn;
+            Object.keys(obj).map(function(name) {
+                if (['onResize', 'onInterval', 'onRefresh', 'ready', 'data'].indexOf(name)===-1) {
+                    if (typeof(obj[name])==='function') {
+                        fn[name] = function() {
+                            var args = [].slice.call(arguments);
+                            args.unshift(planet, options);
+                            obj[name].apply(null, args);
+                        };
+                    }
+                }
+            });
+            if (obj.onInit) {
+                obj.onInit(planet, options);
+            }
+            qEvent(obj,'onResize');
+            qEvent(obj,'onRefresh');
+            qEvent(obj,'onInterval');
+            if (obj.data && obj.ready) {
+                var q = queue();
+                obj.data.forEach(function(data) {
+                    var ext = data.split('.').pop();
+                    q.defer(d3[ext], data);
+                });
+                q.await(function(err, data) {
+                    var args = [].slice.call(arguments);
+                    args.unshift(planet, options);
+                    obj.ready.apply(null, args);
+                });
+            }
+            return planet;
+        }
+    };
+    planet.defs = planet.svg.append("defs");
+    //----------------------------------------
+    planet.resize = resize;
+    planet.refresh = refresh;
+    planet.recreateSvg = recreateSvg;
+    planet.svgCreateOrder = [
+        'addGlobeDropShadow',
+        'addOcean',
+        'addGlobeShading',
+        'addWorldOrCountries',
+        'addGlobeHilight',
+        'addGraticule',
+        'addPlaces',
+    ];
+    planet.ticker = function(interval) {
+        if (!options.interval) {
+            interval = interval || 50;
+            options.interval = interval;
+        }
+        setInterval(function(){
+            if (_.onIntervalKeys.length>0) {
+                _.onIntervalKeys.map(function(key, index) {
+                    _.onInterval[key](planet, options);
+                });
+            }
+        }, options.interval);
+        return planet;
+    };
+    //----------------------------------------
+    // Helper
+    planet.scale = function(y) {
+        planet.proj.scale(y);
+        planet.resize(planet, options);
+        planet.refresh(planet, options);
+        return planet;
+    };
+
+    planet.rotate = function(r) {
+        planet.proj.rotate(r);
+        planet.refresh(planet, options);
+        return planet;
+    };
+    return planet;
+    //----------------------------------------
+    function qEvent(obj, qname) {
+        var qkey = qname+'Keys';
+        if (obj[qname]) {
+            _[qname][obj.name] = obj[qname];
+            _[qkey] = Object.keys(_[qname]);
+        }
+    }
+
+    function recreateSvg(planet) {
+        planet.svgCreateOrder.forEach(function(svgCreateKey) {
+            planet[svgCreateKey] && planet[svgCreateKey](planet, options);
+        });
+        return planet;
+    }
+
+    function refresh(planet, options) {
+        if (_.onRefreshKeys.length>0) {
+            _.onRefreshKeys.map(function(key, index) {
+                _.onRefresh[key](planet, options);
+            });
+        }
+        return planet;
+    }
+
+    function resize(planet, options) {
+        if (_.onResizeKeys.length>0) {
+            _.onResizeKeys.map(function(key, index) {
+                _.onResize[key](planet, options);
+            });
+        }
+        return planet;
+    }
+};
+
+var versorDragPlugin = function() {
+    return {
+        name: 'versorDragPlugin',
+        onInit(planet, options) {
+            planet.svg.call(d3.drag()
+                .on('start', dragstarted)
+                .on('end',   dragsended)
+                .on('drag',  dragged));
+
+            var v0, // Mouse position in Cartesian coordinates at start of drag gesture.
+                r0, // Projection rotation as Euler angles at start.
+                q0; // Projection rotation as versor at start.
+
+            function dragstarted() {
+                planet.state.drag = true;
+                v0 = versor.cartesian(planet.proj.invert(d3.mouse(this)));
+                r0 = planet.proj.rotate();
+                q0 = versor(r0);
+            }
+
+            function dragsended() {
+                planet.state.drag = false;
+            }
+
+            function dragged() {
+                var v1 = versor.cartesian(planet.proj.rotate(r0).invert(d3.mouse(this))),
+                    q1 = versor.multiply(q0, versor.delta(v0, v1)),
+                    r1 = versor.rotation(q1);
+                planet.rotate(r1);
+            }
+        }
+    }
+};
+
+var wheelZoomPlugin = function() {
+    return {
+        name: 'wheelZoomPlugin',
+        onInit(planet, options) {
+            planet.svg.on('wheel', function() {
+                var y = d3.event.deltaY+ planet.proj.scale();
+                // var y = (y>=4 ? y/4 : y) + planet.proj.scale();
+                if (y>230 && y<1000) {
+                    planet.scale(y);
+                }
+            });
+        }
+    }
+};
+
+var oceanPlugin = function(initOptions={}) {
+    function addOcean(planet, options) {
+        planet.svg.selectAll('#ocean,.ocean').remove();
+        if (!options.hideOcean) {
+            var ocean_fill = planet.defs.append("radialGradient")
+                .attr("id", "ocean")
+                .attr("cx", "75%")
+                .attr("cy", "25%");
+            ocean_fill.append("stop")
+                .attr("offset", "5%")
+                .attr("stop-color", "#ddf");
+            ocean_fill.append("stop")
+                .attr("offset", "100%")
+                .attr("stop-color", "#9ab");
+            planet.ocean = planet.svg.append("circle")
+                .attr("cx",planet.width / 2).attr("cy", planet.height / 2)
+                .attr("r", planet.proj.scale())
+                .attr("class", "ocean noclicks")
+                .style("fill", "url(#ocean)");
+            return planet.ocean;
+        }
+    }
+
+    initOptions = Object.assign({
+        hideOcean: false,
+    }, initOptions);
+
+    return {
+        name: 'oceanPlugin',
+        onInit(planet, options) {
+            Object.assign(options, initOptions);
+            planet.addOcean = addOcean;
+        },
+        onResize(planet, options) {
+            if (planet.ocean && !options.hideOcean) {
+                planet.ocean.attr("r", planet.proj.scale());
+            }
+        }
+    }
+};
+
+var configPlugin = function() {
+    return {
+        name: 'configPlugin',
+        set(planet, options, newOpt={}) {
+            Object.assign(options, newOpt);
+            planet.state.drag = true;
+            planet.recreateSvg(planet);
+            planet.state.drag = false;
+        }
+    }
+};
+
+var graticulePlugin = function(initOptions={}) {
+    function addGraticule(planet, options) {
+        planet.svg.selectAll('.graticule').remove();
+        if (!options.hideGraticule) {
+            planet.graticule = planet.svg.append("g").attr("class","graticule").append("path")
+                .datum(planet.datumGraticule)
+                .attr("class", "noclicks")
+                .attr("d", planet.path);
+            return planet.graticule;
+        }
+    }
+
+    initOptions = Object.assign({
+        hideGraticule: false,
+    }, initOptions);
+
+    return {
+        name: 'graticulePlugin',
+        onInit(planet, options) {
+            planet.datumGraticule = d3.geoGraticule();
+            Object.assign(options, initOptions);
+            planet.addGraticule = addGraticule;
+        },
+        onRefresh(planet, options) {
+            if (planet.graticule && !options.hideGraticule) {
+                planet.graticule.attr("d", planet.path);
+            }
+        },
+    }
+};
+
+var fauxGlobePlugin = function(initOptions={}) {
+    function addGlobeDropShadow(planet, options) {
+        planet.svg.selectAll('#drop_shadow,.drop_shadow').remove();
+        if (!options.hideGlobeShadow) {
+            var drop_shadow = planet.defs.append("radialGradient")
+                  .attr("id", "drop_shadow")
+                  .attr("cx", "50%")
+                  .attr("cy", "50%");
+                drop_shadow.append("stop")
+                  .attr("offset","20%").attr("stop-color", "#000")
+                  .attr("stop-opacity",".5");
+                drop_shadow.append("stop")
+                  .attr("offset","100%").attr("stop-color", "#000")
+                  .attr("stop-opacity","0");
+            planet.dropShadow = planet.svg.append("ellipse")
+                  .attr("cx", planet.width/2).attr("cy", planet.height-50)
+                  .attr("rx", planet.proj.scale()*.90)
+                  .attr("ry", planet.proj.scale()*.25)
+                  .attr("class", "drop_shadow noclicks")
+                  .style("fill", "url(#drop_shadow)");
+            planet.dropShadow;
+        }
+    }
+
+    function addGlobeShading(planet, options) {
+        planet.svg.selectAll('#globe_shading,.globe_shading').remove();
+        if (!options.hideGlobeShading) {
+            var globe_shading = planet.defs.append("radialGradient")
+                  .attr("id", "globe_shading")
+                  .attr("cx", "50%")
+                  .attr("cy", "40%");
+                globe_shading.append("stop")
+                  .attr("offset","50%").attr("stop-color", "#9ab")
+                  .attr("stop-opacity","0");
+                globe_shading.append("stop")
+                  .attr("offset","100%").attr("stop-color", "#3e6184")
+                  .attr("stop-opacity","0.3");
+            planet.globeShading = planet.svg.append("circle")
+                .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
+                .attr("r",  planet.proj.scale())
+                .attr("class","globe_shading noclicks")
+                .style("fill", "url(#globe_shading)");
+            return planet.globeShading;
+        }
+    }
+
+    function addGlobeHilight(planet, options) {
+        planet.svg.selectAll('#globe_hilight,.globe_hilight').remove();
+        if (!options.hideGlobeHilight) {
+            var globe_highlight = planet.defs.append("radialGradient")
+                  .attr("id", "globe_hilight")
+                  .attr("cx", "75%")
+                  .attr("cy", "25%");
+                globe_highlight.append("stop")
+                  .attr("offset", "5%").attr("stop-color", "#ffd")
+                  .attr("stop-opacity","0.6");
+                globe_highlight.append("stop")
+                  .attr("offset", "100%").attr("stop-color", "#ba9")
+                  .attr("stop-opacity","0.2");
+            planet.globeHilight = planet.svg.append("circle")
+                .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
+                .attr("r",  planet.proj.scale())
+                .attr("class","globe_hilight noclicks")
+                .style("fill", "url(#globe_hilight)");
+            return planet.globeHilight;
+        }
+    }
+
+    initOptions = Object.assign({
+        hideGlobeShadow: false,
+        hideGlobeShading: false,
+        hideGlobeHilight: false,
+    }, initOptions);
+
+    return {
+        name: 'fauxGlobePlugin',
+        onInit(planet, options) {
+            Object.assign(options, initOptions);
+            planet.addGlobeDropShadow = addGlobeDropShadow;
+            planet.addGlobeHilight = addGlobeHilight;
+            planet.addGlobeShading = addGlobeShading;
+        },
+        onResize(planet, options) {
+            if (planet.globeShading && !options.hideGlobeShading) {
+                planet.globeShading.attr("r", planet.proj.scale());
+            }
+            if (planet.globeHilight && !options.hideGlobeHilight) {
+                planet.globeHilight.attr("r", planet.proj.scale());
+            }
+        }
+    }
+};
+
+var autorotatePlugin = function(degPerSec) {
+    var lastTick = null;
+    return {
+        name: 'autorotatePlugin',
+        onInit(planet, options) {
+            planet.degPerSec = degPerSec;
+            options.stop = false;
+        },
+        onInterval(planet, options) {
+            var now = new Date();
+            if (planet.state.drag || options.stop || !lastTick) {
+                lastTick = now;
+            } else {
+                var delta = now - lastTick;
+                var rotation = planet.proj.rotate();
+                rotation[0] += planet.degPerSec * delta / 1000;
+                if (rotation[0] >= 180)
+                    rotation[0] -= 360;
+                planet.proj.rotate(rotation);
+                planet.refresh(planet, options);
+                lastTick = now;
+            }
+        },
+        speed(planet, options, degPerSec) {
+            planet.degPerSec = degPerSec;
+        },
+        start(planet, options) {
+            options.stop = false;
+        },
+        stop(planet, options) {
+            options.stop = true;
+        }
+    };
+};
+
+var placesPlugin = function(jsonUrl='./d/places.json') {
+    function addPlaces(planet, options) {
+        planet.svg.selectAll('.points,.labels').remove();
+        if (planet._places) {
+            if (options.places && !options.hidePlaces) {
+                addPlacePoints(planet, options);
+                addPlaceLabels(planet, options);
+                position_labels(planet);
+            }
+        }
+    }
+
+    function addPlacePoints(planet, options) {
+        planet.placePoints = planet.svg.append("g").attr("class","points").selectAll("path")
+            .data(planet._places.features).enter().append("path")
+            .attr("class", "point")
+            .attr("d", planet.path);
+        return planet.placePoints;
+    }
+
+    function addPlaceLabels(planet, options) {
+        planet.placeLabels = planet.svg.append("g").attr("class","labels").selectAll("text")
+            .data(planet._places.features).enter().append("text")
+            .attr("class", "label")
+            .text(function(d) { return d.properties.name });
+        return planet.placeLabels;
+    }
+
+    function position_labels(planet) {
+        var centerPos = planet.proj.invert([planet.width / 2, planet.height/2]);
+
+        planet.placeLabels
+            .attr("text-anchor",function(d) {
+                var x = planet.proj(d.geometry.coordinates)[0];
+                return x < planet.width/2-20 ? "end" :
+                       x < planet.width/2+20 ? "middle" :
+                       "start"
+            })
+            .attr("transform", function(d) {
+                var loc = planet.proj(d.geometry.coordinates),
+                    x = loc[0],
+                    y = loc[1];
+                var offset = x < planet.width/2 ? -5 : 5;
+                return "translate(" + (x+offset) + "," + (y-2) + ")"
+            })
+            .style("display", function(d) {
+                return d3.geoDistance(d.geometry.coordinates, centerPos) > 1.57 ? 'none' : 'inline';
+            });
+    }
+
+    return {
+        name: 'placesPlugin',
+        data: [jsonUrl],
+        ready(planet, options, err, places) {
+            planet._places = places;
+            planet.recreateSvg(planet);
+        },
+        onInit(planet, options) {
+            options.places = true;
+            options.hidePlaces = false;
+            planet.addPlaces = addPlaces;
+        },
+        onRefresh(planet, options) {
+            if (planet.placePoints && options.places) {
+                planet.placePoints.attr("d", planet.path);
+                position_labels(planet);
+            }
+        }
+    };
+};
+
+var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
+    var countryClick = function(d) {
+        console.log(d);
+    };
+
+    function addWorldOrCountries(planet, options) {
+        planet.svg.selectAll('.land,.lakes,.countries').remove();
+        if (!options.hideLand) {
+            if (planet._world) {
+                if (!options.hideCountries) {
+                    planet.addCountries(planet, options);
+                } else {
+                    planet.addWorld(planet, options);
+                }
+                planet.addLakes(planet, options);
+            }
+        }
+    }
+
+    function addCountries(planet, options) {
+        planet.countries = planet.svg.append("g").attr("class","countries").selectAll("path")
+        .data(topojson.feature(planet._world, planet._world.objects.countries).features)
+        .enter().append("path").attr("id",function(d) {return 'x'+d.id})
+        .on('click', countryClick)
+        .attr("d", planet.path);
+        return planet.countries;
+    }
+
+    function addWorld(planet, options) {
+        planet.world = planet.svg.append("g").attr("class","land").append("path")
+        .datum(topojson.feature(planet._world, planet._world.objects.land))
+        .attr("d", planet.path);
+        return planet.world;
+    }
+
+    function addLakes(planet, options) {
+        planet.lakes = planet.svg.append("g").attr("class","lakes").append("path")
+        .datum(topojson.feature(planet._world, planet._world.objects.ne_110m_lakes))
+        .attr("d", planet.path);
+        return planet.lakes;
+    }
+
+    var data = [jsonWorld];
+    if (tsvCountryNames) {
+        data.push(tsvCountryNames);
+    }
+    return {
+        name: 'worldPlugin',
+        data: data,
+        ready(planet, options, err, world, countryNames) {
+            planet._world = world;
+            planet._countryNames = countryNames;
+            planet.recreateSvg(planet);
+        },
+        onInit(planet, options) {
+            options.world = true;
+            options.hideLand = false;
+            options.hideCountries = false;
+            planet.addWorldOrCountries = addWorldOrCountries;
+            planet.addCountries = addCountries;
+            planet.addWorld = addWorld;
+            planet.addLakes = addLakes;
+        },
+        onRefresh(planet, options) {
+            if (!options.hideLand) {
+                if (!options.hideCountries) {
+                    planet.countries.attr("d", planet.path);
+                } else {
+                    planet.world.attr("d", planet.path);
+                }
+                planet.lakes.attr("d", planet.path);
+            }
+        }
+    };
+};
+
+var countryTooltipPlugin = function(initOptions={}) {
+    var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
+
+    initOptions = Object.assign({
+        hideCountryTooltip: false,
+    }, initOptions);
+
+    return {
+        name: 'countryTooltipPlugin',
+        onInit(planet, options) {
+            var originalAddCountries = planet.addCountries;
+            planet.addCountries  = function(planet, options) {
+                originalAddCountries(planet, options)
+                .on("mouseover", function(d) {
+                    var country = planet._countryNames.find(function(x) {
+                        return x.id==d.id;
+                    });
+                    countryTooltip.text(country.name)
+                    .style("left", (d3.event.pageX + 7) + "px")
+                    .style("top", (d3.event.pageY - 15) + "px")
+                    .style("display", "block")
+                    .style("opacity", 1);
+                })
+                .on("mouseout", function(d) {
+                    countryTooltip.style("opacity", 0)
+                    .style("display", "none");
+                })
+                .on("mousemove", function(d) {
+                    countryTooltip.style("left", (d3.event.pageX + 7) + "px")
+                    .style("top", (d3.event.pageY - 15) + "px");
+                });
+                return planet.countries;
+            };
+        },
+    }
+};
+
+app$1.plugins = {
+    versorDragPlugin,
+    wheelZoomPlugin,
+    oceanPlugin,
+    configPlugin,
+    graticulePlugin,
+    fauxGlobePlugin,
+    autorotatePlugin,
+    placesPlugin,
+    worldPlugin,
+    countryTooltipPlugin
+};
+
+return app$1;
+
+})));
+//# sourceMappingURL=earthjs.js.map

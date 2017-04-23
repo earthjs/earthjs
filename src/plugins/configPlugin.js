@@ -1,4 +1,4 @@
-earthjs.plugins.configPlugin = function() {
+export default function() {
     return {
         name: 'configPlugin',
         set(planet, options, newOpt={}) {
@@ -8,4 +8,4 @@ earthjs.plugins.configPlugin = function() {
             planet.state.drag = false;
         }
     }
-};
+}

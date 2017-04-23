@@ -1,4 +1,4 @@
-earthjs.plugins.zoomPlugin = function() {
+export default function() {
     return {
         name: 'zoomPlugin',
         onInit(planet, options) {
@@ -45,4 +45,4 @@ earthjs.plugins.zoomPlugin = function() {
             }
         }
     }
-};
+}

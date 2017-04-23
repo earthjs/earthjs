@@ -1,4 +1,4 @@
-earthjs.plugins.wheelZoomPlugin = function() {
+export default function() {
     return {
         name: 'wheelZoomPlugin',
         onInit(planet, options) {
@@ -11,4 +11,4 @@ earthjs.plugins.wheelZoomPlugin = function() {
             });
         }
     }
-};
+}

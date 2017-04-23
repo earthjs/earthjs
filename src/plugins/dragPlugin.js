@@ -1,4 +1,4 @@
-earthjs.plugins.dragPlugin = function(degPerSec) {
+export default function(degPerSec) {
     return {
         name: 'dragPlugin',
         onInit(planet, options) {

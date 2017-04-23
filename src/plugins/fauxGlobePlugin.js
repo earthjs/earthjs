@@ -1,4 +1,4 @@
-earthjs.plugins.fauxGlobePlugin = function(initOptions={}) {
+export default function(initOptions={}) {
     function addGlobeDropShadow(planet, options) {
         planet.svg.selectAll('#drop_shadow,.drop_shadow').remove();
         if (!options.hideGlobeShadow) {
@@ -89,4 +89,4 @@ earthjs.plugins.fauxGlobePlugin = function(initOptions={}) {
             }
         }
     }
-};
+}

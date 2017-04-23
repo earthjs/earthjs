@@ -1,4 +1,4 @@
-earthjs.plugins.graticulePlugin = function(initOptions={}) {
+export default function(initOptions={}) {
     function addGraticule(planet, options) {
         planet.svg.selectAll('.graticule').remove();
         if (!options.hideGraticule) {
