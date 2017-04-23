@@ -32,7 +32,7 @@ window.earthjs = function(){
                 var fn = {};
                 planet[obj.name] = fn;
                 Object.keys(obj).map(function(name) {
-                    if (['onResize', 'onInterval', 'onRefresh', 'ready', 'json'].indexOf(name)===-1) {
+                    if (['onResize', 'onInterval', 'onRefresh', 'ready', 'data'].indexOf(name)===-1) {
                         if (typeof(obj[name])==='function') {
                             fn[name] = function() {
                                 var args = [].slice.call(arguments);
@@ -48,9 +48,16 @@ window.earthjs = function(){
                 qEvent(obj,'onResize');
                 qEvent(obj,'onRefresh');
                 qEvent(obj,'onInterval');
-                if (obj.json && obj.ready) {
-                    queue().defer(d3.json, obj.json).await(function(err, data) {
-                        obj.ready(planet, options, err, data);
+                if (obj.data && obj.ready) {
+                    var q = queue();
+                    obj.data.forEach(function(data) {
+                        var ext = data.split('.').pop();
+                        q.defer(d3[ext], data);
+                    });
+                    q.await(function(err, data) {
+                        var args = [].slice.call(arguments);
+                        args.unshift(planet, options);
+                        obj.ready.apply(null, args);
                     });
                 }
                 return planet;

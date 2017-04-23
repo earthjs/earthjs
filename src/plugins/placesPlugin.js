@@ -38,7 +38,7 @@ earthjs.plugins.placesPlugin = function(jsonUrl='./d/places.json') {
 
     return {
         name: 'placesPlugin',
-        json: jsonUrl,
+        data: [jsonUrl],
         ready(planet, options, err, places) {
             planet._places = places;
             planet.recreateSvg(planet);

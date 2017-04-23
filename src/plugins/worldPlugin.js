@@ -21,7 +21,7 @@ earthjs.plugins.worldPlugin = function(jsonUrl='./d/world-110m.json') {
 
     return {
         name: 'worldPlugin',
-        json: jsonUrl,
+        data: [jsonUrl],
         ready(planet, options, err, world) {
             planet._world = world;
             planet.recreateSvg(planet);
