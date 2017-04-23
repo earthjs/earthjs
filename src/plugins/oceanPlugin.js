@@ -1,9 +1,9 @@
 earthjs.plugins.oceanPlugin = function(initOptions={}) {
     function addOcean(planet, options) {
-        planet.svg.selectAll('#ocean_fill,.ocean_fill_circle').remove();
+        planet.svg.selectAll('#ocean,.ocean').remove();
         if (!options.hideOcean) {
-            var ocean_fill = planet.svg.append("defs").append("radialGradient")
-                .attr("id", "ocean_fill")
+            var ocean_fill = planet.defs.append("radialGradient")
+                .attr("id", "ocean")
                 .attr("cx", "75%")
                 .attr("cy", "25%");
             ocean_fill.append("stop")
@@ -15,8 +15,8 @@ earthjs.plugins.oceanPlugin = function(initOptions={}) {
             planet.ocean = planet.svg.append("circle")
                 .attr("cx",planet.width / 2).attr("cy", planet.height / 2)
                 .attr("r", planet.proj.scale())
-                .attr("class", "ocean_fill_circle noclicks")
-                .style("fill", "url(#ocean_fill)");
+                .attr("class", "ocean noclicks")
+                .style("fill", "url(#ocean)");
         }
     }
 

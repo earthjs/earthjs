@@ -1,8 +1,8 @@
 earthjs.plugins.fauxGlobePlugin = function(initOptions={}) {
     function addGlobeDropShadow(planet, options) {
-        planet.svg.selectAll('.drop_shadow,.drop_shadow_ellipse').remove();
+        planet.svg.selectAll('#drop_shadow,.drop_shadow').remove();
         if (!options.hideGlobeShadow) {
-            var drop_shadow = planet.svg.append("defs").append("radialGradient")
+            var drop_shadow = planet.defs.append("radialGradient")
                   .attr("id", "drop_shadow")
                   .attr("cx", "50%")
                   .attr("cy", "50%");
@@ -16,15 +16,15 @@ earthjs.plugins.fauxGlobePlugin = function(initOptions={}) {
                   .attr("cx", planet.width/2).attr("cy", planet.height-50)
                   .attr("rx", planet.proj.scale()*.90)
                   .attr("ry", planet.proj.scale()*.25)
-                  .attr("class", "drop_shadow_ellipse noclicks")
+                  .attr("class", "drop_shadow noclicks")
                   .style("fill", "url(#drop_shadow)");
         }
     }
 
     function addGlobeShading(planet, options) {
-        planet.svg.selectAll('#globe_shading,.globe_shading_circle').remove();
+        planet.svg.selectAll('#globe_shading,.globe_shading').remove();
         if (!options.hideGlobeShading) {
-            var globe_shading = planet.svg.append("defs").append("radialGradient")
+            var globe_shading = planet.defs.append("radialGradient")
                   .attr("id", "globe_shading")
                   .attr("cx", "50%")
                   .attr("cy", "40%");
@@ -37,16 +37,16 @@ earthjs.plugins.fauxGlobePlugin = function(initOptions={}) {
             planet.globeShading = planet.svg.append("circle")
                 .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
                 .attr("r",  planet.proj.scale())
-                .attr("class","globe_shading_circle noclicks")
+                .attr("class","globe_shading noclicks")
                 .style("fill", "url(#globe_shading)");
         }
     }
 
     function addGlobeHilight(planet, options) {
-        planet.svg.selectAll('#globe_highlight,.globe_highlight_circle').remove();
+        planet.svg.selectAll('#globe_hilight,.globe_hilight').remove();
         if (!options.hideGlobeHilight) {
-            var globe_highlight = planet.svg.append("defs").append("radialGradient")
-                  .attr("id", "globe_highlight")
+            var globe_highlight = planet.defs.append("radialGradient")
+                  .attr("id", "globe_hilight")
                   .attr("cx", "75%")
                   .attr("cy", "25%");
                 globe_highlight.append("stop")
@@ -58,8 +58,8 @@ earthjs.plugins.fauxGlobePlugin = function(initOptions={}) {
             planet.globeHilight = planet.svg.append("circle")
                 .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
                 .attr("r",  planet.proj.scale())
-                .attr("class","globe_highlight_circle noclicks")
-                .style("fill", "url(#globe_highlight)");
+                .attr("class","globe_hilight noclicks")
+                .style("fill", "url(#globe_hilight)");
         }
     }
 

@@ -19,7 +19,7 @@ window.earthjs = function(){
             onIntervalKeys: [],
         };
         var svg  = d3.select(options.select).attr("width", options.width).attr("height", options.height);
-        var proj = d3.geoOrthographic().scale(options.width / 4.1).translate([options.width / 2, options.height / 2]).precision(1);
+        var proj = d3.geoOrthographic().scale(options.width / 4.1).translate([options.width / 2, options.height / 2]).precision(0.1);
         var path = d3.geoPath().projection(proj);
         var planet = {
             svg,
@@ -56,6 +56,7 @@ window.earthjs = function(){
                 return planet;
             }
         };
+        planet.defs = planet.svg.append("defs");
         //----------------------------------------
         planet.resize = resize;
         planet.refresh = refresh;
@@ -83,7 +84,20 @@ window.earthjs = function(){
             }, options.interval);
             return planet;
         }
+        //----------------------------------------
+        // Helper
+        planet.scale = function(y) {
+            planet.proj.scale(y);
+            planet.resize(planet, options);
+            planet.refresh(planet, options);
+            return planet;
+        }
 
+        planet.rotate = function(r) {
+            planet.proj.rotate(r);
+            planet.refresh(planet, options);
+            return planet;
+        }
         return planet;
         //----------------------------------------
         function qEvent(obj, qname) {

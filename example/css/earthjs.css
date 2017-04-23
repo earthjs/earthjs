@@ -1,8 +1,8 @@
-.land {
+.land path{
     fill: rgb(117, 87, 57);
     stroke-opacity: 1;
 }
-.lakes {
+.lakes path {
     fill: rgb(80, 87, 97);
     stroke-opacity: 1;
 }
@@ -14,7 +14,6 @@
     opacity: 1;
 }
 .countries path:hover {
-    /*fill-opacity:.1;*/
     stroke-width:1;
     fill: rgb(187, 187, 27);
     opacity: 1;
@@ -23,7 +22,7 @@
 .points path:not([d]) {
     opacity: 0;
 }
-.graticule {
+.graticule path {
     fill: none;
     stroke: black;
     stroke-width:.5;

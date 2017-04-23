@@ -1,4 +1,19 @@
 earthjs.plugins.placesPlugin = function(jsonUrl='./d/places.json') {
+    function addPlaces(planet, options) {
+        planet.svg.selectAll('.points,.labels').remove();
+        if (planet._places) {
+            if (options.places && !options.hidePlaces) {
+                planet.points = planet.svg.append("g").attr("class","points").selectAll("text").data(planet._places.features).enter().append("path")
+                    .attr("class", "point")
+                    .attr("d", planet.path);
+                planet.labels = planet.svg.append("g").attr("class","labels").selectAll("text").data(planet._places.features).enter().append("text")
+                    .attr("class", "label")
+                    .text(function(d) { return d.properties.name });
+                position_labels(planet);
+            }
+        }
+    }
+
     function position_labels(planet) {
         var centerPos = planet.proj.invert([planet.width / 2, planet.height/2]);
 
@@ -20,21 +35,6 @@ earthjs.plugins.placesPlugin = function(jsonUrl='./d/places.json') {
                 return d3.geoDistance(d.geometry.coordinates, centerPos) > 1.57 ? 'none' : 'inline';
             });
     };
-
-    function addPlaces(planet, options) {
-        if (planet._places) {
-            planet.svg.selectAll('.points,.labels').remove();
-            if (options.places && !options.hidePlaces) {
-                planet.points = planet.svg.append("g").attr("class","points").selectAll("text").data(planet._places.features).enter().append("path")
-                    .attr("class", "point")
-                    .attr("d", planet.path);
-                planet.labels = planet.svg.append("g").attr("class","labels").selectAll("text").data(planet._places.features).enter().append("text")
-                    .attr("class", "label")
-                    .text(function(d) { return d.properties.name });
-                position_labels(planet);
-            }
-        }
-    }
 
     return {
         name: 'placesPlugin',
