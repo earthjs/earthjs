@@ -1,8 +1,8 @@
 {
   "name": "earthjs",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "D3 Earth JS using SVG, build with plugins.",
-  "main": "earthjs.js",
+  "main": "index.js",
   "scripts": {
     "test": "tape 'test/**/*-test.js' && mkdir -p test/output && eslint src",
     "build": "rollup -c && uglifyjs dist/earthjs.js -c -m -o dist/earthjs.min.js"
@@ -29,5 +29,9 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "tape": "^4.6.3",
     "uglify-js": "github:mishoo/UglifyJS2#harmony"
+  },
+  "dependencies": {
+    "d3": "^4.8.0",
+    "topojson": "^3.0.0"
   }
 }
