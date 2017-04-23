@@ -19,14 +19,17 @@ Selected plugins bundled into library:
 * worldPlugin,
 * countryTooltipPlugin
 
+## Requirements
+* [D3](http://d3js.org/) version 4
+* [topojson](https://github.com/topojson/topojson) version 3
+
 ## Quick Start
 This sample need to run on the webserver, you can use [nodejs web-server](https://www.npmjs.com/package/http-server) or [python simple http server](http://2ality.com/2014/06/simple-http-server.html).
 ```html
 <html>
 <head>
   <script type='text/javascript' src='http://d3js.org/d3.v4.min.js'></script>
-  <script type='text/javascript' src="http://d3js.org/queue.v1.min.js"></script>
-  <script type='text/javascript' src='http://d3js.org/topojson.v1.min.js'></script>
+  <script type='text/javascript' src='http://d3js.org/topojson.v3.min.js'></script>
   <script type='text/javascript' src='../dist/earthjs.min.js'></script>
   <style media="screen">
   .countries path {
@@ -55,6 +58,41 @@ This sample need to run on the webserver, you can use [nodejs web-server](https:
   </script>
 </body>
 </html>
+```
+
+## Writing Plugins
+Here is structure samplePlugin, you can check folder plugins for each functionality
+```javascript
+export default function(/*params*/) {
+    // define internal functions
+    //
+    return {
+        // namespace for the plugins
+        name: 'samplePlugin',
+        // async ajax call and when it finish will call ready()
+        data: [jsonUrl],
+        // ajax event handler
+        ready(planet, options, err, places) {
+            // code...
+        },
+        // get called when user call .register() from instance of earthjs
+        onInit(planet, options) {
+            // code...
+        },
+        // zoom event handler
+        onResize(planet, options) {
+            // code...
+        },
+        // refresh svg graphics components
+        onRefresh(planet, options) {
+            // code...
+        },
+        // get called on specific interval
+        onInterval(planet, options) {
+            // code...
+        }        
+    }
+}
 ```
 
 ## Building

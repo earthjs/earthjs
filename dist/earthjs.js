@@ -51,7 +51,7 @@ var app$1 = function (options={}) {
             qEvent(obj,'onRefresh');
             qEvent(obj,'onInterval');
             if (obj.data && obj.ready) {
-                var q = queue();
+                var q = d3.queue();
                 obj.data.forEach(function(data) {
                     var ext = data.split('.').pop();
                     q.defer(d3[ext], data);
