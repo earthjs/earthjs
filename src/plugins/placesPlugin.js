@@ -5,7 +5,7 @@ export default function(jsonUrl='./d/places.json') {
             if (options.places && !options.hidePlaces) {
                 svgAddPlacePoints(planet, options);
                 svgAddPlaceLabels(planet, options);
-                position_labels(planet);
+                position_labels(planet, options);
             }
         }
     }
@@ -26,7 +26,7 @@ export default function(jsonUrl='./d/places.json') {
         return planet._.placeLabels;
     }
 
-    function position_labels(planet) {
+    function position_labels(planet, options) {
         var centerPos = planet.proj.invert([options.width / 2, options.height/2]);
 
         planet._.placeLabels
@@ -63,7 +63,7 @@ export default function(jsonUrl='./d/places.json') {
         onRefresh(planet, options) {
             if (planet._.placePoints && options.places) {
                 planet._.placePoints.attr("d", planet.path);
-                position_labels(planet);
+                position_labels(planet, options);
             }
         }
     };
