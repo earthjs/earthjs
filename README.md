@@ -30,20 +30,14 @@ This sample need to run on the webserver, you can use [nodejs web-server](https:
 <head>
   <script type='text/javascript' src='http://d3js.org/d3.v4.min.js'></script>
   <script type='text/javascript' src='http://d3js.org/topojson.v3.min.js'></script>
-  <script type='text/javascript' src='../dist/earthjs.min.js'></script>
+  <script type='text/javascript' src='../dist/earthjs.js'></script>
   <style media="screen">
   .countries path {
+      fill: rgb(117, 87, 57);
       stroke: rgb(80, 64, 39);
       stroke-linejoin: round;
       stroke-width: 1.5;
-      fill: rgb(117, 87, 57);
       opacity: 1;
-  }
-  .graticule path {
-      fill: none;
-      stroke: black;
-      stroke-width:.5;
-      opacity:.2;
   }
   </style>
 </head>
@@ -51,10 +45,11 @@ This sample need to run on the webserver, you can use [nodejs web-server](https:
   <svg id="earth"></svg>
   <script>
     var p = earthjs({width: 250, height: 250});
+    p.register(earthjs.plugins.configPlugin());
     p.register(earthjs.plugins.graticulePlugin());
     p.register(earthjs.plugins.autorotatePlugin(10));
     p.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
-    p.ticker();
+    p.svgDraw();
   </script>
 </body>
 </html>

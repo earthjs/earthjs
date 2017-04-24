@@ -351,6 +351,10 @@ var graticulePlugin = function(initOptions={}) {
         if (!options.hideGraticule) {
             planet._.graticule = planet._.svg.append("g").attr("class","graticule").append("path")
                 .datum(datumGraticule)
+                .style("fill", "none")
+                .style("opacity", "0.2")
+                .style("stroke", "black")
+                .style("stroke-width", "0.5")
                 .attr("class", "noclicks")
                 .attr("d", planet._.path);
             return planet._.graticule;

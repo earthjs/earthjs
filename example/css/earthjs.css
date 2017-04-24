@@ -22,12 +22,6 @@
 .points path:not([d]) {
     opacity: 0;
 }
-.graticule path {
-    fill: none;
-    stroke: black;
-    stroke-width:.5;
-    opacity:.2;
-}
 .labels {
     font: 8px sans-serif;
     fill: black;
