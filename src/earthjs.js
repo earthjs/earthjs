@@ -24,8 +24,6 @@ export default function (options={}) {
         path,
         _: {},
         state: {drag: false},
-        width: options.width,
-        height: options.height,
         register: function(obj) {
             var fn = {};
             planet[obj.name] = fn;

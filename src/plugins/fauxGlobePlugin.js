@@ -15,7 +15,7 @@ export default function(initOptions={}) {
                   .attr("offset","100%").attr("stop-color", "#000")
                   .attr("stop-opacity","0")
             planet._.dropShadow = planet.svg.append("ellipse")
-                  .attr("cx", planet.width/2).attr("cy", planet.height-50)
+                  .attr("cx", options.width/2).attr("cy", options.height-50)
                   .attr("rx", planet.proj.scale()*0.90)
                   .attr("ry", planet.proj.scale()*0.25)
                   .attr("class", "drop_shadow noclicks")
@@ -38,7 +38,7 @@ export default function(initOptions={}) {
                   .attr("offset","100%").attr("stop-color", "#3e6184")
                   .attr("stop-opacity","0.3")
             planet._.globeShading = planet.svg.append("circle")
-                .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
+                .attr("cx", options.width / 2).attr("cy", options.height / 2)
                 .attr("r",  planet.proj.scale())
                 .attr("class","globe_shading noclicks")
                 .style("fill", "url(#globe_shading)");
@@ -60,7 +60,7 @@ export default function(initOptions={}) {
                   .attr("offset", "100%").attr("stop-color", "#ba9")
                   .attr("stop-opacity","0.2");
             planet._.globeHilight = planet.svg.append("circle")
-                .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
+                .attr("cx", options.width / 2).attr("cy", options.height / 2)
                 .attr("r",  planet.proj.scale())
                 .attr("class","globe_hilight noclicks")
                 .style("fill", "url(#globe_hilight)");

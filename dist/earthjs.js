@@ -30,8 +30,6 @@ var app$1 = function (options={}) {
         path,
         _: {},
         state: {drag: false},
-        width: options.width,
-        height: options.height,
         register: function(obj) {
             var fn = {};
             planet[obj.name] = fn;
@@ -288,7 +286,7 @@ var oceanPlugin = function(initOptions={}) {
                 .attr("offset", "100%")
                 .attr("stop-color", "#9ab");
             planet.ocean = planet.svg.append("circle")
-                .attr("cx",planet.width / 2).attr("cy", planet.height / 2)
+                .attr("cx",options.width / 2).attr("cy", options.height / 2)
                 .attr("r", planet.proj.scale())
                 .attr("class", "ocean noclicks")
                 .style("fill", "url(#ocean)");
@@ -378,7 +376,7 @@ var fauxGlobePlugin = function(initOptions={}) {
                   .attr("offset","100%").attr("stop-color", "#000")
                   .attr("stop-opacity","0");
             planet._.dropShadow = planet.svg.append("ellipse")
-                  .attr("cx", planet.width/2).attr("cy", planet.height-50)
+                  .attr("cx", options.width/2).attr("cy", options.height-50)
                   .attr("rx", planet.proj.scale()*0.90)
                   .attr("ry", planet.proj.scale()*0.25)
                   .attr("class", "drop_shadow noclicks")
@@ -401,7 +399,7 @@ var fauxGlobePlugin = function(initOptions={}) {
                   .attr("offset","100%").attr("stop-color", "#3e6184")
                   .attr("stop-opacity","0.3");
             planet._.globeShading = planet.svg.append("circle")
-                .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
+                .attr("cx", options.width / 2).attr("cy", options.height / 2)
                 .attr("r",  planet.proj.scale())
                 .attr("class","globe_shading noclicks")
                 .style("fill", "url(#globe_shading)");
@@ -423,7 +421,7 @@ var fauxGlobePlugin = function(initOptions={}) {
                   .attr("offset", "100%").attr("stop-color", "#ba9")
                   .attr("stop-opacity","0.2");
             planet._.globeHilight = planet.svg.append("circle")
-                .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
+                .attr("cx", options.width / 2).attr("cy", options.height / 2)
                 .attr("r",  planet.proj.scale())
                 .attr("class","globe_hilight noclicks")
                 .style("fill", "url(#globe_hilight)");
@@ -520,20 +518,20 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
     }
 
     function position_labels(planet) {
-        var centerPos = planet.proj.invert([planet.width / 2, planet.height/2]);
+        var centerPos = planet.proj.invert([options.width / 2, options.height/2]);
 
         planet.placeLabels
             .attr("text-anchor",function(d) {
                 var x = planet.proj(d.geometry.coordinates)[0];
-                return x < planet.width/2-20 ? "end" :
-                       x < planet.width/2+20 ? "middle" :
+                return x < options.width/2-20 ? "end" :
+                       x < options.width/2+20 ? "middle" :
                        "start"
             })
             .attr("transform", function(d) {
                 var loc = planet.proj(d.geometry.coordinates),
                     x = loc[0],
                     y = loc[1];
-                var offset = x < planet.width/2 ? -5 : 5;
+                var offset = x < options.width/2 ? -5 : 5;
                 return "translate(" + (x+offset) + "," + (y-2) + ")"
             })
             .style("display", function(d) {

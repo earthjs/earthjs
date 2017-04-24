@@ -13,7 +13,7 @@ export default function(initOptions={}) {
                 .attr("offset", "100%")
                 .attr("stop-color", "#9ab");
             planet.ocean = planet.svg.append("circle")
-                .attr("cx",planet.width / 2).attr("cy", planet.height / 2)
+                .attr("cx",options.width / 2).attr("cy", options.height / 2)
                 .attr("r", planet.proj.scale())
                 .attr("class", "ocean noclicks")
                 .style("fill", "url(#ocean)");
