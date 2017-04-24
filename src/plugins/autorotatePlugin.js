@@ -1,9 +1,9 @@
 export default function(degPerSec) {
-    var lastTick = null;
+    var degree, lastTick = null;
     return {
         name: 'autorotatePlugin',
         onInit(planet, options) {
-            planet.degPerSec = degPerSec;
+            degree = degPerSec;
             options.stop = false;
         },
         onInterval(planet, options) {
@@ -13,7 +13,7 @@ export default function(degPerSec) {
             } else {
                 var delta = now - lastTick;
                 var rotation = planet.proj.rotate();
-                rotation[0] += planet.degPerSec * delta / 1000;
+                rotation[0] += degree * delta / 1000;
                 if (rotation[0] >= 180)
                     rotation[0] -= 360;
                 planet.proj.rotate(rotation);
@@ -22,7 +22,7 @@ export default function(degPerSec) {
             }
         },
         speed(planet, options, degPerSec) {
-            planet.degPerSec = degPerSec;
+            degree = degPerSec;
         },
         start(planet, options) {
             options.stop = false;

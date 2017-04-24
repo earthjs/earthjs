@@ -14,7 +14,8 @@ export default function (options={}) {
 
         onInterval: {},
         onIntervalKeys: [],
-    };
+    }
+
     var svg  = d3.select(options.select).attr("width", options.width).attr("height", options.height);
     var proj = d3.geoOrthographic().scale(options.width / 4.1).translate([options.width / 2, options.height / 2]).precision(0.1);
     var path = d3.geoPath().projection(proj);
@@ -58,21 +59,10 @@ export default function (options={}) {
             }
             return planet;
         }
-    };
+    }
+
     planet._.defs = planet.svg.append("defs");
     //----------------------------------------
-    planet.resize = resize;
-    planet.refresh = refresh;
-    planet.svgRecreate = svgRecreate;
-    planet.svgCreateOrder = [
-        'svgAddGlobeDropShadow',
-        'svgAddOcean',
-        'svgAddGlobeShading',
-        'svgAddWorldOrCountries',
-        'svgAddGlobeHilight',
-        'svgAddGraticule',
-        'svgAddPlaces',
-    ];
     var ticker;
     planet.ticker = function(interval) {
         if (interval) {
@@ -88,8 +78,28 @@ export default function (options={}) {
         }, options.interval);
         return planet;
     }
+
+    planet.svgCreateOrder = [
+        'svgAddDropShadow',
+        'svgAddOcean',
+        'svgAddGlobeShading',
+        'svgAddWorldOrCountries',
+        'svgAddGlobeHilight',
+        'svgAddGraticule',
+        'svgAddPlaces',
+    ];
+
+    planet.svgRecreate = svgRecreate;
+    planet.refresh = refresh;
+    planet.resize = resize;
+
     //----------------------------------------
     // Helper
+
+    planet.draw = function() {
+        planet.svgRecreate(planet);
+    }
+
     planet.scale = function(y) {
         planet.proj.scale(y);
         planet.resize(planet, options);
@@ -102,6 +112,7 @@ export default function (options={}) {
         planet.refresh(planet, options);
         return planet;
     }
+
     return planet;
     //----------------------------------------
     function qEvent(obj, qname) {

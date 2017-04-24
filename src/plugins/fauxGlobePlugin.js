@@ -1,7 +1,7 @@
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
 //
 export default function(initOptions={}) {
-    function svgAddGlobeDropShadow(planet, options) {
+    function svgAddDropShadow(planet, options) {
         planet.svg.selectAll('#drop_shadow,.drop_shadow').remove();
         if (!options.hideGlobeShadow) {
             var drop_shadow = planet._.defs.append("radialGradient")
@@ -78,7 +78,7 @@ export default function(initOptions={}) {
         name: 'fauxGlobePlugin',
         onInit(planet, options) {
             Object.assign(options, initOptions);
-            planet.svgAddGlobeDropShadow = svgAddGlobeDropShadow;
+            planet.svgAddDropShadow = svgAddDropShadow;
             planet.svgAddGlobeHilight = svgAddGlobeHilight;
             planet.svgAddGlobeShading = svgAddGlobeShading;
         },

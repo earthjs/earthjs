@@ -21,6 +21,7 @@ var app$1 = function (options={}) {
         onInterval: {},
         onIntervalKeys: [],
     };
+
     var svg  = d3.select(options.select).attr("width", options.width).attr("height", options.height);
     var proj = d3.geoOrthographic().scale(options.width / 4.1).translate([options.width / 2, options.height / 2]).precision(0.1);
     var path = d3.geoPath().projection(proj);
@@ -65,20 +66,9 @@ var app$1 = function (options={}) {
             return planet;
         }
     };
+
     planet._.defs = planet.svg.append("defs");
     //----------------------------------------
-    planet.resize = resize;
-    planet.refresh = refresh;
-    planet.svgRecreate = svgRecreate;
-    planet.svgCreateOrder = [
-        'svgAddGlobeDropShadow',
-        'svgAddOcean',
-        'svgAddGlobeShading',
-        'svgAddWorldOrCountries',
-        'svgAddGlobeHilight',
-        'svgAddGraticule',
-        'svgAddPlaces',
-    ];
     var ticker;
     planet.ticker = function(interval) {
         if (interval) {
@@ -94,8 +84,28 @@ var app$1 = function (options={}) {
         }, options.interval);
         return planet;
     };
+
+    planet.svgCreateOrder = [
+        'svgAddDropShadow',
+        'svgAddOcean',
+        'svgAddGlobeShading',
+        'svgAddWorldOrCountries',
+        'svgAddGlobeHilight',
+        'svgAddGraticule',
+        'svgAddPlaces',
+    ];
+
+    planet.svgRecreate = svgRecreate;
+    planet.refresh = refresh;
+    planet.resize = resize;
+
     //----------------------------------------
     // Helper
+
+    planet.draw = function() {
+        planet.svgRecreate(planet);
+    };
+
     planet.scale = function(y) {
         planet.proj.scale(y);
         planet.resize(planet, options);
@@ -108,6 +118,7 @@ var app$1 = function (options={}) {
         planet.refresh(planet, options);
         return planet;
     };
+
     return planet;
     //----------------------------------------
     function qEvent(obj, qname) {
@@ -285,12 +296,12 @@ var oceanPlugin = function(initOptions={}) {
             ocean_fill.append("stop")
                 .attr("offset", "100%")
                 .attr("stop-color", "#9ab");
-            planet.ocean = planet.svg.append("circle")
+            planet._.ocean = planet.svg.append("circle")
                 .attr("cx",options.width / 2).attr("cy", options.height / 2)
                 .attr("r", planet.proj.scale())
                 .attr("class", "ocean noclicks")
                 .style("fill", "url(#ocean)");
-            return planet.ocean;
+            return planet._.ocean;
         }
     }
 
@@ -305,8 +316,8 @@ var oceanPlugin = function(initOptions={}) {
             planet.svgAddOcean = svgAddOcean;
         },
         onResize(planet, options) {
-            if (planet.ocean && !options.hideOcean) {
-                planet.ocean.attr("r", planet.proj.scale());
+            if (planet._.ocean && !options.hideOcean) {
+                planet._.ocean.attr("r", planet.proj.scale());
             }
         }
     }
@@ -362,7 +373,7 @@ var graticulePlugin = function(initOptions={}) {
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
 //
 var fauxGlobePlugin = function(initOptions={}) {
-    function svgAddGlobeDropShadow(planet, options) {
+    function svgAddDropShadow(planet, options) {
         planet.svg.selectAll('#drop_shadow,.drop_shadow').remove();
         if (!options.hideGlobeShadow) {
             var drop_shadow = planet._.defs.append("radialGradient")
@@ -439,7 +450,7 @@ var fauxGlobePlugin = function(initOptions={}) {
         name: 'fauxGlobePlugin',
         onInit(planet, options) {
             Object.assign(options, initOptions);
-            planet.svgAddGlobeDropShadow = svgAddGlobeDropShadow;
+            planet.svgAddDropShadow = svgAddDropShadow;
             planet.svgAddGlobeHilight = svgAddGlobeHilight;
             planet.svgAddGlobeShading = svgAddGlobeShading;
         },
@@ -455,11 +466,11 @@ var fauxGlobePlugin = function(initOptions={}) {
 };
 
 var autorotatePlugin = function(degPerSec) {
-    var lastTick = null;
+    var degree, lastTick = null;
     return {
         name: 'autorotatePlugin',
         onInit(planet, options) {
-            planet.degPerSec = degPerSec;
+            degree = degPerSec;
             options.stop = false;
         },
         onInterval(planet, options) {
@@ -469,7 +480,7 @@ var autorotatePlugin = function(degPerSec) {
             } else {
                 var delta = now - lastTick;
                 var rotation = planet.proj.rotate();
-                rotation[0] += planet.degPerSec * delta / 1000;
+                rotation[0] += degree * delta / 1000;
                 if (rotation[0] >= 180)
                     rotation[0] -= 360;
                 planet.proj.rotate(rotation);
@@ -478,7 +489,7 @@ var autorotatePlugin = function(degPerSec) {
             }
         },
         speed(planet, options, degPerSec) {
-            planet.degPerSec = degPerSec;
+            degree = degPerSec;
         },
         start(planet, options) {
             options.stop = false;
@@ -502,25 +513,25 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
     }
 
     function svgAddPlacePoints(planet) {
-        planet.placePoints = planet.svg.append("g").attr("class","points").selectAll("path")
+        planet._.placePoints = planet.svg.append("g").attr("class","points").selectAll("path")
             .data(planet._places.features).enter().append("path")
             .attr("class", "point")
             .attr("d", planet.path);
-        return planet.placePoints;
+        return planet._.placePoints;
     }
 
     function svgAddPlaceLabels(planet) {
-        planet.placeLabels = planet.svg.append("g").attr("class","labels").selectAll("text")
+        planet._.placeLabels = planet.svg.append("g").attr("class","labels").selectAll("text")
             .data(planet._places.features).enter().append("text")
             .attr("class", "label")
             .text(function(d) { return d.properties.name });
-        return planet.placeLabels;
+        return planet._.placeLabels;
     }
 
     function position_labels(planet) {
         var centerPos = planet.proj.invert([options.width / 2, options.height/2]);
 
-        planet.placeLabels
+        planet._.placeLabels
             .attr("text-anchor",function(d) {
                 var x = planet.proj(d.geometry.coordinates)[0];
                 return x < options.width/2-20 ? "end" :
@@ -552,8 +563,8 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
             planet.svgAddPlaces = svgAddPlaces;
         },
         onRefresh(planet, options) {
-            if (planet.placePoints && options.places) {
-                planet.placePoints.attr("d", planet.path);
+            if (planet._.placePoints && options.places) {
+                planet._.placePoints.attr("d", planet.path);
                 position_labels(planet);
             }
         }
