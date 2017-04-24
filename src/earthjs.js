@@ -1,6 +1,7 @@
 export default function (options={}) {
     options = Object.assign({
         select: '#earth',
+        interval: 50,
         height: 870,
         width: 1700,
     }, options);
@@ -33,7 +34,7 @@ export default function (options={}) {
                         fn[name] = function() {
                             var args = [].slice.call(arguments);
                             args.unshift(planet, options);
-                            obj[name].apply(null, args);
+                            return obj[name].apply(null, args);
                         }
                     }
                 }
@@ -73,12 +74,13 @@ export default function (options={}) {
         'addGraticule',
         'addPlaces',
     ];
+    var ticker;
     planet.ticker = function(interval) {
-        if (!options.interval) {
-            interval = interval || 50;
+        if (interval) {
             options.interval = interval;
+            clearInterval(ticker);
         }
-        setInterval(function(){
+        ticker = setInterval(function(){
             if (_.onIntervalKeys.length>0) {
                 _.onIntervalKeys.map(function(key) {
                     _.onInterval[key](planet, options);

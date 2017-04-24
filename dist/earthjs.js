@@ -7,6 +7,7 @@
 var app$1 = function (options={}) {
     options = Object.assign({
         select: '#earth',
+        interval: 50,
         height: 870,
         width: 1700,
     }, options);
@@ -39,7 +40,7 @@ var app$1 = function (options={}) {
                         fn[name] = function() {
                             var args = [].slice.call(arguments);
                             args.unshift(planet, options);
-                            obj[name].apply(null, args);
+                            return obj[name].apply(null, args);
                         };
                     }
                 }
@@ -79,12 +80,13 @@ var app$1 = function (options={}) {
         'addGraticule',
         'addPlaces',
     ];
+    var ticker;
     planet.ticker = function(interval) {
-        if (!options.interval) {
-            interval = interval || 50;
+        if (interval) {
             options.interval = interval;
+            clearInterval(ticker);
         }
-        setInterval(function(){
+        ticker = setInterval(function(){
             if (_.onIntervalKeys.length>0) {
                 _.onIntervalKeys.map(function(key) {
                     _.onInterval[key](planet, options);
@@ -314,11 +316,14 @@ var oceanPlugin = function(initOptions={}) {
 var configPlugin = function() {
     return {
         name: 'configPlugin',
-        set(planet, options, newOpt={}) {
-            Object.assign(options, newOpt);
-            planet.state.drag = true;
-            planet.recreateSvg(planet);
-            planet.state.drag = false;
+        set(planet, options, newOpt) {
+            if (newOpt) {
+                Object.assign(options, newOpt);
+                planet.state.drag = true;
+                planet.recreateSvg(planet);
+                planet.state.drag = false;
+            }
+            return Object.assign({}, options);
         }
     }
 };
