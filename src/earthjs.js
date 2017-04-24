@@ -64,15 +64,15 @@ export default function (options={}) {
     //----------------------------------------
     planet.resize = resize;
     planet.refresh = refresh;
-    planet.recreateSvg = recreateSvg;
+    planet.svgRecreate = svgRecreate;
     planet.svgCreateOrder = [
-        'addGlobeDropShadow',
-        'addOcean',
-        'addGlobeShading',
-        'addWorldOrCountries',
-        'addGlobeHilight',
-        'addGraticule',
-        'addPlaces',
+        'svgAddGlobeDropShadow',
+        'svgAddOcean',
+        'svgAddGlobeShading',
+        'svgAddWorldOrCountries',
+        'svgAddGlobeHilight',
+        'svgAddGraticule',
+        'svgAddPlaces',
     ];
     var ticker;
     planet.ticker = function(interval) {
@@ -113,7 +113,7 @@ export default function (options={}) {
         }
     }
 
-    function recreateSvg(planet) {
+    function svgRecreate(planet) {
         planet.svgCreateOrder.forEach(function(svgCreateKey) {
             planet[svgCreateKey] && planet[svgCreateKey](planet, options);
         });

@@ -6,9 +6,9 @@ export default function() {
     return {
         name: 'countryTooltipPlugin',
         onInit(planet) {
-            var originalAddCountries = planet.addCountries;
-            planet.addCountries  = function(planet, options) {
-                originalAddCountries(planet, options)
+            var originalsvgAddCountries = planet.svgAddCountries;
+            planet.svgAddCountries  = function(planet, options) {
+                originalsvgAddCountries(planet, options)
                 .on("mouseover", function(d) {
                     var country = planet._countryNames.find(function(x) {
                         return x.id==d.id;

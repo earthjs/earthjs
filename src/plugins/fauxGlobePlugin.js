@@ -1,7 +1,7 @@
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
 //
 export default function(initOptions={}) {
-    function addGlobeDropShadow(planet, options) {
+    function svgAddGlobeDropShadow(planet, options) {
         planet.svg.selectAll('#drop_shadow,.drop_shadow').remove();
         if (!options.hideGlobeShadow) {
             var drop_shadow = planet.defs.append("radialGradient")
@@ -24,7 +24,7 @@ export default function(initOptions={}) {
         }
     }
 
-    function addGlobeShading(planet, options) {
+    function svgAddGlobeShading(planet, options) {
         planet.svg.selectAll('#globe_shading,.globe_shading').remove();
         if (!options.hideGlobeShading) {
             var globe_shading = planet.defs.append("radialGradient")
@@ -46,7 +46,7 @@ export default function(initOptions={}) {
         }
     }
 
-    function addGlobeHilight(planet, options) {
+    function svgAddGlobeHilight(planet, options) {
         planet.svg.selectAll('#globe_hilight,.globe_hilight').remove();
         if (!options.hideGlobeHilight) {
             var globe_highlight = planet.defs.append("radialGradient")
@@ -78,9 +78,9 @@ export default function(initOptions={}) {
         name: 'fauxGlobePlugin',
         onInit(planet, options) {
             Object.assign(options, initOptions);
-            planet.addGlobeDropShadow = addGlobeDropShadow;
-            planet.addGlobeHilight = addGlobeHilight;
-            planet.addGlobeShading = addGlobeShading;
+            planet.svgAddGlobeDropShadow = svgAddGlobeDropShadow;
+            planet.svgAddGlobeHilight = svgAddGlobeHilight;
+            planet.svgAddGlobeShading = svgAddGlobeShading;
         },
         onResize(planet, options) {
             if (planet.globeShading && !options.hideGlobeShading) {

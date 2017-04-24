@@ -3,21 +3,21 @@ export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         // console.log(d);
     }
 
-    function addWorldOrCountries(planet, options) {
+    function svgAddWorldOrCountries(planet, options) {
         planet.svg.selectAll('.land,.lakes,.countries').remove();
         if (!options.hideLand) {
             if (planet._world) {
                 if (!options.hideCountries) {
-                    planet.addCountries(planet, options);
+                    planet.svgAddCountries(planet, options);
                 } else {
-                    planet.addWorld(planet, options);
+                    planet.svgAddWorld(planet, options);
                 }
-                planet.addLakes(planet, options);
+                planet.svgAddLakes(planet, options);
             }
         }
     }
 
-    function addCountries(planet) {
+    function svgAddCountries(planet) {
         planet.countries = planet.svg.append("g").attr("class","countries").selectAll("path")
         .data(topojson.feature(planet._world, planet._world.objects.countries).features)
         .enter().append("path").attr("id",function(d) {return 'x'+d.id})
@@ -26,14 +26,14 @@ export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         return planet.countries;
     }
 
-    function addWorld(planet) {
+    function svgAddWorld(planet) {
         planet.world = planet.svg.append("g").attr("class","land").append("path")
         .datum(topojson.feature(planet._world, planet._world.objects.land))
         .attr("d", planet.path);
         return planet.world;
     }
 
-    function addLakes(planet) {
+    function svgAddLakes(planet) {
         planet.lakes = planet.svg.append("g").attr("class","lakes").append("path")
         .datum(topojson.feature(planet._world, planet._world.objects.ne_110m_lakes))
         .attr("d", planet.path);
@@ -50,16 +50,16 @@ export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         ready(planet, options, err, world, countryNames) {
             planet._world = world;
             planet._countryNames = countryNames;
-            planet.recreateSvg(planet);
+            planet.svgRecreate(planet);
         },
         onInit(planet, options) {
             options.world = true;
             options.hideLand = false;
             options.hideCountries = false;
-            planet.addWorldOrCountries = addWorldOrCountries;
-            planet.addCountries = addCountries;
-            planet.addWorld = addWorld;
-            planet.addLakes = addLakes;
+            planet.svgAddWorldOrCountries = svgAddWorldOrCountries;
+            planet.svgAddCountries = svgAddCountries;
+            planet.svgAddWorld = svgAddWorld;
+            planet.svgAddLakes = svgAddLakes;
         },
         onRefresh(planet, options) {
             if (!options.hideLand) {

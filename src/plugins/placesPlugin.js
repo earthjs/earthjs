@@ -1,16 +1,16 @@
 export default function(jsonUrl='./d/places.json') {
-    function addPlaces(planet, options) {
+    function svgAddPlaces(planet, options) {
         planet.svg.selectAll('.points,.labels').remove();
         if (planet._places) {
             if (options.places && !options.hidePlaces) {
-                addPlacePoints(planet, options);
-                addPlaceLabels(planet, options);
+                svgAddPlacePoints(planet, options);
+                svgAddPlaceLabels(planet, options);
                 position_labels(planet);
             }
         }
     }
 
-    function addPlacePoints(planet) {
+    function svgAddPlacePoints(planet) {
         planet.placePoints = planet.svg.append("g").attr("class","points").selectAll("path")
             .data(planet._places.features).enter().append("path")
             .attr("class", "point")
@@ -18,7 +18,7 @@ export default function(jsonUrl='./d/places.json') {
         return planet.placePoints;
     }
 
-    function addPlaceLabels(planet) {
+    function svgAddPlaceLabels(planet) {
         planet.placeLabels = planet.svg.append("g").attr("class","labels").selectAll("text")
             .data(planet._places.features).enter().append("text")
             .attr("class", "label")
@@ -53,12 +53,12 @@ export default function(jsonUrl='./d/places.json') {
         data: [jsonUrl],
         ready(planet, options, err, places) {
             planet._places = places;
-            planet.recreateSvg(planet);
+            planet.svgRecreate(planet);
         },
         onInit(planet, options) {
             options.places = true;
             options.hidePlaces = false;
-            planet.addPlaces = addPlaces;
+            planet.svgAddPlaces = svgAddPlaces;
         },
         onRefresh(planet, options) {
             if (planet.placePoints && options.places) {

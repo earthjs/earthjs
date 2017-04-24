@@ -1,5 +1,5 @@
 export default function(initOptions={}) {
-    function addOcean(planet, options) {
+    function svgAddOcean(planet, options) {
         planet.svg.selectAll('#ocean,.ocean').remove();
         if (!options.hideOcean) {
             var ocean_fill = planet.defs.append("radialGradient")
@@ -29,7 +29,7 @@ export default function(initOptions={}) {
         name: 'oceanPlugin',
         onInit(planet, options) {
             Object.assign(options, initOptions);
-            planet.addOcean = addOcean;
+            planet.svgAddOcean = svgAddOcean;
         },
         onResize(planet, options) {
             if (planet.ocean && !options.hideOcean) {

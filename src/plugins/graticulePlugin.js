@@ -1,9 +1,11 @@
 export default function(initOptions={}) {
-    function addGraticule(planet, options) {
+    var datumGraticule = d3.geoGraticule();
+
+    function svgAddGraticule(planet, options) {
         planet.svg.selectAll('.graticule').remove();
         if (!options.hideGraticule) {
             planet.graticule = planet.svg.append("g").attr("class","graticule").append("path")
-                .datum(planet.datumGraticule)
+                .datum(datumGraticule)
                 .attr("class", "noclicks")
                 .attr("d", planet.path);
             return planet.graticule;
@@ -17,9 +19,8 @@ export default function(initOptions={}) {
     return {
         name: 'graticulePlugin',
         onInit(planet, options) {
-            planet.datumGraticule = d3.geoGraticule();
             Object.assign(options, initOptions);
-            planet.addGraticule = addGraticule;
+            planet.svgAddGraticule = svgAddGraticule;
         },
         onRefresh(planet, options) {
             if (planet.graticule && !options.hideGraticule) {

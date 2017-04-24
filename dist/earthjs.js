@@ -70,15 +70,15 @@ var app$1 = function (options={}) {
     //----------------------------------------
     planet.resize = resize;
     planet.refresh = refresh;
-    planet.recreateSvg = recreateSvg;
+    planet.svgRecreate = svgRecreate;
     planet.svgCreateOrder = [
-        'addGlobeDropShadow',
-        'addOcean',
-        'addGlobeShading',
-        'addWorldOrCountries',
-        'addGlobeHilight',
-        'addGraticule',
-        'addPlaces',
+        'svgAddGlobeDropShadow',
+        'svgAddOcean',
+        'svgAddGlobeShading',
+        'svgAddWorldOrCountries',
+        'svgAddGlobeHilight',
+        'svgAddGraticule',
+        'svgAddPlaces',
     ];
     var ticker;
     planet.ticker = function(interval) {
@@ -119,7 +119,7 @@ var app$1 = function (options={}) {
         }
     }
 
-    function recreateSvg(planet) {
+    function svgRecreate(planet) {
         planet.svgCreateOrder.forEach(function(svgCreateKey) {
             planet[svgCreateKey] && planet[svgCreateKey](planet, options);
         });
@@ -273,7 +273,7 @@ var wheelZoomPlugin = function() {
 };
 
 var oceanPlugin = function(initOptions={}) {
-    function addOcean(planet, options) {
+    function svgAddOcean(planet, options) {
         planet.svg.selectAll('#ocean,.ocean').remove();
         if (!options.hideOcean) {
             var ocean_fill = planet.defs.append("radialGradient")
@@ -303,7 +303,7 @@ var oceanPlugin = function(initOptions={}) {
         name: 'oceanPlugin',
         onInit(planet, options) {
             Object.assign(options, initOptions);
-            planet.addOcean = addOcean;
+            planet.svgAddOcean = svgAddOcean;
         },
         onResize(planet, options) {
             if (planet.ocean && !options.hideOcean) {
@@ -320,7 +320,7 @@ var configPlugin = function() {
             if (newOpt) {
                 Object.assign(options, newOpt);
                 planet.state.drag = true;
-                planet.recreateSvg(planet);
+                planet.svgRecreate(planet);
                 planet.state.drag = false;
             }
             return Object.assign({}, options);
@@ -329,11 +329,13 @@ var configPlugin = function() {
 };
 
 var graticulePlugin = function(initOptions={}) {
-    function addGraticule(planet, options) {
+    var datumGraticule = d3.geoGraticule();
+
+    function svgAddGraticule(planet, options) {
         planet.svg.selectAll('.graticule').remove();
         if (!options.hideGraticule) {
             planet.graticule = planet.svg.append("g").attr("class","graticule").append("path")
-                .datum(planet.datumGraticule)
+                .datum(datumGraticule)
                 .attr("class", "noclicks")
                 .attr("d", planet.path);
             return planet.graticule;
@@ -347,9 +349,8 @@ var graticulePlugin = function(initOptions={}) {
     return {
         name: 'graticulePlugin',
         onInit(planet, options) {
-            planet.datumGraticule = d3.geoGraticule();
             Object.assign(options, initOptions);
-            planet.addGraticule = addGraticule;
+            planet.svgAddGraticule = svgAddGraticule;
         },
         onRefresh(planet, options) {
             if (planet.graticule && !options.hideGraticule) {
@@ -362,7 +363,7 @@ var graticulePlugin = function(initOptions={}) {
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
 //
 var fauxGlobePlugin = function(initOptions={}) {
-    function addGlobeDropShadow(planet, options) {
+    function svgAddGlobeDropShadow(planet, options) {
         planet.svg.selectAll('#drop_shadow,.drop_shadow').remove();
         if (!options.hideGlobeShadow) {
             var drop_shadow = planet.defs.append("radialGradient")
@@ -385,7 +386,7 @@ var fauxGlobePlugin = function(initOptions={}) {
         }
     }
 
-    function addGlobeShading(planet, options) {
+    function svgAddGlobeShading(planet, options) {
         planet.svg.selectAll('#globe_shading,.globe_shading').remove();
         if (!options.hideGlobeShading) {
             var globe_shading = planet.defs.append("radialGradient")
@@ -407,7 +408,7 @@ var fauxGlobePlugin = function(initOptions={}) {
         }
     }
 
-    function addGlobeHilight(planet, options) {
+    function svgAddGlobeHilight(planet, options) {
         planet.svg.selectAll('#globe_hilight,.globe_hilight').remove();
         if (!options.hideGlobeHilight) {
             var globe_highlight = planet.defs.append("radialGradient")
@@ -439,9 +440,9 @@ var fauxGlobePlugin = function(initOptions={}) {
         name: 'fauxGlobePlugin',
         onInit(planet, options) {
             Object.assign(options, initOptions);
-            planet.addGlobeDropShadow = addGlobeDropShadow;
-            planet.addGlobeHilight = addGlobeHilight;
-            planet.addGlobeShading = addGlobeShading;
+            planet.svgAddGlobeDropShadow = svgAddGlobeDropShadow;
+            planet.svgAddGlobeHilight = svgAddGlobeHilight;
+            planet.svgAddGlobeShading = svgAddGlobeShading;
         },
         onResize(planet, options) {
             if (planet.globeShading && !options.hideGlobeShading) {
@@ -490,18 +491,18 @@ var autorotatePlugin = function(degPerSec) {
 };
 
 var placesPlugin = function(jsonUrl='./d/places.json') {
-    function addPlaces(planet, options) {
+    function svgAddPlaces(planet, options) {
         planet.svg.selectAll('.points,.labels').remove();
         if (planet._places) {
             if (options.places && !options.hidePlaces) {
-                addPlacePoints(planet, options);
-                addPlaceLabels(planet, options);
+                svgAddPlacePoints(planet, options);
+                svgAddPlaceLabels(planet, options);
                 position_labels(planet);
             }
         }
     }
 
-    function addPlacePoints(planet) {
+    function svgAddPlacePoints(planet) {
         planet.placePoints = planet.svg.append("g").attr("class","points").selectAll("path")
             .data(planet._places.features).enter().append("path")
             .attr("class", "point")
@@ -509,7 +510,7 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
         return planet.placePoints;
     }
 
-    function addPlaceLabels(planet) {
+    function svgAddPlaceLabels(planet) {
         planet.placeLabels = planet.svg.append("g").attr("class","labels").selectAll("text")
             .data(planet._places.features).enter().append("text")
             .attr("class", "label")
@@ -544,12 +545,12 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
         data: [jsonUrl],
         ready(planet, options, err, places) {
             planet._places = places;
-            planet.recreateSvg(planet);
+            planet.svgRecreate(planet);
         },
         onInit(planet, options) {
             options.places = true;
             options.hidePlaces = false;
-            planet.addPlaces = addPlaces;
+            planet.svgAddPlaces = svgAddPlaces;
         },
         onRefresh(planet, options) {
             if (planet.placePoints && options.places) {
@@ -565,21 +566,21 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         // console.log(d);
     };
 
-    function addWorldOrCountries(planet, options) {
+    function svgAddWorldOrCountries(planet, options) {
         planet.svg.selectAll('.land,.lakes,.countries').remove();
         if (!options.hideLand) {
             if (planet._world) {
                 if (!options.hideCountries) {
-                    planet.addCountries(planet, options);
+                    planet.svgAddCountries(planet, options);
                 } else {
-                    planet.addWorld(planet, options);
+                    planet.svgAddWorld(planet, options);
                 }
-                planet.addLakes(planet, options);
+                planet.svgAddLakes(planet, options);
             }
         }
     }
 
-    function addCountries(planet) {
+    function svgAddCountries(planet) {
         planet.countries = planet.svg.append("g").attr("class","countries").selectAll("path")
         .data(topojson.feature(planet._world, planet._world.objects.countries).features)
         .enter().append("path").attr("id",function(d) {return 'x'+d.id})
@@ -588,14 +589,14 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         return planet.countries;
     }
 
-    function addWorld(planet) {
+    function svgAddWorld(planet) {
         planet.world = planet.svg.append("g").attr("class","land").append("path")
         .datum(topojson.feature(planet._world, planet._world.objects.land))
         .attr("d", planet.path);
         return planet.world;
     }
 
-    function addLakes(planet) {
+    function svgAddLakes(planet) {
         planet.lakes = planet.svg.append("g").attr("class","lakes").append("path")
         .datum(topojson.feature(planet._world, planet._world.objects.ne_110m_lakes))
         .attr("d", planet.path);
@@ -612,16 +613,16 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         ready(planet, options, err, world, countryNames) {
             planet._world = world;
             planet._countryNames = countryNames;
-            planet.recreateSvg(planet);
+            planet.svgRecreate(planet);
         },
         onInit(planet, options) {
             options.world = true;
             options.hideLand = false;
             options.hideCountries = false;
-            planet.addWorldOrCountries = addWorldOrCountries;
-            planet.addCountries = addCountries;
-            planet.addWorld = addWorld;
-            planet.addLakes = addLakes;
+            planet.svgAddWorldOrCountries = svgAddWorldOrCountries;
+            planet.svgAddCountries = svgAddCountries;
+            planet.svgAddWorld = svgAddWorld;
+            planet.svgAddLakes = svgAddLakes;
         },
         onRefresh(planet, options) {
             if (!options.hideLand) {
@@ -644,9 +645,9 @@ var countryTooltipPlugin = function() {
     return {
         name: 'countryTooltipPlugin',
         onInit(planet) {
-            var originalAddCountries = planet.addCountries;
-            planet.addCountries  = function(planet, options) {
-                originalAddCountries(planet, options)
+            var originalsvgAddCountries = planet.svgAddCountries;
+            planet.svgAddCountries  = function(planet, options) {
+                originalsvgAddCountries(planet, options)
                 .on("mouseover", function(d) {
                     var country = planet._countryNames.find(function(x) {
                         return x.id==d.id;

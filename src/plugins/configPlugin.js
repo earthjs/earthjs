@@ -5,7 +5,7 @@ export default function() {
             if (newOpt) {
                 Object.assign(options, newOpt);
                 planet.state.drag = true;
-                planet.recreateSvg(planet);
+                planet.svgRecreate(planet);
                 planet.state.drag = false;
             }
             return Object.assign({}, options);
