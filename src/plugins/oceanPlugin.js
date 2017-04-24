@@ -1,6 +1,6 @@
 export default function(initOptions={}) {
     function svgAddOcean(planet, options) {
-        planet.svg.selectAll('#ocean,.ocean').remove();
+        planet._.svg.selectAll('#ocean,.ocean').remove();
         if (!options.hideOcean) {
             var ocean_fill = planet._.defs.append("radialGradient")
                 .attr("id", "ocean")
@@ -12,9 +12,9 @@ export default function(initOptions={}) {
             ocean_fill.append("stop")
                 .attr("offset", "100%")
                 .attr("stop-color", "#9ab");
-            planet._.ocean = planet.svg.append("circle")
+            planet._.ocean = planet._.svg.append("circle")
                 .attr("cx",options.width / 2).attr("cy", options.height / 2)
-                .attr("r", planet.proj.scale())
+                .attr("r", planet._.proj.scale())
                 .attr("class", "ocean noclicks")
                 .style("fill", "url(#ocean)");
             return planet._.ocean;
@@ -33,7 +33,7 @@ export default function(initOptions={}) {
         },
         onResize(planet, options) {
             if (planet._.ocean && !options.hideOcean) {
-                planet._.ocean.attr("r", planet.proj.scale());
+                planet._.ocean.attr("r", planet._.proj.scale());
             }
         }
     }

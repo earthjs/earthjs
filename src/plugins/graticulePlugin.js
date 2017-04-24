@@ -2,12 +2,12 @@ export default function(initOptions={}) {
     var datumGraticule = d3.geoGraticule();
 
     function svgAddGraticule(planet, options) {
-        planet.svg.selectAll('.graticule').remove();
+        planet._.svg.selectAll('.graticule').remove();
         if (!options.hideGraticule) {
-            planet._.graticule = planet.svg.append("g").attr("class","graticule").append("path")
+            planet._.graticule = planet._.svg.append("g").attr("class","graticule").append("path")
                 .datum(datumGraticule)
                 .attr("class", "noclicks")
-                .attr("d", planet.path);
+                .attr("d", planet._.path);
             return planet._.graticule;
         }
     }
@@ -24,7 +24,7 @@ export default function(initOptions={}) {
         },
         onRefresh(planet, options) {
             if (planet._.graticule && !options.hideGraticule) {
-                planet._.graticule.attr("d", planet.path);
+                planet._.graticule.attr("d", planet._.path);
             }
         },
     }

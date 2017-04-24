@@ -1,34 +1,36 @@
 export default function(degPerSec) {
-    var degree, lastTick = null;
+    var _ = {
+        stop: false,
+        lastTick: null,
+        degree: degPerSec
+    }
+
     return {
         name: 'autorotatePlugin',
-        onInit(planet, options) {
-            degree = degPerSec;
-            options.stop = false;
-        },
+        onInit(planet, options) {},
         onInterval(planet, options) {
             var now = new Date();
-            if (planet.state.drag || options.stop || !lastTick) {
-                lastTick = now;
+            if (planet._.drag || _.stop || !_.lastTick) {
+                _.lastTick = now;
             } else {
-                var delta = now - lastTick;
-                var rotation = planet.proj.rotate();
-                rotation[0] += degree * delta / 1000;
+                var delta = now - _.lastTick;
+                var rotation = planet._.proj.rotate();
+                rotation[0] += _.degree * delta / 1000;
                 if (rotation[0] >= 180)
                     rotation[0] -= 360;
-                planet.proj.rotate(rotation);
-                planet.refresh(planet, options);
-                lastTick = now;
+                planet._.proj.rotate(rotation);
+                planet._.refresh(planet, options);
+                _.lastTick = now;
             }
         },
         speed(planet, options, degPerSec) {
-            degree = degPerSec;
+            _.degree = degPerSec;
         },
         start(planet, options) {
-            options.stop = false;
+            _.stop = false;
         },
         stop(planet, options) {
-            options.stop = true;
+            _.stop = true;
         }
     };
 }

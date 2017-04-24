@@ -6,8 +6,8 @@ export default function() {
 
             function mousedown() {
               m0 = [d3.event.pageX, d3.event.pageY];
-              o0 = planet.proj.rotate();
-              planet.state.drag = true;
+              o0 = planet._.proj.rotate();
+              planet._.drag = true;
               d3.event.preventDefault();
             }
 
@@ -18,8 +18,8 @@ export default function() {
                 o1[1] = o1[1] > 30  ? 30  :
                         o1[1] < -30 ? -30 :
                         o1[1];
-                planet.proj.rotate(o1);
-                planet.refresh(planet, options);
+                planet._.proj.rotate(o1);
+                planet._.refresh(planet, options);
               }
             }
 
@@ -27,14 +27,14 @@ export default function() {
               if (m0) {
                 mousemove();
                 m0 = null;
-                planet.state.drag = false;
+                planet._.drag = false;
               }
             }
 
             var win = d3.select(window);
             win.on("mouseup",   mouseup);
             win.on("mousemove", mousemove);
-            planet.svg.on("mousedown", mousedown);
+            planet._.svg.on("mousedown", mousedown);
         },
     }
 }

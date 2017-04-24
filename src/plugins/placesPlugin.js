@@ -1,7 +1,9 @@
 export default function(jsonUrl='./d/places.json') {
+    var _ = {places: null};
+
     function svgAddPlaces(planet, options) {
-        planet.svg.selectAll('.points,.labels').remove();
-        if (planet._places) {
+        planet._.svg.selectAll('.points,.labels').remove();
+        if (_.places) {
             if (options.places && !options.hidePlaces) {
                 svgAddPlacePoints(planet, options);
                 svgAddPlaceLabels(planet, options);
@@ -11,33 +13,33 @@ export default function(jsonUrl='./d/places.json') {
     }
 
     function svgAddPlacePoints(planet) {
-        planet._.placePoints = planet.svg.append("g").attr("class","points").selectAll("path")
-            .data(planet._places.features).enter().append("path")
+        planet._.placePoints = planet._.svg.append("g").attr("class","points").selectAll("path")
+            .data(_.places.features).enter().append("path")
             .attr("class", "point")
-            .attr("d", planet.path);
+            .attr("d", planet._.path);
         return planet._.placePoints;
     }
 
     function svgAddPlaceLabels(planet) {
-        planet._.placeLabels = planet.svg.append("g").attr("class","labels").selectAll("text")
-            .data(planet._places.features).enter().append("text")
+        planet._.placeLabels = planet._.svg.append("g").attr("class","labels").selectAll("text")
+            .data(_.places.features).enter().append("text")
             .attr("class", "label")
             .text(function(d) { return d.properties.name });
         return planet._.placeLabels;
     }
 
     function position_labels(planet, options) {
-        var centerPos = planet.proj.invert([options.width / 2, options.height/2]);
+        var centerPos = planet._.proj.invert([options.width / 2, options.height/2]);
 
         planet._.placeLabels
             .attr("text-anchor",function(d) {
-                var x = planet.proj(d.geometry.coordinates)[0];
+                var x = planet._.proj(d.geometry.coordinates)[0];
                 return x < options.width/2-20 ? "end" :
                        x < options.width/2+20 ? "middle" :
                        "start"
             })
             .attr("transform", function(d) {
-                var loc = planet.proj(d.geometry.coordinates),
+                var loc = planet._.proj(d.geometry.coordinates),
                     x = loc[0],
                     y = loc[1];
                 var offset = x < options.width/2 ? -5 : 5;
@@ -52,8 +54,8 @@ export default function(jsonUrl='./d/places.json') {
         name: 'placesPlugin',
         data: [jsonUrl],
         ready(planet, options, err, places) {
-            planet._places = places;
-            planet.svgRecreate(planet);
+            _.places = places;
+            planet.svgDraw();
         },
         onInit(planet, options) {
             options.places = true;
@@ -62,7 +64,7 @@ export default function(jsonUrl='./d/places.json') {
         },
         onRefresh(planet, options) {
             if (planet._.placePoints && options.places) {
-                planet._.placePoints.attr("d", planet.path);
+                planet._.placePoints.attr("d", planet._.path);
                 position_labels(planet, options);
             }
         }

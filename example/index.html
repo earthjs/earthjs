@@ -18,7 +18,7 @@ p.register(earthjs.plugins.fauxGlobePlugin());
 p.register(earthjs.plugins.placesPlugin('./d/places.json'));
 p.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
 p.register(earthjs.plugins.countryTooltipPlugin());
-p.ticker().autorotatePlugin.stop();
+p.svgDraw();
 
 var options = {removeLand: true};
 var buttonClick = function(str) {

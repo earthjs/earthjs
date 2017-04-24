@@ -4,9 +4,13 @@ export default function() {
         set(planet, options, newOpt) {
             if (newOpt) {
                 Object.assign(options, newOpt);
-                planet.state.drag = true;
-                planet.svgRecreate(planet);
-                planet.state.drag = false;
+                if (newOpt.stop!==undefined) {
+                    var p = planet.autorotatePlugin;
+                    newOpt.stop ? p.stop() : p.start();
+                }
+                planet._.drag = true;
+                planet.svgDraw();
+                planet._.drag = false;
             }
             return Object.assign({}, options);
         }

@@ -8,11 +8,9 @@ export default function() {
         onInit(planet) {
             var originalsvgAddCountries = planet.svgAddCountries;
             planet.svgAddCountries  = function(planet, options) {
-                originalsvgAddCountries(planet, options)
+                return originalsvgAddCountries(planet, options)
                 .on("mouseover", function(d) {
-                    var country = planet._countryNames.find(function(x) {
-                        return x.id==d.id;
-                    });
+                    var country = planet.worldPlugin.countryName(d);
                     countryTooltip.text(country.name)
                     .style("left", (d3.event.pageX + 7) + "px")
                     .style("top", (d3.event.pageY - 15) + "px")
@@ -27,7 +25,6 @@ export default function() {
                     countryTooltip.style("left", (d3.event.pageX + 7) + "px")
                     .style("top", (d3.event.pageY - 15) + "px");
                 });
-                return planet._.countries;
             }
         },
     }

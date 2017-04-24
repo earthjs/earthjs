@@ -1,7 +1,6 @@
 export default function (options={}) {
     options = Object.assign({
         select: '#earth',
-        interval: 50,
         height: 870,
         width: 1700,
     }, options);
@@ -14,22 +13,39 @@ export default function (options={}) {
 
         onInterval: {},
         onIntervalKeys: [],
-    }
 
+        svgCreateOrder: [
+            'svgAddDropShadow',
+            'svgAddOcean',
+            'svgAddGlobeShading',
+            'svgAddWorldOrCountries',
+            'svgAddGlobeHilight',
+            'svgAddGraticule',
+            'svgAddPlaces',
+        ]
+    }
+    var drag = false;
     var svg  = d3.select(options.select).attr("width", options.width).attr("height", options.height);
-    var proj = d3.geoOrthographic().scale(options.width / 4.1).translate([options.width / 2, options.height / 2]).precision(0.1);
+    var proj = d3.geoOrthographic().scale(options.width / 4.1).translate([options.width / 2, options.height / 2]);
     var path = d3.geoPath().projection(proj);
     var planet = {
-        svg,
-        proj,
-        path,
-        _: {},
-        state: {drag: false},
+        _: {
+            svg,
+            proj,
+            path,
+            drag,
+        },
         register: function(obj) {
             var fn = {};
             planet[obj.name] = fn;
             Object.keys(obj).map(function(name) {
-                if (['onResize', 'onInterval', 'onRefresh', 'ready', 'data'].indexOf(name)===-1) {
+                if ([
+                    'data',
+                    'ready',
+                    'onInit',
+                    'onResize',
+                    'onRefresh',
+                    'onInterval'].indexOf(name)===-1) {
                     if (typeof(obj[name])==='function') {
                         fn[name] = function() {
                             var args = [].slice.call(arguments);
@@ -61,55 +77,47 @@ export default function (options={}) {
         }
     }
 
-    planet._.defs = planet.svg.append("defs");
+    planet._.defs = planet._.svg.append("defs");
     //----------------------------------------
-    var ticker;
-    planet.ticker = function(interval) {
-        if (interval) {
-            options.interval = interval;
-            clearInterval(ticker);
-        }
+    var ticker = null;
+    planet._.ticker = function(interval) {
+        interval = interval || 50;
         ticker = setInterval(function(){
             if (_.onIntervalKeys.length>0) {
                 _.onIntervalKeys.map(function(key) {
                     _.onInterval[key](planet, options);
                 });
             }
-        }, options.interval);
+        }, interval);
         return planet;
     }
 
-    planet.svgCreateOrder = [
-        'svgAddDropShadow',
-        'svgAddOcean',
-        'svgAddGlobeShading',
-        'svgAddWorldOrCountries',
-        'svgAddGlobeHilight',
-        'svgAddGraticule',
-        'svgAddPlaces',
-    ];
+    planet.svgDraw = function() {
+        _.svgCreateOrder.forEach(function(svgCreateKey) {
+            planet[svgCreateKey] && planet[svgCreateKey](planet, options);
+        });
+        if (ticker===null) {
+            planet._.ticker();
+        }
+        return planet;
+    }
 
-    planet.svgRecreate = svgRecreate;
-    planet.refresh = refresh;
-    planet.resize = resize;
+    planet._.refresh = refresh;
+    planet._.resize = resize;
 
     //----------------------------------------
     // Helper
 
-    planet.draw = function() {
-        planet.svgRecreate(planet);
-    }
-
-    planet.scale = function(y) {
-        planet.proj.scale(y);
-        planet.resize(planet, options);
-        planet.refresh(planet, options);
+    planet._.scale = function(y) {
+        planet._.proj.scale(y);
+        planet._.resize(planet, options);
+        planet._.refresh(planet, options);
         return planet;
     }
 
-    planet.rotate = function(r) {
-        planet.proj.rotate(r);
-        planet.refresh(planet, options);
+    planet._.rotate = function(r) {
+        planet._.proj.rotate(r);
+        planet._.refresh(planet, options);
         return planet;
     }
 
@@ -121,13 +129,6 @@ export default function (options={}) {
             _[qname][obj.name] = obj[qname];
             _[qkey] = Object.keys(_[qname]);
         }
-    }
-
-    function svgRecreate(planet) {
-        planet.svgCreateOrder.forEach(function(svgCreateKey) {
-            planet[svgCreateKey] && planet[svgCreateKey](planet, options);
-        });
-        return planet;
     }
 
     function refresh(planet, options) {
