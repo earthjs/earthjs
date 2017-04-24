@@ -18,26 +18,26 @@ export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
     }
 
     function svgAddCountries(planet) {
-        planet.countries = planet.svg.append("g").attr("class","countries").selectAll("path")
+        planet._.countries = planet.svg.append("g").attr("class","countries").selectAll("path")
         .data(topojson.feature(planet._world, planet._world.objects.countries).features)
         .enter().append("path").attr("id",function(d) {return 'x'+d.id})
         .on('click', countryClick)
         .attr("d", planet.path);
-        return planet.countries;
+        return planet._.countries;
     }
 
     function svgAddWorld(planet) {
-        planet.world = planet.svg.append("g").attr("class","land").append("path")
+        planet._.world = planet.svg.append("g").attr("class","land").append("path")
         .datum(topojson.feature(planet._world, planet._world.objects.land))
         .attr("d", planet.path);
-        return planet.world;
+        return planet._.world;
     }
 
     function svgAddLakes(planet) {
-        planet.lakes = planet.svg.append("g").attr("class","lakes").append("path")
+        planet._.lakes = planet.svg.append("g").attr("class","lakes").append("path")
         .datum(topojson.feature(planet._world, planet._world.objects.ne_110m_lakes))
         .attr("d", planet.path);
-        return planet.lakes;
+        return planet._.lakes;
     }
 
     var data = [jsonWorld];
@@ -64,11 +64,11 @@ export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         onRefresh(planet, options) {
             if (!options.hideLand) {
                 if (!options.hideCountries) {
-                    planet.countries.attr("d", planet.path);
+                    planet._.countries.attr("d", planet.path);
                 } else {
-                    planet.world.attr("d", planet.path);
+                    planet._.world.attr("d", planet.path);
                 }
-                planet.lakes.attr("d", planet.path);
+                planet._.lakes.attr("d", planet.path);
             }
         }
     };

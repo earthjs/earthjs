@@ -28,6 +28,7 @@ var app$1 = function (options={}) {
         svg,
         proj,
         path,
+        _: {},
         state: {drag: false},
         width: options.width,
         height: options.height,
@@ -66,7 +67,7 @@ var app$1 = function (options={}) {
             return planet;
         }
     };
-    planet.defs = planet.svg.append("defs");
+    planet._.defs = planet.svg.append("defs");
     //----------------------------------------
     planet.resize = resize;
     planet.refresh = refresh;
@@ -276,7 +277,7 @@ var oceanPlugin = function(initOptions={}) {
     function svgAddOcean(planet, options) {
         planet.svg.selectAll('#ocean,.ocean').remove();
         if (!options.hideOcean) {
-            var ocean_fill = planet.defs.append("radialGradient")
+            var ocean_fill = planet._.defs.append("radialGradient")
                 .attr("id", "ocean")
                 .attr("cx", "75%")
                 .attr("cy", "25%");
@@ -334,11 +335,11 @@ var graticulePlugin = function(initOptions={}) {
     function svgAddGraticule(planet, options) {
         planet.svg.selectAll('.graticule').remove();
         if (!options.hideGraticule) {
-            planet.graticule = planet.svg.append("g").attr("class","graticule").append("path")
+            planet._.graticule = planet.svg.append("g").attr("class","graticule").append("path")
                 .datum(datumGraticule)
                 .attr("class", "noclicks")
                 .attr("d", planet.path);
-            return planet.graticule;
+            return planet._.graticule;
         }
     }
 
@@ -353,8 +354,8 @@ var graticulePlugin = function(initOptions={}) {
             planet.svgAddGraticule = svgAddGraticule;
         },
         onRefresh(planet, options) {
-            if (planet.graticule && !options.hideGraticule) {
-                planet.graticule.attr("d", planet.path);
+            if (planet._.graticule && !options.hideGraticule) {
+                planet._.graticule.attr("d", planet.path);
             }
         },
     }
@@ -366,7 +367,7 @@ var fauxGlobePlugin = function(initOptions={}) {
     function svgAddGlobeDropShadow(planet, options) {
         planet.svg.selectAll('#drop_shadow,.drop_shadow').remove();
         if (!options.hideGlobeShadow) {
-            var drop_shadow = planet.defs.append("radialGradient")
+            var drop_shadow = planet._.defs.append("radialGradient")
                   .attr("id", "drop_shadow")
                   .attr("cx", "50%")
                   .attr("cy", "50%");
@@ -376,20 +377,20 @@ var fauxGlobePlugin = function(initOptions={}) {
                 drop_shadow.append("stop")
                   .attr("offset","100%").attr("stop-color", "#000")
                   .attr("stop-opacity","0");
-            planet.dropShadow = planet.svg.append("ellipse")
+            planet._.dropShadow = planet.svg.append("ellipse")
                   .attr("cx", planet.width/2).attr("cy", planet.height-50)
                   .attr("rx", planet.proj.scale()*0.90)
                   .attr("ry", planet.proj.scale()*0.25)
                   .attr("class", "drop_shadow noclicks")
                   .style("fill", "url(#drop_shadow)");
-            planet.dropShadow;
+            planet._.dropShadow;
         }
     }
 
     function svgAddGlobeShading(planet, options) {
         planet.svg.selectAll('#globe_shading,.globe_shading').remove();
         if (!options.hideGlobeShading) {
-            var globe_shading = planet.defs.append("radialGradient")
+            var globe_shading = planet._.defs.append("radialGradient")
                   .attr("id", "globe_shading")
                   .attr("cx", "50%")
                   .attr("cy", "40%");
@@ -399,19 +400,19 @@ var fauxGlobePlugin = function(initOptions={}) {
                 globe_shading.append("stop")
                   .attr("offset","100%").attr("stop-color", "#3e6184")
                   .attr("stop-opacity","0.3");
-            planet.globeShading = planet.svg.append("circle")
+            planet._.globeShading = planet.svg.append("circle")
                 .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
                 .attr("r",  planet.proj.scale())
                 .attr("class","globe_shading noclicks")
                 .style("fill", "url(#globe_shading)");
-            return planet.globeShading;
+            return planet._.globeShading;
         }
     }
 
     function svgAddGlobeHilight(planet, options) {
         planet.svg.selectAll('#globe_hilight,.globe_hilight').remove();
         if (!options.hideGlobeHilight) {
-            var globe_highlight = planet.defs.append("radialGradient")
+            var globe_highlight = planet._.defs.append("radialGradient")
                   .attr("id", "globe_hilight")
                   .attr("cx", "75%")
                   .attr("cy", "25%");
@@ -421,12 +422,12 @@ var fauxGlobePlugin = function(initOptions={}) {
                 globe_highlight.append("stop")
                   .attr("offset", "100%").attr("stop-color", "#ba9")
                   .attr("stop-opacity","0.2");
-            planet.globeHilight = planet.svg.append("circle")
+            planet._.globeHilight = planet.svg.append("circle")
                 .attr("cx", planet.width / 2).attr("cy", planet.height / 2)
                 .attr("r",  planet.proj.scale())
                 .attr("class","globe_hilight noclicks")
                 .style("fill", "url(#globe_hilight)");
-            return planet.globeHilight;
+            return planet._.globeHilight;
         }
     }
 
@@ -445,11 +446,11 @@ var fauxGlobePlugin = function(initOptions={}) {
             planet.svgAddGlobeShading = svgAddGlobeShading;
         },
         onResize(planet, options) {
-            if (planet.globeShading && !options.hideGlobeShading) {
-                planet.globeShading.attr("r", planet.proj.scale());
+            if (planet._.globeShading && !options.hideGlobeShading) {
+                planet._.globeShading.attr("r", planet.proj.scale());
             }
-            if (planet.globeHilight && !options.hideGlobeHilight) {
-                planet.globeHilight.attr("r", planet.proj.scale());
+            if (planet._.globeHilight && !options.hideGlobeHilight) {
+                planet._.globeHilight.attr("r", planet.proj.scale());
             }
         }
     }
@@ -581,26 +582,26 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
     }
 
     function svgAddCountries(planet) {
-        planet.countries = planet.svg.append("g").attr("class","countries").selectAll("path")
+        planet._.countries = planet.svg.append("g").attr("class","countries").selectAll("path")
         .data(topojson.feature(planet._world, planet._world.objects.countries).features)
         .enter().append("path").attr("id",function(d) {return 'x'+d.id})
         .on('click', countryClick)
         .attr("d", planet.path);
-        return planet.countries;
+        return planet._.countries;
     }
 
     function svgAddWorld(planet) {
-        planet.world = planet.svg.append("g").attr("class","land").append("path")
+        planet._.world = planet.svg.append("g").attr("class","land").append("path")
         .datum(topojson.feature(planet._world, planet._world.objects.land))
         .attr("d", planet.path);
-        return planet.world;
+        return planet._.world;
     }
 
     function svgAddLakes(planet) {
-        planet.lakes = planet.svg.append("g").attr("class","lakes").append("path")
+        planet._.lakes = planet.svg.append("g").attr("class","lakes").append("path")
         .datum(topojson.feature(planet._world, planet._world.objects.ne_110m_lakes))
         .attr("d", planet.path);
-        return planet.lakes;
+        return planet._.lakes;
     }
 
     var data = [jsonWorld];
@@ -627,11 +628,11 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         onRefresh(planet, options) {
             if (!options.hideLand) {
                 if (!options.hideCountries) {
-                    planet.countries.attr("d", planet.path);
+                    planet._.countries.attr("d", planet.path);
                 } else {
-                    planet.world.attr("d", planet.path);
+                    planet._.world.attr("d", planet.path);
                 }
-                planet.lakes.attr("d", planet.path);
+                planet._.lakes.attr("d", planet.path);
             }
         }
     };
@@ -666,7 +667,7 @@ var countryTooltipPlugin = function() {
                     countryTooltip.style("left", (d3.event.pageX + 7) + "px")
                     .style("top", (d3.event.pageY - 15) + "px");
                 });
-                return planet.countries;
+                return planet._.countries;
             };
         },
     }

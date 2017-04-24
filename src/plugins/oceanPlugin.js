@@ -2,7 +2,7 @@ export default function(initOptions={}) {
     function svgAddOcean(planet, options) {
         planet.svg.selectAll('#ocean,.ocean').remove();
         if (!options.hideOcean) {
-            var ocean_fill = planet.defs.append("radialGradient")
+            var ocean_fill = planet._.defs.append("radialGradient")
                 .attr("id", "ocean")
                 .attr("cx", "75%")
                 .attr("cy", "25%");

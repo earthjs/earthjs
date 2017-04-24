@@ -27,7 +27,7 @@ export default function() {
                     countryTooltip.style("left", (d3.event.pageX + 7) + "px")
                     .style("top", (d3.event.pageY - 15) + "px");
                 });
-                return planet.countries;
+                return planet._.countries;
             }
         },
     }

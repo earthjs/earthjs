@@ -4,11 +4,11 @@ export default function(initOptions={}) {
     function svgAddGraticule(planet, options) {
         planet.svg.selectAll('.graticule').remove();
         if (!options.hideGraticule) {
-            planet.graticule = planet.svg.append("g").attr("class","graticule").append("path")
+            planet._.graticule = planet.svg.append("g").attr("class","graticule").append("path")
                 .datum(datumGraticule)
                 .attr("class", "noclicks")
                 .attr("d", planet.path);
-            return planet.graticule;
+            return planet._.graticule;
         }
     }
 
@@ -23,8 +23,8 @@ export default function(initOptions={}) {
             planet.svgAddGraticule = svgAddGraticule;
         },
         onRefresh(planet, options) {
-            if (planet.graticule && !options.hideGraticule) {
-                planet.graticule.attr("d", planet.path);
+            if (planet._.graticule && !options.hideGraticule) {
+                planet._.graticule.attr("d", planet.path);
             }
         },
     }

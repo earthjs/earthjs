@@ -22,6 +22,7 @@ export default function (options={}) {
         svg,
         proj,
         path,
+        _: {},
         state: {drag: false},
         width: options.width,
         height: options.height,
@@ -60,7 +61,7 @@ export default function (options={}) {
             return planet;
         }
     };
-    planet.defs = planet.svg.append("defs");
+    planet._.defs = planet.svg.append("defs");
     //----------------------------------------
     planet.resize = resize;
     planet.refresh = refresh;
