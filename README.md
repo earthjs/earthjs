@@ -60,6 +60,7 @@ Here is structure samplePlugin, you can check folder plugins for each functional
 ```javascript
 export default function(url='/some/path.json') {
     // Internal functions definitions
+    // var _ = {svg:null, select: null}; // (**)
     //
     return {
         // namespace for the plugins
@@ -68,26 +69,40 @@ export default function(url='/some/path.json') {
         data: [url],
         // event handler ajax
         onReady(err, places) {
-            // code...
+            // code...(*)
         },
         // register event handler
         onInit() {
-            // code...
+            // code...(*)
+            // _.svg = this._.svg; // (**)
         },
         // zoom event handler
         onResize() {
-            // code...
+            // code...(*)
+            // see fauxGlobePlugin, oceanPlugin
         },
         // refresh svg graphics components
         onRefresh() {
-            // code...
+            // code...(*)
+            // see graticulePlugin, placesPlugin, worldPlugin
         },
         // timer event handler
         onInterval() {
-            // code...
-        }        
+            // code...(*)
+        }
+        /* (**)
+        select(slc) {
+            _.svg = d3.selectAll(slc);
+            _.select = slc;
+            return _.svg;
+        }
+        // see fauxGlobePlugin, graticulePlugin, oceanPlugin,
+        //     placesPlugin, worldPlugin.
+        */
     }
 }
+(*) context refer to earthjs instance.
+(**) pattern need to follow if plugins operate with .._.svg.append().
 ```
 
 ## Building
