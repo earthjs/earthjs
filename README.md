@@ -1,9 +1,11 @@
 # Earthjs
 D3 Earth JS
 
-Earthjs.js is a javascript library for easy building earth orthographic. Originally inspired by [planetary.js](https://github.com/BinaryMuse/planetary.js) (canvas) and [Faux-3d Shaded Globe](http://bl.ocks.org/dwtkns/4686432) (svg) and it was created using early version of D3.v3.
+Earthjs is a javascript library for easy building orthographic globe. Originally inspired by [planetary.js](https://github.com/BinaryMuse/planetary.js) (canvas) and [Faux-3d Shaded Globe](http://bl.ocks.org/dwtkns/4686432) (svg) and both was created using D3.v3.
 
-To make it easy for D3.v4 users to create (svg) orthographic globe, this library was created with plugins architecture in mind. Svg graphic components will be automatically created when user register the plugins.
+Earthjs created using D3.v4, design as pluggable modules.
+
+Awesome interactive globe can be created, dragging to rotate any direction, zooming using scroll mouse or tap, multiple layer of globe with oceanPlugin & fauxGlobePlugin, area of land can be plain one svg path or switch with bordered countries for optimized rendering, auto rotate with adjustable speed and ticker to balance between smooth and cpu utilization, point of places is included and lastly sample tool tips of the country. All of this can configure on the fly switching to activate, deactivate or adjust speed and ticker.
 
 ## Internal Plugins
 Selected plugins bundled into library:
@@ -56,7 +58,7 @@ This sample need to run on the webserver, you can use [nodejs web-server](https:
 ```
 
 ## Writing Plugins
-Here is structure samplePlugin, you can check folder plugins for each functionality
+Sample skeleton of plugin, five(5) event handler and you can add any function that will be live on the plugin namespace, you can check folder plugins for each functionality.
 ```javascript
 export default function(url='/some/path.json') {
     // Internal functions definitions
