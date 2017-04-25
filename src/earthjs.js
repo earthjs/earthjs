@@ -34,6 +34,7 @@ export default function (options={}) {
             proj,
             path,
             drag,
+            options
         },
         register: function(obj) {
             var fn = {};
@@ -85,7 +86,7 @@ export default function (options={}) {
         interval = interval || 50;
         ticker = setInterval(function(){
             intervalRun(planet, options);
-            earth && earth._.interval(planet, options); 
+            earth && intervalRun(earth, earth._.options);
         }, interval);
         return planet;
     }

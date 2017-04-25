@@ -40,6 +40,7 @@ var app$1 = function (options={}) {
             proj,
             path,
             drag,
+            options
         },
         register: function(obj) {
             var fn = {};
@@ -91,7 +92,7 @@ var app$1 = function (options={}) {
         interval = interval || 50;
         ticker = setInterval(function(){
             intervalRun(planet, options);
-            earth && earth._.interval(planet, options); 
+            earth && intervalRun(earth, earth._.options);
         }, interval);
         return planet;
     };
@@ -523,10 +524,10 @@ var autorotatePlugin = function(degPerSec) {
 };
 
 var placesPlugin = function(jsonUrl='./d/places.json') {
-    var _ = {places: null};
+    var _ = {svg:null, places: null, select: null};
 
     function svgAddPlaces(planet, options) {
-        planet._.svg.selectAll('.points,.labels').remove();
+        _.svg.selectAll('.points,.labels').remove();
         if (_.places) {
             if (options.places && !options.hidePlaces) {
                 svgAddPlacePoints(planet, options);
@@ -537,7 +538,7 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
     }
 
     function svgAddPlacePoints(planet) {
-        planet._.placePoints = planet._.svg.append("g").attr("class","points").selectAll("path")
+        planet._.placePoints = _.svg.append("g").attr("class","points").selectAll("path")
             .data(_.places.features).enter().append("path")
             .attr("class", "point")
             .attr("d", planet._.path);
@@ -545,7 +546,7 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
     }
 
     function svgAddPlaceLabels(planet) {
-        planet._.placeLabels = planet._.svg.append("g").attr("class","labels").selectAll("text")
+        planet._.placeLabels = _.svg.append("g").attr("class","labels").selectAll("text")
             .data(_.places.features).enter().append("text")
             .attr("class", "label")
             .text(function(d) { return d.properties.name });
@@ -585,18 +586,23 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
             options.places = true;
             options.hidePlaces = false;
             planet.svgAddPlaces = svgAddPlaces;
+            _.svg = planet._.svg;
         },
         onRefresh(planet, options) {
             if (planet._.placePoints && options.places) {
                 planet._.placePoints.attr("d", planet._.path);
                 position_labels(planet, options);
             }
+        },
+        select(planet, options, slc) {
+            _.select = slc;
+            _.svg = d3.selectAll(slc);
         }
     };
 };
 
 var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
-    var _ = {world: null, countryNames: null};
+    var _ = {world: null, countryNames: null, select: null};
     var countryClick = function() {
         // console.log(d);
     };

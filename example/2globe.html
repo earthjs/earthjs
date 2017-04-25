@@ -14,15 +14,17 @@
   </style>
 </head>
 <body>
-    <svg class="earth"></svg><br/>
-    <svg class="earth"></svg>
+    <svg class="earth e1"></svg><br/>
+    <svg class="earth e2"></svg>
     <script>
-        var p = earthjs({select:'.earth',width:250,height:250});
+        var p = earthjs({select:'.earth',width:450,height:450});
         p.register(earthjs.plugins.configPlugin());
         p.register(earthjs.plugins.graticulePlugin());
         p.register(earthjs.plugins.versorDragPlugin());
         p.register(earthjs.plugins.autorotatePlugin(10));
+        p.register(earthjs.plugins.placesPlugin('./d/places.json'));
         p.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
+        p.placesPlugin.select('.e1');
         p.svgDraw();
     </script>
 </body>

@@ -1,5 +1,5 @@
 export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
-    var _ = {world: null, countryNames: null}
+    var _ = {world: null, countryNames: null, select: null};
     var countryClick = function() {
         // console.log(d);
     }

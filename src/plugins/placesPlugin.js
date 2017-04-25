@@ -1,8 +1,8 @@
 export default function(jsonUrl='./d/places.json') {
-    var _ = {places: null};
+    var _ = {svg:null, places: null, select: null};
 
     function svgAddPlaces(planet, options) {
-        planet._.svg.selectAll('.points,.labels').remove();
+        _.svg.selectAll('.points,.labels').remove();
         if (_.places) {
             if (options.places && !options.hidePlaces) {
                 svgAddPlacePoints(planet, options);
@@ -13,7 +13,7 @@ export default function(jsonUrl='./d/places.json') {
     }
 
     function svgAddPlacePoints(planet) {
-        planet._.placePoints = planet._.svg.append("g").attr("class","points").selectAll("path")
+        planet._.placePoints = _.svg.append("g").attr("class","points").selectAll("path")
             .data(_.places.features).enter().append("path")
             .attr("class", "point")
             .attr("d", planet._.path);
@@ -21,7 +21,7 @@ export default function(jsonUrl='./d/places.json') {
     }
 
     function svgAddPlaceLabels(planet) {
-        planet._.placeLabels = planet._.svg.append("g").attr("class","labels").selectAll("text")
+        planet._.placeLabels = _.svg.append("g").attr("class","labels").selectAll("text")
             .data(_.places.features).enter().append("text")
             .attr("class", "label")
             .text(function(d) { return d.properties.name });
@@ -61,12 +61,17 @@ export default function(jsonUrl='./d/places.json') {
             options.places = true;
             options.hidePlaces = false;
             planet.svgAddPlaces = svgAddPlaces;
+            _.svg = planet._.svg;
         },
         onRefresh(planet, options) {
             if (planet._.placePoints && options.places) {
                 planet._.placePoints.attr("d", planet._.path);
                 position_labels(planet, options);
             }
+        },
+        select(planet, options, slc) {
+            _.select = slc;
+            _.svg = d3.selectAll(slc);
         }
     };
 }
