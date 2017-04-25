@@ -6,9 +6,9 @@ export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
 
     function svgAddWorldOrCountries() {
         _.svg.selectAll('.land,.lakes,.countries').remove();
-        if (!this._.options.hideLand) {
+        if (this._.options.showLand) {
             if (_.world) {
-                if (!this._.options.hideCountries) {
+                if (this._.options.showCountries) {
                     this.svgAddCountries.call(this);
                 } else {
                     this.svgAddWorld.call(this);
@@ -54,9 +54,8 @@ export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
             this.svgDraw();
         },
         onInit() {
-            this._.options.world = true;
-            this._.options.hideLand = false;
-            this._.options.hideCountries = false;
+            this._.options.showLand = true;
+            this._.options.showCountries = true;
             this.svgAddWorldOrCountries = svgAddWorldOrCountries;
             this.svgAddCountries = svgAddCountries;
             this.svgAddWorld = svgAddWorld;
@@ -64,8 +63,8 @@ export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
             _.svg = this._.svg;
         },
         onRefresh() {
-            if (!this._.options.hideLand) {
-                if (!this._.options.hideCountries) {
+            if (this._.options.showLand) {
+                if (this._.options.showCountries) {
                     this._.countries.attr("d", this._.path);
                 } else {
                     this._.world.attr("d", this._.path);

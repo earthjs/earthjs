@@ -20,7 +20,7 @@ p.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-co
 p.register(earthjs.plugins.countryTooltipPlugin());
 p.svgDraw();
 
-var options = {removeLand: true};
+var options = p.configPlugin.set();
 var buttonClick = function(str) {
     var arr = str.split(':'), key = arr[2];
     var resultx = {};
@@ -33,14 +33,14 @@ var buttonClick = function(str) {
 };
 
 var checker = [
-    'ocean:Ocean:hideOcean',
-    'shading:Shading:hideGlobeShading',
-    'hilight:Hilight:hideGlobeHilight',
-    'graticule:Graticule:hideGraticule',
-    'hideLand:Land:hideLand',
-    'country:Country:hideCountries',
-    'places:Places:hidePlaces',
-    'shadow:Shadow:hideGlobeShadow',
+    'ocean:Ocean:showOcean',
+    'shading:Shading:showGlobeShading',
+    'hilight:Hilight:showGlobeHilight',
+    'graticule:Graticule:showGraticule',
+    'hideLand:Land:showLand',
+    'country:Country:showCountries',
+    'places:Places:showPlaces',
+    'shadow:Shadow:showGlobeShadow',
     'stop:Stop:stop',
 ].map(function(d) {return d.split(':')});
 var opt = d3.select('.set-options');

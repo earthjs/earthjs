@@ -4,7 +4,7 @@ export default function(jsonUrl='./d/places.json') {
     function svgAddPlaces() {
         _.svg.selectAll('.points,.labels').remove();
         if (_.places) {
-            if (this._.options.places && !this._.options.hidePlaces) {
+            if (this._.options.showPlaces) {
                 svgAddPlacePoints.call(this);
                 svgAddPlaceLabels.call(this);
                 position_labels.call(this);
@@ -59,13 +59,12 @@ export default function(jsonUrl='./d/places.json') {
             this.svgDraw();
         },
         onInit() {
-            this._.options.places = true;
-            this._.options.hidePlaces = false;
+            this._.options.showPlaces = true;
             this.svgAddPlaces = svgAddPlaces;
             _.svg = this._.svg;
         },
         onRefresh() {
-            if (this._.placePoints && this._.options.places) {
+            if (this._.placePoints) {
                 this._.placePoints.attr("d", this._.path);
                 position_labels.call(this);
             }

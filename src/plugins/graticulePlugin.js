@@ -4,7 +4,7 @@ export default function(initOptions={}) {
 
     function svgAddGraticule() {
         _.svg.selectAll('.graticule').remove();
-        if (!this._.options.hideGraticule) {
+        if (this._.options.showGraticule) {
             this._.graticule = _.svg.append("g").attr("class","graticule").append("path")
                 .datum(datumGraticule)
                 .style("fill", "none")
@@ -18,7 +18,7 @@ export default function(initOptions={}) {
     }
 
     initOptions = Object.assign({
-        hideGraticule: false,
+        showGraticule: true,
     }, initOptions);
 
     return {
@@ -29,7 +29,7 @@ export default function(initOptions={}) {
             _.svg = this._.svg;
         },
         onRefresh() {
-            if (this._.graticule && !this._.options.hideGraticule) {
+            if (this._.graticule && this._.options.showGraticule) {
                 this._.graticule.attr("d", this._.path);
             }
         },

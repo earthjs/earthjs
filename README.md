@@ -44,7 +44,7 @@ This sample need to run on the webserver, you can use [nodejs web-server](https:
 <body>
   <svg id="earth"></svg>
   <script>
-    var p = earthjs({width: 250, height: 250});
+    var p = earthjs({width: 700, height: 500});
     p.register(earthjs.plugins.configPlugin());
     p.register(earthjs.plugins.graticulePlugin());
     p.register(earthjs.plugins.autorotatePlugin(10));

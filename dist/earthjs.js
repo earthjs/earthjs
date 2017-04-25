@@ -7,8 +7,8 @@
 var app$1 = function (options={}) {
     options = Object.assign({
         select: '#earth',
-        height: 870,
-        width: 1700,
+        height: 500,
+        width:  700,
     }, options);
     var _ = {
         onResize: {},
@@ -292,7 +292,7 @@ var oceanPlugin = function(initOptions={}) {
 
     function svgAddOcean() {
         _.svg.selectAll('#ocean,.ocean').remove();
-        if (!this._.options.hideOcean) {
+        if (this._.options.showOcean) {
             var ocean_fill = this._.defs.append("radialGradient")
                 .attr("id", "ocean")
                 .attr("cx", "75%")
@@ -313,7 +313,7 @@ var oceanPlugin = function(initOptions={}) {
     }
 
     initOptions = Object.assign({
-        hideOcean: false,
+        showOcean: true,
     }, initOptions);
 
     return {
@@ -324,13 +324,13 @@ var oceanPlugin = function(initOptions={}) {
             _.svg = this._.svg;
         },
         onResize() {
-            if (this._.ocean && !this._.options.hideOcean) {
+            if (this._.ocean && this._.options.showOcean) {
                 this._.ocean.attr("r", this._.proj.scale());
             }
         },
         select(slc) {
-            _.select = slc;
             _.svg = d3.selectAll(slc);
+            _.select = slc;
             return _.svg;
         }
     }
@@ -361,7 +361,7 @@ var graticulePlugin = function(initOptions={}) {
 
     function svgAddGraticule() {
         _.svg.selectAll('.graticule').remove();
-        if (!this._.options.hideGraticule) {
+        if (this._.options.showGraticule) {
             this._.graticule = _.svg.append("g").attr("class","graticule").append("path")
                 .datum(datumGraticule)
                 .style("fill", "none")
@@ -375,7 +375,7 @@ var graticulePlugin = function(initOptions={}) {
     }
 
     initOptions = Object.assign({
-        hideGraticule: false,
+        showGraticule: true,
     }, initOptions);
 
     return {
@@ -386,13 +386,13 @@ var graticulePlugin = function(initOptions={}) {
             _.svg = this._.svg;
         },
         onRefresh() {
-            if (this._.graticule && !this._.options.hideGraticule) {
+            if (this._.graticule && this._.options.showGraticule) {
                 this._.graticule.attr("d", this._.path);
             }
         },
         select(slc) {
-            _.select = slc;
             _.svg = d3.selectAll(slc);
+            _.select = slc;
             return _.svg;
         }
     }
@@ -405,7 +405,7 @@ var fauxGlobePlugin = function(initOptions={}) {
 
     function svgAddDropShadow() {
         _.svg.selectAll('#drop_shadow,.drop_shadow').remove();
-        if (!this._.options.hideGlobeShadow) {
+        if (this._.options.showGlobeShadow) {
             var drop_shadow = this._.defs.append("radialGradient")
                   .attr("id", "drop_shadow")
                   .attr("cx", "50%")
@@ -428,7 +428,7 @@ var fauxGlobePlugin = function(initOptions={}) {
 
     function svgAddGlobeShading() {
         _.svg.selectAll('#globe_shading,.globe_shading').remove();
-        if (!this._.options.hideGlobeShading) {
+        if (this._.options.showGlobeShading) {
             var globe_shading = this._.defs.append("radialGradient")
                   .attr("id", "globe_shading")
                   .attr("cx", "50%")
@@ -450,7 +450,7 @@ var fauxGlobePlugin = function(initOptions={}) {
 
     function svgAddGlobeHilight() {
         _.svg.selectAll('#globe_hilight,.globe_hilight').remove();
-        if (!this._.options.hideGlobeHilight) {
+        if (this._.options.showGlobeHilight) {
             var globe_highlight = this._.defs.append("radialGradient")
                   .attr("id", "globe_hilight")
                   .attr("cx", "75%")
@@ -471,9 +471,9 @@ var fauxGlobePlugin = function(initOptions={}) {
     }
 
     initOptions = Object.assign({
-        hideGlobeShadow: false,
-        hideGlobeShading: false,
-        hideGlobeHilight: false,
+        showGlobeShadow: true,
+        showGlobeShading: true,
+        showGlobeHilight: true,
     }, initOptions);
 
     return {
@@ -486,16 +486,16 @@ var fauxGlobePlugin = function(initOptions={}) {
             _.svg = this._.svg;
         },
         onResize() {
-            if (this._.globeShading && !this._.options.hideGlobeShading) {
+            if (this._.globeShading && this._.options.showGlobeShading) {
                 this._.globeShading.attr("r", this._.proj.scale());
             }
-            if (this._.globeHilight && !this._.options.hideGlobeHilight) {
+            if (this._.globeHilight && this._.options.showGlobeHilight) {
                 this._.globeHilight.attr("r", this._.proj.scale());
             }
         },
         select(slc) {
-            _.select = slc;
             _.svg = d3.selectAll(slc);
+            _.select = slc;
             return _.svg;
         }
     }
@@ -543,7 +543,7 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
     function svgAddPlaces() {
         _.svg.selectAll('.points,.labels').remove();
         if (_.places) {
-            if (this._.options.places && !this._.options.hidePlaces) {
+            if (this._.options.showPlaces) {
                 svgAddPlacePoints.call(this);
                 svgAddPlaceLabels.call(this);
                 position_labels.call(this);
@@ -598,20 +598,19 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
             this.svgDraw();
         },
         onInit() {
-            this._.options.places = true;
-            this._.options.hidePlaces = false;
+            this._.options.showPlaces = true;
             this.svgAddPlaces = svgAddPlaces;
             _.svg = this._.svg;
         },
         onRefresh() {
-            if (this._.placePoints && this._.options.places) {
+            if (this._.placePoints) {
                 this._.placePoints.attr("d", this._.path);
                 position_labels.call(this);
             }
         },
         select(slc) {
-            _.select = slc;
             _.svg = d3.selectAll(slc);
+            _.select = slc;
             return _.svg;
         }
     };
@@ -625,9 +624,9 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
 
     function svgAddWorldOrCountries() {
         _.svg.selectAll('.land,.lakes,.countries').remove();
-        if (!this._.options.hideLand) {
+        if (this._.options.showLand) {
             if (_.world) {
-                if (!this._.options.hideCountries) {
+                if (this._.options.showCountries) {
                     this.svgAddCountries.call(this);
                 } else {
                     this.svgAddWorld.call(this);
@@ -673,9 +672,8 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
             this.svgDraw();
         },
         onInit() {
-            this._.options.world = true;
-            this._.options.hideLand = false;
-            this._.options.hideCountries = false;
+            this._.options.showLand = true;
+            this._.options.showCountries = true;
             this.svgAddWorldOrCountries = svgAddWorldOrCountries;
             this.svgAddCountries = svgAddCountries;
             this.svgAddWorld = svgAddWorld;
@@ -683,8 +681,8 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
             _.svg = this._.svg;
         },
         onRefresh() {
-            if (!this._.options.hideLand) {
-                if (!this._.options.hideCountries) {
+            if (this._.options.showLand) {
+                if (this._.options.showCountries) {
                     this._.countries.attr("d", this._.path);
                 } else {
                     this._.world.attr("d", this._.path);
@@ -698,8 +696,8 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
             })
         },
         select(slc) {
-            _.select = slc;
             _.svg = d3.selectAll(slc);
+            _.select = slc;
             return _.svg;
         }
     };

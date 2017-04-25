@@ -5,7 +5,7 @@ export default function(initOptions={}) {
 
     function svgAddDropShadow() {
         _.svg.selectAll('#drop_shadow,.drop_shadow').remove();
-        if (!this._.options.hideGlobeShadow) {
+        if (this._.options.showGlobeShadow) {
             var drop_shadow = this._.defs.append("radialGradient")
                   .attr("id", "drop_shadow")
                   .attr("cx", "50%")
@@ -28,7 +28,7 @@ export default function(initOptions={}) {
 
     function svgAddGlobeShading() {
         _.svg.selectAll('#globe_shading,.globe_shading').remove();
-        if (!this._.options.hideGlobeShading) {
+        if (this._.options.showGlobeShading) {
             var globe_shading = this._.defs.append("radialGradient")
                   .attr("id", "globe_shading")
                   .attr("cx", "50%")
@@ -50,7 +50,7 @@ export default function(initOptions={}) {
 
     function svgAddGlobeHilight() {
         _.svg.selectAll('#globe_hilight,.globe_hilight').remove();
-        if (!this._.options.hideGlobeHilight) {
+        if (this._.options.showGlobeHilight) {
             var globe_highlight = this._.defs.append("radialGradient")
                   .attr("id", "globe_hilight")
                   .attr("cx", "75%")
@@ -71,9 +71,9 @@ export default function(initOptions={}) {
     }
 
     initOptions = Object.assign({
-        hideGlobeShadow: false,
-        hideGlobeShading: false,
-        hideGlobeHilight: false,
+        showGlobeShadow: true,
+        showGlobeShading: true,
+        showGlobeHilight: true,
     }, initOptions);
 
     return {
@@ -86,10 +86,10 @@ export default function(initOptions={}) {
             _.svg = this._.svg;
         },
         onResize() {
-            if (this._.globeShading && !this._.options.hideGlobeShading) {
+            if (this._.globeShading && this._.options.showGlobeShading) {
                 this._.globeShading.attr("r", this._.proj.scale());
             }
-            if (this._.globeHilight && !this._.options.hideGlobeHilight) {
+            if (this._.globeHilight && this._.options.showGlobeHilight) {
                 this._.globeHilight.attr("r", this._.proj.scale());
             }
         },

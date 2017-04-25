@@ -1,8 +1,8 @@
 export default function (options={}) {
     options = Object.assign({
         select: '#earth',
-        height: 870,
-        width: 1700,
+        height: 500,
+        width:  700,
     }, options);
     var _ = {
         onResize: {},

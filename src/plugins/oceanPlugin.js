@@ -3,7 +3,7 @@ export default function(initOptions={}) {
 
     function svgAddOcean() {
         _.svg.selectAll('#ocean,.ocean').remove();
-        if (!this._.options.hideOcean) {
+        if (this._.options.showOcean) {
             var ocean_fill = this._.defs.append("radialGradient")
                 .attr("id", "ocean")
                 .attr("cx", "75%")
@@ -24,7 +24,7 @@ export default function(initOptions={}) {
     }
 
     initOptions = Object.assign({
-        hideOcean: false,
+        showOcean: true,
     }, initOptions);
 
     return {
@@ -35,7 +35,7 @@ export default function(initOptions={}) {
             _.svg = this._.svg;
         },
         onResize() {
-            if (this._.ocean && !this._.options.hideOcean) {
+            if (this._.ocean && this._.options.showOcean) {
                 this._.ocean.attr("r", this._.proj.scale());
             }
         },
