@@ -42,36 +42,32 @@ export default function (options={}) {
             Object.keys(obj).map(function(name) {
                 if ([
                     'data',
-                    'ready',
+                    'onReady',
                     'onInit',
                     'onResize',
                     'onRefresh',
                     'onInterval'].indexOf(name)===-1) {
                     if (typeof(obj[name])==='function') {
                         fn[name] = function() {
-                            var args = [].slice.call(arguments);
-                            args.unshift(planet, options);
-                            return obj[name].apply(null, args);
+                            return obj[name].apply(planet, arguments);
                         }
                     }
                 }
             });
             if (obj.onInit) {
-                obj.onInit(planet, options);
+                obj.onInit.call(planet);
             }
             qEvent(obj,'onResize');
             qEvent(obj,'onRefresh');
             qEvent(obj,'onInterval');
-            if (obj.data && obj.ready) {
+            if (obj.data && obj.onReady) {
                 var q = d3.queue();
                 obj.data.forEach(function(data) {
                     var ext = data.split('.').pop();
                     q.defer(d3[ext], data);
                 });
                 q.await(function() {
-                    var args = [].slice.call(arguments);
-                    args.unshift(planet, options);
-                    obj.ready.apply(null, args);
+                    obj.onReady.apply(planet, arguments);
                 });
             }
             return planet;
@@ -85,43 +81,64 @@ export default function (options={}) {
     planet._.ticker = function(interval) {
         interval = interval || 50;
         ticker = setInterval(function(){
-            intervalRun(planet, options);
-            earth && intervalRun(earth, earth._.options);
+            planet._.intervalRun.call(planet);
+            earth && earth._.intervalRun.call(earth);
         }, interval);
         return planet;
     }
 
     planet.svgDraw = function(twinEarth) {
         _.svgCreateOrder.forEach(function(svgCreateKey) {
-            planet[svgCreateKey] && planet[svgCreateKey](planet, options);
+            planet[svgCreateKey] && planet[svgCreateKey].call(planet);
         });
         if (twinEarth) {
             twinEarth.svgDraw(null);
             earth = twinEarth;
         }
         if (ticker===null && twinEarth!==null) {
-            planet._.ticker();
+            planet._.ticker.call(planet);
         }
         return planet;
     }
 
-    planet._.interval = intervalRun;
-    planet._.refresh = refresh;
-    planet._.resize = resize;
-
     //----------------------------------------
     // Helper
-
     planet._.scale = function(y) {
         planet._.proj.scale(y);
-        planet._.resize(planet, options);
-        planet._.refresh(planet, options);
+        planet._.resize.call(planet);
+        planet._.refresh.call(planet);
         return planet;
     }
 
     planet._.rotate = function(r) {
         planet._.proj.rotate(r);
-        planet._.refresh(planet, options);
+        planet._.refresh.call(planet);
+        return planet;
+    }
+
+    planet._.intervalRun = function() {
+        if (_.onIntervalKeys.length>0) {
+            _.onIntervalKeys.map(function(key) {
+                _.onInterval[key].call(planet);
+            });
+        }
+    }
+
+    planet._.refresh = function() {
+        if (_.onRefreshKeys.length>0) {
+            _.onRefreshKeys.map(function(key) {
+                _.onRefresh[key].call(planet);
+            });
+        }
+        return planet;
+    }
+
+    planet._.resize = function() {
+        if (_.onResizeKeys.length>0) {
+            _.onResizeKeys.map(function(key) {
+                _.onResize[key].call(planet);
+            });
+        }
         return planet;
     }
 
@@ -133,31 +150,5 @@ export default function (options={}) {
             _[qname][obj.name] = obj[qname];
             _[qkey] = Object.keys(_[qname]);
         }
-    }
-
-    function intervalRun(planet, options) {
-        if (_.onIntervalKeys.length>0) {
-            _.onIntervalKeys.map(function(key) {
-                _.onInterval[key](planet, options);
-            });
-        }
-    }
-
-    function refresh(planet, options) {
-        if (_.onRefreshKeys.length>0) {
-            _.onRefreshKeys.map(function(key) {
-                _.onRefresh[key](planet, options);
-            });
-        }
-        return planet;
-    }
-
-    function resize(planet, options) {
-        if (_.onResizeKeys.length>0) {
-            _.onResizeKeys.map(function(key) {
-                _.onResize[key](planet, options);
-            });
-        }
-        return planet;
     }
 }

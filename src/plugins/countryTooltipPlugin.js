@@ -5,12 +5,13 @@ export default function() {
 
     return {
         name: 'countryTooltipPlugin',
-        onInit(planet) {
-            var originalsvgAddCountries = planet.svgAddCountries;
-            planet.svgAddCountries  = function(planet, options) {
-                return originalsvgAddCountries(planet, options)
+        onInit() {
+            var _this = this;
+            var originalsvgAddCountries = this.svgAddCountries;
+            this.svgAddCountries  = function() {
+                return originalsvgAddCountries.call(this)
                 .on("mouseover", function(d) {
-                    var country = planet.worldPlugin.countryName(d);
+                    var country = _this.worldPlugin.countryName(d);
                     countryTooltip.text(country.name)
                     .style("left", (d3.event.pageX + 7) + "px")
                     .style("top", (d3.event.pageY - 15) + "px")

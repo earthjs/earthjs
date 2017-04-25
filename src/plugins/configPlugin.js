@@ -1,18 +1,18 @@
 export default function() {
     return {
         name: 'configPlugin',
-        set(planet, options, newOpt) {
+        set(newOpt) {
             if (newOpt) {
-                Object.assign(options, newOpt);
+                Object.assign(this._.options, newOpt);
                 if (newOpt.stop!==undefined) {
-                    var p = planet.autorotatePlugin;
+                    var p = this.autorotatePlugin;
                     newOpt.stop ? p.stop() : p.start();
                 }
-                planet._.drag = true;
-                planet.svgDraw();
-                planet._.drag = false;
+                this._.drag = true;
+                this.svgDraw();
+                this._.drag = false;
             }
-            return Object.assign({}, options);
+            return Object.assign({}, this._.options);
         }
     }
 }

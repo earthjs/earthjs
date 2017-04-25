@@ -1,18 +1,19 @@
 export default function(initOptions={}) {
     var datumGraticule = d3.geoGraticule();
+    var _ = {svg:null, select: null};
 
-    function svgAddGraticule(planet, options) {
-        planet._.svg.selectAll('.graticule').remove();
-        if (!options.hideGraticule) {
-            planet._.graticule = planet._.svg.append("g").attr("class","graticule").append("path")
+    function svgAddGraticule() {
+        _.svg.selectAll('.graticule').remove();
+        if (!this._.options.hideGraticule) {
+            this._.graticule = _.svg.append("g").attr("class","graticule").append("path")
                 .datum(datumGraticule)
                 .style("fill", "none")
                 .style("opacity", "0.2")
                 .style("stroke", "black")
                 .style("stroke-width", "0.5")
                 .attr("class", "noclicks")
-                .attr("d", planet._.path);
-            return planet._.graticule;
+                .attr("d", this._.path);
+            return this._.graticule;
         }
     }
 
@@ -22,14 +23,19 @@ export default function(initOptions={}) {
 
     return {
         name: 'graticulePlugin',
-        onInit(planet, options) {
-            Object.assign(options, initOptions);
-            planet.svgAddGraticule = svgAddGraticule;
+        onInit() {
+            Object.assign(this._.options, initOptions);
+            this.svgAddGraticule = svgAddGraticule;
+            _.svg = this._.svg;
         },
-        onRefresh(planet, options) {
-            if (planet._.graticule && !options.hideGraticule) {
-                planet._.graticule.attr("d", planet._.path);
+        onRefresh() {
+            if (this._.graticule && !this._.options.hideGraticule) {
+                this._.graticule.attr("d", this._.path);
             }
         },
+        select(slc) {
+            _.select = slc;
+            _.svg = d3.selectAll(slc);
+        }
     }
 }

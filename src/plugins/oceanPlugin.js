@@ -1,8 +1,10 @@
 export default function(initOptions={}) {
-    function svgAddOcean(planet, options) {
-        planet._.svg.selectAll('#ocean,.ocean').remove();
-        if (!options.hideOcean) {
-            var ocean_fill = planet._.defs.append("radialGradient")
+    var _ = {svg:null, select: null};
+
+    function svgAddOcean() {
+        _.svg.selectAll('#ocean,.ocean').remove();
+        if (!this._.options.hideOcean) {
+            var ocean_fill = this._.defs.append("radialGradient")
                 .attr("id", "ocean")
                 .attr("cx", "75%")
                 .attr("cy", "25%");
@@ -12,12 +14,12 @@ export default function(initOptions={}) {
             ocean_fill.append("stop")
                 .attr("offset", "100%")
                 .attr("stop-color", "#9ab");
-            planet._.ocean = planet._.svg.append("circle")
-                .attr("cx",options.width / 2).attr("cy", options.height / 2)
-                .attr("r", planet._.proj.scale())
+            this._.ocean = _.svg.append("circle")
+                .attr("cx",this._.options.width / 2).attr("cy", this._.options.height / 2)
+                .attr("r", this._.proj.scale())
                 .attr("class", "ocean noclicks")
                 .style("fill", "url(#ocean)");
-            return planet._.ocean;
+            return this._.ocean;
         }
     }
 
@@ -27,14 +29,19 @@ export default function(initOptions={}) {
 
     return {
         name: 'oceanPlugin',
-        onInit(planet, options) {
-            Object.assign(options, initOptions);
-            planet.svgAddOcean = svgAddOcean;
+        onInit() {
+            Object.assign(this._.options, initOptions);
+            this.svgAddOcean = svgAddOcean;
+            _.svg = this._.svg;
         },
-        onResize(planet, options) {
-            if (planet._.ocean && !options.hideOcean) {
-                planet._.ocean.attr("r", planet._.proj.scale());
+        onResize() {
+            if (this._.ocean && !this._.options.hideOcean) {
+                this._.ocean.attr("r", this._.proj.scale());
             }
+        },
+        select(slc) {
+            _.select = slc;
+            _.svg = d3.selectAll(slc);
         }
     }
 }

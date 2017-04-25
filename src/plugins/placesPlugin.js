@@ -1,48 +1,49 @@
 export default function(jsonUrl='./d/places.json') {
-    var _ = {svg:null, places: null, select: null};
+    var _ = {svg:null, select: null, places: null};
 
-    function svgAddPlaces(planet, options) {
+    function svgAddPlaces() {
         _.svg.selectAll('.points,.labels').remove();
         if (_.places) {
-            if (options.places && !options.hidePlaces) {
-                svgAddPlacePoints(planet, options);
-                svgAddPlaceLabels(planet, options);
-                position_labels(planet, options);
+            if (this._.options.places && !this._.options.hidePlaces) {
+                svgAddPlacePoints.call(this);
+                svgAddPlaceLabels.call(this);
+                position_labels.call(this);
             }
         }
     }
 
-    function svgAddPlacePoints(planet) {
-        planet._.placePoints = _.svg.append("g").attr("class","points").selectAll("path")
+    function svgAddPlacePoints() {
+        this._.placePoints = _.svg.append("g").attr("class","points").selectAll("path")
             .data(_.places.features).enter().append("path")
             .attr("class", "point")
-            .attr("d", planet._.path);
-        return planet._.placePoints;
+            .attr("d", this._.path);
+        return this._.placePoints;
     }
 
-    function svgAddPlaceLabels(planet) {
-        planet._.placeLabels = _.svg.append("g").attr("class","labels").selectAll("text")
+    function svgAddPlaceLabels() {
+        this._.placeLabels = _.svg.append("g").attr("class","labels").selectAll("text")
             .data(_.places.features).enter().append("text")
             .attr("class", "label")
             .text(function(d) { return d.properties.name });
-        return planet._.placeLabels;
+        return this._.placeLabels;
     }
 
-    function position_labels(planet, options) {
-        var centerPos = planet._.proj.invert([options.width / 2, options.height/2]);
+    function position_labels() {
+        var _this = this;
+        var centerPos = this._.proj.invert([this._.options.width / 2, this._.options.height/2]);
 
-        planet._.placeLabels
+        this._.placeLabels
             .attr("text-anchor",function(d) {
-                var x = planet._.proj(d.geometry.coordinates)[0];
-                return x < options.width/2-20 ? "end" :
-                       x < options.width/2+20 ? "middle" :
+                var x = _this._.proj(d.geometry.coordinates)[0];
+                return x < _this._.options.width/2-20 ? "end" :
+                       x < _this._.options.width/2+20 ? "middle" :
                        "start"
             })
             .attr("transform", function(d) {
-                var loc = planet._.proj(d.geometry.coordinates),
+                var loc = _this._.proj(d.geometry.coordinates),
                     x = loc[0],
                     y = loc[1];
-                var offset = x < options.width/2 ? -5 : 5;
+                var offset = x < _this._.options.width/2 ? -5 : 5;
                 return "translate(" + (x+offset) + "," + (y-2) + ")"
             })
             .style("display", function(d) {
@@ -53,23 +54,23 @@ export default function(jsonUrl='./d/places.json') {
     return {
         name: 'placesPlugin',
         data: [jsonUrl],
-        ready(planet, options, err, places) {
+        onReady(err, places) {
             _.places = places;
-            planet.svgDraw();
+            this.svgDraw();
         },
-        onInit(planet, options) {
-            options.places = true;
-            options.hidePlaces = false;
-            planet.svgAddPlaces = svgAddPlaces;
-            _.svg = planet._.svg;
+        onInit() {
+            this._.options.places = true;
+            this._.options.hidePlaces = false;
+            this.svgAddPlaces = svgAddPlaces;
+            _.svg = this._.svg;
         },
-        onRefresh(planet, options) {
-            if (planet._.placePoints && options.places) {
-                planet._.placePoints.attr("d", planet._.path);
-                position_labels(planet, options);
+        onRefresh() {
+            if (this._.placePoints && this._.options.places) {
+                this._.placePoints.attr("d", this._.path);
+                position_labels.call(this);
             }
         },
-        select(planet, options, slc) {
+        select(slc) {
             _.select = slc;
             _.svg = d3.selectAll(slc);
         }

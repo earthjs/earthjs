@@ -1,13 +1,14 @@
 export default function() {
     return {
         name: 'dragPlugin',
-        onInit(planet, options) {
+        onInit() {
             var m0, o0;
+            var _this = this;
 
             function mousedown() {
               m0 = [d3.event.pageX, d3.event.pageY];
-              o0 = planet._.proj.rotate();
-              planet._.drag = true;
+              o0 = _this._.proj.rotate();
+              _this._.drag = true;
               d3.event.preventDefault();
             }
 
@@ -18,8 +19,7 @@ export default function() {
                 o1[1] = o1[1] > 30  ? 30  :
                         o1[1] < -30 ? -30 :
                         o1[1];
-                planet._.proj.rotate(o1);
-                planet._.refresh(planet, options);
+                _this._.rotate(o1);
               }
             }
 
@@ -27,14 +27,14 @@ export default function() {
               if (m0) {
                 mousemove();
                 m0 = null;
-                planet._.drag = false;
+                _this._.drag = false;
               }
             }
 
             var win = d3.select(window);
             win.on("mouseup",   mouseup);
             win.on("mousemove", mousemove);
-            planet._.svg.on("mousedown", mousedown);
+            this._.svg.on("mousedown", mousedown);
         },
     }
 }

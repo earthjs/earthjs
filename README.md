@@ -67,23 +67,23 @@ export default function(/*params*/) {
         // async ajax call and when it finish will call ready()
         data: [jsonUrl],
         // ajax event handler
-        ready(planet, options, err, places) {
+        onReady(err, places) {
             // code...
         },
         // get called when user call .register() from instance of earthjs
-        onInit(planet, options) {
+        onInit() {
             // code...
         },
         // zoom event handler
-        onResize(planet, options) {
+        onResize() {
             // code...
         },
         // refresh svg graphics components
-        onRefresh(planet, options) {
+        onRefresh() {
             // code...
         },
         // get called on specific interval
-        onInterval(planet, options) {
+        onInterval() {
             // code...
         }        
     }
