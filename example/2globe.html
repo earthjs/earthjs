@@ -1,0 +1,29 @@
+<html>
+<head>
+  <script type='text/javascript' src='http://d3js.org/d3.v4.min.js'></script>
+  <script type='text/javascript' src='http://d3js.org/topojson.v3.min.js'></script>
+  <script type='text/javascript' src='../dist/earthjs.js'></script>
+  <style media="screen">
+  .countries path {
+      fill: rgb(117, 87, 57);
+      stroke: rgb(80, 64, 39);
+      stroke-linejoin: round;
+      stroke-width: 1.5;
+      opacity: 1;
+  }
+  </style>
+</head>
+<body>
+    <svg class="earth"></svg><br/>
+    <svg class="earth"></svg>
+    <script>
+        var p = earthjs({select:'.earth',width:250,height:250});
+        p.register(earthjs.plugins.configPlugin());
+        p.register(earthjs.plugins.graticulePlugin());
+        p.register(earthjs.plugins.versorDragPlugin());
+        p.register(earthjs.plugins.autorotatePlugin(10));
+        p.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
+        p.svgDraw();
+    </script>
+</body>
+</html>

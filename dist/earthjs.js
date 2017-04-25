@@ -31,7 +31,7 @@ var app$1 = function (options={}) {
         ]
     };
     var drag = false;
-    var svg  = d3.select(options.select).attr("width", options.width).attr("height", options.height);
+    var svg  = d3.selectAll(options.select).attr("width", options.width).attr("height", options.height);
     var proj = d3.geoOrthographic().scale(options.width / 4.1).translate([options.width / 2, options.height / 2]);
     var path = d3.geoPath().projection(proj);
     var planet = {
@@ -85,29 +85,32 @@ var app$1 = function (options={}) {
 
     planet._.defs = planet._.svg.append("defs");
     //----------------------------------------
+    var earth = null;
     var ticker = null;
     planet._.ticker = function(interval) {
         interval = interval || 50;
         ticker = setInterval(function(){
-            if (_.onIntervalKeys.length>0) {
-                _.onIntervalKeys.map(function(key) {
-                    _.onInterval[key](planet, options);
-                });
-            }
+            intervalRun(planet, options);
+            earth && earth._.interval(planet, options); 
         }, interval);
         return planet;
     };
 
-    planet.svgDraw = function() {
+    planet.svgDraw = function(twinEarth) {
         _.svgCreateOrder.forEach(function(svgCreateKey) {
             planet[svgCreateKey] && planet[svgCreateKey](planet, options);
         });
-        if (ticker===null) {
+        if (twinEarth) {
+            twinEarth.svgDraw(null);
+            earth = twinEarth;
+        }
+        if (ticker===null && twinEarth!==null) {
             planet._.ticker();
         }
         return planet;
     };
 
+    planet._.interval = intervalRun;
     planet._.refresh = refresh;
     planet._.resize = resize;
 
@@ -134,6 +137,14 @@ var app$1 = function (options={}) {
         if (obj[qname]) {
             _[qname][obj.name] = obj[qname];
             _[qkey] = Object.keys(_[qname]);
+        }
+    }
+
+    function intervalRun(planet, options) {
+        if (_.onIntervalKeys.length>0) {
+            _.onIntervalKeys.map(function(key) {
+                _.onInterval[key](planet, options);
+            });
         }
     }
 
