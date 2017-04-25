@@ -81,6 +81,7 @@ export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         select(slc) {
             _.select = slc;
             _.svg = d3.selectAll(slc);
+            return _.svg;
         }
     };
 }

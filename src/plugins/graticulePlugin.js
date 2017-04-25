@@ -36,6 +36,7 @@ export default function(initOptions={}) {
         select(slc) {
             _.select = slc;
             _.svg = d3.selectAll(slc);
+            return _.svg;
         }
     }
 }

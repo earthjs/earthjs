@@ -73,6 +73,7 @@ export default function(jsonUrl='./d/places.json') {
         select(slc) {
             _.select = slc;
             _.svg = d3.selectAll(slc);
+            return _.svg;
         }
     };
 }

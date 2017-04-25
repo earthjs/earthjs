@@ -58,19 +58,19 @@ This sample need to run on the webserver, you can use [nodejs web-server](https:
 ## Writing Plugins
 Here is structure samplePlugin, you can check folder plugins for each functionality
 ```javascript
-export default function(/*params*/) {
-    // define internal functions
+export default function(url='/some/path.json') {
+    // Internal functions definitions
     //
     return {
         // namespace for the plugins
         name: 'samplePlugin',
-        // async ajax call and when it finish will call ready()
-        data: [jsonUrl],
-        // ajax event handler
+        // async ajax call and when finish, it will call onReady()
+        data: [url],
+        // event handler ajax
         onReady(err, places) {
             // code...
         },
-        // get called when user call .register() from instance of earthjs
+        // register event handler
         onInit() {
             // code...
         },
@@ -82,7 +82,7 @@ export default function(/*params*/) {
         onRefresh() {
             // code...
         },
-        // get called on specific interval
+        // timer event handler
         onInterval() {
             // code...
         }        

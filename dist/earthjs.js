@@ -43,19 +43,19 @@ var app$1 = function (options={}) {
             options
         },
         register: function(obj) {
-            var fn = {};
-            planet[obj.name] = fn;
-            Object.keys(obj).map(function(name) {
+            var ar = {};
+            planet[obj.name] = ar;
+            Object.keys(obj).map(function(fn) {
                 if ([
                     'data',
                     'onReady',
                     'onInit',
                     'onResize',
                     'onRefresh',
-                    'onInterval'].indexOf(name)===-1) {
-                    if (typeof(obj[name])==='function') {
-                        fn[name] = function() {
-                            return obj[name].apply(planet, arguments);
+                    'onInterval'].indexOf(fn)===-1) {
+                    if (typeof(obj[fn])==='function') {
+                        ar[fn] = function() {
+                            return obj[fn].apply(planet, arguments);
                         };
                     }
                 }
@@ -124,16 +124,16 @@ var app$1 = function (options={}) {
 
     planet._.intervalRun = function() {
         if (_.onIntervalKeys.length>0) {
-            _.onIntervalKeys.map(function(key) {
-                _.onInterval[key].call(planet);
+            _.onIntervalKeys.map(function(fn) {
+                _.onInterval[fn].call(planet);
             });
         }
     };
 
     planet._.refresh = function() {
         if (_.onRefreshKeys.length>0) {
-            _.onRefreshKeys.map(function(key) {
-                _.onRefresh[key].call(planet);
+            _.onRefreshKeys.map(function(fn) {
+                _.onRefresh[fn].call(planet);
             });
         }
         return planet;
@@ -141,8 +141,8 @@ var app$1 = function (options={}) {
 
     planet._.resize = function() {
         if (_.onResizeKeys.length>0) {
-            _.onResizeKeys.map(function(key) {
-                _.onResize[key].call(planet);
+            _.onResizeKeys.map(function(fn) {
+                _.onResize[fn].call(planet);
             });
         }
         return planet;
@@ -331,6 +331,7 @@ var oceanPlugin = function(initOptions={}) {
         select(slc) {
             _.select = slc;
             _.svg = d3.selectAll(slc);
+            return _.svg;
         }
     }
 };
@@ -392,6 +393,7 @@ var graticulePlugin = function(initOptions={}) {
         select(slc) {
             _.select = slc;
             _.svg = d3.selectAll(slc);
+            return _.svg;
         }
     }
 };
@@ -494,6 +496,7 @@ var fauxGlobePlugin = function(initOptions={}) {
         select(slc) {
             _.select = slc;
             _.svg = d3.selectAll(slc);
+            return _.svg;
         }
     }
 };
@@ -609,6 +612,7 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
         select(slc) {
             _.select = slc;
             _.svg = d3.selectAll(slc);
+            return _.svg;
         }
     };
 };
@@ -696,6 +700,7 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         select(slc) {
             _.select = slc;
             _.svg = d3.selectAll(slc);
+            return _.svg;
         }
     };
 };
