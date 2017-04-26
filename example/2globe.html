@@ -11,27 +11,43 @@
       stroke-width: 1.5;
       opacity: 1;
   }
+  .ocean {
+      fill: url(#ocean);
+  }
   .graticule path {
       fill: none;
       opacity: 0.2;
       stroke: black;
       stroke-width: 0.5;
   }
+  .point{
+      opacity:.6;
+      fill: #A80;
+  }
+  .labels {
+      font: 8px sans-serif;
+      fill: black;
+      opacity: .5;
+  }
   </style>
 </head>
 <body>
-    <svg class="earth e1"></svg><br/>
+    <svg class="earth e1"></svg>
     <svg class="earth e2"></svg>
     <script>
-        var p = earthjs({select:'.earth',width:450,height:450});
+        var p = earthjs({select:'.earth',width:700,height:500});
+        p.register(earthjs.plugins.oceanPlugin());
         p.register(earthjs.plugins.configPlugin());
         p.register(earthjs.plugins.graticulePlugin());
+        p.register(earthjs.plugins.fauxGlobePlugin());
         p.register(earthjs.plugins.versorDragPlugin());
         p.register(earthjs.plugins.autorotatePlugin(10));
         p.register(earthjs.plugins.placesPlugin('./d/places.json'));
         p.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
         p.placesPlugin.select('.e1');
-        p.svgDraw();
+        if (!p._.loadingData) {
+            p.svgDraw();
+        }
     </script>
 </body>
 </html>

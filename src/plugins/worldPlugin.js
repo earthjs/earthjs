@@ -1,4 +1,4 @@
-export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
+export default function(urlWorld, urlCountryNames) {
     var _ = {svg:null, select: null, world: null, countryNames: null};
     var countryClick = function() {
         // console.log(d);
@@ -43,17 +43,24 @@ export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         return this._.lakes;
     }
 
-    var data = [jsonWorld];
-    if (tsvCountryNames) {
-        data.push(tsvCountryNames);
+    var urls = null;
+    if (urlWorld) {
+        urls = [urlWorld];
+        if (urlCountryNames) {
+            urls.push(urlCountryNames);
+        }
     }
     return {
         name: 'worldPlugin',
-        data: data,
+        urls: urls,
         onReady(err, world, countryNames) {
-            _.countryNames = countryNames;
             _.world = world;
-            this.svgDraw();
+            _.countryNames = countryNames;
+            if (typeof(this.worldPlugin.ready)==='function') {
+                this.worldPlugin.ready.call(this);
+            } else {
+                this.svgDraw();
+            }
         },
         onInit() {
             this._.options.showLand = true;
@@ -66,24 +73,42 @@ export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
             _.svg = this._.svg;
         },
         onRefresh() {
-            if (this._.options.showLand) {
+            if (_.world && this._.options.showLand) {
                 if (this._.options.showCountries) {
                     this._.countries.attr("d", this._.path);
                 } else {
                     this._.world.attr("d", this._.path);
                 }
-                this._.lakes.attr("d", this._.path);
+                if (this._.options.showLakes) {
+                    this._.lakes.attr("d", this._.path);
+                }
             }
         },
         countryName(d) {
-            return _.countryNames.find(function(x) {
-                return x.id==d.id;
-            })
+            var cname = '';
+            if (_.countryNames) {
+                cname = _.countryNames.find(function(x) {
+                    return x.id==d.id;
+                });
+            }
+            return cname;
         },
         select(slc) {
             _.svg = d3.selectAll(slc);
             _.select = slc;
             return _.svg;
+        },
+        data(p) {
+            if (p) {
+                var data = p.worldPlugin.data()
+                _.countryNames = data.countryNames;
+                _.world = data.world;
+            } else {
+                return {
+                    countryNames: _.countryNames,
+                    world: _.world
+                }
+            }
         }
     };
 }

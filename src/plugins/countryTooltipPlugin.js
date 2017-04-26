@@ -11,7 +11,7 @@ export default function() {
             this.svgAddCountries  = function() {
                 return originalsvgAddCountries.call(this)
                 .on("mouseover", function(d) {
-                    var country = _this.worldPlugin.countryName(d);
+                    var country = _this.worldPlugin.countryName.call(_this, d);
                     countryTooltip.text(country.name)
                     .style("left", (d3.event.pageX + 7) + "px")
                     .style("top", (d3.event.pageY - 15) + "px")

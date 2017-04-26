@@ -18,7 +18,6 @@ export default function(initOptions={}) {
                 .attr("cx",this._.options.width / 2).attr("cy", this._.options.height / 2)
                 .attr("r", this._.proj.scale())
                 .attr("class", "ocean noclicks")
-                .style("fill", "url(#ocean)");
             return this._.ocean;
         }
     }

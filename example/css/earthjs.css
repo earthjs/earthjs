@@ -22,6 +22,9 @@
 .points path:not([d]) {
     opacity: 0;
 }
+.ocean {
+    fill: url(#ocean);
+}
 .graticule path {
     fill: none;
     opacity: 0.2;

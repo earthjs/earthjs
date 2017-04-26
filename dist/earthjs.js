@@ -31,8 +31,9 @@ var app$1 = function (options={}) {
         ]
     };
     var drag = false;
+    var loadingData = false;
     var svg  = d3.selectAll(options.select).attr("width", options.width).attr("height", options.height);
-    var proj = d3.geoOrthographic().scale(options.width / 1.1).translate([options.width / 2, options.height / 2]);
+    var proj = d3.geoOrthographic().scale(options.width / 3.5).translate([options.width / 2, options.height / 2]);
     var path = d3.geoPath().projection(proj);
     var planet = {
         _: {
@@ -40,14 +41,15 @@ var app$1 = function (options={}) {
             proj,
             path,
             drag,
-            options
+            options,
+            loadingData,
         },
         register: function(obj) {
             var ar = {};
             planet[obj.name] = ar;
             Object.keys(obj).map(function(fn) {
                 if ([
-                    'data',
+                    'urls',
                     'onReady',
                     'onInit',
                     'onResize',
@@ -66,13 +68,15 @@ var app$1 = function (options={}) {
             qEvent(obj,'onResize');
             qEvent(obj,'onRefresh');
             qEvent(obj,'onInterval');
-            if (obj.data && obj.onReady) {
+            if (obj.urls && obj.onReady) {
+                planet._.loadingData = true;
                 var q = d3.queue();
-                obj.data.forEach(function(data) {
-                    var ext = data.split('.').pop();
-                    q.defer(d3[ext], data);
+                obj.urls.forEach(function(url) {
+                    var ext = url.split('.').pop();
+                    q.defer(d3[ext], url);
                 });
                 q.await(function() {
+                    planet._.loadingData = false;
                     obj.onReady.apply(planet, arguments);
                 });
             }
@@ -306,8 +310,7 @@ var oceanPlugin = function(initOptions={}) {
             this._.ocean = _.svg.append("circle")
                 .attr("cx",this._.options.width / 2).attr("cy", this._.options.height / 2)
                 .attr("r", this._.proj.scale())
-                .attr("class", "ocean noclicks")
-                .style("fill", "url(#ocean)");
+                .attr("class", "ocean noclicks");
             return this._.ocean;
         }
     }
@@ -533,7 +536,7 @@ var autorotatePlugin = function(degPerSec) {
     };
 };
 
-var placesPlugin = function(jsonUrl='./d/places.json') {
+var placesPlugin = function(urlPlaces) {
     var _ = {svg:null, select: null, places: null};
 
     function svgAddPlaces() {
@@ -588,7 +591,7 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
 
     return {
         name: 'placesPlugin',
-        data: [jsonUrl],
+        urls: urlPlaces && [urlPlaces],
         onReady(err, places) {
             _.places = places;
             this.svgDraw();
@@ -608,11 +611,19 @@ var placesPlugin = function(jsonUrl='./d/places.json') {
             _.svg = d3.selectAll(slc);
             _.select = slc;
             return _.svg;
+        },
+        data(p) {
+            if (p) {
+                var data = p.placesPlugin.data();
+                _.places = data.places;
+            } else {
+                return {places: _.places}
+            }
         }
     };
 };
 
-var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
+var worldPlugin = function(urlWorld, urlCountryNames) {
     var _ = {svg:null, select: null, world: null, countryNames: null};
     var countryClick = function() {
         // console.log(d);
@@ -657,17 +668,24 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         return this._.lakes;
     }
 
-    var data = [jsonWorld];
-    if (tsvCountryNames) {
-        data.push(tsvCountryNames);
+    var urls = null;
+    if (urlWorld) {
+        urls = [urlWorld];
+        if (urlCountryNames) {
+            urls.push(urlCountryNames);
+        }
     }
     return {
         name: 'worldPlugin',
-        data: data,
+        urls: urls,
         onReady(err, world, countryNames) {
-            _.countryNames = countryNames;
             _.world = world;
-            this.svgDraw();
+            _.countryNames = countryNames;
+            if (typeof(this.worldPlugin.ready)==='function') {
+                this.worldPlugin.ready.call(this);
+            } else {
+                this.svgDraw();
+            }
         },
         onInit() {
             this._.options.showLand = true;
@@ -680,24 +698,42 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
             _.svg = this._.svg;
         },
         onRefresh() {
-            if (this._.options.showLand) {
+            if (_.world && this._.options.showLand) {
                 if (this._.options.showCountries) {
                     this._.countries.attr("d", this._.path);
                 } else {
                     this._.world.attr("d", this._.path);
                 }
-                this._.lakes.attr("d", this._.path);
+                if (this._.options.showLakes) {
+                    this._.lakes.attr("d", this._.path);
+                }
             }
         },
         countryName(d) {
-            return _.countryNames.find(function(x) {
-                return x.id==d.id;
-            })
+            var cname = '';
+            if (_.countryNames) {
+                cname = _.countryNames.find(function(x) {
+                    return x.id==d.id;
+                });
+            }
+            return cname;
         },
         select(slc) {
             _.svg = d3.selectAll(slc);
             _.select = slc;
             return _.svg;
+        },
+        data(p) {
+            if (p) {
+                var data = p.worldPlugin.data();
+                _.countryNames = data.countryNames;
+                _.world = data.world;
+            } else {
+                return {
+                    countryNames: _.countryNames,
+                    world: _.world
+                }
+            }
         }
     };
 };
@@ -715,7 +751,7 @@ var countryTooltipPlugin = function() {
             this.svgAddCountries  = function() {
                 return originalsvgAddCountries.call(this)
                 .on("mouseover", function(d) {
-                    var country = _this.worldPlugin.countryName(d);
+                    var country = _this.worldPlugin.countryName.call(_this, d);
                     countryTooltip.text(country.name)
                     .style("left", (d3.event.pageX + 7) + "px")
                     .style("top", (d3.event.pageY - 15) + "px")

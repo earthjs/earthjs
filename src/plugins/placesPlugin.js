@@ -1,4 +1,4 @@
-export default function(jsonUrl='./d/places.json') {
+export default function(urlPlaces) {
     var _ = {svg:null, select: null, places: null};
 
     function svgAddPlaces() {
@@ -53,7 +53,7 @@ export default function(jsonUrl='./d/places.json') {
 
     return {
         name: 'placesPlugin',
-        data: [jsonUrl],
+        urls: urlPlaces && [urlPlaces],
         onReady(err, places) {
             _.places = places;
             this.svgDraw();
@@ -73,6 +73,14 @@ export default function(jsonUrl='./d/places.json') {
             _.svg = d3.selectAll(slc);
             _.select = slc;
             return _.svg;
+        },
+        data(p) {
+            if (p) {
+                var data = p.placesPlugin.data()
+                _.places = data.places;
+            } else {
+                return {places: _.places}
+            }
         }
     };
 }

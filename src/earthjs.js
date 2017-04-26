@@ -25,8 +25,9 @@ export default function (options={}) {
         ]
     }
     var drag = false;
+    var loadingData = false;
     var svg  = d3.selectAll(options.select).attr("width", options.width).attr("height", options.height);
-    var proj = d3.geoOrthographic().scale(options.width / 1.1).translate([options.width / 2, options.height / 2]);
+    var proj = d3.geoOrthographic().scale(options.width / 3.5).translate([options.width / 2, options.height / 2]);
     var path = d3.geoPath().projection(proj);
     var planet = {
         _: {
@@ -34,14 +35,15 @@ export default function (options={}) {
             proj,
             path,
             drag,
-            options
+            options,
+            loadingData,
         },
         register: function(obj) {
             var ar = {};
             planet[obj.name] = ar;
             Object.keys(obj).map(function(fn) {
                 if ([
-                    'data',
+                    'urls',
                     'onReady',
                     'onInit',
                     'onResize',
@@ -60,13 +62,15 @@ export default function (options={}) {
             qEvent(obj,'onResize');
             qEvent(obj,'onRefresh');
             qEvent(obj,'onInterval');
-            if (obj.data && obj.onReady) {
+            if (obj.urls && obj.onReady) {
+                planet._.loadingData = true;
                 var q = d3.queue();
-                obj.data.forEach(function(data) {
-                    var ext = data.split('.').pop();
-                    q.defer(d3[ext], data);
+                obj.urls.forEach(function(url) {
+                    var ext = url.split('.').pop();
+                    q.defer(d3[ext], url);
                 });
                 q.await(function() {
+                    planet._.loadingData = false;
                     obj.onReady.apply(planet, arguments);
                 });
             }

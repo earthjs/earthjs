@@ -17,26 +17,36 @@
       stroke: black;
       stroke-width: 0.5;
   }
+  #earth1 .ocean {
+      fill: #4a1;
+  }
   </style>
 </head>
 <body>
-    <svg id="earth1"></svg><br/>
+    <svg id="earth1"></svg>
     <svg id="earth2"></svg>
     <script>
-        var p = earthjs({select:'#earth1',width:450,height:450});
+        var p = earthjs({select:'#earth1',width:700,height:500});
+        p.register(earthjs.plugins.oceanPlugin());
         p.register(earthjs.plugins.configPlugin());
         p.register(earthjs.plugins.graticulePlugin());
+        p.register(earthjs.plugins.fauxGlobePlugin());
         p.register(earthjs.plugins.versorDragPlugin());
-        p.register(earthjs.plugins.autorotatePlugin(10));
+        // p.register(earthjs.plugins.autorotatePlugin(10));
         p.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
 
-        var x = earthjs({select:'#earth2',width:250,height:250});
+        var x = earthjs({select:'#earth2',width:700,height:500});
         x.register(earthjs.plugins.configPlugin());
         x.register(earthjs.plugins.graticulePlugin());
+        x.register(earthjs.plugins.fauxGlobePlugin());
         x.register(earthjs.plugins.versorDragPlugin());
-        x.register(earthjs.plugins.autorotatePlugin(10));
-        x.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
-        x.svgDraw(p);
+        // x.register(earthjs.plugins.autorotatePlugin(10));
+        x.register(earthjs.plugins.worldPlugin());
+
+        p.worldPlugin.ready = function() {
+            x.worldPlugin.data(p);
+            x.svgDraw(p);
+        }
     </script>
 </body>
 </html>
