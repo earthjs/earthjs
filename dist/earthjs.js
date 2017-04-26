@@ -24,15 +24,15 @@ var app$1 = function (options={}) {
             'svgAddDropShadow',
             'svgAddOcean',
             'svgAddGlobeShading',
+            'svgAddGraticule',
             'svgAddWorldOrCountries',
             'svgAddGlobeHilight',
-            'svgAddGraticule',
             'svgAddPlaces',
         ]
     };
     var drag = false;
     var svg  = d3.selectAll(options.select).attr("width", options.width).attr("height", options.height);
-    var proj = d3.geoOrthographic().scale(options.width / 4.1).translate([options.width / 2, options.height / 2]);
+    var proj = d3.geoOrthographic().scale(options.width / 1.1).translate([options.width / 2, options.height / 2]);
     var path = d3.geoPath().projection(proj);
     var planet = {
         _: {
@@ -364,10 +364,6 @@ var graticulePlugin = function(initOptions={}) {
         if (this._.options.showGraticule) {
             this._.graticule = _.svg.append("g").attr("class","graticule").append("path")
                 .datum(datumGraticule)
-                .style("fill", "none")
-                .style("opacity", "0.2")
-                .style("stroke", "black")
-                .style("stroke-width", "0.5")
                 .attr("class", "noclicks")
                 .attr("d", this._.path);
             return this._.graticule;
@@ -631,7 +627,9 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
                 } else {
                     this.svgAddWorld.call(this);
                 }
-                this.svgAddLakes.call(this);
+                if (this._.options.showLakes) {
+                    this.svgAddLakes.call(this);
+                }
             }
         }
     }
@@ -673,6 +671,7 @@ var worldPlugin = function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         },
         onInit() {
             this._.options.showLand = true;
+            this._.options.showLakes = true;
             this._.options.showCountries = true;
             this.svgAddWorldOrCountries = svgAddWorldOrCountries;
             this.svgAddCountries = svgAddCountries;

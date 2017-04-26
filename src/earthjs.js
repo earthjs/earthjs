@@ -18,15 +18,15 @@ export default function (options={}) {
             'svgAddDropShadow',
             'svgAddOcean',
             'svgAddGlobeShading',
+            'svgAddGraticule',
             'svgAddWorldOrCountries',
             'svgAddGlobeHilight',
-            'svgAddGraticule',
             'svgAddPlaces',
         ]
     }
     var drag = false;
     var svg  = d3.selectAll(options.select).attr("width", options.width).attr("height", options.height);
-    var proj = d3.geoOrthographic().scale(options.width / 4.1).translate([options.width / 2, options.height / 2]);
+    var proj = d3.geoOrthographic().scale(options.width / 1.1).translate([options.width / 2, options.height / 2]);
     var path = d3.geoPath().projection(proj);
     var planet = {
         _: {

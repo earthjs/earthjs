@@ -13,7 +13,9 @@ export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
                 } else {
                     this.svgAddWorld.call(this);
                 }
-                this.svgAddLakes.call(this);
+                if (this._.options.showLakes) {
+                    this.svgAddLakes.call(this);
+                }
             }
         }
     }
@@ -55,6 +57,7 @@ export default function(jsonWorld='./d/world-110m.json', tsvCountryNames) {
         },
         onInit() {
             this._.options.showLand = true;
+            this._.options.showLakes = true;
             this._.options.showCountries = true;
             this.svgAddWorldOrCountries = svgAddWorldOrCountries;
             this.svgAddCountries = svgAddCountries;

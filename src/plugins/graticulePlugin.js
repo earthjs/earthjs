@@ -1,16 +1,12 @@
 export default function(initOptions={}) {
     var datumGraticule = d3.geoGraticule();
-    var _ = {svg:null, select: null};
+    var _ = {svg:null, select: null}
 
     function svgAddGraticule() {
         _.svg.selectAll('.graticule').remove();
         if (this._.options.showGraticule) {
             this._.graticule = _.svg.append("g").attr("class","graticule").append("path")
                 .datum(datumGraticule)
-                .style("fill", "none")
-                .style("opacity", "0.2")
-                .style("stroke", "black")
-                .style("stroke-width", "0.5")
                 .attr("class", "noclicks")
                 .attr("d", this._.path);
             return this._.graticule;
