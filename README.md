@@ -41,17 +41,24 @@ This sample need to run on the webserver, you can use [nodejs web-server](https:
       stroke-width: 1.5;
       opacity: 1;
   }
-  </style>
+  .graticule path {
+      fill: none;
+      opacity: 0.2;
+      stroke: black;
+      stroke-width: 0.5;
+  }
+</style>
 </head>
 <body>
   <svg id="earth"></svg>
   <script>
     var p = earthjs({width: 700, height: 500});
-    p.register(earthjs.plugins.configPlugin());
     p.register(earthjs.plugins.graticulePlugin());
     p.register(earthjs.plugins.autorotatePlugin(10));
     p.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
-    p.svgDraw();
+    p.ready(function(){
+        p.svgDraw();
+    })
   </script>
 </body>
 </html>
