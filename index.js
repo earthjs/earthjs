@@ -8,6 +8,7 @@ import fauxGlobePlugin from './src/plugins/fauxGlobePlugin.js';
 import autorotatePlugin from './src/plugins/autorotatePlugin.js';
 import placesPlugin from './src/plugins/placesPlugin.js';
 import worldPlugin from './src/plugins/worldPlugin.js';
+import centerPlugin from './src/plugins/centerPlugin.js';
 import countryTooltipPlugin from './src/plugins/countryTooltipPlugin.js';
 app.plugins= {
     versorDragPlugin,
@@ -19,6 +20,7 @@ app.plugins= {
     autorotatePlugin,
     placesPlugin,
     worldPlugin,
+    centerPlugin,
     countryTooltipPlugin
 };
 export default app;

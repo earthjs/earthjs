@@ -631,7 +631,7 @@ var placesPlugin = function(urlPlaces) {
 };
 
 var worldPlugin = function(urlWorld, urlCountryNames) {
-    var _ = {svg:null, select: null, world: null, countryNames: null};
+    var _ = {svg:null, select: null, world: null, countries: null, countryNames: null};
     var countryClick = function() {
         // console.log(d);
     };
@@ -654,8 +654,7 @@ var worldPlugin = function(urlWorld, urlCountryNames) {
 
     function svgAddCountries() {
         this._.countries = _.svg.append("g").attr("class","countries").selectAll("path")
-        .data(topojson.feature(_.world, _.world.objects.countries).features)
-        .enter().append("path").attr("id",function(d) {return 'x'+d.id})
+        .data(_.countries).enter().append("path").attr("id",function(d) {return 'x'+d.id})
         .on('click', countryClick)
         .attr("d", this._.path);
         return this._.countries;
@@ -688,6 +687,7 @@ var worldPlugin = function(urlWorld, urlCountryNames) {
         onReady(err, world, countryNames) {
             _.world = world;
             _.countryNames = countryNames;
+            _.countries = topojson.feature(_.world, _.world.objects.countries).features;
         },
         onInit() {
             this._.options.showLand = true;
@@ -710,6 +710,9 @@ var worldPlugin = function(urlWorld, urlCountryNames) {
                     this._.lakes.attr("d", this._.path);
                 }
             }
+        },
+        countries() {
+            return _.countries;
         },
         countryName(d) {
             var cname = '';
@@ -738,6 +741,61 @@ var worldPlugin = function(urlWorld, urlCountryNames) {
             }
         }
     };
+};
+
+// KoGor’s Block http://bl.ocks.org/KoGor/5994804
+//
+var centerPlugin = function() {
+    var _ = {focused: null};
+
+    function country(cnt, id) {
+        id = id.replace('x', '');
+        for(var i=0, l=cnt.length; i<l; i++) {
+            if(cnt[i].id == id) {return cnt[i];}
+        }
+    }
+
+    function transition(p) {
+        var _this = this;
+        d3.transition()
+        .duration(2500)
+        .tween("rotate", function() {
+            var r = d3.interpolate(_this._.proj.rotate(), [-p[0], -p[1]]);
+            return function(t) {
+                _this._.rotate(r(t));
+            };
+        });
+    }
+
+    return {
+        name: 'centerPlugin',
+        onInit() {
+            var _this = this;
+            var originalsvgAddCountries = this.svgAddCountries;
+            this.svgAddCountries = function() {
+                return originalsvgAddCountries.call(this)
+                .on("click", function(d) {
+                    var id = this.id.replace('x', ''),
+                    c = _this.worldPlugin.countries(),
+                    focusedCountry = country(c, id),
+                    p = d3.geoCentroid(focusedCountry);
+                    transition.call(_this, p);
+                    console.log(id);
+                    if (typeof(_.focused)==='function') {
+                        _.focused.call(_this);
+                    }
+                });
+            };
+        },
+        go(id) {
+            focusedCountry = country(c, id),
+            p = d3.geoCentroid(focusedCountry);
+            transition.call(_this, p);
+        },
+        focused(fn) {
+            _.focused = fn;
+        }
+    }
 };
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
@@ -783,6 +841,7 @@ app$1.plugins= {
     autorotatePlugin,
     placesPlugin,
     worldPlugin,
+    centerPlugin,
     countryTooltipPlugin
 };
 

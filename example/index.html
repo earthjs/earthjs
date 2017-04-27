@@ -4,11 +4,6 @@
 <script src="./js/d3.min.js"></script>
 <script src="./js/topojson.min.js"></script>
 <script src="../dist/earthjs.js"></script>
-<style media="screen">
-/*#earth .ocean {
-    fill: rgb(117, 87, 57);
-}*/
-</style>
 <div class="set-options"></div>
 <svg id="earth"></svg>
 <script>
@@ -22,7 +17,12 @@ p.register(earthjs.plugins.graticulePlugin());
 p.register(earthjs.plugins.fauxGlobePlugin());
 p.register(earthjs.plugins.placesPlugin('./d/places.json'));
 p.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
+p.register(earthjs.plugins.centerPlugin());
 p.register(earthjs.plugins.countryTooltipPlugin());
+p.centerPlugin.focused(function() {
+    p.autorotatePlugin.stop();
+    options.stop = true;
+})
 p.ready(function(){
     p.svgDraw();
 })

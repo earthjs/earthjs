@@ -1,5 +1,5 @@
 export default function(urlWorld, urlCountryNames) {
-    var _ = {svg:null, select: null, world: null, countryNames: null};
+    var _ = {svg:null, select: null, world: null, countries: null, countryNames: null};
     var countryClick = function() {
         // console.log(d);
     }
@@ -22,8 +22,7 @@ export default function(urlWorld, urlCountryNames) {
 
     function svgAddCountries() {
         this._.countries = _.svg.append("g").attr("class","countries").selectAll("path")
-        .data(topojson.feature(_.world, _.world.objects.countries).features)
-        .enter().append("path").attr("id",function(d) {return 'x'+d.id})
+        .data(_.countries).enter().append("path").attr("id",function(d) {return 'x'+d.id})
         .on('click', countryClick)
         .attr("d", this._.path);
         return this._.countries;
@@ -56,6 +55,7 @@ export default function(urlWorld, urlCountryNames) {
         onReady(err, world, countryNames) {
             _.world = world;
             _.countryNames = countryNames;
+            _.countries = topojson.feature(_.world, _.world.objects.countries).features;
         },
         onInit() {
             this._.options.showLand = true;
@@ -78,6 +78,9 @@ export default function(urlWorld, urlCountryNames) {
                     this._.lakes.attr("d", this._.path);
                 }
             }
+        },
+        countries() {
+            return _.countries;
         },
         countryName(d) {
             var cname = '';
