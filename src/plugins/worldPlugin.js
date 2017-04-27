@@ -56,11 +56,6 @@ export default function(urlWorld, urlCountryNames) {
         onReady(err, world, countryNames) {
             _.world = world;
             _.countryNames = countryNames;
-            if (typeof(this.worldPlugin.ready)==='function') {
-                this.worldPlugin.ready.call(this);
-            } else {
-                this.svgDraw();
-            }
         },
         onInit() {
             this._.options.showLand = true;

@@ -56,7 +56,6 @@ export default function(urlPlaces) {
         urls: urlPlaces && [urlPlaces],
         onReady(err, places) {
             _.places = places;
-            this.svgDraw();
         },
         onInit() {
             this._.options.showPlaces = true;

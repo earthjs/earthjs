@@ -28,10 +28,11 @@ var app$1 = function (options={}) {
             'svgAddWorldOrCountries',
             'svgAddGlobeHilight',
             'svgAddPlaces',
-        ]
+        ],
+        ready: null,
+        loadingData: null
     };
     var drag = false;
-    var loadingData = false;
     var svg  = d3.selectAll(options.select).attr("width", options.width).attr("height", options.height);
     var proj = d3.geoOrthographic().scale(options.width / 3.5).translate([options.width / 2, options.height / 2]);
     var path = d3.geoPath().projection(proj);
@@ -42,7 +43,13 @@ var app$1 = function (options={}) {
             path,
             drag,
             options,
-            loadingData,
+        },
+        ready: function(fn) {
+            if (fn) {
+                _.ready = fn;
+            } else {
+                return _.loadingData;
+            }
         },
         register: function(obj) {
             var ar = {};
@@ -69,15 +76,16 @@ var app$1 = function (options={}) {
             qEvent(obj,'onRefresh');
             qEvent(obj,'onInterval');
             if (obj.urls && obj.onReady) {
-                planet._.loadingData = true;
+                _.loadingData = true;
                 var q = d3.queue();
                 obj.urls.forEach(function(url) {
                     var ext = url.split('.').pop();
                     q.defer(d3[ext], url);
                 });
                 q.await(function() {
-                    planet._.loadingData = false;
                     obj.onReady.apply(planet, arguments);
+                    _.loadingData = false;
+                    _.ready.call(planet);
                 });
             }
             return planet;
@@ -594,7 +602,6 @@ var placesPlugin = function(urlPlaces) {
         urls: urlPlaces && [urlPlaces],
         onReady(err, places) {
             _.places = places;
-            this.svgDraw();
         },
         onInit() {
             this._.options.showPlaces = true;
@@ -681,11 +688,6 @@ var worldPlugin = function(urlWorld, urlCountryNames) {
         onReady(err, world, countryNames) {
             _.world = world;
             _.countryNames = countryNames;
-            if (typeof(this.worldPlugin.ready)==='function') {
-                this.worldPlugin.ready.call(this);
-            } else {
-                this.svgDraw();
-            }
         },
         onInit() {
             this._.options.showLand = true;

@@ -23,13 +23,12 @@
   <svg id="earth"></svg>
   <script>
     var p = earthjs({width: 700, height: 500});
-    p.register(earthjs.plugins.configPlugin());
     p.register(earthjs.plugins.graticulePlugin());
     p.register(earthjs.plugins.autorotatePlugin(10));
     p.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
-    if (!p._.loadingData) {
+    p.ready(function(){
         p.svgDraw();
-    }
+    })
   </script>
 </body>
 </html>
