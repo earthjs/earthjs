@@ -19,6 +19,7 @@ Selected plugins bundled into library:
 * autorotatePlugin,
 * placesPlugin,
 * worldPlugin,
+* centerPlugin,
 * countryTooltipPlugin
 
 ## Requirements
@@ -63,6 +64,9 @@ This sample need to run on the webserver, you can use [nodejs web-server](https:
 </body>
 </html>
 ```
+#### Live Example
+* [Quick Start](http://blockbuilder.org/earthjs/df9abf84c90586cb9e27d5f4b3d21d14)
+* [Complete Globe](http://blockbuilder.org/earthjs/562bbae9b4a22f826e40b9ee10445e23)
 
 ## Writing Plugins
 Sample skeleton of plugin, five(5) event handler and you can add any function that will be live on the plugin namespace, you can check folder plugins for each functionality.
