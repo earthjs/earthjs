@@ -10,6 +10,7 @@ import placesPlugin from './src/plugins/placesPlugin.js';
 import worldPlugin from './src/plugins/worldPlugin.js';
 import centerPlugin from './src/plugins/centerPlugin.js';
 import countryTooltipPlugin from './src/plugins/countryTooltipPlugin.js';
+import flattenPlugin from './src/plugins/flattenPlugin.js';
 app.plugins= {
     versorDragPlugin,
     wheelZoomPlugin,
@@ -21,6 +22,7 @@ app.plugins= {
     placesPlugin,
     worldPlugin,
     centerPlugin,
-    countryTooltipPlugin
+    countryTooltipPlugin,
+    flattenPlugin
 };
 export default app;
