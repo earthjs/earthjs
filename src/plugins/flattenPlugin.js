@@ -33,9 +33,13 @@ export default function() {
                     var ta = a.translate(),
                         tb = b.translate();
                         α  = + _x;
+                        tb[0] = ta[0];
+                        tb[1] = ta[1]/1.2;
+                    console.log(ta,tb);
                     px.translate([
                         (1 - α) * ta[0] + α * tb[0],
-                        (1 - α) * ta[1] + α * tb[1]]);
+                        ((1 - α) * ta[1] + α * tb[1])
+                    ]);
                     return px;
                 };
                 animation.alpha(0);
@@ -43,19 +47,21 @@ export default function() {
             }
 
             var g1 = this._.proj;
-            var g2 = d3.geoEquirectangular().scale(width/3.5).translate([width / 2, height / 2]);
-
+            var g2 = d3.geoEquirectangular()
+                .scale(width/4)
+                .translate([width / 2, height / 2]);
             _.proj = interpolatedProjection(g1, g2);
-            var patx = d3.geoPath().projection(_.proj);
-
-            this._.patx = patx;
+            // _.proj.center([0,0]);
             this._.animation = animation;
+            this._.px = _.proj;
+            this._.g1 = g1;
+            this._.g2 = g2;
         },
         toMap() {
-            var r = this._.proj.rotate();
-            this._.path = this._.patx;
-            _.proj.rotate([r[0],0,0]);
-            _.proj.center([0,0]);
+            // var r = this._.proj.rotate();
+            this._.path = d3.geoPath().projection(_.proj);
+            // this._.proj.rotate([r[0],0,0]);
+            // this._.proj.center([0,0]);
             this.svgDraw();
             this._.animation.call(this);
         }

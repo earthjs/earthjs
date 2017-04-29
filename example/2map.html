@@ -1,0 +1,24 @@
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
+  <script src="./js/d3.min.js"></script>
+  <script src="./js/topojson.min.js"></script>
+  <script src='../dist/earthjs.min.js'></script>
+</head>
+<body>
+    <svg class="earth e1"></svg>
+    <script>
+        var p = earthjs({select:'.earth',width:1200,height:750});
+        p.register(earthjs.plugins.configPlugin());
+        p.register(earthjs.plugins.graticulePlugin());
+        p.register(earthjs.plugins.versorDragPlugin());
+        p.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
+        p.register(earthjs.plugins.countryTooltipPlugin());
+        p.register(earthjs.plugins.flattenPlugin());
+        p.ready(function(){
+            // p.flattenPlugin.toMap();
+            p.svgDraw();
+        })
+    </script>
+</body>
+</html>
