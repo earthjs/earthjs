@@ -11,6 +11,7 @@ import worldPlugin from './src/plugins/worldPlugin.js';
 import centerPlugin from './src/plugins/centerPlugin.js';
 import countryTooltipPlugin from './src/plugins/countryTooltipPlugin.js';
 import flattenPlugin from './src/plugins/flattenPlugin.js';
+import barPlugin from './src/plugins/barPlugin.js';
 app.plugins= {
     versorDragPlugin,
     wheelZoomPlugin,
@@ -23,6 +24,7 @@ app.plugins= {
     worldPlugin,
     centerPlugin,
     countryTooltipPlugin,
-    flattenPlugin
+    flattenPlugin,
+    barPlugin
 };
 export default app;

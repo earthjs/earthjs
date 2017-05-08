@@ -22,13 +22,19 @@ export default function (options={}) {
             'svgAddWorldOrCountries',
             'svgAddGlobeHilight',
             'svgAddPlaces',
+            'svgAddBar'
         ],
         ready: null,
         loadingData: null
     }
     var drag = false;
+    var ltScale = d3.scaleLinear().domain([0, options.width]).range([-180, 180]);
     var svg  = d3.selectAll(options.select).attr("width", options.width).attr("height", options.height);
-    var proj = d3.geoOrthographic().scale(options.width / 3.5).translate([options.width / 2, options.height / 2]);
+    var proj = d3.geoOrthographic()
+        .scale(options.width / 3.5)
+        .rotate([ltScale(130), 0])
+        .translate([options.width / 2, options.height / 2])
+        .clipAngle(90);
     var path = d3.geoPath().projection(proj);
     var planet = {
         _: {
@@ -37,6 +43,7 @@ export default function (options={}) {
             path,
             drag,
             options,
+            ltScale,
         },
         ready: function(fn) {
             if (fn) {

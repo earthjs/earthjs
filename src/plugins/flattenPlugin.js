@@ -20,25 +20,25 @@ export default function() {
             }
 
             function interpolatedProjection(a, b) {
-                var px = d3.geoProjection(raw).scale(1), α;
+                var px = d3.geoProjection(raw).scale(1), alpha;
 
-                function raw(λ, φ) {
-                    var pa = a([λ *= 180 / Math.PI, φ *= 180 / Math.PI]), pb = b([λ, φ]);
-                    return [(1 - α) * pa[0] + α * pb[0], (α - 1) * pa[1] - α * pb[1]];
+                function raw(lamda, pi) {
+                    var pa = a([lamda *= 180 / Math.PI, pi *= 180 / Math.PI]), pb = b([lamda, pi]);
+                    return [(1 - alpha) * pa[0] + alpha * pb[0], (alpha - 1) * pa[1] - alpha * pb[1]];
                 }
 
                 animation.alpha = function(_x) {
                     if (!arguments.length)
-                        return α;
+                        return alpha;
                     var ta = a.translate(),
                         tb = b.translate();
-                        α  = + _x;
+                        alpha = + _x;
                         tb[0] = ta[0];
                         tb[1] = ta[1]/1.2;
-                    console.log(ta,tb);
+                    console.log(px.rotate(), _x);
                     px.translate([
-                        (1 - α) * ta[0] + α * tb[0],
-                        ((1 - α) * ta[1] + α * tb[1])
+                        (1 - alpha) * ta[0] + alpha * tb[0],
+                        ((1 - alpha) * ta[1] + alpha * tb[1])
                     ]);
                     return px;
                 };
