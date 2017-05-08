@@ -360,9 +360,9 @@ var configPlugin = function() {
         set(newOpt) {
             if (newOpt) {
                 Object.assign(this._.options, newOpt);
-                if (newOpt.stop!==undefined) {
+                if (newOpt.spin!==undefined) {
                     var p = this.autorotatePlugin;
-                    newOpt.stop ? p.stop() : p.start();
+                    newOpt.spin ? p.start() : p.stop();
                 }
                 this._.drag = true;
                 this.svgDraw();
@@ -517,7 +517,7 @@ var fauxGlobePlugin = function(initOptions={}) {
 
 var autorotatePlugin = function(degPerSec) {
     var _ = {
-        stop: false,
+        spin: true,
         lastTick: null,
         degree: degPerSec
     };
@@ -527,7 +527,7 @@ var autorotatePlugin = function(degPerSec) {
         onInit() {},
         onInterval() {
             var now = new Date();
-            if (!_.lastTick || _.stop || this._.drag) {
+            if (!_.lastTick || !_.spin || this._.drag) {
                 _.lastTick = now;
             } else {
                 var delta = now - _.lastTick;
@@ -543,10 +543,10 @@ var autorotatePlugin = function(degPerSec) {
             _.degree = degPerSec;
         },
         start() {
-            _.stop = false;
+            _.spin = true;
         },
         stop() {
-            _.stop = true;
+            _.spin = false;
         }
     };
 };
@@ -948,10 +948,11 @@ var barPlugin = function(urlBars) {
 
     function refresh() {
         if (_.bars && this._.options.showBars) {
-            var centerPos = this._.proj.invert([this._.options.width / 2, this._.options.height/2]);
+            var proj= this._.proj;
+            var centerPos = proj.invert([this._.options.width / 2, this._.options.height/2]);
             this._.bar
-                .attr("x1", function(d) {return _.barProjection([d.Longitude, d.Latitude])[0]})
-                .attr("y1", function(d) {return _.barProjection([d.Longitude, d.Latitude])[1]})
+                .attr("x1", function(d) {return proj([d.Longitude, d.Latitude])[0]})
+                .attr("y1", function(d) {return proj([d.Longitude, d.Latitude])[1]})
                 .attr("x2", function(d) {
                     _.barProjection.scale(_.lengthScale(d.Value));
                     return _.barProjection([d.Longitude, d.Latitude])[0];

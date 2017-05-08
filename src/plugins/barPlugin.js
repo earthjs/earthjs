@@ -38,10 +38,11 @@ export default function(urlBars) {
 
     function refresh() {
         if (_.bars && this._.options.showBars) {
-            var centerPos = this._.proj.invert([this._.options.width / 2, this._.options.height/2]);
+            var proj= this._.proj;
+            var centerPos = proj.invert([this._.options.width / 2, this._.options.height/2]);
             this._.bar
-                .attr("x1", function(d) {return _.barProjection([d.Longitude, d.Latitude])[0]})
-                .attr("y1", function(d) {return _.barProjection([d.Longitude, d.Latitude])[1]})
+                .attr("x1", function(d) {return proj([d.Longitude, d.Latitude])[0]})
+                .attr("y1", function(d) {return proj([d.Longitude, d.Latitude])[1]})
                 .attr("x2", function(d) {
                     _.barProjection.scale(_.lengthScale(d.Value));
                     return _.barProjection([d.Longitude, d.Latitude])[0];

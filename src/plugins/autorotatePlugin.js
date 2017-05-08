@@ -1,6 +1,6 @@
 export default function(degPerSec) {
     var _ = {
-        stop: false,
+        spin: true,
         lastTick: null,
         degree: degPerSec
     }
@@ -10,7 +10,7 @@ export default function(degPerSec) {
         onInit() {},
         onInterval() {
             var now = new Date();
-            if (!_.lastTick || _.stop || this._.drag) {
+            if (!_.lastTick || !_.spin || this._.drag) {
                 _.lastTick = now;
             } else {
                 var delta = now - _.lastTick;
@@ -26,10 +26,10 @@ export default function(degPerSec) {
             _.degree = degPerSec;
         },
         start() {
-            _.stop = false;
+            _.spin = true;
         },
         stop() {
-            _.stop = true;
+            _.spin = false;
         }
     };
 }

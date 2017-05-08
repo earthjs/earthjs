@@ -15,13 +15,14 @@ p.register(earthjs.plugins.configPlugin());
 p.register(earthjs.plugins.oceanPlugin());
 p.register(earthjs.plugins.graticulePlugin());
 p.register(earthjs.plugins.fauxGlobePlugin());
+p.register(earthjs.plugins.barPlugin('./d/bars.csv'));
 p.register(earthjs.plugins.placesPlugin('./d/places.json'));
 p.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
 p.register(earthjs.plugins.centerPlugin());
 p.register(earthjs.plugins.countryTooltipPlugin());
 p.centerPlugin.focused(function() {
     p.autorotatePlugin.stop();
-    options.stop = true;
+    options.spin = false;
 })
 p.ready(function(){
     p.svgDraw();
@@ -48,7 +49,8 @@ var checker = [
     'country:Country:showCountries',
     'places:Places:showPlaces',
     'shadow:Shadow:showGlobeShadow',
-    'stop:Stop:stop',
+    'bars:Bars:showBars',
+    'spin:Spin:spin',
 ].map(function(d) {return d.split(':')});
 var opt = d3.select('.set-options');
 opt.selectAll('button').data(checker).enter().append('button')

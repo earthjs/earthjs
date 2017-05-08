@@ -4,9 +4,9 @@ export default function() {
         set(newOpt) {
             if (newOpt) {
                 Object.assign(this._.options, newOpt);
-                if (newOpt.stop!==undefined) {
+                if (newOpt.spin!==undefined) {
                     var p = this.autorotatePlugin;
-                    newOpt.stop ? p.stop() : p.start();
+                    newOpt.spin ? p.start() : p.stop();
                 }
                 this._.drag = true;
                 this.svgDraw();
