@@ -916,7 +916,7 @@ var flattenPlugin = function() {
 };
 
 var barPlugin = function(urlBars) {
-    var _ = {svg:null, proj: null, select: null, bars: null};
+    var _ = {svg:null, barProjection: null, select: null, bars: null};
 
     function svgAddBar() {
         _.svg.selectAll('.bar').remove();
@@ -939,15 +939,26 @@ var barPlugin = function(urlBars) {
               return parseInt(d.Value);
             });
 
+            var scale = this._.proj.scale();
             _.lengthScale = d3.scaleLinear()
                 .domain([0, _.max])
-                .range([200, 250]);
+                .range([scale, scale+50]);
 
-            this._.bar = gBar.selectAll(".bar").data(_.bars).enter().append("line")
+            this._.bar = gBar.selectAll("line").data(_.bars).enter().append("line")
                 .attr("stroke", "red")
                 .attr("stroke-width", "2");
             return this._.bar;
         }
+    }
+
+    function svgClipPath() {
+        // mask creation
+        this._.defs.selectAll('clipPath').remove();
+        this._.defs.append("clipPath").append("circle")
+            .attr("id", "edgeCircle")
+            .attr("cx", this._.options.width / 2)
+            .attr("cy", this._.options.height / 2)
+            .attr("r",  this._.proj.scale());
     }
 
     function refresh() {
@@ -955,8 +966,12 @@ var barPlugin = function(urlBars) {
             var proj= this._.proj;
             var centerPos = proj.invert([this._.options.width / 2, this._.options.height/2]);
             this._.bar
-                .attr("x1", function(d) {return proj([d.Longitude, d.Latitude])[0]})
-                .attr("y1", function(d) {return proj([d.Longitude, d.Latitude])[1]})
+                .attr("x1", function(d) {
+                    return proj([d.Longitude, d.Latitude])[0]
+                })
+                .attr("y1", function(d) {
+                    return proj([d.Longitude, d.Latitude])[1]
+                })
                 .attr("x2", function(d) {
                     _.barProjection.scale(_.lengthScale(d.Value));
                     return _.barProjection([d.Longitude, d.Latitude])[0];
@@ -976,24 +991,24 @@ var barPlugin = function(urlBars) {
         name: 'barPlugin',
         urls: urlBars && [urlBars],
         onReady(err, bars) {
+            var _this = this;
             _.bars = bars;
-            svgAddBar.call(this);
-            refresh.call(this);
+            // svgAddBar.call(this); //called in this.svgDraw();
+            setTimeout(function() {
+                refresh.call(_this);
+            },1);
         },
         onInit() {
             this.svgAddBar = svgAddBar;
+            this.svgClipPath = svgClipPath;
             this._.options.showBars = true;
             _.barProjection = this._.orthoGraphic();
             _.svg = this._.svg;
-            // mask creation
-            _.center = this._.proj.translate(); // get the center of the circle
-            _.edge = this._.proj([-90, 90]); // edge point
-            _.r = Math.pow(Math.pow(_.center[0] - _.edge[0], 2) + Math.pow(_.center[1] - _.edge[1], 2), 0.5); // radius
-            this._.defs.append("clipPath").append("circle")
-                .attr("id", "edgeCircle")
-                .attr("cx", _.center[0])
-                .attr("cy", _.center[1])
-                .attr("r",  _.r);
+            svgClipPath.call(this);
+        },
+        onResize() {
+            svgClipPath.call(this);
+            svgAddBar.call(this);
         },
         onRefresh() {
             _.barProjection.rotate(this._.proj.rotate());

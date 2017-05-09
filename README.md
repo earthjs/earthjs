@@ -19,8 +19,9 @@ Selected plugins bundled into library:
 * autorotatePlugin,
 * placesPlugin,
 * worldPlugin,
+* barPlugin,
 * centerPlugin,
-* countryTooltipPlugin
+* countryTooltipPlugin,
 
 ## Requirements
 * [D3](http://d3js.org/) version 4
