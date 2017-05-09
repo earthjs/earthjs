@@ -34,19 +34,13 @@ var app$1 = function (options={}) {
         loadingData: null
     };
     var drag = false;
-    var ltScale = d3.scaleLinear().domain([0, options.width]).range([-180, 180]);
-    var svg  = d3.selectAll(options.select).attr("width", options.width).attr("height", options.height);
-    var proj = d3.geoOrthographic()
-        .scale(options.width / 3.5)
-        .rotate([ltScale(130), 0])
-        .translate([options.width / 2, options.height / 2])
-        .clipAngle(90);
-    var path = d3.geoPath().projection(proj);
+    var width = options.width;
+    var height = options.height;
+    var ltScale = d3.scaleLinear().domain([0, width]).range([-180, 180]);
+    var svg = d3.selectAll(options.select).attr("width", width).attr("height", height);
     var planet = {
         _: {
             svg,
-            proj,
-            path,
             drag,
             options,
             ltScale,
@@ -167,6 +161,19 @@ var app$1 = function (options={}) {
         return planet;
     };
 
+    planet._.orthoGraphic = function() {
+        var width = planet._.options.width;
+        var height= planet._.options.height;
+        var ltRotate = planet._.ltScale(130);
+        return d3.geoOrthographic()
+            .scale(width / 3.5)
+            .rotate([ltRotate, 0])
+            .translate([width / 2, height / 2])
+            .clipAngle(90);
+    };
+
+    planet._.proj = planet._.orthoGraphic();
+    planet._.path = d3.geoPath().projection(planet._.proj);
     return planet;
     //----------------------------------------
     function qEvent(obj, qname) {
@@ -914,7 +921,8 @@ var barPlugin = function(urlBars) {
     function svgAddBar() {
         _.svg.selectAll('.bar').remove();
         if (_.bars && this._.options.showBars) {
-            var mask = _.svg.append("mask")
+            var gBar = _.svg.append("g").attr("class","bar");
+            var mask = gBar.append("mask")
                 .attr("id", "edge");
             mask.append("rect")
                 .attr("x", 0)
@@ -935,11 +943,7 @@ var barPlugin = function(urlBars) {
                 .domain([0, _.max])
                 .range([200, 250]);
 
-            this._.bar = _.svg.selectAll(".bar")
-                .data(_.bars)
-                .enter()
-                .append("line")
-                .attr("class", "bar")
+            this._.bar = gBar.selectAll(".bar").data(_.bars).enter().append("line")
                 .attr("stroke", "red")
                 .attr("stroke-width", "2");
             return this._.bar;
@@ -977,27 +981,19 @@ var barPlugin = function(urlBars) {
             refresh.call(this);
         },
         onInit() {
-            this._.options.showBars = true;
             this.svgAddBar = svgAddBar;
+            this._.options.showBars = true;
+            _.barProjection = this._.orthoGraphic();
             _.svg = this._.svg;
-            // _.proj= this._.proj;
-            _.barProjection = d3.geoOrthographic()
-                .scale(this._.options.width / 3.5)
-                .rotate([this._.ltScale(130), 0])
-                .translate([this._.options.width / 2, this._.options.height / 2])
-                .clipAngle(90);
             // mask creation
-            _.center = this._.proj.translate();   // get the center of the circle
+            _.center = this._.proj.translate(); // get the center of the circle
             _.edge = this._.proj([-90, 90]); // edge point
             _.r = Math.pow(Math.pow(_.center[0] - _.edge[0], 2) + Math.pow(_.center[1] - _.edge[1], 2), 0.5); // radius
-            this._.defs
-                .append("clipPath")
-                .append("circle")
+            this._.defs.append("clipPath").append("circle")
                 .attr("id", "edgeCircle")
                 .attr("cx", _.center[0])
                 .attr("cy", _.center[1])
                 .attr("r",  _.r);
-            window.__ = _;
         },
         onRefresh() {
             _.barProjection.rotate(this._.proj.rotate());

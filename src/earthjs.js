@@ -28,19 +28,13 @@ export default function (options={}) {
         loadingData: null
     }
     var drag = false;
-    var ltScale = d3.scaleLinear().domain([0, options.width]).range([-180, 180]);
-    var svg  = d3.selectAll(options.select).attr("width", options.width).attr("height", options.height);
-    var proj = d3.geoOrthographic()
-        .scale(options.width / 3.5)
-        .rotate([ltScale(130), 0])
-        .translate([options.width / 2, options.height / 2])
-        .clipAngle(90);
-    var path = d3.geoPath().projection(proj);
+    var width = options.width;
+    var height = options.height;
+    var ltScale = d3.scaleLinear().domain([0, width]).range([-180, 180]);
+    var svg = d3.selectAll(options.select).attr("width", width).attr("height", height);
     var planet = {
         _: {
             svg,
-            proj,
-            path,
             drag,
             options,
             ltScale,
@@ -161,6 +155,19 @@ export default function (options={}) {
         return planet;
     }
 
+    planet._.orthoGraphic = function() {
+        var width = planet._.options.width;
+        var height= planet._.options.height;
+        var ltRotate = planet._.ltScale(130);
+        return d3.geoOrthographic()
+            .scale(width / 3.5)
+            .rotate([ltRotate, 0])
+            .translate([width / 2, height / 2])
+            .clipAngle(90);
+    }
+
+    planet._.proj = planet._.orthoGraphic();
+    planet._.path = d3.geoPath().projection(planet._.proj);
     return planet;
     //----------------------------------------
     function qEvent(obj, qname) {

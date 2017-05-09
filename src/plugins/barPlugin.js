@@ -4,7 +4,8 @@ export default function(urlBars) {
     function svgAddBar() {
         _.svg.selectAll('.bar').remove();
         if (_.bars && this._.options.showBars) {
-            var mask = _.svg.append("mask")
+            var gBar = _.svg.append("g").attr("class","bar");
+            var mask = gBar.append("mask")
                 .attr("id", "edge");
             mask.append("rect")
                 .attr("x", 0)
@@ -25,11 +26,7 @@ export default function(urlBars) {
                 .domain([0, _.max])
                 .range([200, 250])
 
-            this._.bar = _.svg.selectAll(".bar")
-                .data(_.bars)
-                .enter()
-                .append("line")
-                .attr("class", "bar")
+            this._.bar = gBar.selectAll(".bar").data(_.bars).enter().append("line")
                 .attr("stroke", "red")
                 .attr("stroke-width", "2");
             return this._.bar;
@@ -67,27 +64,19 @@ export default function(urlBars) {
             refresh.call(this);
         },
         onInit() {
-            this._.options.showBars = true;
             this.svgAddBar = svgAddBar;
+            this._.options.showBars = true;
+            _.barProjection = this._.orthoGraphic();
             _.svg = this._.svg;
-            // _.proj= this._.proj;
-            _.barProjection = d3.geoOrthographic()
-                .scale(this._.options.width / 3.5)
-                .rotate([this._.ltScale(130), 0])
-                .translate([this._.options.width / 2, this._.options.height / 2])
-                .clipAngle(90);
             // mask creation
-            _.center = this._.proj.translate();   // get the center of the circle
+            _.center = this._.proj.translate(); // get the center of the circle
             _.edge = this._.proj([-90, 90]); // edge point
             _.r = Math.pow(Math.pow(_.center[0] - _.edge[0], 2) + Math.pow(_.center[1] - _.edge[1], 2), 0.5); // radius
-            this._.defs
-                .append("clipPath")
-                .append("circle")
+            this._.defs.append("clipPath").append("circle")
                 .attr("id", "edgeCircle")
                 .attr("cx", _.center[0])
                 .attr("cy", _.center[1])
                 .attr("r",  _.r);
-            window.__ = _;
         },
         onRefresh() {
             _.barProjection.rotate(this._.proj.rotate());
