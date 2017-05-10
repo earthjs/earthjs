@@ -1,4 +1,4 @@
-export default function(initOptions={}) {
+export default function() {
     var datumGraticule = d3.geoGraticule();
     var _ = {svg:null, select: null}
 
@@ -13,15 +13,11 @@ export default function(initOptions={}) {
         }
     }
 
-    initOptions = Object.assign({
-        showGraticule: true,
-    }, initOptions);
-
     return {
         name: 'graticulePlugin',
         onInit() {
-            Object.assign(this._.options, initOptions);
             this.svgAddGraticule = svgAddGraticule;
+            this._.options.showGraticule = true;
             _.svg = this._.svg;
         },
         onRefresh() {

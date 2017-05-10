@@ -16,13 +16,15 @@ export default function (options={}) {
 
         svgCreateOrder: [
             'svgAddDropShadow',
+            'svgAddCanvas',
+            'canvasAddGraticule',
             'svgAddOcean',
             'svgAddGlobeShading',
             'svgAddGraticule',
             'svgAddWorldOrCountries',
             'svgAddGlobeHilight',
             'svgAddPlaces',
-            'svgAddBar'
+            'svgAddBar',
         ],
         ready: null,
         loadingData: null
