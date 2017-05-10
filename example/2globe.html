@@ -11,7 +11,7 @@
     <svg id="earth3"></svg>
     <svg id="earth4"></svg>
     <script>
-        var p1 = earthjs({select:'#earth1',width:700,height:500, rotate: -50});
+        var p1 = earthjs({select:'#earth1',width:700,height:500, rotate: 130});
         p1.register(earthjs.plugins.configPlugin());
         p1.register(earthjs.plugins.versorDragPlugin());
         p1.register(earthjs.plugins.autorotatePlugin(10));
@@ -23,30 +23,18 @@
         p1.register(earthjs.plugins.graticuleCanvas());
         p1.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
 
-        var p2 = earthjs({select:'#earth2',width:700,height:500, rotate: 130});
+        var p2 = earthjs({select:'#earth2',width:700,height:500, rotate: 490});
         p2.register(earthjs.plugins.canvasPlugin());
         p2.register(earthjs.plugins.graticuleCanvas());
         p2.register(earthjs.plugins.worldCanvas());
 
-        var p3 = earthjs({select:'#earth3',width:700,height:500, rotate: 310});
-        p3.register(earthjs.plugins.canvasPlugin());
-        p3.register(earthjs.plugins.graticuleCanvas());
-        p3.register(earthjs.plugins.worldCanvas());
-
-        var p4 = earthjs({select:'#earth4',width:700,height:500, rotate: 490});
-        p4.register(earthjs.plugins.canvasPlugin());
-        p4.register(earthjs.plugins.graticuleCanvas());
-        p4.register(earthjs.plugins.worldCanvas());
-
-        p1.oceanPlugin.select('#earth1,#earth2,#earth3,#earth4');
-        p1.fauxGlobePlugin.select('#earth1,#earth2,#earth3,#earth4');
+        p1.oceanPlugin.select('#earth1,#earth2');
+        p1.fauxGlobePlugin.select('#earth1,#earth2');
         p1.ready(function(){
             p2.worldCanvas.data(p1);
-            p3.worldCanvas.data(p1);
-            p4.worldCanvas.data(p1);
-            p1.autorotatePlugin.sync([p2, p3, p4]);
-            p1.versorDragPlugin.sync([p2, p3, p4]);
-            p1.svgDraw([p2, p3, p4]);
+            p1.autorotatePlugin.sync([p2]);
+            p1.versorDragPlugin.sync([p2]);
+            p1.svgDraw([p2]);
         })
     </script>
 </body>
