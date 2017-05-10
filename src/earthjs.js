@@ -1,6 +1,7 @@
 export default function (options={}) {
     options = Object.assign({
         select: '#earth',
+        rotate: 130,
         height: 500,
         width:  700,
     }, options);
@@ -98,18 +99,24 @@ export default function (options={}) {
         interval = interval || 50;
         ticker = setInterval(function(){
             planet._.intervalRun.call(planet);
-            earth && earth._.intervalRun.call(earth);
+            if (earth) {
+                earth.forEach(function(p) {
+                    p._.intervalRun.call(p);
+                });
+            }
         }, interval);
         return planet;
     }
 
     planet.svgDraw = function(twinEarth) {
+        earth = twinEarth;
         _.svgCreateOrder.forEach(function(svgCreateKey) {
             planet[svgCreateKey] && planet[svgCreateKey].call(planet);
         });
-        if (twinEarth) {
-            twinEarth.svgDraw(null);
-            earth = twinEarth;
+        if (earth) {
+            earth.forEach(function(p) {
+                p.svgDraw(null);
+            });
         }
         if (ticker===null && twinEarth!==null) {
             planet._.ticker.call(planet);
@@ -161,7 +168,8 @@ export default function (options={}) {
     planet._.orthoGraphic = function() {
         var width = planet._.options.width;
         var height= planet._.options.height;
-        var ltRotate = planet._.ltScale(130);
+        var rotate = planet._.options.rotate;
+        var ltRotate = planet._.ltScale(rotate);
         return d3.geoOrthographic()
             .scale(width / 3.5)
             .rotate([ltRotate, 0])

@@ -7,6 +7,7 @@
 var app$1 = function (options={}) {
     options = Object.assign({
         select: '#earth',
+        rotate: 130,
         height: 500,
         width:  700,
     }, options);
@@ -104,18 +105,24 @@ var app$1 = function (options={}) {
         interval = interval || 50;
         ticker = setInterval(function(){
             planet._.intervalRun.call(planet);
-            earth && earth._.intervalRun.call(earth);
+            if (earth) {
+                earth.forEach(function(p) {
+                    p._.intervalRun.call(p);
+                });
+            }
         }, interval);
         return planet;
     };
 
     planet.svgDraw = function(twinEarth) {
+        earth = twinEarth;
         _.svgCreateOrder.forEach(function(svgCreateKey) {
             planet[svgCreateKey] && planet[svgCreateKey].call(planet);
         });
-        if (twinEarth) {
-            twinEarth.svgDraw(null);
-            earth = twinEarth;
+        if (earth) {
+            earth.forEach(function(p) {
+                p.svgDraw(null);
+            });
         }
         if (ticker===null && twinEarth!==null) {
             planet._.ticker.call(planet);
@@ -167,7 +174,8 @@ var app$1 = function (options={}) {
     planet._.orthoGraphic = function() {
         var width = planet._.options.width;
         var height= planet._.options.height;
-        var ltRotate = planet._.ltScale(130);
+        var rotate = planet._.options.rotate;
+        var ltRotate = planet._.ltScale(rotate);
         return d3.geoOrthographic()
             .scale(width / 3.5)
             .rotate([ltRotate, 0])
@@ -264,9 +272,12 @@ var versorFn = function() {
 };
 
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
-//
 var versor = versorFn();
 var versorDragPlugin = function() {
+    var _ = {
+        sync: []
+    };
+
     return {
         name: 'versorDragPlugin',
         onInit() {
@@ -280,6 +291,15 @@ var versorDragPlugin = function() {
                 r0, // Projection rotation as Euler angles at start.
                 q0; // Projection rotation as versor at start.
 
+            function rotate(src) {
+                var r = src._.proj.rotate();
+                var d = r[0] - r0[0];
+                r[0] = d + this._.proj.rotate()[0];
+                if (r[0] >= 180)
+                    r[0] -= 360;
+                this._.rotate(r);
+            }
+
             function dragstarted() {
                 _this._.drag = true;
                 v0 = versor.cartesian(_this._.proj.invert(d3.mouse(this)));
@@ -288,6 +308,9 @@ var versorDragPlugin = function() {
             }
 
             function dragsended() {
+                _.sync.forEach(function(p) {
+                    rotate.call(p, _this);
+                });
                 _this._.drag = false;
             }
 
@@ -297,6 +320,9 @@ var versorDragPlugin = function() {
                     r1 = versor.rotation(q1);
                 _this._.rotate(r1);
             }
+        },
+        sync(arr) {
+            _.sync = arr;
         }
     }
 };
@@ -610,8 +636,17 @@ var autorotatePlugin = function(degPerSec) {
     var _ = {
         spin: true,
         lastTick: null,
-        degree: degPerSec
+        degree: degPerSec,
+        sync: []
     };
+
+    function rotate(delta, degree) {
+        var r = this._.proj.rotate();
+        r[0] += _.degree * delta / 1000;
+        if (r[0] >= 180)
+            r[0] -= 360;
+        this._.rotate(r);
+    }
 
     return {
         name: 'autorotatePlugin',
@@ -622,11 +657,10 @@ var autorotatePlugin = function(degPerSec) {
                 _.lastTick = now;
             } else {
                 var delta = now - _.lastTick;
-                var r = this._.proj.rotate();
-                r[0] += _.degree * delta / 1000;
-                if (r[0] >= 180)
-                    r[0] -= 360;
-                this._.rotate(r);
+                rotate.call(this, delta, _.degree);
+                _.sync.forEach(function(p) {
+                    rotate.call(p, delta, _.degree);
+                });
                 _.lastTick = now;
             }
         },
@@ -638,6 +672,9 @@ var autorotatePlugin = function(degPerSec) {
         },
         stop() {
             _.spin = false;
+        },
+        sync(arr) {
+            _.sync = arr;
         }
     };
 };
@@ -803,7 +840,7 @@ var worldCanvas = function(urlWorld, urlCountryNames) {
         },
         data(p) {
             if (p) {
-                var data = p.worldPlugin.data();
+                var data = p.worldCanvas.data();
                 _.countryNames = data.countryNames;
                 _.world = data.world;
             } else {

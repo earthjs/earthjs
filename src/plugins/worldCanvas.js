@@ -73,7 +73,7 @@ export default function(urlWorld, urlCountryNames) {
         },
         data(p) {
             if (p) {
-                var data = p.worldPlugin.data()
+                var data = p.worldCanvas.data()
                 _.countryNames = data.countryNames;
                 _.world = data.world;
             } else {

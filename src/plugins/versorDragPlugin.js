@@ -1,9 +1,12 @@
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
-//
 import versorFn from '../versor.js';
 
 var versor = versorFn();
 export default function() {
+    var _ = {
+        sync: []
+    }
+
     return {
         name: 'versorDragPlugin',
         onInit() {
@@ -17,6 +20,15 @@ export default function() {
                 r0, // Projection rotation as Euler angles at start.
                 q0; // Projection rotation as versor at start.
 
+            function rotate(src) {
+                var r = src._.proj.rotate();
+                var d = r[0] - r0[0];
+                r[0] = d + this._.proj.rotate()[0];
+                if (r[0] >= 180)
+                    r[0] -= 360;
+                this._.rotate(r);
+            }
+
             function dragstarted() {
                 _this._.drag = true;
                 v0 = versor.cartesian(_this._.proj.invert(d3.mouse(this)));
@@ -25,6 +37,9 @@ export default function() {
             }
 
             function dragsended() {
+                _.sync.forEach(function(p) {
+                    rotate.call(p, _this);
+                })
                 _this._.drag = false;
             }
 
@@ -34,6 +49,9 @@ export default function() {
                     r1 = versor.rotation(q1);
                 _this._.rotate(r1);
             }
+        },
+        sync(arr) {
+            _.sync = arr;
         }
     }
 }
