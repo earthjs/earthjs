@@ -323,8 +323,7 @@ var canvasPlugin = function() {
     function svgAddCanvas() {
         _.svg.selectAll('.canvas').remove();
         if (this._.options.showCanvas) {
-            var fObject = _.svg.append("foreignObject")
-            .attr("class", "canvas")
+            var fObject = _.svg.append("g").attr("class","canvas").append("foreignObject")
             .attr("x", 0)
             .attr("y", 0)
             .attr("width", this._.options.width)
@@ -352,21 +351,25 @@ var canvasPlugin = function() {
             _.svg = this._.svg;
         },
         onRefresh() {
-            var context = this._.canvas.node().getContext("2d");
-            context.clearRect(0, 0, this._.options.width, this._.options.height);
+            var width = this._.options.width,
+                height= this._.options.height;
+            p._.svg.each(function() {
+                var context = this.getElementsByTagName('canvas')[0].getContext("2d");
+                context.clearRect(0, 0, width, height);
+            });
         },
         select(slc) {
             _.svg = d3.selectAll(slc);
             _.select = slc;
             return _.svg;
         },
-        context() {
-            return this._.canvas.node().getContext("2d");
-        },
-        path() {
-            var context = this.canvasPlugin.context();
-            var path = d3.geoPath().projection(this._.proj).context(context);
-            return path;
+        render(fn) {
+            var _this = this;
+            var cpath = d3.geoPath().projection(_this._.proj);
+            p._.svg.each(function() {
+                var context = this.getElementsByTagName('canvas')[0].getContext("2d");
+                fn.call(_this, context, cpath.context(context));
+            });
         }
     }
 };
@@ -387,10 +390,10 @@ var oceanPlugin = function(initOptions={}) {
             ocean_fill.append("stop")
                 .attr("offset", "100%")
                 .attr("stop-color", "#9ab");
-            this._.ocean = _.svg.append("circle")
+            this._.ocean = _.svg.append("g").attr("class","ocean").append("circle")
                 .attr("cx",this._.options.width / 2).attr("cy", this._.options.height / 2)
                 .attr("r", this._.proj.scale())
-                .attr("class", "ocean noclicks");
+                .attr("class", "noclicks");
             return this._.ocean;
         }
     }
@@ -443,13 +446,13 @@ var graticuleCanvas = function() {
 
     function canvasAddGraticule() {
         if (this._.options.showGraticule) {
-            var context = this.canvasPlugin.context();
-            var path = this.canvasPlugin.path();
-            context.beginPath();
-            path(datumGraticule());
-            context.lineWidth = 0.3;
-            context.strokeStyle = 'rgba(119,119,119,.5)';
-            context.stroke();
+            this.canvasPlugin.render(function(context, path) {
+                context.beginPath();
+                path(datumGraticule());
+                context.lineWidth = 0.3;
+                context.strokeStyle = 'rgba(119,119,119,.5)';
+                context.stroke();
+            });
         }
     }
 
@@ -518,18 +521,18 @@ var fauxGlobePlugin = function(initOptions={}) {
                 drop_shadow.append("stop")
                   .attr("offset","100%").attr("stop-color", "#000")
                   .attr("stop-opacity","0");
-            this._.dropShadow = _.svg.append("ellipse")
+            this._.dropShadow = _.svg.append("g").attr("class","drop_shadow").append("ellipse")
                   .attr("cx", this._.options.width/2).attr("cy", this._.options.height-50)
                   .attr("rx", this._.proj.scale()*0.90)
                   .attr("ry", this._.proj.scale()*0.25)
-                  .attr("class", "drop_shadow noclicks")
+                  .attr("class", "noclicks")
                   .style("fill", "url(#drop_shadow)");
             this._.dropShadow;
         }
     }
 
     function svgAddGlobeShading() {
-        _.svg.selectAll('#globe_shading,.globe_shading').remove();
+        _.svg.selectAll('#shading,.shading').remove();
         if (this._.options.showGlobeShading) {
             var globe_shading = this._.defs.append("radialGradient")
                   .attr("id", "globe_shading")
@@ -541,17 +544,17 @@ var fauxGlobePlugin = function(initOptions={}) {
                 globe_shading.append("stop")
                   .attr("offset","100%").attr("stop-color", "#3e6184")
                   .attr("stop-opacity","0.3");
-            this._.globeShading = _.svg.append("circle")
+            this._.globeShading = _.svg.append("g").attr("class","shading").append("circle")
                 .attr("cx", this._.options.width / 2).attr("cy", this._.options.height / 2)
                 .attr("r",  this._.proj.scale())
-                .attr("class","globe_shading noclicks")
-                .style("fill", "url(#globe_shading)");
+                .attr("class","noclicks")
+                .style("fill", "url(#shading)");
             return this._.globeShading;
         }
     }
 
     function svgAddGlobeHilight() {
-        _.svg.selectAll('#globe_hilight,.globe_hilight').remove();
+        _.svg.selectAll('#hilight,.hilight').remove();
         if (this._.options.showGlobeHilight) {
             var globe_highlight = this._.defs.append("radialGradient")
                   .attr("id", "globe_hilight")
@@ -563,11 +566,11 @@ var fauxGlobePlugin = function(initOptions={}) {
                 globe_highlight.append("stop")
                   .attr("offset", "100%").attr("stop-color", "#ba9")
                   .attr("stop-opacity","0.2");
-            this._.globeHilight = _.svg.append("circle")
+            this._.globeHilight = _.svg.append("g").attr("class","hilight").append("circle")
                 .attr("cx", this._.options.width / 2).attr("cy", this._.options.height / 2)
                 .attr("r",  this._.proj.scale())
-                .attr("class","globe_hilight noclicks")
-                .style("fill", "url(#globe_hilight)");
+                .attr("class","noclicks")
+                .style("fill", "url(#hilight)");
             return this._.globeHilight;
         }
     }
@@ -725,6 +728,7 @@ var placesPlugin = function(urlPlaces) {
     };
 };
 
+// John J Czaplewski’s Block http://bl.ocks.org/jczaplew/6798471
 var worldCanvas = function(urlWorld, urlCountryNames) {
     var _ = {world: null, countryNames: null};
 
@@ -744,33 +748,33 @@ var worldCanvas = function(urlWorld, urlCountryNames) {
 
     function canvasAddWorld() {
         var land = topojson.feature(_.world, _.world.objects.land);
-        var context = this.canvasPlugin.context();
-        var path = this.canvasPlugin.path();
-        context.beginPath();
-        path(land);
-        context.fillStyle = "rgb(117, 87, 57)";
-        context.fill();
+        this.canvasPlugin.render(function(context, path) {
+            context.beginPath();
+            path(land);
+            context.fillStyle = "rgb(117, 87, 57)";
+            context.fill();
+        });
     }
 
     function canvasAddCountries() {
         var countries = topojson.feature(_.world, _.world.objects.countries);
-        var context = this.canvasPlugin.context();
-        var path = this.canvasPlugin.path();
-        context.beginPath();
-        path(countries);
-        context.lineWidth = .5;
-        context.strokeStyle = "rgb(80, 64, 39)";
-        context.stroke();
+        this.canvasPlugin.render(function(context, path) {
+            context.beginPath();
+            path(countries);
+            context.lineWidth = .5;
+            context.strokeStyle = "rgb(80, 64, 39)";
+            context.stroke();
+        });
     }
 
     function canvasAddLakes() {
         var lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
-        var context = this.canvasPlugin.context();
-        var path = this.canvasPlugin.path();
-        context.beginPath();
-        path(lakes);
-        context.fillStyle = "rgb(80, 87, 97)";
-        context.fill();
+        this.canvasPlugin.render(function(context, path) {
+            context.beginPath();
+            path(lakes);
+            context.fillStyle = "rgb(80, 87, 97)";
+            context.fill();
+        });
     }
 
     var urls = null;
@@ -811,15 +815,22 @@ var worldPlugin = function(urlWorld, urlCountryNames) {
         if (this._.options.showLand) {
             if (_.world) {
                 if (this._.options.showCountries) {
-                    this.svgAddCountries.call(this);
+                    svgAddCountries.call(this);
                 } else {
-                    this.svgAddWorld.call(this);
+                    svgAddWorld.call(this);
                 }
                 if (this._.options.showLakes) {
-                    this.svgAddLakes.call(this);
+                    svgAddLakes.call(this);
                 }
             }
         }
+    }
+
+    function svgAddWorld() {
+        this._.world = _.svg.append("g").attr("class","land").append("path")
+        .datum(topojson.feature(_.world, _.world.objects.land))
+        .attr("d", this._.path);
+        return this._.world;
     }
 
     function svgAddCountries() {
@@ -828,13 +839,6 @@ var worldPlugin = function(urlWorld, urlCountryNames) {
         .on('click', countryClick)
         .attr("d", this._.path);
         return this._.countries;
-    }
-
-    function svgAddWorld() {
-        this._.world = _.svg.append("g").attr("class","land").append("path")
-        .datum(topojson.feature(_.world, _.world.objects.land))
-        .attr("d", this._.path);
-        return this._.world;
     }
 
     function svgAddLakes() {
@@ -864,9 +868,6 @@ var worldPlugin = function(urlWorld, urlCountryNames) {
             this._.options.showLakes = true;
             this._.options.showCountries = true;
             this.svgAddWorldOrCountries = svgAddWorldOrCountries;
-            this.svgAddCountries = svgAddCountries;
-            this.svgAddWorld = svgAddWorld;
-            this.svgAddLakes = svgAddLakes;
             _.svg = this._.svg;
         },
         onRefresh() {

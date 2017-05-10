@@ -5,8 +5,7 @@ export default function() {
     function svgAddCanvas() {
         _.svg.selectAll('.canvas').remove();
         if (this._.options.showCanvas) {
-            var fObject = _.svg.append("foreignObject")
-            .attr("class", "canvas")
+            var fObject = _.svg.append("g").attr("class","canvas").append("foreignObject")
             .attr("x", 0)
             .attr("y", 0)
             .attr("width", this._.options.width)
@@ -34,21 +33,25 @@ export default function() {
             _.svg = this._.svg;
         },
         onRefresh() {
-            var context = this._.canvas.node().getContext("2d");
-            context.clearRect(0, 0, this._.options.width, this._.options.height);
+            var width = this._.options.width,
+                height= this._.options.height;
+            p._.svg.each(function() {
+                var context = this.getElementsByTagName('canvas')[0].getContext("2d");
+                context.clearRect(0, 0, width, height);
+            })
         },
         select(slc) {
             _.svg = d3.selectAll(slc);
             _.select = slc;
             return _.svg;
         },
-        context() {
-            return this._.canvas.node().getContext("2d");
-        },
-        path() {
-            var context = this.canvasPlugin.context();
-            var path = d3.geoPath().projection(this._.proj).context(context);
-            return path;
+        render(fn) {
+            var _this = this;
+            var cpath = d3.geoPath().projection(_this._.proj);
+            p._.svg.each(function() {
+                var context = this.getElementsByTagName('canvas')[0].getContext("2d");
+                fn.call(_this, context, cpath.context(context));
+            })
         }
     }
 }

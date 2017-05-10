@@ -14,10 +14,10 @@ export default function(initOptions={}) {
             ocean_fill.append("stop")
                 .attr("offset", "100%")
                 .attr("stop-color", "#9ab");
-            this._.ocean = _.svg.append("circle")
+            this._.ocean = _.svg.append("g").attr("class","ocean").append("circle")
                 .attr("cx",this._.options.width / 2).attr("cy", this._.options.height / 2)
                 .attr("r", this._.proj.scale())
-                .attr("class", "ocean noclicks")
+                .attr("class", "noclicks")
             return this._.ocean;
         }
     }

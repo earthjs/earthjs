@@ -3,13 +3,13 @@ export default function() {
 
     function canvasAddGraticule() {
         if (this._.options.showGraticule) {
-            var context = this.canvasPlugin.context();
-            var path = this.canvasPlugin.path();
-            context.beginPath();
-            path(datumGraticule());
-            context.lineWidth = 0.3;
-            context.strokeStyle = 'rgba(119,119,119,.5)';
-            context.stroke();
+            this.canvasPlugin.render(function(context, path) {
+                context.beginPath();
+                path(datumGraticule());
+                context.lineWidth = 0.3;
+                context.strokeStyle = 'rgba(119,119,119,.5)';
+                context.stroke();
+            });
         }
     }
 

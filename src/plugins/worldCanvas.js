@@ -1,3 +1,4 @@
+// John J Czaplewski’s Block http://bl.ocks.org/jczaplew/6798471
 export default function(urlWorld, urlCountryNames) {
     var _ = {world: null, countryNames: null};
 
@@ -17,33 +18,33 @@ export default function(urlWorld, urlCountryNames) {
 
     function canvasAddWorld() {
         var land = topojson.feature(_.world, _.world.objects.land);
-        var context = this.canvasPlugin.context();
-        var path = this.canvasPlugin.path();
-        context.beginPath();
-        path(land);
-        context.fillStyle = "rgb(117, 87, 57)";
-        context.fill();
+        this.canvasPlugin.render(function(context, path) {
+            context.beginPath();
+            path(land);
+            context.fillStyle = "rgb(117, 87, 57)";
+            context.fill();
+        });
     }
 
     function canvasAddCountries() {
         var countries = topojson.feature(_.world, _.world.objects.countries);
-        var context = this.canvasPlugin.context();
-        var path = this.canvasPlugin.path();
-        context.beginPath();
-        path(countries);
-        context.lineWidth = .5;
-        context.strokeStyle = "rgb(80, 64, 39)";
-        context.stroke();
+        this.canvasPlugin.render(function(context, path) {
+            context.beginPath();
+            path(countries);
+            context.lineWidth = .5;
+            context.strokeStyle = "rgb(80, 64, 39)";
+            context.stroke();
+        });
     }
 
     function canvasAddLakes() {
         var lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
-        var context = this.canvasPlugin.context();
-        var path = this.canvasPlugin.path();
-        context.beginPath();
-        path(lakes);
-        context.fillStyle = "rgb(80, 87, 97)";
-        context.fill();
+        this.canvasPlugin.render(function(context, path) {
+            context.beginPath();
+            path(lakes);
+            context.fillStyle = "rgb(80, 87, 97)";
+            context.fill();
+        });
     }
 
     var urls = null;

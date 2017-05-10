@@ -16,18 +16,18 @@ export default function(initOptions={}) {
                 drop_shadow.append("stop")
                   .attr("offset","100%").attr("stop-color", "#000")
                   .attr("stop-opacity","0")
-            this._.dropShadow = _.svg.append("ellipse")
+            this._.dropShadow = _.svg.append("g").attr("class","drop_shadow").append("ellipse")
                   .attr("cx", this._.options.width/2).attr("cy", this._.options.height-50)
                   .attr("rx", this._.proj.scale()*0.90)
                   .attr("ry", this._.proj.scale()*0.25)
-                  .attr("class", "drop_shadow noclicks")
+                  .attr("class", "noclicks")
                   .style("fill", "url(#drop_shadow)");
             this._.dropShadow;
         }
     }
 
     function svgAddGlobeShading() {
-        _.svg.selectAll('#globe_shading,.globe_shading').remove();
+        _.svg.selectAll('#shading,.shading').remove();
         if (this._.options.showGlobeShading) {
             var globe_shading = this._.defs.append("radialGradient")
                   .attr("id", "globe_shading")
@@ -39,17 +39,17 @@ export default function(initOptions={}) {
                 globe_shading.append("stop")
                   .attr("offset","100%").attr("stop-color", "#3e6184")
                   .attr("stop-opacity","0.3")
-            this._.globeShading = _.svg.append("circle")
+            this._.globeShading = _.svg.append("g").attr("class","shading").append("circle")
                 .attr("cx", this._.options.width / 2).attr("cy", this._.options.height / 2)
                 .attr("r",  this._.proj.scale())
-                .attr("class","globe_shading noclicks")
-                .style("fill", "url(#globe_shading)");
+                .attr("class","noclicks")
+                .style("fill", "url(#shading)");
             return this._.globeShading;
         }
     }
 
     function svgAddGlobeHilight() {
-        _.svg.selectAll('#globe_hilight,.globe_hilight').remove();
+        _.svg.selectAll('#hilight,.hilight').remove();
         if (this._.options.showGlobeHilight) {
             var globe_highlight = this._.defs.append("radialGradient")
                   .attr("id", "globe_hilight")
@@ -61,11 +61,11 @@ export default function(initOptions={}) {
                 globe_highlight.append("stop")
                   .attr("offset", "100%").attr("stop-color", "#ba9")
                   .attr("stop-opacity","0.2");
-            this._.globeHilight = _.svg.append("circle")
+            this._.globeHilight = _.svg.append("g").attr("class","hilight").append("circle")
                 .attr("cx", this._.options.width / 2).attr("cy", this._.options.height / 2)
                 .attr("r",  this._.proj.scale())
-                .attr("class","globe_hilight noclicks")
-                .style("fill", "url(#globe_hilight)");
+                .attr("class","noclicks")
+                .style("fill", "url(#hilight)");
             return this._.globeHilight;
         }
     }

@@ -9,15 +9,22 @@ export default function(urlWorld, urlCountryNames) {
         if (this._.options.showLand) {
             if (_.world) {
                 if (this._.options.showCountries) {
-                    this.svgAddCountries.call(this);
+                    svgAddCountries.call(this);
                 } else {
-                    this.svgAddWorld.call(this);
+                    svgAddWorld.call(this);
                 }
                 if (this._.options.showLakes) {
-                    this.svgAddLakes.call(this);
+                    svgAddLakes.call(this);
                 }
             }
         }
+    }
+
+    function svgAddWorld() {
+        this._.world = _.svg.append("g").attr("class","land").append("path")
+        .datum(topojson.feature(_.world, _.world.objects.land))
+        .attr("d", this._.path);
+        return this._.world;
     }
 
     function svgAddCountries() {
@@ -26,13 +33,6 @@ export default function(urlWorld, urlCountryNames) {
         .on('click', countryClick)
         .attr("d", this._.path);
         return this._.countries;
-    }
-
-    function svgAddWorld() {
-        this._.world = _.svg.append("g").attr("class","land").append("path")
-        .datum(topojson.feature(_.world, _.world.objects.land))
-        .attr("d", this._.path);
-        return this._.world;
     }
 
     function svgAddLakes() {
@@ -62,9 +62,6 @@ export default function(urlWorld, urlCountryNames) {
             this._.options.showLakes = true;
             this._.options.showCountries = true;
             this.svgAddWorldOrCountries = svgAddWorldOrCountries;
-            this.svgAddCountries = svgAddCountries;
-            this.svgAddWorld = svgAddWorld;
-            this.svgAddLakes = svgAddLakes;
             _.svg = this._.svg;
         },
         onRefresh() {
