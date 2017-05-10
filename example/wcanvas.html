@@ -16,7 +16,8 @@
     p.register(earthjs.plugins.graticuleCanvas());
     p.register(earthjs.plugins.oceanPlugin());
     p.register(earthjs.plugins.fauxGlobePlugin());
-    p.register(earthjs.plugins.autorotatePlugin(10));
+    // p.register(earthjs.plugins.autorotatePlugin(10));
+    p.register(earthjs.plugins.placesPlugin('./d/places.json'));
     p.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
     // p.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
     // p.configPlugin.set({showCountries: false, showLakes: false});

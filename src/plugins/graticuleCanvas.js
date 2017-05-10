@@ -7,7 +7,7 @@ export default function() {
                 context.beginPath();
                 path(datumGraticule());
                 context.lineWidth = 0.3;
-                context.strokeStyle = 'rgba(119,119,119,.5)';
+                context.strokeStyle = 'rgba(119,119,119,0.4)';
                 context.stroke();
             });
         }

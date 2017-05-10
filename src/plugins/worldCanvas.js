@@ -21,7 +21,7 @@ export default function(urlWorld, urlCountryNames) {
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
             path(land);
-            context.fillStyle = "rgb(117, 87, 57)";
+            context.fillStyle = "rgba(117, 87, 57, 0.4)";
             context.fill();
         });
     }
@@ -32,7 +32,7 @@ export default function(urlWorld, urlCountryNames) {
             context.beginPath();
             path(countries);
             context.lineWidth = .5;
-            context.strokeStyle = "rgb(80, 64, 39)";
+            context.strokeStyle = "rgba(80, 64, 39, 0.6)";
             context.stroke();
         });
     }
@@ -42,7 +42,7 @@ export default function(urlWorld, urlCountryNames) {
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
             path(lakes);
-            context.fillStyle = "rgb(80, 87, 97)";
+            context.fillStyle = "rgba(80, 87, 97, 0.4)";
             context.fill();
         });
     }

@@ -43,11 +43,11 @@
         // p.register(earthjs.plugins.graticulePlugin());
         p.register(earthjs.plugins.fauxGlobePlugin());
         p.register(earthjs.plugins.versorDragPlugin());
-        p.register(earthjs.plugins.autorotatePlugin(10));
+        // p.register(earthjs.plugins.autorotatePlugin(10));
         p.register(earthjs.plugins.placesPlugin('./d/places.json'));
         p.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
         // p.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
-        d3.select('.e2').attr('data-rotate',90);
+        // d3.select('.e2').attr('data-rotate',90);
         p.placesPlugin.select('.e1');
         p.ready(function(){
             p.svgDraw();
