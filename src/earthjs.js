@@ -18,6 +18,7 @@ export default function (options={}) {
             'svgAddDropShadow',
             'svgAddCanvas',
             'canvasAddGraticule',
+            'canvasAddWorldOrCountries',
             'svgAddOcean',
             'svgAddGlobeShading',
             'svgAddGraticule',

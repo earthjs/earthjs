@@ -1,3 +1,4 @@
+// Bo Ericsson’s Block http://bl.ocks.org/boeric/aa80b0048b7e39dd71c8fbe958d1b1d4
 export default function() {
     var _ = {svg:null, select: null}
 

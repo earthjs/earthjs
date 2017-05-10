@@ -24,6 +24,7 @@ var app$1 = function (options={}) {
             'svgAddDropShadow',
             'svgAddCanvas',
             'canvasAddGraticule',
+            'canvasAddWorldOrCountries',
             'svgAddOcean',
             'svgAddGlobeShading',
             'svgAddGraticule',
@@ -315,6 +316,7 @@ var wheelZoomPlugin = function() {
     }
 };
 
+// Bo Ericsson’s Block http://bl.ocks.org/boeric/aa80b0048b7e39dd71c8fbe958d1b1d4
 var canvasPlugin = function() {
     var _ = {svg:null, select: null};
 
@@ -436,6 +438,33 @@ var configPlugin = function() {
     }
 };
 
+var graticuleCanvas = function() {
+    var datumGraticule = d3.geoGraticule();
+
+    function canvasAddGraticule() {
+        if (this._.options.showGraticule) {
+            var context = this.canvasPlugin.context();
+            var path = this.canvasPlugin.path();
+            context.beginPath();
+            path(datumGraticule());
+            context.lineWidth = 0.3;
+            context.strokeStyle = 'rgba(119,119,119,.5)';
+            context.stroke();
+        }
+    }
+
+    return {
+        name: 'graticuleCanvas',
+        onInit() {
+            this.canvasAddGraticule = canvasAddGraticule;
+            this._.options.showGraticule = true;
+        },
+        onRefresh() {
+            canvasAddGraticule.call(this);
+        }
+    }
+};
+
 var graticulePlugin = function() {
     var datumGraticule = d3.geoGraticule();
     var _ = {svg:null, select: null};
@@ -467,33 +496,6 @@ var graticulePlugin = function() {
             _.svg = d3.selectAll(slc);
             _.select = slc;
             return _.svg;
-        }
-    }
-};
-
-var graticuleCanvas = function() {
-    var datumGraticule = d3.geoGraticule();
-
-    function canvasAddGraticule() {
-        if (this._.options.showGraticule) {
-            var context = this.canvasPlugin.context();
-            var path = this.canvasPlugin.path();
-            context.beginPath();
-            path(datumGraticule());
-            context.lineWidth = 0.3;
-            context.strokeStyle = 'rgba(119,119,119,.5)';
-            context.stroke();
-        }
-    }
-
-    return {
-        name: 'graticuleCanvas',
-        onInit() {
-            this.canvasAddGraticule = canvasAddGraticule;
-            this._.options.showGraticule = true;
-        },
-        onRefresh() {
-            canvasAddGraticule.call(this);
         }
     }
 };
@@ -721,6 +723,81 @@ var placesPlugin = function(urlPlaces) {
             }
         }
     };
+};
+
+var worldCanvas = function(urlWorld, urlCountryNames) {
+    var _ = {world: null, countryNames: null};
+
+    function canvasAddWorldOrCountries() {
+        if (this._.options.showLand) {
+            if (_.world) {
+                canvasAddWorld.call(this);
+                if (this._.options.showCountries) {
+                    canvasAddCountries.call(this);
+                }
+                if (this._.options.showLakes) {
+                    canvasAddLakes.call(this);
+                }
+            }
+        }
+    }
+
+    function canvasAddWorld() {
+        var land = topojson.feature(_.world, _.world.objects.land);
+        var context = this.canvasPlugin.context();
+        var path = this.canvasPlugin.path();
+        context.beginPath();
+        path(land);
+        context.fillStyle = "rgb(117, 87, 57)";
+        context.fill();
+    }
+
+    function canvasAddCountries() {
+        var countries = topojson.feature(_.world, _.world.objects.countries);
+        var context = this.canvasPlugin.context();
+        var path = this.canvasPlugin.path();
+        context.beginPath();
+        path(countries);
+        context.lineWidth = .5;
+        context.strokeStyle = "rgb(80, 64, 39)";
+        context.stroke();
+    }
+
+    function canvasAddLakes() {
+        var lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
+        var context = this.canvasPlugin.context();
+        var path = this.canvasPlugin.path();
+        context.beginPath();
+        path(lakes);
+        context.fillStyle = "rgb(80, 87, 97)";
+        context.fill();
+    }
+
+    var urls = null;
+    if (urlWorld) {
+        urls = [urlWorld];
+        if (urlCountryNames) {
+            urls.push(urlCountryNames);
+        }
+    }
+
+    return {
+        name: 'worldCanvas',
+        urls: urls,
+        onReady(err, world, countryNames) {
+            _.world = world;
+            _.countryNames = countryNames;
+        },
+        onInit() {
+            this._.options.showLand = true;
+            this._.options.showLakes = true;
+            this._.options.showCountries = true;
+            this.canvasAddWorldOrCountries = canvasAddWorldOrCountries;
+        },
+        onRefresh() {
+            canvasAddWorldOrCountries.call(this);
+        }
+    }
 };
 
 var worldPlugin = function(urlWorld, urlCountryNames) {
@@ -1115,11 +1192,12 @@ app$1.plugins= {
     canvasPlugin,
     oceanPlugin,
     configPlugin,
-    graticulePlugin,
     graticuleCanvas,
+    graticulePlugin,
     fauxGlobePlugin,
     autorotatePlugin,
     placesPlugin,
+    worldCanvas,
     worldPlugin,
     centerPlugin,
     countryTooltipPlugin,
