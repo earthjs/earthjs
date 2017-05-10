@@ -70,6 +70,18 @@ export default function(urlWorld, urlCountryNames) {
         },
         onRefresh() {
             canvasAddWorldOrCountries.call(this);
+        },
+        data(p) {
+            if (p) {
+                var data = p.worldPlugin.data()
+                _.countryNames = data.countryNames;
+                _.world = data.world;
+            } else {
+                return {
+                    countryNames: _.countryNames,
+                    world: _.world
+                }
+            }
         }
     }
 }

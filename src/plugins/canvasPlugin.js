@@ -35,7 +35,7 @@ export default function() {
         onRefresh() {
             var width = this._.options.width,
                 height= this._.options.height;
-            p._.svg.each(function() {
+            this._.svg.each(function() {
                 var context = this.getElementsByTagName('canvas')[0].getContext("2d");
                 context.clearRect(0, 0, width, height);
             })
@@ -47,8 +47,8 @@ export default function() {
         },
         render(fn) {
             var _this = this;
-            var cpath = d3.geoPath().projection(_this._.proj);
-            p._.svg.each(function() {
+            var cpath = d3.geoPath().projection(this._.proj);
+            this._.svg.each(function() {
                 var context = this.getElementsByTagName('canvas')[0].getContext("2d");
                 fn.call(_this, context, cpath.context(context));
             })

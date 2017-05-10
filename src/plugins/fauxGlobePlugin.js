@@ -30,7 +30,7 @@ export default function(initOptions={}) {
         _.svg.selectAll('#shading,.shading').remove();
         if (this._.options.showGlobeShading) {
             var globe_shading = this._.defs.append("radialGradient")
-                  .attr("id", "globe_shading")
+                  .attr("id", "shading")
                   .attr("cx", "50%")
                   .attr("cy", "40%");
                 globe_shading.append("stop")
@@ -52,7 +52,7 @@ export default function(initOptions={}) {
         _.svg.selectAll('#hilight,.hilight').remove();
         if (this._.options.showGlobeHilight) {
             var globe_highlight = this._.defs.append("radialGradient")
-                  .attr("id", "globe_hilight")
+                  .attr("id", "hilight")
                   .attr("cx", "75%")
                   .attr("cy", "25%");
                 globe_highlight.append("stop")

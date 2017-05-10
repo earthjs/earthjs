@@ -1,26 +1,9 @@
 <html>
 <head>
-  <script type='text/javascript' src='http://d3js.org/d3.v4.min.js'></script>
-  <script type='text/javascript' src='http://d3js.org/topojson.v3.min.js'></script>
-  <script type='text/javascript' src='../dist/earthjs.js'></script>
-  <style media="screen">
-  .countries path {
-      fill: rgb(117, 87, 57);
-      stroke: rgb(80, 64, 39);
-      stroke-linejoin: round;
-      stroke-width: 1.5;
-      opacity: 1;
-  }
-  .graticule path {
-      fill: none;
-      opacity: 0.2;
-      stroke: black;
-      stroke-width: 0.5;
-  }
-  #earth1 .ocean {
-      fill: #4a1;
-  }
-  </style>
+    <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
+    <script type='text/javascript' src='http://d3js.org/d3.v4.min.js'></script>
+    <script type='text/javascript' src='http://d3js.org/topojson.v3.min.js'></script>
+    <script type='text/javascript' src='../dist/earthjs.js'></script>
 </head>
 <body>
     <svg id="earth1"></svg>
@@ -36,16 +19,18 @@
         p.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
 
         var x = earthjs({select:'#earth2',width:700,height:500});
+        x.register(earthjs.plugins.oceanPlugin());
         x.register(earthjs.plugins.configPlugin());
-        x.register(earthjs.plugins.graticulePlugin());
+        x.register(earthjs.plugins.canvasPlugin());
+        x.register(earthjs.plugins.graticuleCanvas());
         x.register(earthjs.plugins.fauxGlobePlugin());
         x.register(earthjs.plugins.versorDragPlugin());
         x.register(earthjs.plugins.autorotatePlugin(10));
-        x.register(earthjs.plugins.worldPlugin());
+        x.register(earthjs.plugins.worldCanvas());
 
         p.ready(function(){
-            x.worldPlugin.data(p);
-            x.svgDraw(p); // sync draw & refresh x,p
+            x.worldCanvas.data(p);
+            p.svgDraw(x);
         })
     </script>
 </body>

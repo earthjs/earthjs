@@ -21,24 +21,30 @@ export default function(urlWorld, urlCountryNames) {
     }
 
     function svgAddWorld() {
+        var land = topojson.feature(_.world, _.world.objects.land);
+
         this._.world = _.svg.append("g").attr("class","land").append("path")
-        .datum(topojson.feature(_.world, _.world.objects.land))
-        .attr("d", this._.path);
+            .datum(land)
+            .attr("d", this._.path);
         return this._.world;
     }
 
     function svgAddCountries() {
+        var countries = topojson.feature(_.world, _.world.objects.countries).features;
+
         this._.countries = _.svg.append("g").attr("class","countries").selectAll("path")
-        .data(_.countries).enter().append("path").attr("id",function(d) {return 'x'+d.id})
-        .on('click', countryClick)
-        .attr("d", this._.path);
+            .data(countries).enter().append("path").on('click', countryClick)
+            .attr("id",function(d) {return 'x'+d.id})
+            .attr("d", this._.path);
         return this._.countries;
     }
 
     function svgAddLakes() {
+        var lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
+
         this._.lakes = _.svg.append("g").attr("class","lakes").append("path")
-        .datum(topojson.feature(_.world, _.world.objects.ne_110m_lakes))
-        .attr("d", this._.path);
+            .datum(lakes)
+            .attr("d", this._.path);
         return this._.lakes;
     }
 
@@ -55,7 +61,7 @@ export default function(urlWorld, urlCountryNames) {
         onReady(err, world, countryNames) {
             _.world = world;
             _.countryNames = countryNames;
-            _.countries = topojson.feature(_.world, _.world.objects.countries).features;
+
         },
         onInit() {
             this._.options.showLand = true;
