@@ -7,6 +7,8 @@ Earthjs created using D3.v4, design as pluggable modules.
 
 Awesome interactive globe can be created, dragging to rotate any direction, zooming using scroll mouse or tap, multiple layer of globe with oceanPlugin & fauxGlobePlugin, area of land can be plain one svg path or switch with bordered countries for optimized rendering, auto rotate with adjustable speed and ticker to balance between smooth and cpu utilization, point of places is included and lastly sample tool tips of the country. All of this can configure on the fly switching to activate, deactivate or adjust speed and ticker.
 
+Support Canvas in or outside SVG!
+
 ## Internal Plugins
 Selected plugins bundled into library:
 
@@ -74,7 +76,7 @@ Sample skeleton of plugin, five(5) event handler and you can add any function th
 ```javascript
 export default function(url='/some/path.json') {
     // Internal functions definitions
-    // var _ = {svg:null, select: null}; // (**)
+    // var _ = {svg:null, q: null}; // (**)
     //
     return {
         // namespace for the plugins
@@ -105,9 +107,11 @@ export default function(url='/some/path.json') {
             // code...(*)
         }
         /* (**)
-        select(slc) {
-            _.svg = d3.selectAll(slc);
-            _.select = slc;
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
             return _.svg;
         }
         // see fauxGlobePlugin, graticulePlugin, oceanPlugin,

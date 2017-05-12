@@ -47,8 +47,7 @@
         p.register(earthjs.plugins.placesPlugin('./d/places.json'));
         p.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
         // p.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
-        // d3.select('.e2').attr('data-rotate',90);
-        p.placesPlugin.select('.e1');
+        p.placesPlugin.selectAll('.e1');
         p.ready(function(){
             p.svgDraw();
         })

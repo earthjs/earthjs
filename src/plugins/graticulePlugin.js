@@ -1,6 +1,6 @@
 export default function() {
     var datumGraticule = d3.geoGraticule();
-    var _ = {svg:null, select: null}
+    var _ = {svg:null, q: null}
 
     function svgAddGraticule() {
         _.svg.selectAll('.graticule').remove();
@@ -25,9 +25,11 @@ export default function() {
                 this._.graticule.attr("d", this._.path);
             }
         },
-        select(slc) {
-            _.svg = d3.selectAll(slc);
-            _.select = slc;
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
             return _.svg;
         }
     }

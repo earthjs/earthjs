@@ -1,7 +1,7 @@
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
 //
 export default function(initOptions={}) {
-    var _ = {svg:null, select: null};
+    var _ = {svg:null, q: null};
 
     function svgAddDropShadow() {
         _.svg.selectAll('#drop_shadow,.drop_shadow').remove();
@@ -93,9 +93,11 @@ export default function(initOptions={}) {
                 this._.globeHilight.attr("r", this._.proj.scale());
             }
         },
-        select(slc) {
-            _.svg = d3.selectAll(slc);
-            _.select = slc;
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
             return _.svg;
         }
     }

@@ -1,5 +1,5 @@
 export default function(initOptions={}) {
-    var _ = {svg:null, select: null};
+    var _ = {svg:null, q: null};
 
     function svgAddOcean() {
         _.svg.selectAll('#ocean,.ocean').remove();
@@ -38,9 +38,11 @@ export default function(initOptions={}) {
                 this._.ocean.attr("r", this._.proj.scale());
             }
         },
-        select(slc) {
-            _.svg = d3.selectAll(slc);
-            _.select = slc;
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
             return _.svg;
         }
     }

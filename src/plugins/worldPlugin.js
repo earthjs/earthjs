@@ -1,5 +1,5 @@
 export default function(urlWorld, urlCountryNames) {
-    var _ = {svg:null, select: null, world: null, countries: null, countryNames: null};
+    var _ = {svg:null, q: null, world: null, countries: null, countryNames: null};
     var countryClick = function() {
         // console.log(d);
     }
@@ -94,9 +94,11 @@ export default function(urlWorld, urlCountryNames) {
             }
             return cname;
         },
-        select(slc) {
-            _.svg = d3.selectAll(slc);
-            _.select = slc;
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
             return _.svg;
         },
         data(p) {

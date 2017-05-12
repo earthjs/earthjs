@@ -1,5 +1,5 @@
 export default function(urlBars) {
-    var _ = {svg:null, barProjection: null, select: null, bars: null};
+    var _ = {svg:null, barProjection: null, q: null, bars: null};
 
     function svgAddBar() {
         _.svg.selectAll('.bar').remove();
@@ -97,9 +97,11 @@ export default function(urlBars) {
             _.barProjection.rotate(this._.proj.rotate());
             refresh.call(this);
         },
-        select(slc) {
-            _.svg = d3.selectAll(slc);
-            _.select = slc;
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
             return _.svg;
         },
         data(p) {

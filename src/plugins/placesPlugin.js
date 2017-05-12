@@ -1,5 +1,5 @@
 export default function(urlPlaces) {
-    var _ = {svg:null, select: null, places: null};
+    var _ = {svg:null, q: null, places: null};
 
     function svgAddPlaces() {
         _.svg.selectAll('.points,.labels').remove();
@@ -68,9 +68,11 @@ export default function(urlPlaces) {
                 position_labels.call(this);
             }
         },
-        select(slc) {
-            _.svg = d3.selectAll(slc);
-            _.select = slc;
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
             return _.svg;
         },
         data(p) {

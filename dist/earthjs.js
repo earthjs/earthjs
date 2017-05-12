@@ -405,7 +405,7 @@ var canvasPlugin = function() {
 };
 
 var oceanPlugin = function(initOptions={}) {
-    var _ = {svg:null, select: null};
+    var _ = {svg:null, q: null};
 
     function svgAddOcean() {
         _.svg.selectAll('#ocean,.ocean').remove();
@@ -444,9 +444,11 @@ var oceanPlugin = function(initOptions={}) {
                 this._.ocean.attr("r", this._.proj.scale());
             }
         },
-        select(slc) {
-            _.svg = d3.selectAll(slc);
-            _.select = slc;
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
             return _.svg;
         }
     }
@@ -500,7 +502,7 @@ var graticuleCanvas = function() {
 
 var graticulePlugin = function() {
     var datumGraticule = d3.geoGraticule();
-    var _ = {svg:null, select: null};
+    var _ = {svg:null, q: null};
 
     function svgAddGraticule() {
         _.svg.selectAll('.graticule').remove();
@@ -525,9 +527,11 @@ var graticulePlugin = function() {
                 this._.graticule.attr("d", this._.path);
             }
         },
-        select(slc) {
-            _.svg = d3.selectAll(slc);
-            _.select = slc;
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
             return _.svg;
         }
     }
@@ -536,7 +540,7 @@ var graticulePlugin = function() {
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
 //
 var fauxGlobePlugin = function(initOptions={}) {
-    var _ = {svg:null, select: null};
+    var _ = {svg:null, q: null};
 
     function svgAddDropShadow() {
         _.svg.selectAll('#drop_shadow,.drop_shadow').remove();
@@ -628,9 +632,11 @@ var fauxGlobePlugin = function(initOptions={}) {
                 this._.globeHilight.attr("r", this._.proj.scale());
             }
         },
-        select(slc) {
-            _.svg = d3.selectAll(slc);
-            _.select = slc;
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
             return _.svg;
         }
     }
@@ -684,7 +690,7 @@ var autorotatePlugin = function(degPerSec) {
 };
 
 var placesPlugin = function(urlPlaces) {
-    var _ = {svg:null, select: null, places: null};
+    var _ = {svg:null, q: null, places: null};
 
     function svgAddPlaces() {
         _.svg.selectAll('.points,.labels').remove();
@@ -753,9 +759,11 @@ var placesPlugin = function(urlPlaces) {
                 position_labels.call(this);
             }
         },
-        select(slc) {
-            _.svg = d3.selectAll(slc);
-            _.select = slc;
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
             return _.svg;
         },
         data(p) {
@@ -858,7 +866,7 @@ var worldCanvas = function(urlWorld, urlCountryNames) {
 };
 
 var worldPlugin = function(urlWorld, urlCountryNames) {
-    var _ = {svg:null, select: null, world: null, countries: null, countryNames: null};
+    var _ = {svg:null, q: null, world: null, countries: null, countryNames: null};
     var countryClick = function() {
         // console.log(d);
     };
@@ -953,9 +961,11 @@ var worldPlugin = function(urlWorld, urlCountryNames) {
             }
             return cname;
         },
-        select(slc) {
-            _.svg = d3.selectAll(slc);
-            _.select = slc;
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
             return _.svg;
         },
         data(p) {
@@ -1132,7 +1142,7 @@ var flattenPlugin = function() {
 };
 
 var barPlugin = function(urlBars) {
-    var _ = {svg:null, barProjection: null, select: null, bars: null};
+    var _ = {svg:null, barProjection: null, q: null, bars: null};
 
     function svgAddBar() {
         _.svg.selectAll('.bar').remove();
@@ -1230,9 +1240,11 @@ var barPlugin = function(urlBars) {
             _.barProjection.rotate(this._.proj.rotate());
             refresh.call(this);
         },
-        select(slc) {
-            _.svg = d3.selectAll(slc);
-            _.select = slc;
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
             return _.svg;
         },
         data(p) {
