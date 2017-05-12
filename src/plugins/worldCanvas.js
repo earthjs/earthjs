@@ -1,6 +1,6 @@
 // John J Czaplewski’s Block http://bl.ocks.org/jczaplew/6798471
 export default function(urlWorld, urlCountryNames) {
-    var _ = {world: null, countryNames: null};
+    var _ = {world: null, countryNames: null, style: {}};
 
     function canvasAddWorldOrCountries() {
         if (this._.options.showLand) {
@@ -21,7 +21,7 @@ export default function(urlWorld, urlCountryNames) {
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
             path(land);
-            context.fillStyle = "rgba(117, 87, 57, 0.4)";
+            context.fillStyle = _.style.land || 'rgba(117, 87, 57, 0.4)';
             context.fill();
         });
     }
@@ -32,7 +32,7 @@ export default function(urlWorld, urlCountryNames) {
             context.beginPath();
             path(countries);
             context.lineWidth = .5;
-            context.strokeStyle = "rgba(80, 64, 39, 0.6)";
+            context.strokeStyle = _.style.countries || 'rgba(80, 64, 39, 0.6)';
             context.stroke();
         });
     }
@@ -42,7 +42,7 @@ export default function(urlWorld, urlCountryNames) {
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
             path(lakes);
-            context.fillStyle = "rgba(80, 87, 97, 0.4)";
+            context.fillStyle = _.style.lakes || 'rgba(80, 87, 97, 0.4)';
             context.fill();
         });
     }
@@ -82,6 +82,12 @@ export default function(urlWorld, urlCountryNames) {
                     world: _.world
                 }
             }
+        },
+        style(s) {
+            if (s) {
+                _.style = s;
+            }
+            return _.style;
         }
     }
 }

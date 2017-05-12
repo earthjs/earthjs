@@ -274,52 +274,63 @@ var versorFn = function() {
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 var versor = versorFn();
 var versorDragPlugin = function() {
-    var _ = {
-        sync: []
-    };
+    var _ = {svg:null, q: null, sync: []};
+
+    function dragSetup() {
+        var _this = this;
+        _.svg.call(d3.drag()
+            .on('start', dragstarted)
+            .on('end',   dragsended)
+            .on('drag',  dragged));
+
+        var v0, // Mouse position in Cartesian coordinates at start of drag gesture.
+            r0, // Projection rotation as Euler angles at start.
+            q0; // Projection rotation as versor at start.
+
+        function rotate(src) {
+            var r = src._.proj.rotate();
+            var d = r[0] - r0[0];
+            r[0] = d + this._.proj.rotate()[0];
+            if (r[0] >= 180)
+                r[0] -= 360;
+            this._.rotate(r);
+        }
+
+        function dragstarted() {
+            _this._.drag = true;
+            v0 = versor.cartesian(_this._.proj.invert(d3.mouse(this)));
+            r0 = _this._.proj.rotate();
+            q0 = versor(r0);
+        }
+
+        function dragsended() {
+            _.sync.forEach(function(p) {
+                rotate.call(p, _this);
+            });
+            _this._.drag = false;
+        }
+
+        function dragged() {
+            var v1 = versor.cartesian(_this._.proj.rotate(r0).invert(d3.mouse(this))),
+                q1 = versor.multiply(q0, versor.delta(v0, v1)),
+                r1 = versor.rotation(q1);
+            _this._.rotate(r1);
+        }
+    }
 
     return {
         name: 'versorDragPlugin',
         onInit() {
-            var _this = this;
-            this._.svg.call(d3.drag()
-                .on('start', dragstarted)
-                .on('end',   dragsended)
-                .on('drag',  dragged));
-
-            var v0, // Mouse position in Cartesian coordinates at start of drag gesture.
-                r0, // Projection rotation as Euler angles at start.
-                q0; // Projection rotation as versor at start.
-
-            function rotate(src) {
-                var r = src._.proj.rotate();
-                var d = r[0] - r0[0];
-                r[0] = d + this._.proj.rotate()[0];
-                if (r[0] >= 180)
-                    r[0] -= 360;
-                this._.rotate(r);
+            _.svg = this._.svg;
+            dragSetup.call(this);
+        },
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+                dragSetup.call(this);
             }
-
-            function dragstarted() {
-                _this._.drag = true;
-                v0 = versor.cartesian(_this._.proj.invert(d3.mouse(this)));
-                r0 = _this._.proj.rotate();
-                q0 = versor(r0);
-            }
-
-            function dragsended() {
-                _.sync.forEach(function(p) {
-                    rotate.call(p, _this);
-                });
-                _this._.drag = false;
-            }
-
-            function dragged() {
-                var v1 = versor.cartesian(_this._.proj.rotate(r0).invert(d3.mouse(this))),
-                    q1 = versor.multiply(q0, versor.delta(v0, v1)),
-                    r1 = versor.rotation(q1);
-                _this._.rotate(r1);
-            }
+            return _.svg;
         },
         sync(arr) {
             _.sync = arr;
@@ -779,7 +790,7 @@ var placesPlugin = function(urlPlaces) {
 
 // John J Czaplewski’s Block http://bl.ocks.org/jczaplew/6798471
 var worldCanvas = function(urlWorld, urlCountryNames) {
-    var _ = {world: null, countryNames: null};
+    var _ = {world: null, countryNames: null, style: {}};
 
     function canvasAddWorldOrCountries() {
         if (this._.options.showLand) {
@@ -800,7 +811,7 @@ var worldCanvas = function(urlWorld, urlCountryNames) {
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
             path(land);
-            context.fillStyle = "rgba(117, 87, 57, 0.4)";
+            context.fillStyle = _.style.land || 'rgba(117, 87, 57, 0.4)';
             context.fill();
         });
     }
@@ -811,7 +822,7 @@ var worldCanvas = function(urlWorld, urlCountryNames) {
             context.beginPath();
             path(countries);
             context.lineWidth = .5;
-            context.strokeStyle = "rgba(80, 64, 39, 0.6)";
+            context.strokeStyle = _.style.countries || 'rgba(80, 64, 39, 0.6)';
             context.stroke();
         });
     }
@@ -821,7 +832,7 @@ var worldCanvas = function(urlWorld, urlCountryNames) {
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
             path(lakes);
-            context.fillStyle = "rgba(80, 87, 97, 0.4)";
+            context.fillStyle = _.style.lakes || 'rgba(80, 87, 97, 0.4)';
             context.fill();
         });
     }
@@ -861,6 +872,12 @@ var worldCanvas = function(urlWorld, urlCountryNames) {
                     world: _.world
                 }
             }
+        },
+        style(s) {
+            if (s) {
+                _.style = s;
+            }
+            return _.style;
         }
     }
 };
