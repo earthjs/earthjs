@@ -3,10 +3,7 @@ export default function() {
 
     function addDebugSphere() {
         if (!_.sphereObject) {
-            // Create 3D scene and camera objects.
             const SCALE = this._.proj.scale();
-
-            // Create sphere.
             var sphere         = new THREE.SphereGeometry(SCALE, 100, 100);
             var sphereMaterial = new THREE.MeshNormalMaterial({wireframe: false});
             var sphereMesh     = new THREE.Mesh(sphere, sphereMaterial);
@@ -28,11 +25,17 @@ export default function() {
             _.sphereObject = new THREE.Object3D();
             _.sphereObject.add(sphereMesh, dot1Mesh, dot2Mesh, dot3Mesh);
 
-            var q1 = this._.versor(this._.proj.rotate());
-            var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
-            _.sphereObject.setRotationFromQuaternion(q2);
+            rotate.call(this);
             this.threejsPlugin.addObject(_.sphereObject);
         }
+    }
+
+    function rotate() {
+        var rt = this._.proj.rotate();
+        rt[0] -= 90;
+        var q1 = this._.versor(rt);
+        var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
+        _.sphereObject.setRotationFromQuaternion(q2);
     }
 
     return {
@@ -42,9 +45,9 @@ export default function() {
             addDebugSphere.call(this);
         },
         onRefresh() {
-            var q1 = this._.versor(this._.proj.rotate());
-            var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
-            _.sphereObject.setRotationFromQuaternion(q2);
+            if (_.sphereObject) {
+                rotate.call(this);
+            }
         }
     }
 }

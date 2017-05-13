@@ -177,7 +177,6 @@ export default function (options={}) {
         var ltRotate = planet._.ltScale(rotate);
         return d3.geoOrthographic()
             .scale(width / 3.5)
-            // .scale((height - 40) / 2)
             .rotate([ltRotate, 0])
             .translate([width / 2, height / 2])
             .precision(0.1)
