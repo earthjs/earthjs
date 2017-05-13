@@ -15,7 +15,8 @@ export default function (options={}) {
         onInterval: {},
         onIntervalKeys: [],
 
-        svgCreateOrder: [
+        renderOrder: [
+            'renderThree',
             'svgAddDropShadow',
             'svgAddCanvas',
             'canvasAddGraticule',
@@ -110,8 +111,8 @@ export default function (options={}) {
 
     planet.svgDraw = function(twinEarth) {
         earth = twinEarth;
-        _.svgCreateOrder.forEach(function(svgCreateKey) {
-            planet[svgCreateKey] && planet[svgCreateKey].call(planet);
+        _.renderOrder.forEach(function(renderer) {
+            planet[renderer] && planet[renderer].call(planet);
         });
         if (earth) {
             earth.forEach(function(p) {
@@ -172,8 +173,10 @@ export default function (options={}) {
         var ltRotate = planet._.ltScale(rotate);
         return d3.geoOrthographic()
             .scale(width / 3.5)
+            // .scale((height - 40) / 2)
             .rotate([ltRotate, 0])
             .translate([width / 2, height / 2])
+            .precision(0.1)
             .clipAngle(90);
     }
 

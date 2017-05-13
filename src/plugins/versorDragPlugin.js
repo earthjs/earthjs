@@ -32,18 +32,19 @@ export default function() {
             q0 = versor(r0);
         }
 
-        function dragsended() {
-            _.sync.forEach(function(p) {
-                rotate.call(p, _this);
-            })
-            _this._.drag = false;
-        }
-
         function dragged() {
             var v1 = versor.cartesian(_this._.proj.rotate(r0).invert(d3.mouse(this))),
                 q1 = versor.multiply(q0, versor.delta(v0, v1)),
                 r1 = versor.rotation(q1);
             _this._.rotate(r1);
+            _this._.three = q1;
+        }
+
+        function dragsended() {
+            _.sync.forEach(function(p) {
+                rotate.call(p, _this);
+            })
+            _this._.drag = false;
         }
     }
 

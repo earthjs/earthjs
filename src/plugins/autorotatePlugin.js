@@ -9,8 +9,8 @@ export default function(degPerSec) {
     function rotate(delta, degree) {
         var r = this._.proj.rotate();
         r[0] += _.degree * delta / 1000;
-        if (r[0] >= 180)
-            r[0] -= 360;
+        // if (r[0] >= 180)
+        //     r[0] -= 360;
         this._.rotate(r);
     }
 

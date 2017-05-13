@@ -1,6 +1,7 @@
 import app from './src/earthjs';
 import versorDragPlugin from './src/plugins/versorDragPlugin.js';
 import wheelZoomPlugin from './src/plugins/wheelZoomPlugin.js';
+import threejsPlugin from './src/plugins/threejsPlugin.js';
 import canvasPlugin from './src/plugins/canvasPlugin.js';
 import oceanPlugin from './src/plugins/oceanPlugin.js';
 import configPlugin from './src/plugins/configPlugin.js';
@@ -18,6 +19,7 @@ import barPlugin from './src/plugins/barPlugin.js';
 app.plugins= {
     versorDragPlugin,
     wheelZoomPlugin,
+    threejsPlugin,
     canvasPlugin,
     oceanPlugin,
     configPlugin,
