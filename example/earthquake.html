@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
+    <script type='text/javascript' src="./js/d3.min.js"></script>
+    <script type='text/javascript' src="./js/topojson.min.js"></script>
+    <script type='text/javascript' src='../dist/earthjs.js'></script>
+    <style>
+    .eq-pulsed{
+    	animation: pulseSelected 2s infinite linear;
+        -webkit-animation: pulseSelected 2s infinite linear;
+        -moz-animation: pulseSelected 2s infinite linear;
+        -ms-animation: pulseSelected 2s infinite linear;
+        -o-animation: pulseSelected 2s infinite linear;
+    }
+
+    @keyframes pulseSelected {
+      0% {
+    	fill: rgba(255,222,47,1.00);
+    	stroke-width:0.5em;
+    	stroke:#ffd600;
+
+      }
+      10% {
+    	fill: rgba(255,222,47,1.00);
+        stroke-width:0.7em;
+    	stroke:#d3b100;
+
+      }
+      30% {
+    	fill: rgba(255,222,47,1.00);
+        stroke-width:0.9em;
+    	stroke:#9c8300;
+
+      }
+
+      50% {
+    	fill: rgba(255,222,47,1.00);
+        stroke-width:0.11em;
+    	stroke:#5f5000;
+
+      }
+      70% {
+    	fill: rgba(255,222,47,1.00);
+        stroke-width:0.13em;
+    	stroke:#5f5000;
+
+      }
+      100% {
+    	  fill: rgba(255,222,47,1.00);
+    	  stroke-width:0.5em;
+          stroke:#ffd600;
+
+      }
+    }
+    </style>
+</head>
+<body>
+    <svg id="earth"></svg>
+    <canvas class="canvas"></canvas>
+    <script type='text/javascript' src='./js/ex/earthQuake.js'></script>
+</body>
+</html>

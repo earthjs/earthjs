@@ -163,6 +163,9 @@ var app$1 = function (options={}) {
                 var q = d3.queue();
                 obj.urls.forEach(function(url) {
                     var ext = url.split('.').pop();
+                    if (ext==='geojson') {
+                        ext = 'json';
+                    }
                     q.defer(d3[ext], url);
                 });
                 q.await(function() {
@@ -260,6 +263,12 @@ var app$1 = function (options={}) {
             .translate([width / 2, height / 2])
             .precision(0.1)
             .clipAngle(90);
+    };
+
+    planet._.addRenderer = function(name) {
+        if (_.renderOrder.indexOf(name)<0) {
+            _.renderOrder.push(name);            
+        }
     };
 
     planet._.proj = planet._.orthoGraphic();

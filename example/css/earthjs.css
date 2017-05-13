@@ -9,6 +9,9 @@ body {
 #three-js, .canvas {
     pointer-events: none;
 }
+#earth {
+    z-index: 2;    
+}
 .canvas {
     position: relative;
     z-index: 2;
