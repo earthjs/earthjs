@@ -52,12 +52,20 @@
           stroke:#ffd600;
 
       }
+    }.set-options {
+        position: absolute;
+        z-index: 999;
     }
     </style>
 </head>
 <body>
+    <div class="set-options"></div>
     <svg id="earth"></svg>
     <canvas class="canvas"></canvas>
-    <script type='text/javascript' src='./js/ex/earthQuake.js'></script>
+    <script type='text/javascript' src='./js/ex/eQuakeApp.js'></script>
+    <script>
+        var p = earthjs({width: 1200, height: 900});
+        p.register(earthjs.plugins.eQuakeApp());
+    </script>
 </body>
 </html>

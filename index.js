@@ -18,6 +18,7 @@ import countryTooltipPlugin from './src/plugins/countryTooltipPlugin.js';
 import flattenPlugin from './src/plugins/flattenPlugin.js';
 import barPlugin from './src/plugins/barPlugin.js';
 import debugThreejs from './src/plugins/debugThreejs.js';
+import commonPlugins from './src/pluginLoader/commonPlugins';
 app.plugins= {
     versorDragPlugin,
     wheelZoomPlugin,
@@ -38,5 +39,6 @@ app.plugins= {
     flattenPlugin,
     barPlugin,
     debugThreejs,
+    commonPlugins,
 };
 export default app;

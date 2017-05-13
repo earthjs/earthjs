@@ -1,7 +1,7 @@
 // https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson
 // https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson
 // https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
-var eq = function() {
+var eQuakeApp = function() {
     var _ = {dataEQuake: null, center: null, style: {}};
 
     function svgAddEQuake() {
@@ -27,7 +27,7 @@ var eq = function() {
     }
 
     return {
-        name: 'earthQuake',
+        name: 'eQuakeApp',
         urls: ['https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson'],
         onReady(err, dataEQuake) {
             _.dataEQuake = dataEQuake;
@@ -37,6 +37,9 @@ var eq = function() {
             this._.options.showEQueake = true;
             this._.addRenderer('svgAddEQuake');
             _.center = [this._.options.width / 2, this._.options.height/2];
+
+            this.register(earthjs.plugins.commonPlugins('./d/world-110m.json'));
+            this.commonPlugins.addChecker('showEQueake:EQueake:showEQueake'.split(':'));
         },
         onRefresh() {
             if (this._.eQuake && this._.options.showEQueake) {
@@ -52,19 +55,5 @@ var eq = function() {
         },
     }
 }
-
+earthjs.plugins.eQuakeApp = eQuakeApp;
 // export default eq
-
-var p = earthjs({width: 700, height: 500});
-p.register(earthjs.plugins.autorotatePlugin(10));
-p.register(earthjs.plugins.versorDragPlugin());
-p.register(earthjs.plugins.oceanPlugin());
-p.register(earthjs.plugins.canvasPlugin());
-p.register(earthjs.plugins.graticuleCanvas());
-p.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
-p.register(eq());
-
-p.canvasPlugin.selectAll('.canvas');
-p.ready(function(){
-    p.svgDraw();
-})

@@ -16,7 +16,9 @@ export default function(degPerSec) {
 
     return {
         name: 'autorotatePlugin',
-        onInit() {},
+        onInit() {
+            this._.options.spin = true;
+        },
         onInterval() {
             var now = new Date();
             if (!_.lastTick || !_.spin || this._.drag) {
