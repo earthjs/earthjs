@@ -1,35 +1,9 @@
 <html>
 <head>
-  <script type='text/javascript' src='http://d3js.org/d3.v4.min.js'></script>
-  <script type='text/javascript' src='http://d3js.org/topojson.v3.min.js'></script>
-  <script type='text/javascript' src='../dist/earthjs.js'></script>
-  <style media="screen">
-  .countries path {
-      fill: rgb(117, 87, 57);
-      stroke: rgb(80, 64, 39);
-      stroke-linejoin: round;
-      stroke-width: 1.5;
-      opacity: 1;
-  }
-  .ocean {
-      fill: url(#ocean);
-  }
-  .graticule path {
-      fill: none;
-      opacity: 0.2;
-      stroke: black;
-      stroke-width: 0.5;
-  }
-  .point{
-      opacity:.6;
-      fill: #A80;
-  }
-  .labels {
-      font: 8px sans-serif;
-      fill: black;
-      opacity: .5;
-  }
-  </style>
+    <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
+    <script type='text/javascript' src="./js/d3.min.js"></script>
+    <script type='text/javascript' src="./js/topojson.min.js"></script>
+    <script type='text/javascript' src='../dist/earthjs.js'></script>
 </head>
 <body>
     <svg class="earth e1"></svg>

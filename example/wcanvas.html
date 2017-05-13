@@ -1,41 +1,31 @@
 <html>
 <head>
     <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
-    <script type='text/javascript' src='http://d3js.org/d3.v4.min.js'></script>
-    <script type='text/javascript' src='http://d3js.org/topojson.v3.min.js'></script>
+    <script type='text/javascript' src="./js/d3.min.js"></script>
+    <script type='text/javascript' src="./js/topojson.min.js"></script>
     <script type='text/javascript' src='../dist/earthjs.js'></script>
-    <style>
-        #earth {
-            position: absolute;
-        }
-        .canvas {
-            position: relative;
-            pointer-events: none;
-            /*margin-left: 100px;*/
-        }
-    </style>
 </head>
 <body>
     <svg id="earth"></svg>
     <canvas class="canvas"></canvas>
     <canvas class="canvas2"></canvas>
-  <script>
-    var p = earthjs({width: 700, height: 500});
-    p.register(earthjs.plugins.autorotatePlugin(10));
-    p.register(earthjs.plugins.versorDragPlugin());
-    p.register(earthjs.plugins.wheelZoomPlugin());
-    p.register(earthjs.plugins.configPlugin());
-    p.register(earthjs.plugins.oceanPlugin());
-    p.register(earthjs.plugins.canvasPlugin());
-    p.register(earthjs.plugins.graticuleCanvas());
-    p.register(earthjs.plugins.fauxGlobePlugin());
-    p.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
+    <script>
+        var p = earthjs({width: 700, height: 500});
+        p.register(earthjs.plugins.autorotatePlugin(10));
+        p.register(earthjs.plugins.versorDragPlugin());
+        p.register(earthjs.plugins.wheelZoomPlugin());
+        p.register(earthjs.plugins.configPlugin());
+        p.register(earthjs.plugins.oceanPlugin());
+        p.register(earthjs.plugins.canvasPlugin());
+        p.register(earthjs.plugins.graticuleCanvas());
+        p.register(earthjs.plugins.fauxGlobePlugin());
+        p.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
 
-    p.canvasPlugin.selectAll('.canvas,.canvas2');
-    p.configPlugin.set({showCountries: false, showLakes: false});
-    p.ready(function(){
-        p.svgDraw();
-    })
-  </script>
+        p.canvasPlugin.selectAll('.canvas,.canvas2');
+        p.configPlugin.set({showCountries: false, showLakes: false});
+        p.ready(function(){
+            p.svgDraw();
+        })
+    </script>
 </body>
 </html>

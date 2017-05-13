@@ -1,63 +1,69 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<link type="text/css" rel="stylesheet" href="./css/earthjs.css">
-<script src="./js/d3.min.js"></script>
-<script src="./js/topojson.min.js"></script>
-<script src="../dist/earthjs.js"></script>
-<div class="set-options"></div>
-<svg id="earth"></svg>
-<script>
-var p = earthjs();
-p.register(earthjs.plugins.autorotatePlugin(10));
-p.register(earthjs.plugins.versorDragPlugin());
-p.register(earthjs.plugins.wheelZoomPlugin());
-p.register(earthjs.plugins.configPlugin());
-p.register(earthjs.plugins.oceanPlugin());
-p.register(earthjs.plugins.graticulePlugin());
-p.register(earthjs.plugins.fauxGlobePlugin());
-p.register(earthjs.plugins.barPlugin('./d/bars.csv'));
-p.register(earthjs.plugins.placesPlugin('./d/places.json'));
-p.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
-p.register(earthjs.plugins.centerPlugin());
-p.register(earthjs.plugins.countryTooltipPlugin());
-p.centerPlugin.focused(function() {
-    p.autorotatePlugin.stop();
-    options.spin = false;
-})
-p.ready(function(){
-    p.svgDraw();
-})
+<html>
+<head>
+    <meta charset="utf-8">
+    <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
+    <script type='text/javascript' src="./js/d3.min.js"></script>
+    <script type='text/javascript' src="./js/topojson.min.js"></script>
+    <script type='text/javascript' src='../dist/earthjs.js'></script>
+</head>
+<body>
+    <div class="set-options"></div>
+    <svg id="earth"></svg>
+    <script>
+        var p = earthjs();
+        p.register(earthjs.plugins.autorotatePlugin(10));
+        p.register(earthjs.plugins.versorDragPlugin());
+        p.register(earthjs.plugins.wheelZoomPlugin());
+        p.register(earthjs.plugins.configPlugin());
+        p.register(earthjs.plugins.oceanPlugin());
+        p.register(earthjs.plugins.graticulePlugin());
+        p.register(earthjs.plugins.fauxGlobePlugin());
+        p.register(earthjs.plugins.barPlugin('./d/bars.csv'));
+        p.register(earthjs.plugins.placesPlugin('./d/places.json'));
+        p.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
+        p.register(earthjs.plugins.centerPlugin());
+        p.register(earthjs.plugins.countryTooltipPlugin());
+        p.centerPlugin.focused(function() {
+            p.autorotatePlugin.stop();
+            options.spin = false;
+        })
+        p.ready(function(){
+            p.svgDraw();
+        })
 
-var options = p.configPlugin.set();
-var buttonClick = function(str) {
-    var arr = str.split(':'), key = arr[2];
-    var resultx = {};
-    options[key] = !options[key];
-    resultx[key] =  options[key];
-    console.log(resultx);
-    if (key=='hideCountries')
-        resultx.hideLand = false;
-    p.configPlugin.set(resultx);
-};
+        var options = p.configPlugin.set();
+        var buttonClick = function(str) {
+            var arr = str.split(':'), key = arr[2];
+            var resultx = {};
+            options[key] = !options[key];
+            resultx[key] =  options[key];
+            console.log(resultx);
+            if (key=='hideCountries')
+                resultx.hideLand = false;
+            p.configPlugin.set(resultx);
+        };
 
-var checker = [
-    'ocean:Ocean:showOcean',
-    'shading:Shading:showGlobeShading',
-    'hilight:Hilight:showGlobeHilight',
-    'graticule:Graticule:showGraticule',
-    'hideLand:Land:showLand',
-    'country:Country:showCountries',
-    'places:Places:showPlaces',
-    'shadow:Shadow:showGlobeShadow',
-    'bars:Bars:showBars',
-    'spin:Spin:spin',
-].map(function(d) {return d.split(':')});
-var opt = d3.select('.set-options');
-opt.selectAll('button').data(checker).enter().append('button')
-    .text(function(d) { return d[1]})
-    .attr('onclick', function(d) {
-        return 'buttonClick("'+d.join(':')+'")';
-    });
+        var checker = [
+            'ocean:Ocean:showOcean',
+            'shading:Shading:showGlobeShading',
+            'hilight:Hilight:showGlobeHilight',
+            'graticule:Graticule:showGraticule',
+            'hideLand:Land:showLand',
+            'country:Country:showCountries',
+            'places:Places:showPlaces',
+            'shadow:Shadow:showGlobeShadow',
+            'bars:Bars:showBars',
+            'spin:Spin:spin',
+        ].map(function(d) {return d.split(':')});
+        var opt = d3.select('.set-options');
+        opt.selectAll('button').data(checker).enter().append('button')
+            .text(function(d) { return d[1]})
+            .attr('onclick', function(d) {
+                return 'buttonClick("'+d.join(':')+'")';
+            });
 
-// opt.selectAll('input').data([1]).enter().append('input');
-</script>
+        // opt.selectAll('input').data([1]).enter().append('input');
+    </script>
+</body>
+</html>
