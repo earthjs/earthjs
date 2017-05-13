@@ -7,30 +7,8 @@
     <script type='text/javascript' src='../dist/earthjs.js'></script>
     <script src='./js/three.min.js'></script>
     <style>
-    body {
-        margin: 0;
-    }
-    #earth {
-        position: absolute;
-    }
-    .canvas {
-        position: relative;
-        pointer-events: none;
-        /*margin-left: 100px;*/
-        z-index: 2;
-    }
-    #map-layer {
-        position: absolute;
-        left: 0;
-        top: 0;
-        z-index: 2;
-    }
-    #shade-layer {
-        position: absolute;
-        pointer-events: none;
-        left: 0;
-        top: 0;
-        z-index: 1;
+    #three-js {
+        /*left: 110px;*/
     }
     </style>
 </head>
@@ -42,6 +20,7 @@
         p.register(earthjs.plugins.autorotatePlugin(10));
         p.register(earthjs.plugins.versorDragPlugin());
         p.register(earthjs.plugins.threejsPlugin());
+        p.register(earthjs.plugins.debugThreejs());
         p.register(earthjs.plugins.canvasPlugin());
         p.register(earthjs.plugins.configPlugin());
         // p.register(earthjs.plugins.oceanPlugin());

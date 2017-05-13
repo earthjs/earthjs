@@ -1,3 +1,18 @@
+body {
+    margin: 0;
+}
+#earth, #three-js {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+#three-js, .canvas {
+    pointer-events: none;
+}
+.canvas {
+    position: relative;
+    z-index: 2;
+}
 .land path{
     fill: rgb(117, 87, 57);
     stroke-opacity: 1;

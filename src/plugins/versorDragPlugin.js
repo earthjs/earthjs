@@ -35,7 +35,6 @@ export default function() {
                 q1 = versor.multiply(q0, versor.delta(v0, v1)),
                 r1 = versor.rotation(q1);
             _this._.rotate(r1);
-            _this._.three = q1;
         }
 
         function dragsended() {

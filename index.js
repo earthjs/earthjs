@@ -16,6 +16,7 @@ import centerPlugin from './src/plugins/centerPlugin.js';
 import countryTooltipPlugin from './src/plugins/countryTooltipPlugin.js';
 import flattenPlugin from './src/plugins/flattenPlugin.js';
 import barPlugin from './src/plugins/barPlugin.js';
+import debugThreejs from './src/plugins/debugThreejs.js';
 app.plugins= {
     versorDragPlugin,
     wheelZoomPlugin,
@@ -33,6 +34,7 @@ app.plugins= {
     centerPlugin,
     countryTooltipPlugin,
     flattenPlugin,
-    barPlugin
+    barPlugin,
+    debugThreejs,
 };
 export default app;
