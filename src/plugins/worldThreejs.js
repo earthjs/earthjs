@@ -6,7 +6,7 @@ export default function() {
             var _this  = this;
             var group  = new THREE.Group();
             var loader = new THREE.TextureLoader();
-            loader.load("./d/world2.jpg", function(texture) {
+            loader.load("./d/world.jpg", function(texture) {
                 var geometry   = new THREE.SphereGeometry( 200, 20, 20 );
                 var material   = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
                 _.sphereObject = new THREE.Mesh( geometry, material );

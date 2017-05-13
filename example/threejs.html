@@ -6,13 +6,7 @@
     <script type='text/javascript' src='http://d3js.org/topojson.v3.min.js'></script>
     <script type='text/javascript' src='../dist/earthjs.js'></script>
     <script src='./js/three.min.js'></script>
-    <style>
-        #three-js {
-            opacity: .6;
-            /*left: 110px;*/
-            /*position: inherit;*/
-        }
-    </style>
+    <style>#three-js{opacity: 0;}</style>
 </head>
 <body>
     <svg id="earth"></svg>
@@ -32,6 +26,7 @@
         // p.canvasPlugin.selectAll('.canvas');
         p.configPlugin.set({showCountries: false, showLakes: false});
         p.ready(function(){
+            d3.select('#three-js').attr('style', 'opacity: 0.6');
             p.svgDraw();
         })
     </script>
