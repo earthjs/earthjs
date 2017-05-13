@@ -1,3 +1,6 @@
+import versorFn from './versor.js';
+
+var versor = versorFn();
 export default function (options={}) {
     options = Object.assign({
         select: '#earth',
@@ -41,6 +44,7 @@ export default function (options={}) {
         _: {
             svg,
             drag,
+            versor,
             options,
             ltScale,
         },

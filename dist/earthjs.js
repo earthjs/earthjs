@@ -4,6 +4,82 @@
 	(global.earthjs = factory());
 }(this, (function () { 'use strict';
 
+// Version 0.0.0. Copyright 2017 Mike Bostock.
+var versorFn = function() {
+    var acos = Math.acos,
+        asin = Math.asin,
+        atan2 = Math.atan2,
+        cos = Math.cos,
+        max = Math.max,
+        min = Math.min,
+        PI = Math.PI,
+        sin = Math.sin,
+        sqrt = Math.sqrt,
+        radians = PI / 180,
+        degrees = 180 / PI;
+
+    // Returns the unit quaternion for the given Euler rotation angles [λ, φ, γ].
+    function versor(e) {
+      var l = e[0] / 2 * radians, sl = sin(l), cl = cos(l), // λ / 2
+          p = e[1] / 2 * radians, sp = sin(p), cp = cos(p), // φ / 2
+          g = e[2] / 2 * radians, sg = sin(g), cg = cos(g); // γ / 2
+      return [
+        cl * cp * cg + sl * sp * sg,
+        sl * cp * cg - cl * sp * sg,
+        cl * sp * cg + sl * cp * sg,
+        cl * cp * sg - sl * sp * cg
+      ];
+    }
+
+    // Returns Cartesian coordinates [x, y, z] given spherical coordinates [λ, φ].
+    versor.cartesian = function(e) {
+      var l = e[0] * radians, p = e[1] * radians, cp = cos(p);
+      return [cp * cos(l), cp * sin(l), sin(p)];
+    };
+
+    // Returns the Euler rotation angles [λ, φ, γ] for the given quaternion.
+    versor.rotation = function(q) {
+      return [
+        atan2(2 * (q[0] * q[1] + q[2] * q[3]), 1 - 2 * (q[1] * q[1] + q[2] * q[2])) * degrees,
+        asin(max(-1, min(1, 2 * (q[0] * q[2] - q[3] * q[1])))) * degrees,
+        atan2(2 * (q[0] * q[3] + q[1] * q[2]), 1 - 2 * (q[2] * q[2] + q[3] * q[3])) * degrees
+      ];
+    };
+
+    // Returns the quaternion to rotate between two cartesian points on the sphere.
+    versor.delta = function(v0, v1) {
+      var w = cross(v0, v1), l = sqrt(dot(w, w));
+      if (!l) return [1, 0, 0, 0];
+      var t = acos(max(-1, min(1, dot(v0, v1)))) / 2, s = sin(t); // t = θ / 2
+      return [cos(t), w[2] / l * s, -w[1] / l * s, w[0] / l * s];
+    };
+
+    // Returns the quaternion that represents q0 * q1.
+    versor.multiply = function(q0, q1) {
+      return [
+        q0[0] * q1[0] - q0[1] * q1[1] - q0[2] * q1[2] - q0[3] * q1[3],
+        q0[0] * q1[1] + q0[1] * q1[0] + q0[2] * q1[3] - q0[3] * q1[2],
+        q0[0] * q1[2] - q0[1] * q1[3] + q0[2] * q1[0] + q0[3] * q1[1],
+        q0[0] * q1[3] + q0[1] * q1[2] - q0[2] * q1[1] + q0[3] * q1[0]
+      ];
+    };
+
+    function cross(v0, v1) {
+      return [
+        v0[1] * v1[2] - v0[2] * v1[1],
+        v0[2] * v1[0] - v0[0] * v1[2],
+        v0[0] * v1[1] - v0[1] * v1[0]
+      ];
+    }
+
+    function dot(v0, v1) {
+      return v0[0] * v1[0] + v0[1] * v1[1] + v0[2] * v1[2];
+    }
+
+    return versor;
+};
+
+var versor = versorFn();
 var app$1 = function (options={}) {
     options = Object.assign({
         select: '#earth',
@@ -47,6 +123,7 @@ var app$1 = function (options={}) {
         _: {
             svg,
             drag,
+            versor,
             options,
             ltScale,
         },
@@ -199,88 +276,13 @@ var app$1 = function (options={}) {
     }
 };
 
-// Version 0.0.0. Copyright 2017 Mike Bostock.
-var versorFn = function() {
-    var acos = Math.acos,
-        asin = Math.asin,
-        atan2 = Math.atan2,
-        cos = Math.cos,
-        max = Math.max,
-        min = Math.min,
-        PI = Math.PI,
-        sin = Math.sin,
-        sqrt = Math.sqrt,
-        radians = PI / 180,
-        degrees = 180 / PI;
-
-    // Returns the unit quaternion for the given Euler rotation angles [λ, φ, γ].
-    function versor(e) {
-      var l = e[0] / 2 * radians, sl = sin(l), cl = cos(l), // λ / 2
-          p = e[1] / 2 * radians, sp = sin(p), cp = cos(p), // φ / 2
-          g = e[2] / 2 * radians, sg = sin(g), cg = cos(g); // γ / 2
-      return [
-        cl * cp * cg + sl * sp * sg,
-        sl * cp * cg - cl * sp * sg,
-        cl * sp * cg + sl * cp * sg,
-        cl * cp * sg - sl * sp * cg
-      ];
-    }
-
-    // Returns Cartesian coordinates [x, y, z] given spherical coordinates [λ, φ].
-    versor.cartesian = function(e) {
-      var l = e[0] * radians, p = e[1] * radians, cp = cos(p);
-      return [cp * cos(l), cp * sin(l), sin(p)];
-    };
-
-    // Returns the Euler rotation angles [λ, φ, γ] for the given quaternion.
-    versor.rotation = function(q) {
-      return [
-        atan2(2 * (q[0] * q[1] + q[2] * q[3]), 1 - 2 * (q[1] * q[1] + q[2] * q[2])) * degrees,
-        asin(max(-1, min(1, 2 * (q[0] * q[2] - q[3] * q[1])))) * degrees,
-        atan2(2 * (q[0] * q[3] + q[1] * q[2]), 1 - 2 * (q[2] * q[2] + q[3] * q[3])) * degrees
-      ];
-    };
-
-    // Returns the quaternion to rotate between two cartesian points on the sphere.
-    versor.delta = function(v0, v1) {
-      var w = cross(v0, v1), l = sqrt(dot(w, w));
-      if (!l) return [1, 0, 0, 0];
-      var t = acos(max(-1, min(1, dot(v0, v1)))) / 2, s = sin(t); // t = θ / 2
-      return [cos(t), w[2] / l * s, -w[1] / l * s, w[0] / l * s];
-    };
-
-    // Returns the quaternion that represents q0 * q1.
-    versor.multiply = function(q0, q1) {
-      return [
-        q0[0] * q1[0] - q0[1] * q1[1] - q0[2] * q1[2] - q0[3] * q1[3],
-        q0[0] * q1[1] + q0[1] * q1[0] + q0[2] * q1[3] - q0[3] * q1[2],
-        q0[0] * q1[2] - q0[1] * q1[3] + q0[2] * q1[0] + q0[3] * q1[1],
-        q0[0] * q1[3] + q0[1] * q1[2] - q0[2] * q1[1] + q0[3] * q1[0]
-      ];
-    };
-
-    function cross(v0, v1) {
-      return [
-        v0[1] * v1[2] - v0[2] * v1[1],
-        v0[2] * v1[0] - v0[0] * v1[2],
-        v0[0] * v1[1] - v0[1] * v1[0]
-      ];
-    }
-
-    function dot(v0, v1) {
-      return v0[0] * v1[0] + v0[1] * v1[1] + v0[2] * v1[2];
-    }
-
-    return versor;
-};
-
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
-var versor = versorFn();
 var versorDragPlugin = function() {
     var _ = {svg:null, q: null, sync: []};
 
     function dragSetup() {
-        var _this = this;
+        var _this = this,
+        versor = this._.versor;
         _.svg.call(d3.drag()
             .on('start', dragstarted)
             .on('end',   dragsended)
@@ -431,7 +433,10 @@ var threejsPlugin = function() {
                 _.sphereObject.setRotationFromQuaternion(q2);
                 this._.three = null;
             } else if (!this._.drag){
-                _.sphereObject.rotateOnAxis(_.yAxis, 0.0089);
+                var q1 = this._.versor(this._.proj.rotate());
+                var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
+                _.sphereObject.setRotationFromQuaternion(q2);
+                // _.sphereObject.rotateOnAxis(_.yAxis, 0.0089);
             }
             renderThree.call(this);
         }
@@ -749,8 +754,8 @@ var autorotatePlugin = function(degPerSec) {
     function rotate(delta, degree) {
         var r = this._.proj.rotate();
         r[0] += _.degree * delta / 1000;
-        // if (r[0] >= 180)
-        //     r[0] -= 360;
+        if (r[0] >= 180)
+            r[0] -= 360;
         this._.rotate(r);
     }
 

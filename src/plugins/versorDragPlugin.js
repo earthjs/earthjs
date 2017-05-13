@@ -1,12 +1,10 @@
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
-import versorFn from '../versor.js';
-
-var versor = versorFn();
 export default function() {
     var _ = {svg:null, q: null, sync: []};
 
     function dragSetup() {
-        var _this = this;
+        var _this = this,
+        versor = this._.versor;
         _.svg.call(d3.drag()
             .on('start', dragstarted)
             .on('end',   dragsended)

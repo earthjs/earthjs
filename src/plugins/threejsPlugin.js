@@ -76,7 +76,10 @@ export default function() {
                 _.sphereObject.setRotationFromQuaternion(q2);
                 this._.three = null;
             } else if (!this._.drag){
-                _.sphereObject.rotateOnAxis(_.yAxis, 0.0089);
+                var q1 = this._.versor(this._.proj.rotate());
+                var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
+                _.sphereObject.setRotationFromQuaternion(q2);
+                // _.sphereObject.rotateOnAxis(_.yAxis, 0.0089);
             }
             renderThree.call(this);
         }
