@@ -12,6 +12,7 @@ import autorotatePlugin from './src/plugins/autorotatePlugin.js';
 import placesPlugin from './src/plugins/placesPlugin.js';
 import worldCanvas from './src/plugins/worldCanvas.js';
 import worldPlugin from './src/plugins/worldPlugin.js';
+import worldThreejs from './src/plugins/worldThreejs.js';
 import centerPlugin from './src/plugins/centerPlugin.js';
 import countryTooltipPlugin from './src/plugins/countryTooltipPlugin.js';
 import flattenPlugin from './src/plugins/flattenPlugin.js';
@@ -31,6 +32,7 @@ app.plugins= {
     placesPlugin,
     worldCanvas,
     worldPlugin,
+    worldThreejs,
     centerPlugin,
     countryTooltipPlugin,
     flattenPlugin,

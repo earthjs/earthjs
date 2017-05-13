@@ -7,9 +7,11 @@
     <script type='text/javascript' src='../dist/earthjs.js'></script>
     <script src='./js/three.min.js'></script>
     <style>
-    #three-js {
-        /*left: 110px;*/
-    }
+        #three-js {
+            opacity: .6;
+            /*left: 110px;*/
+            /*position: inherit;*/
+        }
     </style>
 </head>
 <body>
@@ -20,14 +22,14 @@
         p.register(earthjs.plugins.autorotatePlugin(10));
         p.register(earthjs.plugins.versorDragPlugin());
         p.register(earthjs.plugins.threejsPlugin());
-        p.register(earthjs.plugins.debugThreejs());
+        p.register(earthjs.plugins.worldThreejs());
         p.register(earthjs.plugins.canvasPlugin());
         p.register(earthjs.plugins.configPlugin());
-        // p.register(earthjs.plugins.oceanPlugin());
         p.register(earthjs.plugins.graticuleCanvas());
-        p.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
+        // p.register(earthjs.plugins.debugThreejs());
+        p.register(earthjs.plugins.barPlugin('./d/bars.csv'));
 
-        p.canvasPlugin.selectAll('.canvas');
+        // p.canvasPlugin.selectAll('.canvas');
         p.configPlugin.set({showCountries: false, showLakes: false});
         p.ready(function(){
             p.svgDraw();

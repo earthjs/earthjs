@@ -18,7 +18,8 @@ export default function() {
             _.scene  = new THREE.Scene()
             _.yAxis  = new THREE.Vector3(0,1,0);
             _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 10000)
-            _.camera.position.z = 500 // (higher than RADIUS + size of the bubble)
+            _.camera.position.z = 500; // (higher than RADIUS + size of the bubble)
+            this._.camera = _.camera;
 
             // Create renderer object.
             _.renderer = new THREE.WebGLRenderer({antialias: true});
