@@ -10,16 +10,16 @@
 </head>
 <body>
     <svg id="earth"></svg>
-    <canvas class="canvas"></canvas>
     <script>
         var p = earthjs({width: 700, height: 500});
         p.register(earthjs.plugins.autorotatePlugin(10));
         p.register(earthjs.plugins.versorDragPlugin());
         p.register(earthjs.plugins.threejsPlugin());
-        p.register(earthjs.plugins.worldThreejs());
+        p.register(earthjs.plugins.debugThreejs());
         p.register(earthjs.plugins.canvasPlugin());
+        p.register(earthjs.plugins.configPlugin());
         p.register(earthjs.plugins.graticuleCanvas());
-        p.register(earthjs.plugins.barPlugin('./d/bars.csv'));
+        p.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
 
         p.ready(function(){
             d3.select('#three-js').attr('style', 'opacity: 0.6');
