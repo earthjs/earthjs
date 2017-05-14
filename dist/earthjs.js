@@ -71,7 +71,7 @@ var versorFn = function () {
 };
 
 var versor = versorFn();
-var app$1 = function () {
+var app$1 = (function () {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     options = Object.assign({
@@ -251,7 +251,7 @@ var app$1 = function () {
             _[qkey] = Object.keys(_[qname]);
         }
     }
-};
+});
 
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 var versorDragPlugin = function () {

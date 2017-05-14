@@ -1,14 +1,14 @@
 import versorFn from './versor.js';
 
-var versor = versorFn();
-export default function (options={}) {
+const versor = versorFn();
+export default (options={}) => {
     options = Object.assign({
         select: '#earth',
         rotate: 130,
         height: 500,
         width:  700,
     }, options);
-    var _ = {
+    const _ = {
         onResize: {},
         onResizeKeys: [],
 
@@ -35,12 +35,12 @@ export default function (options={}) {
         ready: null,
         loadingData: null
     }
-    var drag = false;
-    var width = options.width;
-    var height = options.height;
-    var ltScale = d3.scaleLinear().domain([0, width]).range([-180, 180]);
-    var svg = d3.selectAll(options.select).attr("width", width).attr("height", height);
-    var planet = {
+    const drag = false;
+    const width = options.width;
+    const height = options.height;
+    const ltScale = d3.scaleLinear().domain([0, width]).range([-180, 180]);
+    const svg = d3.selectAll(options.select).attr("width", width).attr("height", height);
+    const planet = {
         _: {
             svg,
             drag,
@@ -48,15 +48,15 @@ export default function (options={}) {
             options,
             ltScale,
         },
-        ready: function(fn) {
+        ready(fn) {
             if (fn) {
                 _.ready = fn;
             } else {
                 return _.loadingData;
             }
         },
-        register: function(obj) {
-            var ar = {};
+        register(obj) {
+            const ar = {};
             planet[obj.name] = ar;
             Object.keys(obj).map(function(fn) {
                 if ([
@@ -81,9 +81,9 @@ export default function (options={}) {
             qEvent(obj,'onInterval');
             if (obj.urls && obj.onReady) {
                 _.loadingData = true;
-                var q = d3.queue();
-                obj.urls.forEach(function(url) {
-                    var ext = url.split('.').pop();
+                const q = d3.queue();
+                obj.urls.forEach(url => {
+                    let ext = url.split('.').pop();
                     if (ext==='geojson') {
                         ext = 'json';
                     }
@@ -101,8 +101,8 @@ export default function (options={}) {
 
     planet._.defs = planet._.svg.append("defs");
     //----------------------------------------
-    var earth = null;
-    var ticker = null;
+    let earth = null;
+    let ticker = null;
     planet._.ticker = function(interval) {
         interval = interval || 50;
         ticker = setInterval(function(){
@@ -174,10 +174,10 @@ export default function (options={}) {
     }
 
     planet._.orthoGraphic = function() {
-        var width = planet._.options.width;
-        var height= planet._.options.height;
-        var rotate = planet._.options.rotate;
-        var ltRotate = planet._.ltScale(rotate);
+        const width = planet._.options.width;
+        const height= planet._.options.height;
+        const rotate = planet._.options.rotate;
+        const ltRotate = planet._.ltScale(rotate);
         return d3.geoOrthographic()
             .scale(width / 3.5)
             .rotate([ltRotate, 0])
@@ -188,7 +188,7 @@ export default function (options={}) {
 
     planet._.addRenderer = function(name) {
         if (_.renderOrder.indexOf(name)<0) {
-            _.renderOrder.push(name);            
+            _.renderOrder.push(name);
         }
     }
 
@@ -197,7 +197,7 @@ export default function (options={}) {
     return planet;
     //----------------------------------------
     function qEvent(obj, qname) {
-        var qkey = qname+'Keys';
+        const qkey = qname+'Keys';
         if (obj[qname]) {
             _[qname][obj.name] = obj[qname];
             _[qkey] = Object.keys(_[qname]);
