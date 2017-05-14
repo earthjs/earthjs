@@ -423,8 +423,6 @@ var canvasPlugin = (function () {
 });
 
 var oceanPlugin = function () {
-    var initOptions = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
     var _ = { svg: null, q: null };
 
     function svgAddOcean() {
@@ -445,14 +443,10 @@ var oceanPlugin = function () {
         }
     }
 
-    initOptions = Object.assign({
-        showOcean: true
-    }, initOptions);
-
     return {
         name: 'oceanPlugin',
         onInit: function onInit() {
-            Object.assign(this._.options, initOptions);
+            this._.options.showOcean = true;
             this.svgAddOcean = svgAddOcean;
             _.svg = this._.svg;
         },
@@ -555,10 +549,7 @@ var graticulePlugin = function () {
 };
 
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
-//
 var fauxGlobePlugin = function () {
-    var initOptions = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
     var _ = { svg: null, q: null };
 
     function svgAddDropShadow() {
@@ -594,16 +585,12 @@ var fauxGlobePlugin = function () {
         }
     }
 
-    initOptions = Object.assign({
-        showGlobeShadow: true,
-        showGlobeShading: true,
-        showGlobeHilight: true
-    }, initOptions);
-
     return {
         name: 'fauxGlobePlugin',
         onInit: function onInit() {
-            Object.assign(this._.options, initOptions);
+            this._.options.showGlobeShadow = true;
+            this._.options.showGlobeShading = true;
+            this._.options.showGlobeHilight = true;
             this.svgAddDropShadow = svgAddDropShadow;
             this.svgAddGlobeHilight = svgAddGlobeHilight;
             this.svgAddGlobeShading = svgAddGlobeShading;

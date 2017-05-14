@@ -1,4 +1,4 @@
-export default function(initOptions={}) {
+export default function() {
     const _ = {svg:null, q: null};
 
     function svgAddOcean() {
@@ -28,14 +28,10 @@ export default function(initOptions={}) {
         }
     }
 
-    initOptions = Object.assign({
-        showOcean: true,
-    }, initOptions);
-
     return {
         name: 'oceanPlugin',
         onInit() {
-            Object.assign(this._.options, initOptions);
+            this._.options.showOcean = true;
             this.svgAddOcean = svgAddOcean;
             _.svg = this._.svg;
         },

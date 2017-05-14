@@ -1,6 +1,5 @@
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
-//
-export default function(initOptions={}) {
+export default function() {
     const _ = {svg:null, q: null};
 
     function svgAddDropShadow() {
@@ -70,16 +69,12 @@ export default function(initOptions={}) {
         }
     }
 
-    initOptions = Object.assign({
-        showGlobeShadow: true,
-        showGlobeShading: true,
-        showGlobeHilight: true,
-    }, initOptions);
-
     return {
         name: 'fauxGlobePlugin',
         onInit() {
-            Object.assign(this._.options, initOptions);
+            this._.options.showGlobeShadow = true;
+            this._.options.showGlobeShading = true;
+            this._.options.showGlobeHilight = true;
             this.svgAddDropShadow = svgAddDropShadow;
             this.svgAddGlobeHilight = svgAddGlobeHilight;
             this.svgAddGlobeShading = svgAddGlobeShading;

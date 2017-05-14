@@ -1,12 +1,12 @@
 {
   "name": "earthjs",
-  "version": "0.6.22",
+  "version": "0.6.23",
   "description": "D3 Earth JS using SVG, build with plugins.",
   "main": "index.js",
   "scripts": {
     "test": "tape 'test/**/*-test.js' && mkdir -p test/output && eslint src",
     "build": "rollup -c && uglifyjs dist/earthjs.js -c -m -o dist/earthjs.min.js",
-    "build2": "squash dist/earthjs.js > dist/earthjs.min.js"
+    "build2": "rollup -c && squash dist/earthjs.js > dist/earthjs.min.js"
   },
   "repository": {
     "type": "git",
