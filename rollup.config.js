@@ -1,6 +1,7 @@
 // Rollup plugins
 import babel from 'rollup-plugin-babel';
 import eslint from 'rollup-plugin-eslint';
+// import butternut from 'rollup-plugin-butternut';
 // import node from "rollup-plugin-node-resolve";
 
 export default {
@@ -11,6 +12,7 @@ export default {
     sourceMap: true,
     plugins: [
         // node(),
+        // butternut(),
         eslint({
           exclude: [
             'src/styles/**',
