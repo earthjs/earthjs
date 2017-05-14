@@ -10,7 +10,7 @@ body {
     pointer-events: none;
 }
 #earth {
-    z-index: 2;    
+    z-index: 2;
 }
 .canvas {
     position: relative;
@@ -72,4 +72,9 @@ body {
     pointer-events: none;
     position: absolute;
     text-align: left;
+    z-index: 3;
+}
+.set-options {
+    position: absolute;
+    z-index: 999;
 }

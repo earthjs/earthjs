@@ -1,12 +1,12 @@
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
 //
 export default function(initOptions={}) {
-    var _ = {svg:null, q: null};
+    const _ = {svg:null, q: null};
 
     function svgAddDropShadow() {
         _.svg.selectAll('#drop_shadow,.drop_shadow').remove();
         if (this._.options.showGlobeShadow) {
-            var drop_shadow = this._.defs.append("radialGradient")
+            const drop_shadow = this._.defs.append("radialGradient")
                   .attr("id", "drop_shadow")
                   .attr("cx", "50%")
                   .attr("cy", "50%");
@@ -29,7 +29,7 @@ export default function(initOptions={}) {
     function svgAddGlobeShading() {
         _.svg.selectAll('#shading,.shading').remove();
         if (this._.options.showGlobeShading) {
-            var globe_shading = this._.defs.append("radialGradient")
+            const globe_shading = this._.defs.append("radialGradient")
                   .attr("id", "shading")
                   .attr("cx", "50%")
                   .attr("cy", "40%");
@@ -51,7 +51,7 @@ export default function(initOptions={}) {
     function svgAddGlobeHilight() {
         _.svg.selectAll('#hilight,.hilight').remove();
         if (this._.options.showGlobeHilight) {
-            var globe_highlight = this._.defs.append("radialGradient")
+            const globe_highlight = this._.defs.append("radialGradient")
                   .attr("id", "hilight")
                   .attr("cx", "75%")
                   .attr("cy", "25%");

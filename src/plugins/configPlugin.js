@@ -5,7 +5,7 @@ export default function() {
             if (newOpt) {
                 Object.assign(this._.options, newOpt);
                 if (newOpt.spin!==undefined) {
-                    var p = this.autorotatePlugin;
+                    const p = this.autorotatePlugin;
                     newOpt.spin ? p.start() : p.stop();
                 }
                 this._.drag = true;

@@ -1,16 +1,16 @@
 // Bo Ericsson’s Block http://bl.ocks.org/boeric/aa80b0048b7e39dd71c8fbe958d1b1d4
-export default function() {
-    var _ = {canvas: null, path: null, q: null}
+export default () => {
+    const _ = {canvas: null, path: null, q: null}
 
     function svgAddCanvas() {
         if (this._.options.showCanvas) {
             if (!_.canvas) {
-                var fObject = this._.svg.append("g").attr("class","canvas").append("foreignObject")
+                const fObject = this._.svg.append("g").attr("class","canvas").append("foreignObject")
                 .attr("x", 0)
                 .attr("y", 0)
                 .attr("width", this._.options.width)
                 .attr("height", this._.options.height);
-                var fBody = fObject.append("xhtml:body")
+                const fBody = fObject.append("xhtml:body")
                 .style("margin", "0px")
                 .style("padding", "0px")
                 .style("background-color", "none")
@@ -35,7 +35,7 @@ export default function() {
             _.path = d3.geoPath().projection(this._.proj);
         },
         onRefresh() {
-            var width = this._.options.width,
+            const width = this._.options.width,
                 height= this._.options.height;
             _.canvas.each(function() {
                 this.getContext("2d").clearRect(0, 0, width, height);
@@ -50,9 +50,9 @@ export default function() {
         },
         render(fn) {
             if (this._.options.showCanvas) {
-                var _this = this;
+                const _this = this;
                 _.canvas.each(function() {
-                    var context = this.getContext("2d");
+                    const context = this.getContext("2d");
                     fn.call(_this, context, _.path.context(context));
                 });
             }

@@ -22,13 +22,14 @@
         p.register(earthjs.plugins.barPlugin('./d/bars.csv'));
         p.register(earthjs.plugins.placesPlugin('./d/places.json'));
         p.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
-        p.register(earthjs.plugins.centerPlugin());
         p.register(earthjs.plugins.countryTooltipPlugin());
-        p.centerPlugin.focused(function() {
-            p.autorotatePlugin.stop();
-            options.spin = false;
-        })
+
         p.ready(function(){
+            p.register(earthjs.plugins.centerPlugin());
+            p.centerPlugin.focused(function() {
+                p.autorotatePlugin.stop();
+                options.spin = false;
+            })
             p.svgDraw();
         })
 

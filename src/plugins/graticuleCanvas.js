@@ -1,5 +1,5 @@
 export default function() {
-    var datumGraticule = d3.geoGraticule();
+    const datumGraticule = d3.geoGraticule();
 
     function canvasAddGraticule() {
         if (this._.options.showGraticule) {

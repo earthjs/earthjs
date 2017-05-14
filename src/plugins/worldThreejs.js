@@ -1,14 +1,14 @@
 export default function() {
-    var _ = {sphereObject: null};
+    const _ = {sphereObject: null};
 
     function addWorld() {
         if (!_.sphereObject) {
-            var _this  = this;
-            var group  = new THREE.Group();
-            var loader = new THREE.TextureLoader();
+            const _this  = this;
+            const group  = new THREE.Group();
+            const loader = new THREE.TextureLoader();
             loader.load("./d/world.jpg", function(texture) {
-                var geometry   = new THREE.SphereGeometry( 200, 20, 20 );
-                var material   = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
+                const geometry   = new THREE.SphereGeometry( 200, 20, 20 );
+                const material   = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
                 _.sphereObject = new THREE.Mesh( geometry, material );
                 group.add(_.sphereObject);
                 rotate.call(_this);
@@ -18,10 +18,10 @@ export default function() {
     }
 
     function rotate() {
-        var rt = this._.proj.rotate();
+        const rt = this._.proj.rotate();
         rt[0] -= 90;
-        var q1 = this._.versor(rt);
-        var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
+        const q1 = this._.versor(rt);
+        const q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
         _.sphereObject.setRotationFromQuaternion(q2);
     }
 

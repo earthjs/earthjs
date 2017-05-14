@@ -262,9 +262,11 @@ var versorDragPlugin = function () {
             versor = this._.versor;
         _.svg.call(d3.drag().on('start', dragstarted).on('end', dragsended).on('drag', dragged));
 
-        var v0, // Mouse position in Cartesian coordinates at start of drag gesture.
-        r0, // Projection rotation as Euler angles at start.
-        q0; // Projection rotation as versor at start.
+        var v0 = void 0,
+            // Mouse position in Cartesian coordinates at start of drag gesture.
+        r0 = void 0,
+            // Projection rotation as Euler angles at start.
+        q0 = void 0; // Projection rotation as versor at start.
 
         function rotate(src) {
             var r = src._.proj.rotate();
@@ -372,7 +374,7 @@ var threejsPlugin = function () {
 };
 
 // Bo Ericsson’s Block http://bl.ocks.org/boeric/aa80b0048b7e39dd71c8fbe958d1b1d4
-var canvasPlugin = function () {
+var canvasPlugin = (function () {
     var _ = { canvas: null, path: null, q: null };
 
     function svgAddCanvas() {
@@ -418,7 +420,7 @@ var canvasPlugin = function () {
             }
         }
     };
-};
+});
 
 var oceanPlugin = function () {
     var initOptions = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -431,8 +433,15 @@ var oceanPlugin = function () {
             var ocean_fill = this._.defs.append("radialGradient").attr("id", "ocean").attr("cx", "75%").attr("cy", "25%");
             ocean_fill.append("stop").attr("offset", "5%").attr("stop-color", "#ddf");
             ocean_fill.append("stop").attr("offset", "100%").attr("stop-color", "#9ab");
-            this._.ocean = _.svg.append("g").attr("class", "ocean").append("circle").attr("cx", this._.options.width / 2).attr("cy", this._.options.height / 2).attr("r", this._.proj.scale()).attr("class", "noclicks");
+            this._.ocean = _.svg.append("g").attr("class", "ocean").append("circle").attr("cx", this._.options.width / 2).attr("cy", this._.options.height / 2).attr("class", "noclicks");
+            resize.call(this);
             return this._.ocean;
+        }
+    }
+
+    function resize() {
+        if (this._.ocean && this._.options.showOcean) {
+            this._.ocean.attr("r", this._.proj.scale());
         }
     }
 
@@ -448,9 +457,7 @@ var oceanPlugin = function () {
             _.svg = this._.svg;
         },
         onResize: function onResize() {
-            if (this._.ocean && this._.options.showOcean) {
-                this._.ocean.attr("r", this._.proj.scale());
-            }
+            resize.call(this);
         },
         selectAll: function selectAll(q) {
             if (q) {
@@ -515,8 +522,15 @@ var graticulePlugin = function () {
     function svgAddGraticule() {
         _.svg.selectAll('.graticule').remove();
         if (this._.options.showGraticule) {
-            this._.graticule = _.svg.append("g").attr("class", "graticule").append("path").datum(datumGraticule).attr("class", "noclicks").attr("d", this._.path);
+            this._.graticule = _.svg.append("g").attr("class", "graticule").append("path").datum(datumGraticule).attr("class", "noclicks");
+            refresh.call(this);
             return this._.graticule;
+        }
+    }
+
+    function refresh() {
+        if (this._.graticule && this._.options.showGraticule) {
+            this._.graticule.attr("d", this._.path);
         }
     }
 
@@ -528,9 +542,7 @@ var graticulePlugin = function () {
             _.svg = this._.svg;
         },
         onRefresh: function onRefresh() {
-            if (this._.graticule && this._.options.showGraticule) {
-                this._.graticule.attr("d", this._.path);
-            }
+            refresh.call(this);
         },
         selectAll: function selectAll(q) {
             if (q) {
@@ -672,13 +684,20 @@ var placesPlugin = function (urlPlaces) {
             if (this._.options.showPlaces) {
                 svgAddPlacePoints.call(this);
                 svgAddPlaceLabels.call(this);
-                position_labels.call(this);
+                refresh.call(this);
             }
         }
     }
 
+    function refresh() {
+        if (this._.placePoints) {
+            this._.placePoints.attr("d", this._.path);
+            position_labels.call(this);
+        }
+    }
+
     function svgAddPlacePoints() {
-        this._.placePoints = _.svg.append("g").attr("class", "points").selectAll("path").data(_.places.features).enter().append("path").attr("class", "point").attr("d", this._.path);
+        this._.placePoints = _.svg.append("g").attr("class", "points").selectAll("path").data(_.places.features).enter().append("path").attr("class", "point");
         return this._.placePoints;
     }
 
@@ -719,10 +738,7 @@ var placesPlugin = function (urlPlaces) {
             _.svg = this._.svg;
         },
         onRefresh: function onRefresh() {
-            if (this._.placePoints) {
-                this._.placePoints.attr("d", this._.path);
-                position_labels.call(this);
-            }
+            refresh.call(this);
         },
         selectAll: function selectAll(q) {
             if (q) {
@@ -837,7 +853,7 @@ var worldCanvas = function (urlWorld, urlCountryNames) {
 };
 
 var worldPlugin = function (urlWorld, urlCountryNames) {
-    var _ = { svg: null, q: null, world: null, countries: null, countryNames: null };
+    var _ = { svg: null, q: null, world: null, countryNames: null };
     var countryClick = function countryClick() {
         // console.log(d);
     };
@@ -847,13 +863,28 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
         if (this._.options.showLand) {
             if (_.world) {
                 if (this._.options.showCountries) {
-                    svgAddCountries.call(this);
+                    this.svgAddCountries.call(this);
                 } else {
-                    svgAddWorld.call(this);
+                    this.svgAddWorld.call(this);
                 }
                 if (this._.options.showLakes) {
-                    svgAddLakes.call(this);
+                    this.svgAddLakes.call(this);
                 }
+            }
+            // render to correct position
+            refresh.call(this);
+        }
+    }
+
+    function refresh() {
+        if (_.world && this._.options.showLand) {
+            if (this._.options.showCountries) {
+                this._.countries.attr("d", this._.path);
+            } else {
+                this._.world.attr("d", this._.path);
+            }
+            if (this._.options.showLakes) {
+                this._.lakes.attr("d", this._.path);
             }
         }
     }
@@ -861,7 +892,7 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
     function svgAddWorld() {
         var land = topojson.feature(_.world, _.world.objects.land);
 
-        this._.world = _.svg.append("g").attr("class", "land").append("path").datum(land).attr("d", this._.path);
+        this._.world = _.svg.append("g").attr("class", "land").append("path").datum(land);
         return this._.world;
     }
 
@@ -870,14 +901,14 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
 
         this._.countries = _.svg.append("g").attr("class", "countries").selectAll("path").data(countries).enter().append("path").on('click', countryClick).attr("id", function (d) {
             return 'x' + d.id;
-        }).attr("d", this._.path);
+        });
         return this._.countries;
     }
 
     function svgAddLakes() {
         var lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
 
-        this._.lakes = _.svg.append("g").attr("class", "lakes").append("path").datum(lakes).attr("d", this._.path);
+        this._.lakes = _.svg.append("g").attr("class", "lakes").append("path").datum(lakes);
         return this._.lakes;
     }
 
@@ -900,22 +931,16 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
             this._.options.showLakes = true;
             this._.options.showCountries = true;
             this.svgAddWorldOrCountries = svgAddWorldOrCountries;
+            this.svgAddCountries = svgAddCountries;
+            this.svgAddLakes = svgAddLakes;
+            this.svgAddWorld = svgAddWorld;
             _.svg = this._.svg;
         },
         onRefresh: function onRefresh() {
-            if (_.world && this._.options.showLand) {
-                if (this._.options.showCountries) {
-                    this._.countries.attr("d", this._.path);
-                } else {
-                    this._.world.attr("d", this._.path);
-                }
-                if (this._.options.showLakes) {
-                    this._.lakes.attr("d", this._.path);
-                }
-            }
+            refresh.call(this);
         },
         countries: function countries() {
-            return _.countries;
+            return topojson.feature(_.world, _.world.objects.countries).features;
         },
         countryName: function countryName(d) {
             var cname = '';
@@ -989,9 +1014,8 @@ var worldThreejs = function () {
 };
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-//
-var centerPlugin = function () {
-    var _ = { focused: null };
+var centerPlugin = (function () {
+    var _ = { focused: null, svgAddCountriesOld: null };
 
     function country(cnt, id) {
         id = id.replace('x', '');
@@ -1003,33 +1027,37 @@ var centerPlugin = function () {
     }
 
     function transition(p) {
-        var _this = this;
+        var _this2 = this;
+
         d3.transition().duration(2500).tween("rotate", function () {
-            var r = d3.interpolate(_this._.proj.rotate(), [-p[0], -p[1]]);
+            var r = d3.interpolate(_this2._.proj.rotate(), [-p[0], -p[1]]);
             return function (t) {
-                _this._.rotate(r(t));
+                _this2._.rotate(r(t));
             };
         });
+    }
+
+    function svgAddCountries() {
+        var _this = this;
+        var countries = _.svgAddCountriesOld.call(this);
+        countries.on("click", function () {
+            var id = this.id.replace('x', '');
+            var c = _this.worldPlugin.countries();
+            var focusedCountry = country(c, id);
+            var p = d3.geoCentroid(focusedCountry);
+            transition.call(_this, p);
+            if (typeof _.focused === 'function') {
+                _.focused.call(_this);
+            }
+        });
+        return countries;
     }
 
     return {
         name: 'centerPlugin',
         onInit: function onInit() {
-            var _this = this;
-            var originalsvgAddCountries = this.svgAddCountries;
-            this.svgAddCountries = function () {
-                return originalsvgAddCountries.call(this).on("click", function () {
-                    var id = this.id.replace('x', '');
-                    var c = _this.worldPlugin.countries();
-                    var focusedCountry = country(c, id);
-                    var p = d3.geoCentroid(focusedCountry);
-                    transition.call(_this, p);
-                    // console.log(id);
-                    if (typeof _.focused === 'function') {
-                        _.focused.call(_this);
-                    }
-                });
-            };
+            _.svgAddCountriesOld = this.svgAddCountries;
+            this.svgAddCountries = svgAddCountries;
         },
         go: function go(id) {
             var c = this.worldPlugin.countries();
@@ -1041,10 +1069,9 @@ var centerPlugin = function () {
             _.focused = fn;
         }
     };
-};
+});
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-//
 var countryTooltipPlugin = function () {
     var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
 
@@ -1087,8 +1114,8 @@ var flattenPlugin = function () {
             }
 
             function interpolatedProjection(a, b) {
-                var px = d3.geoProjection(raw).scale(1),
-                    alpha;
+                var px = d3.geoProjection(raw).scale(1);
+                var alpha = void 0;
 
                 function raw(lamda, pi) {
                     var pa = a([lamda *= 180 / Math.PI, pi *= 180 / Math.PI]),
@@ -1121,7 +1148,7 @@ var flattenPlugin = function () {
             this._.g2 = g2;
         },
         toMap: function toMap() {
-            // var r = this._.proj.rotate();
+            // const r = this._.proj.rotate();
             this._.path = d3.geoPath().projection(_.proj);
             // this._.proj.rotate([r[0],0,0]);
             // this._.proj.center([0,0]);
@@ -1131,7 +1158,7 @@ var flattenPlugin = function () {
     };
 };
 
-var barPlugin = function (urlBars) {
+var barPlugin = (function (urlBars) {
     var _ = { svg: null, barProjection: null, q: null, bars: null };
 
     function svgAddBar() {
@@ -1151,14 +1178,10 @@ var barPlugin = function (urlBars) {
             _.lengthScale = d3.scaleLinear().domain([0, _.max]).range([scale, scale + 50]);
 
             this._.bar = gBar.selectAll("line").data(_.bars).enter().append("line").attr("stroke", "red").attr("stroke-width", "2");
+            // render to correct position
+            refresh.call(this);
             return this._.bar;
         }
-    }
-
-    function svgClipPath() {
-        // mask creation
-        this._.defs.selectAll('clipPath').remove();
-        this._.defs.append("clipPath").append("circle").attr("id", "edgeCircle").attr("cx", this._.options.width / 2).attr("cy", this._.options.height / 2).attr("r", this._.proj.scale());
     }
 
     function refresh() {
@@ -1182,15 +1205,21 @@ var barPlugin = function (urlBars) {
         }
     }
 
+    function svgClipPath() {
+        // mask creation
+        this._.defs.selectAll('clipPath').remove();
+        this._.defs.append("clipPath").append("circle").attr("id", "edgeCircle").attr("cx", this._.options.width / 2).attr("cy", this._.options.height / 2).attr("r", this._.proj.scale());
+    }
+
     return {
         name: 'barPlugin',
         urls: urlBars && [urlBars],
         onReady: function onReady(err, bars) {
             var _this = this;
+
             _.bars = bars;
-            // svgAddBar.call(this); //called in this.svgDraw();
             setTimeout(function () {
-                refresh.call(_this);
+                return refresh.call(_this);
             }, 1);
         },
         onInit: function onInit() {
@@ -1225,7 +1254,7 @@ var barPlugin = function (urlBars) {
             }
         }
     };
-};
+});
 
 var debugThreejs = function () {
     var _ = { sphereObject: null };

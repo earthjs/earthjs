@@ -1,6 +1,6 @@
 // John J Czaplewski’s Block http://bl.ocks.org/jczaplew/6798471
 export default function(urlWorld, urlCountryNames) {
-    var _ = {world: null, countryNames: null, style: {}};
+    const _ = {world: null, countryNames: null, style: {}};
 
     function canvasAddWorldOrCountries() {
         if (this._.options.showLand) {
@@ -17,7 +17,7 @@ export default function(urlWorld, urlCountryNames) {
     }
 
     function canvasAddWorld() {
-        var land = topojson.feature(_.world, _.world.objects.land);
+        const land = topojson.feature(_.world, _.world.objects.land);
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
             path(land);
@@ -27,7 +27,7 @@ export default function(urlWorld, urlCountryNames) {
     }
 
     function canvasAddCountries() {
-        var countries = topojson.feature(_.world, _.world.objects.countries);
+        const countries = topojson.feature(_.world, _.world.objects.countries);
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
             path(countries);
@@ -38,7 +38,7 @@ export default function(urlWorld, urlCountryNames) {
     }
 
     function canvasAddLakes() {
-        var lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
+        const lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
             path(lakes);
@@ -47,7 +47,7 @@ export default function(urlWorld, urlCountryNames) {
         });
     }
 
-    var urls = null;
+    let urls = null;
     if (urlWorld) {
         urls = [urlWorld];
         if (urlCountryNames) {
@@ -73,7 +73,7 @@ export default function(urlWorld, urlCountryNames) {
         },
         data(p) {
             if (p) {
-                var data = p.worldCanvas.data()
+                const data = p.worldCanvas.data()
                 _.countryNames = data.countryNames;
                 _.world = data.world;
             } else {

@@ -1,10 +1,10 @@
 export default function() {
-    var _ = {proj: null};
+    const _ = {proj: null};
 
     return {
         name: 'flattenPlugin',
         onInit() {
-            var width = 700,
+            const width = 700,
                 height = 500,
                 _this = this;
 
@@ -20,17 +20,18 @@ export default function() {
             }
 
             function interpolatedProjection(a, b) {
-                var px = d3.geoProjection(raw).scale(1), alpha;
+                const px = d3.geoProjection(raw).scale(1);
+                let alpha;
 
                 function raw(lamda, pi) {
-                    var pa = a([lamda *= 180 / Math.PI, pi *= 180 / Math.PI]), pb = b([lamda, pi]);
+                    const pa = a([lamda *= 180 / Math.PI, pi *= 180 / Math.PI]), pb = b([lamda, pi]);
                     return [(1 - alpha) * pa[0] + alpha * pb[0], (alpha - 1) * pa[1] - alpha * pb[1]];
                 }
 
                 animation.alpha = function(_x) {
                     if (!arguments.length)
                         return alpha;
-                    var ta = a.translate(),
+                    const ta = a.translate(),
                         tb = b.translate();
                         alpha = + _x;
                         tb[0] = ta[0];
@@ -46,8 +47,8 @@ export default function() {
                 return px;
             }
 
-            var g1 = this._.proj;
-            var g2 = d3.geoEquirectangular()
+            const g1 = this._.proj;
+            const g2 = d3.geoEquirectangular()
                 .scale(width/4)
                 .translate([width / 2, height / 2]);
             _.proj = interpolatedProjection(g1, g2);
@@ -58,7 +59,7 @@ export default function() {
             this._.g2 = g2;
         },
         toMap() {
-            // var r = this._.proj.rotate();
+            // const r = this._.proj.rotate();
             this._.path = d3.geoPath().projection(_.proj);
             // this._.proj.rotate([r[0],0,0]);
             // this._.proj.center([0,0]);

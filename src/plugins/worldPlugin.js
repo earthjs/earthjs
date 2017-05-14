@@ -1,6 +1,6 @@
 export default function(urlWorld, urlCountryNames) {
-    var _ = {svg:null, q: null, world: null, countries: null, countryNames: null};
-    var countryClick = function() {
+    const _ = {svg:null, q: null, world: null, countryNames: null};
+    const countryClick = function() {
         // console.log(d);
     }
 
@@ -9,46 +9,58 @@ export default function(urlWorld, urlCountryNames) {
         if (this._.options.showLand) {
             if (_.world) {
                 if (this._.options.showCountries) {
-                    svgAddCountries.call(this);
+                    this.svgAddCountries.call(this);
                 } else {
-                    svgAddWorld.call(this);
+                    this.svgAddWorld.call(this);
                 }
                 if (this._.options.showLakes) {
-                    svgAddLakes.call(this);
+                    this.svgAddLakes.call(this);
                 }
+            }
+            // render to correct position
+            refresh.call(this);
+        }
+    }
+
+    function refresh() {
+        if (_.world && this._.options.showLand) {
+            if (this._.options.showCountries) {
+                this._.countries.attr("d", this._.path);
+            } else {
+                this._.world.attr("d", this._.path);
+            }
+            if (this._.options.showLakes) {
+                this._.lakes.attr("d", this._.path);
             }
         }
     }
 
     function svgAddWorld() {
-        var land = topojson.feature(_.world, _.world.objects.land);
+        const land = topojson.feature(_.world, _.world.objects.land);
 
         this._.world = _.svg.append("g").attr("class","land").append("path")
-            .datum(land)
-            .attr("d", this._.path);
+            .datum(land);
         return this._.world;
     }
 
     function svgAddCountries() {
-        var countries = topojson.feature(_.world, _.world.objects.countries).features;
+        const countries = topojson.feature(_.world, _.world.objects.countries).features;
 
         this._.countries = _.svg.append("g").attr("class","countries").selectAll("path")
             .data(countries).enter().append("path").on('click', countryClick)
-            .attr("id",function(d) {return 'x'+d.id})
-            .attr("d", this._.path);
+                .attr("id",function(d) {return 'x'+d.id});
         return this._.countries;
     }
 
     function svgAddLakes() {
-        var lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
+        const lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
 
         this._.lakes = _.svg.append("g").attr("class","lakes").append("path")
-            .datum(lakes)
-            .attr("d", this._.path);
+            .datum(lakes);
         return this._.lakes;
     }
 
-    var urls = null;
+    let urls = null;
     if (urlWorld) {
         urls = [urlWorld];
         if (urlCountryNames) {
@@ -68,25 +80,19 @@ export default function(urlWorld, urlCountryNames) {
             this._.options.showLakes = true;
             this._.options.showCountries = true;
             this.svgAddWorldOrCountries = svgAddWorldOrCountries;
+            this.svgAddCountries = svgAddCountries;
+            this.svgAddLakes = svgAddLakes;
+            this.svgAddWorld = svgAddWorld;
             _.svg = this._.svg;
         },
         onRefresh() {
-            if (_.world && this._.options.showLand) {
-                if (this._.options.showCountries) {
-                    this._.countries.attr("d", this._.path);
-                } else {
-                    this._.world.attr("d", this._.path);
-                }
-                if (this._.options.showLakes) {
-                    this._.lakes.attr("d", this._.path);
-                }
-            }
+            refresh.call(this);
         },
         countries() {
-            return _.countries;
+            return topojson.feature(_.world, _.world.objects.countries).features;
         },
         countryName(d) {
-            var cname = '';
+            let cname = '';
             if (_.countryNames) {
                 cname = _.countryNames.find(function(x) {
                     return x.id==d.id;
@@ -103,7 +109,7 @@ export default function(urlWorld, urlCountryNames) {
         },
         data(p) {
             if (p) {
-                var data = p.worldPlugin.data()
+                const data = p.worldPlugin.data()
                 _.countryNames = data.countryNames;
                 _.world = data.world;
             } else {
