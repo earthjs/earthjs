@@ -31,7 +31,7 @@ export default function(urlWorld, urlCountryNames) {
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
             path(countries);
-            context.lineWidth = .5;
+            context.lineWidth = 0.5;
             context.strokeStyle = _.style.countries || 'rgba(80, 64, 39, 0.6)';
             context.stroke();
         });

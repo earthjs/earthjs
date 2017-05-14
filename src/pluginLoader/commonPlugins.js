@@ -1,35 +1,33 @@
-export default function(urlWorld='./d/world-110m.json') {
-    var _ = {checker: []};
+export default () => {
+    const _ = {checker: []};
     return {
         name: 'commonPlugins',
         onInit() {
-            var p = this;
-            p.register(earthjs.plugins.autorotatePlugin(10));
-            p.register(earthjs.plugins.versorDragPlugin());
-            p.register(earthjs.plugins.wheelZoomPlugin());
-            p.register(earthjs.plugins.configPlugin());
-            p.register(earthjs.plugins.oceanPlugin());
-            p.register(earthjs.plugins.canvasPlugin());
-            p.register(earthjs.plugins.graticuleCanvas());
-            p.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
+            const rg = this.register;
+            const pl = earthjs.plugins;
+            rg(pl.autorotatePlugin(10));
+            rg(pl.versorDragPlugin());
+            rg(pl.wheelZoomPlugin());
+            rg(pl.configPlugin());
+            rg(pl.oceanPlugin());
+            rg(pl.canvasPlugin());
+            rg(pl.graticuleCanvas());
+            rg(pl.worldCanvas('./d/world-110m.json'));
 
-            p.canvasPlugin.selectAll('.canvas');
-            p.ready(function(){
-                p.svgDraw();
-            })
+            this.canvasPlugin.selectAll('.canvas');
+            this.ready(() => this.svgDraw());
 
-            _.options = p.configPlugin.set();
-            console.log(_.options);
-
-            _.buttonClick = function(str) {
-                var arr = str.split(':'), key = arr[2];
-                var resultx = {};
-                _.options[key] = !_.options[key];
-                resultx[key]   =  _.options[key];
-                console.log(resultx);
+            _.options = this.configPlugin.set();
+            _.buttonClick = str => {
+                const arr = str.split(':'),
+                    key = arr[2],
+                    resultx  = {},
+                    options  =_.options;
+                options[key] = !options[key];
+                resultx[key] =  options[key];
                 if (key=='hideCountries')
                     resultx.hideLand = false;
-                p.configPlugin.set(resultx);
+                this.configPlugin.set(resultx);
             };
 
             _.checker = [
@@ -37,27 +35,20 @@ export default function(urlWorld='./d/world-110m.json') {
                 'graticule:Graticule:showGraticule',
                 'hideLand:Land:showLand',
                 'spin:Spin:spin',
-            ].map(function(d) {return d.split(':')});
-            var opt = d3.select('.set-options');
+            ].map(d => d.split(':'));
+            const opt = d3.select('.set-options');
             opt.selectAll('button').data(_.checker).enter().append('button')
-                .text(function(d) { return d[1]})
-                .on('click', function(d) {
-                    _.buttonClick.call(this, d.join(':'));
-                });
+                .text(d => d[1])
+                .on('click', d => _.buttonClick.call(this, d.join(':')));
         },
         addChecker(checker) {
             _.checker.push(checker);
-            _.options = p.configPlugin.set();
-            console.log(_.options);
+            _.options = this.configPlugin.set();
 
-            var opt = d3.select('.set-options');
+            const opt = d3.select('.set-options');
             opt.selectAll('button').data(_.checker).enter().append('button')
-                .text(function(d) {
-                    return d[1]
-                })
-                .on('click', function(d) {
-                    _.buttonClick.call(this, d.join(':'));
-                });
+                .text(d => d[1])
+                .on('click', d => _.buttonClick.call(this, d.join(':')));
         }
     }
 }

@@ -35,7 +35,7 @@ export default function() {
                         alpha = + _x;
                         tb[0] = ta[0];
                         tb[1] = ta[1]/1.2;
-                    console.log(px.rotate(), _x);
+                    // console.log(px.rotate(), _x);
                     px.translate([
                         (1 - alpha) * ta[0] + alpha * tb[0],
                         ((1 - alpha) * ta[1] + alpha * tb[1])

@@ -1,0 +1,27 @@
+{
+    "env": {
+        "es6": true,
+        "browser": true
+    },
+
+    "parserOptions": {
+        "sourceType": "module"
+    },
+
+    "extends": "eslint:recommended",
+
+    "globals": {
+        "d3": true,
+        "queue": true,
+        "THREE": true,
+        "window": true,
+        "earthjs": true,
+        "topojson": true
+    },
+
+    "rules": {
+        "no-cond-assign": 0,
+        "no-sparse-arrays": 0,
+        "no-floating-decimal": 2
+    }
+}

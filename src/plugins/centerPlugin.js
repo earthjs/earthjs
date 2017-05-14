@@ -29,13 +29,13 @@ export default function() {
             var originalsvgAddCountries = this.svgAddCountries;
             this.svgAddCountries = function() {
                 return originalsvgAddCountries.call(this)
-                .on("click", function(d) {
-                    var id = this.id.replace('x', ''),
-                    c = _this.worldPlugin.countries(),
-                    focusedCountry = country(c, id),
-                    p = d3.geoCentroid(focusedCountry);
+                .on("click", function() {
+                    var id = this.id.replace('x', '');
+                    var c = _this.worldPlugin.countries();
+                    var focusedCountry = country(c, id);
+                    var p = d3.geoCentroid(focusedCountry);
                     transition.call(_this, p);
-                    console.log(id);
+                    // console.log(id);
                     if (typeof(_.focused)==='function') {
                         _.focused.call(_this);
                     }
@@ -43,9 +43,10 @@ export default function() {
             }
         },
         go(id) {
-            focusedCountry = country(c, id),
-            p = d3.geoCentroid(focusedCountry);
-            transition.call(_this, p);
+            var c = this.worldPlugin.countries();
+            var focusedCountry = country(c, id),
+                p = d3.geoCentroid(focusedCountry);
+            transition.call(this, p);
         },
         focused(fn) {
             _.focused = fn;
