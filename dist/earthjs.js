@@ -119,7 +119,7 @@ var app$1 = (function () {
         register: function register(obj) {
             var ar = {};
             planet[obj.name] = ar;
-            Object.keys(obj).map(function (fn) {
+            Object.keys(obj).forEach(function (fn) {
                 if (['urls', 'onReady', 'onInit', 'onResize', 'onRefresh', 'onInterval'].indexOf(fn) === -1) {
                     if (typeof obj[fn] === 'function') {
                         ar[fn] = function () {
@@ -159,9 +159,10 @@ var app$1 = (function () {
     var earth = null;
     var ticker = null;
     planet._.ticker = function (interval) {
+        var ex = planet._.intervalRun;
         interval = interval || 50;
         ticker = setInterval(function () {
-            planet._.intervalRun.call(planet);
+            ex.call(planet);
             if (earth) {
                 earth.forEach(function (p) {
                     p._.intervalRun.call(p);
@@ -204,7 +205,7 @@ var app$1 = (function () {
 
     planet._.intervalRun = function () {
         if (_.onIntervalKeys.length > 0) {
-            _.onIntervalKeys.map(function (fn) {
+            _.onIntervalKeys.forEach(function (fn) {
                 _.onInterval[fn].call(planet);
             });
         }
@@ -212,7 +213,7 @@ var app$1 = (function () {
 
     planet._.refresh = function () {
         if (_.onRefreshKeys.length > 0) {
-            _.onRefreshKeys.map(function (fn) {
+            _.onRefreshKeys.forEach(function (fn) {
                 _.onRefresh[fn].call(planet);
             });
         }
@@ -221,7 +222,7 @@ var app$1 = (function () {
 
     planet._.resize = function () {
         if (_.onResizeKeys.length > 0) {
-            _.onResizeKeys.map(function (fn) {
+            _.onResizeKeys.forEach(function (fn) {
                 _.onResize[fn].call(planet);
             });
         }
@@ -617,9 +618,10 @@ var fauxGlobePlugin = function () {
 };
 
 var autorotatePlugin = (function (degPerSec) {
+    /*eslint no-console: 0 */
     var _ = {
         spin: true,
-        lastTick: null,
+        lastTick: new Date(),
         degree: degPerSec,
         sync: []
     };
@@ -627,7 +629,6 @@ var autorotatePlugin = (function (degPerSec) {
     function rotate(delta) {
         var r = this._.proj.rotate();
         r[0] += _.degree * delta / 1000;
-        if (r[0] >= 180) r[0] -= 360;
         this._.rotate(r);
     }
 
@@ -638,7 +639,7 @@ var autorotatePlugin = (function (degPerSec) {
         },
         onInterval: function onInterval() {
             var now = new Date();
-            if (!_.lastTick || !_.spin || this._.drag) {
+            if (!_.spin || this._.drag) {
                 _.lastTick = now;
             } else {
                 var delta = now - _.lastTick;

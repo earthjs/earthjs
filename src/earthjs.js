@@ -61,7 +61,7 @@ export default (options={}) => {
         register(obj) {
             const ar = {};
             planet[obj.name] = ar;
-            Object.keys(obj).map(function(fn) {
+            Object.keys(obj).forEach(function(fn) {
                 if ([
                     'urls',
                     'onReady',
@@ -107,9 +107,10 @@ export default (options={}) => {
     let earth = null;
     let ticker = null;
     planet._.ticker = function(interval) {
+        const ex = planet._.intervalRun;
         interval = interval || 50;
-        ticker = setInterval(function(){
-            planet._.intervalRun.call(planet);
+        ticker = setInterval(() => {
+            ex.call(planet);
             if (earth) {
                 earth.forEach(function(p) {
                     p._.intervalRun.call(p);
@@ -152,7 +153,7 @@ export default (options={}) => {
 
     planet._.intervalRun = function() {
         if (_.onIntervalKeys.length>0) {
-            _.onIntervalKeys.map(function(fn) {
+            _.onIntervalKeys.forEach(function(fn) {
                 _.onInterval[fn].call(planet);
             });
         }
@@ -160,7 +161,7 @@ export default (options={}) => {
 
     planet._.refresh = function() {
         if (_.onRefreshKeys.length>0) {
-            _.onRefreshKeys.map(function(fn) {
+            _.onRefreshKeys.forEach(function(fn) {
                 _.onRefresh[fn].call(planet);
             });
         }
@@ -169,7 +170,7 @@ export default (options={}) => {
 
     planet._.resize = function() {
         if (_.onResizeKeys.length>0) {
-            _.onResizeKeys.map(function(fn) {
+            _.onResizeKeys.forEach(function(fn) {
                 _.onResize[fn].call(planet);
             });
         }

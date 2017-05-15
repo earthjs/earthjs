@@ -1,7 +1,8 @@
 export default degPerSec => {
+    /*eslint no-console: 0 */
     const _ = {
         spin: true,
-        lastTick: null,
+        lastTick: new Date(),
         degree: degPerSec,
         sync: []
     }
@@ -9,8 +10,6 @@ export default degPerSec => {
     function rotate(delta) {
         const r = this._.proj.rotate();
         r[0] += _.degree * delta / 1000;
-        if (r[0] >= 180)
-            r[0] -= 360;
         this._.rotate(r);
     }
 
@@ -21,7 +20,7 @@ export default degPerSec => {
         },
         onInterval() {
             const now = new Date();
-            if (!_.lastTick || !_.spin || this._.drag) {
+            if (!_.spin || this._.drag) {
                 _.lastTick = now;
             } else {
                 const delta = now - _.lastTick;
