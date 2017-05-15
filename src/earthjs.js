@@ -30,6 +30,7 @@ export default (options={}) => {
             'svgAddWorldOrCountries',
             'svgAddGlobeHilight',
             'svgAddPlaces',
+            'svgAddPings',
             'svgAddBar',
         ],
         ready: null,
@@ -38,6 +39,7 @@ export default (options={}) => {
     const drag = false;
     const width = options.width;
     const height = options.height;
+    const center = [width/2, height/2];
     const ltScale = d3.scaleLinear().domain([0, width]).range([-180, 180]);
     const svg = d3.selectAll(options.select).attr("width", width).attr("height", height);
     const planet = {
@@ -45,6 +47,7 @@ export default (options={}) => {
             svg,
             drag,
             versor,
+            center,
             options,
             ltScale,
         },

@@ -17,6 +17,7 @@ import centerPlugin from './src/plugins/centerPlugin.js';
 import countryTooltipPlugin from './src/plugins/countryTooltipPlugin.js';
 import flattenPlugin from './src/plugins/flattenPlugin.js';
 import barPlugin from './src/plugins/barPlugin.js';
+import pingsPlugin from './src/plugins/pingsPlugin.js';
 import debugThreejs from './src/plugins/debugThreejs.js';
 import commonPlugins from './src/pluginLoader/commonPlugins';
 app.plugins= {
@@ -38,6 +39,7 @@ app.plugins= {
     countryTooltipPlugin,
     flattenPlugin,
     barPlugin,
+    pingsPlugin,
     debugThreejs,
     commonPlugins,
 };
