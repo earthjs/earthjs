@@ -19,7 +19,9 @@ const eQuakeApp = () => {
     }
 
     function refresh() {
-        if (this._.eQuake && this._.options.showEQuake) {
+        if (this._.drag==null) {
+            this._.eQuake.style("display", 'none');
+        } else if (!this._.drag && this._.eQuake && this._.options.showEQuake) {
             const proj = this._.proj;
             const center = this._.proj.invert(this._.center);
             this._.eQuake

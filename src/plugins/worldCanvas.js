@@ -6,10 +6,10 @@ export default function(urlWorld, urlCountryNames) {
         if (this._.options.showLand) {
             if (_.world) {
                 canvasAddWorld.call(this);
-                if (this._.options.showCountries) {
+                if (!this._.drag && this._.options.showCountries) {
                     canvasAddCountries.call(this);
                 }
-                if (this._.options.showLakes) {
+                if (!this._.drag && this._.options.showLakes) {
                     canvasAddLakes.call(this);
                 }
             }
@@ -17,20 +17,18 @@ export default function(urlWorld, urlCountryNames) {
     }
 
     function canvasAddWorld() {
-        const land = topojson.feature(_.world, _.world.objects.land);
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
-            path(land);
+            path(_.land);
             context.fillStyle = _.style.land || 'rgba(117, 87, 57, 0.4)';
             context.fill();
         });
     }
 
     function canvasAddCountries() {
-        const countries = topojson.feature(_.world, _.world.objects.countries);
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
-            path(countries);
+            path(_.countries);
             context.lineWidth = 0.5;
             context.strokeStyle = _.style.countries || 'rgba(80, 64, 39, 0.6)';
             context.stroke();
@@ -38,10 +36,9 @@ export default function(urlWorld, urlCountryNames) {
     }
 
     function canvasAddLakes() {
-        const lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
-            path(lakes);
+            path(_.lakes);
             context.fillStyle = _.style.lakes || 'rgba(80, 87, 97, 0.4)';
             context.fill();
         });
@@ -61,6 +58,9 @@ export default function(urlWorld, urlCountryNames) {
         onReady(err, world, countryNames) {
             _.world = world;
             _.countryNames = countryNames;
+            _.land = topojson.feature(_.world, _.world.objects.land);
+            _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
+            _.countries = topojson.feature(_.world, _.world.objects.countries);
         },
         onInit() {
             this._.options.showLand = true;

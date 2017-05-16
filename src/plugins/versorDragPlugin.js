@@ -24,10 +24,11 @@ export default function() {
         }
 
         function dragstarted() {
-            _this._.drag = true;
             v0 = versor.cartesian(_this._.proj.invert(d3.mouse(this)));
             r0 = _this._.proj.rotate();
             q0 = versor(r0);
+            _this._.drag = null;
+            _this._.refresh();
         }
 
         function dragged() {
@@ -35,6 +36,7 @@ export default function() {
                 q1 = versor.multiply(q0, versor.delta(v0, v1)),
                 r1 = versor.rotation(q1);
             _this._.rotate(r1);
+            _this._.drag = true;
         }
 
         function dragsended() {
@@ -42,6 +44,7 @@ export default function() {
                 rotate.call(p, _this);
             })
             _this._.drag = false;
+            _this._.refresh();
         }
     }
 

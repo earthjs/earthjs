@@ -152,28 +152,23 @@ export default (options={}) => {
     }
 
     planet._.intervalRun = function() {
-        if (_.onIntervalKeys.length>0) {
-            _.onIntervalKeys.forEach(function(fn) {
-                _.onInterval[fn].call(planet);
-            });
-        }
+        _.onIntervalKeys.forEach(function(fn) {
+            _.onInterval[fn].call(planet);
+        });
+        return planet;
     }
 
     planet._.refresh = function() {
-        if (_.onRefreshKeys.length>0) {
-            _.onRefreshKeys.forEach(function(fn) {
-                _.onRefresh[fn].call(planet);
-            });
-        }
+        _.onRefreshKeys.forEach(function(fn) {
+            _.onRefresh[fn].call(planet);
+        });
         return planet;
     }
 
     planet._.resize = function() {
-        if (_.onResizeKeys.length>0) {
-            _.onResizeKeys.forEach(function(fn) {
-                _.onResize[fn].call(planet);
-            });
-        }
+        _.onResizeKeys.forEach(function(fn) {
+            _.onResize[fn].call(planet);
+        });
         return planet;
     }
 

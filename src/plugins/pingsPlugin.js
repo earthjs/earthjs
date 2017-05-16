@@ -20,24 +20,24 @@ export default function() {
 
     function animate() {
         var nodes = _.ping2.nodes().filter(d => d.style.display=='inline');
-        var node  = nodes[Math.floor(Math.random() * (nodes.length-1))];
-        // console.log(node, `#${node.id}`);
-        d3.select(`#${node.id}`)
-            .attr('r', 2)
-            .attr('stroke', '#369')
-            .attr('stroke-opacity', 1)
-            .attr('stroke-width', '10px')
-        .transition()
-        .duration(3000)
-            .attr('r', 30)
-            .attr('fill', 'none')
-            .attr('stroke', '#F00')
-            .attr('stroke-width', '0px')
-            .attr('stroke-opacity', 0);
+        if (nodes.length>0) {
+            d3.select(`#${nodes[Math.floor(Math.random() * (nodes.length-1))].id}`)
+                .attr('r', 2)
+                .attr('stroke', '#F00')
+                .attr('stroke-opacity', 1)
+                .attr('stroke-width', '10px')
+            .transition()
+            .duration(1000)
+                .attr('r', 30)
+                .attr('fill', 'none')
+                .attr('stroke-width', '0.1px')
+        }
     }
 
     function refresh() {
-        if (this._.pings && this._.options.showPings) {
+        if (this._.drag==null) {
+            this._.pings.style("display", 'none');
+        } else if (!this._.drag && this._.pings && this._.options.showPings) {
             const proj = this._.proj;
             const center = this._.proj.invert(this._.center);
             this._.pings
@@ -54,7 +54,7 @@ export default function() {
         onInit() {
             this.svgAddPings = svgAddPings;
             this._.options.showPings = true;
-            setInterval(()  => animate.call(this), 5000);
+            setInterval(()  => animate.call(this), 3000);
             _.svg = this._.svg;
         },
         onRefresh() {

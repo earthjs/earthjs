@@ -204,28 +204,23 @@ var app$1 = (function () {
     };
 
     planet._.intervalRun = function () {
-        if (_.onIntervalKeys.length > 0) {
-            _.onIntervalKeys.forEach(function (fn) {
-                _.onInterval[fn].call(planet);
-            });
-        }
+        _.onIntervalKeys.forEach(function (fn) {
+            _.onInterval[fn].call(planet);
+        });
+        return planet;
     };
 
     planet._.refresh = function () {
-        if (_.onRefreshKeys.length > 0) {
-            _.onRefreshKeys.forEach(function (fn) {
-                _.onRefresh[fn].call(planet);
-            });
-        }
+        _.onRefreshKeys.forEach(function (fn) {
+            _.onRefresh[fn].call(planet);
+        });
         return planet;
     };
 
     planet._.resize = function () {
-        if (_.onResizeKeys.length > 0) {
-            _.onResizeKeys.forEach(function (fn) {
-                _.onResize[fn].call(planet);
-            });
-        }
+        _.onResizeKeys.forEach(function (fn) {
+            _.onResize[fn].call(planet);
+        });
         return planet;
     };
 
@@ -280,10 +275,11 @@ var versorDragPlugin = function () {
         }
 
         function dragstarted() {
-            _this._.drag = true;
             v0 = versor.cartesian(_this._.proj.invert(d3.mouse(this)));
             r0 = _this._.proj.rotate();
             q0 = versor(r0);
+            _this._.drag = null;
+            _this._.refresh();
         }
 
         function dragged() {
@@ -291,6 +287,7 @@ var versorDragPlugin = function () {
                 q1 = versor.multiply(q0, versor.delta(v0, v1)),
                 r1 = versor.rotation(q1);
             _this._.rotate(r1);
+            _this._.drag = true;
         }
 
         function dragsended() {
@@ -298,6 +295,7 @@ var versorDragPlugin = function () {
                 rotate.call(p, _this);
             });
             _this._.drag = false;
+            _this._.refresh();
         }
     }
 
@@ -486,13 +484,13 @@ var configPlugin = function () {
 };
 
 var graticuleCanvas = function () {
-    var datumGraticule = d3.geoGraticule();
+    var datumGraticule = d3.geoGraticule()();
 
     function canvasAddGraticule() {
         if (this._.options.showGraticule) {
             this.canvasPlugin.render(function (context, path) {
                 context.beginPath();
-                path(datumGraticule());
+                path(datumGraticule);
                 context.lineWidth = 0.3;
                 context.strokeStyle = 'rgba(119,119,119,0.4)';
                 context.stroke();
@@ -756,10 +754,10 @@ var worldCanvas = function (urlWorld, urlCountryNames) {
         if (this._.options.showLand) {
             if (_.world) {
                 canvasAddWorld.call(this);
-                if (this._.options.showCountries) {
+                if (!this._.drag && this._.options.showCountries) {
                     canvasAddCountries.call(this);
                 }
-                if (this._.options.showLakes) {
+                if (!this._.drag && this._.options.showLakes) {
                     canvasAddLakes.call(this);
                 }
             }
@@ -767,20 +765,18 @@ var worldCanvas = function (urlWorld, urlCountryNames) {
     }
 
     function canvasAddWorld() {
-        var land = topojson.feature(_.world, _.world.objects.land);
         this.canvasPlugin.render(function (context, path) {
             context.beginPath();
-            path(land);
+            path(_.land);
             context.fillStyle = _.style.land || 'rgba(117, 87, 57, 0.4)';
             context.fill();
         });
     }
 
     function canvasAddCountries() {
-        var countries = topojson.feature(_.world, _.world.objects.countries);
         this.canvasPlugin.render(function (context, path) {
             context.beginPath();
-            path(countries);
+            path(_.countries);
             context.lineWidth = 0.5;
             context.strokeStyle = _.style.countries || 'rgba(80, 64, 39, 0.6)';
             context.stroke();
@@ -788,10 +784,9 @@ var worldCanvas = function (urlWorld, urlCountryNames) {
     }
 
     function canvasAddLakes() {
-        var lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
         this.canvasPlugin.render(function (context, path) {
             context.beginPath();
-            path(lakes);
+            path(_.lakes);
             context.fillStyle = _.style.lakes || 'rgba(80, 87, 97, 0.4)';
             context.fill();
         });
@@ -811,6 +806,9 @@ var worldCanvas = function (urlWorld, urlCountryNames) {
         onReady: function onReady(err, world, countryNames) {
             _.world = world;
             _.countryNames = countryNames;
+            _.land = topojson.feature(_.world, _.world.objects.land);
+            _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
+            _.countries = topojson.feature(_.world, _.world.objects.countries);
         },
         onInit: function onInit() {
             this._.options.showLand = true;
@@ -1269,13 +1267,21 @@ var pingsPlugin = function () {
         var nodes = _.ping2.nodes().filter(function (d) {
             return d.style.display == 'inline';
         });
-        var node = nodes[Math.floor(Math.random() * (nodes.length - 1))];
-        // console.log(node, `#${node.id}`);
-        d3.select("#" + node.id).attr('r', 2).attr('stroke', '#369').attr('stroke-opacity', 1).attr('stroke-width', '10px').transition().duration(3000).attr('r', 30).attr('fill', 'none').attr('stroke', '#F00').attr('stroke-width', '0px').attr('stroke-opacity', 0);
+        if (nodes.length > 0) {
+            d3.select("#" + nodes[Math.floor(Math.random() * (nodes.length - 1))].id).attr('r', 2).attr('stroke', '#F00')
+            // .attr('stroke', '#369')
+            .attr('stroke-opacity', 1).attr('stroke-width', '10px').transition().duration(1000).attr('r', 30).attr('fill', 'none')
+            // .attr('stroke', '#F00')
+            .attr('stroke-width', '0.1px');
+            // .attr('stroke-opacity', 0);
+            // console.log(node, `#${node.id}`);            
+        }
     }
 
     function refresh() {
-        if (this._.pings && this._.options.showPings) {
+        if (this._.drag == null) {
+            this._.pings.style("display", 'none');
+        } else if (!this._.drag && this._.pings && this._.options.showPings) {
             var proj = this._.proj;
             var center = this._.proj.invert(this._.center);
             this._.pings.attr('cx', function (d) {
@@ -1297,7 +1303,7 @@ var pingsPlugin = function () {
             this._.options.showPings = true;
             setInterval(function () {
                 return animate.call(_this);
-            }, 5000);
+            }, 3000);
             _.svg = this._.svg;
         },
         onRefresh: function onRefresh() {
