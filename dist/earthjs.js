@@ -751,13 +751,13 @@ var worldCanvas = function (urlWorld, urlCountryNames) {
     var _ = { world: null, countryNames: null, style: {} };
 
     function canvasAddWorldOrCountries() {
-        if (this._.options.showLand) {
-            if (_.world) {
-                canvasAddWorld.call(this);
-                if (!this._.drag && this._.options.showCountries) {
+        if (_.world && this._.options.showLand) {
+            canvasAddWorld.call(this);
+            if (!this._.drag) {
+                if (this._.options.showCountries) {
                     canvasAddCountries.call(this);
                 }
-                if (!this._.drag && this._.options.showLakes) {
+                if (this._.options.showLakes) {
                     canvasAddLakes.call(this);
                 }
             }
@@ -1268,13 +1268,7 @@ var pingsPlugin = function () {
             return d.style.display == 'inline';
         });
         if (nodes.length > 0) {
-            d3.select("#" + nodes[Math.floor(Math.random() * (nodes.length - 1))].id).attr('r', 2).attr('stroke', '#F00')
-            // .attr('stroke', '#369')
-            .attr('stroke-opacity', 1).attr('stroke-width', '10px').transition().duration(1000).attr('r', 30).attr('fill', 'none')
-            // .attr('stroke', '#F00')
-            .attr('stroke-width', '0.1px');
-            // .attr('stroke-opacity', 0);
-            // console.log(node, `#${node.id}`);            
+            d3.select("#" + nodes[Math.floor(Math.random() * (nodes.length - 1))].id).attr('r', 2).attr('stroke', '#F00').attr('stroke-opacity', 1).attr('stroke-width', '10px').transition().duration(1000).attr('r', 30).attr('fill', 'none').attr('stroke-width', '0.1px');
         }
     }
 

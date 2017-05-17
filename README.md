@@ -14,20 +14,29 @@ Selected plugins bundled into library:
 
 * versorDragPlugin,
 * wheelZoomPlugin,
+* threejsPlugin,
+* canvasPlugin,
 * oceanPlugin,
 * configPlugin,
+* graticuleCanvas,
 * graticulePlugin,
 * fauxGlobePlugin,
 * autorotatePlugin,
-* placesPlugin,
-* worldPlugin,
-* barPlugin,
-* centerPlugin,
 * countryTooltipPlugin,
+* placesPlugin,
+* worldCanvas,
+* worldPlugin,
+* worldThreejs,
+* centerPlugin,
+* flattenPlugin,
+* barPlugin,
+* pingsPlugin,
+* debugThreejs,
+* commonPlugins,
 
 ## Requirements
-* [D3](http://d3js.org/) version 4
-* [topojson](https://github.com/topojson/topojson) version 3
+* [D3 version 4](http://d3js.org/)
+* [topojson version 3](https://github.com/topojson/topojson)
 
 ## Quick Start
 This sample need to run on the webserver, you can use [nodejs web-server](https://www.npmjs.com/package/http-server) or [python simple http server](http://2ality.com/2014/06/simple-http-server.html).

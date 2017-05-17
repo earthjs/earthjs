@@ -3,13 +3,13 @@ export default function(urlWorld, urlCountryNames) {
     const _ = {world: null, countryNames: null, style: {}};
 
     function canvasAddWorldOrCountries() {
-        if (this._.options.showLand) {
-            if (_.world) {
-                canvasAddWorld.call(this);
-                if (!this._.drag && this._.options.showCountries) {
+        if (_.world && this._.options.showLand) {
+            canvasAddWorld.call(this);
+            if (!this._.drag) {
+                if (this._.options.showCountries) {
                     canvasAddCountries.call(this);
                 }
-                if (!this._.drag && this._.options.showLakes) {
+                if (this._.options.showLakes) {
                     canvasAddLakes.call(this);
                 }
             }
