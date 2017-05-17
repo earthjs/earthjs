@@ -8,9 +8,7 @@ export default function() {
                     const p = this.autorotatePlugin;
                     newOpt.spin ? p.start() : p.stop();
                 }
-                this._.drag = true;
                 this.svgDraw();
-                this._.drag = false;
             }
             return Object.assign({}, this._.options);
         }

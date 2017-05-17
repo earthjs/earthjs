@@ -30,6 +30,8 @@ Selected plugins bundled into library:
 * centerPlugin,
 * flattenPlugin,
 * barPlugin,
+* dotsPlugin,
+* dotsCanvas,
 * pingsPlugin,
 * debugThreejs,
 * commonPlugins,

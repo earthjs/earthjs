@@ -90,7 +90,7 @@ var app$1 = (function () {
         onInterval: {},
         onIntervalKeys: [],
 
-        renderOrder: ['renderThree', 'svgAddDropShadow', 'svgAddCanvas', 'canvasAddGraticule', 'canvasAddWorldOrCountries', 'svgAddOcean', 'svgAddGlobeShading', 'svgAddGraticule', 'svgAddWorldOrCountries', 'svgAddGlobeHilight', 'svgAddPlaces', 'svgAddPings', 'svgAddBar'],
+        renderOrder: ['renderThree', 'svgAddDropShadow', 'svgAddCanvas', 'canvasAddGraticule', 'canvasAddWorldOrCountries', 'canvasAddDots', 'svgAddOcean', 'svgAddGlobeShading', 'svgAddGraticule', 'svgAddWorldOrCountries', 'svgAddGlobeHilight', 'svgAddPlaces', 'svgAddPings', 'svgAddDots', 'svgAddBar'],
         ready: null,
         loadingData: null
     };
@@ -474,9 +474,7 @@ var configPlugin = function () {
                     var p = this.autorotatePlugin;
                     newOpt.spin ? p.start() : p.stop();
                 }
-                this._.drag = true;
                 this.svgDraw();
-                this._.drag = false;
             }
             return Object.assign({}, this._.options);
         }
@@ -662,6 +660,29 @@ var autorotatePlugin = (function (degPerSec) {
         }
     };
 });
+
+// KoGor’s Block http://bl.ocks.org/KoGor/5994804
+var countryTooltipPlugin = function () {
+    var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
+
+    return {
+        name: 'countryTooltipPlugin',
+        onInit: function onInit() {
+            var _this = this;
+            var originalsvgAddCountries = this.svgAddCountries;
+            this.svgAddCountries = function () {
+                return originalsvgAddCountries.call(this).on("mouseover", function (d) {
+                    var country = _this.worldPlugin.countryName.call(_this, d);
+                    countryTooltip.text(country.name).style("left", d3.event.pageX + 7 + "px").style("top", d3.event.pageY - 15 + "px").style("display", "block").style("opacity", 1);
+                }).on("mouseout", function () {
+                    countryTooltip.style("opacity", 0).style("display", "none");
+                }).on("mousemove", function () {
+                    countryTooltip.style("left", d3.event.pageX + 7 + "px").style("top", d3.event.pageY - 15 + "px");
+                });
+            };
+        }
+    };
+};
 
 var placesPlugin = function (urlPlaces) {
     var _ = { svg: null, q: null, places: null };
@@ -1059,29 +1080,6 @@ var centerPlugin = (function () {
     };
 });
 
-// KoGor’s Block http://bl.ocks.org/KoGor/5994804
-var countryTooltipPlugin = function () {
-    var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
-
-    return {
-        name: 'countryTooltipPlugin',
-        onInit: function onInit() {
-            var _this = this;
-            var originalsvgAddCountries = this.svgAddCountries;
-            this.svgAddCountries = function () {
-                return originalsvgAddCountries.call(this).on("mouseover", function (d) {
-                    var country = _this.worldPlugin.countryName.call(_this, d);
-                    countryTooltip.text(country.name).style("left", d3.event.pageX + 7 + "px").style("top", d3.event.pageY - 15 + "px").style("display", "block").style("opacity", 1);
-                }).on("mouseout", function () {
-                    countryTooltip.style("opacity", 0).style("display", "none");
-                }).on("mousemove", function () {
-                    countryTooltip.style("left", d3.event.pageX + 7 + "px").style("top", d3.event.pageY - 15 + "px");
-                });
-            };
-        }
-    };
-};
-
 var flattenPlugin = function () {
     var _ = { proj: null };
 
@@ -1243,6 +1241,87 @@ var barPlugin = (function (urlBars) {
         }
     };
 });
+
+var dotsPlugin = function () {
+    var _ = { dataDots: null };
+
+    function svgAddDots() {
+        if (_.dataDots && this._.options.showDots && !this._.drag) {
+            this._.svg.selectAll('.dot').remove();
+            if (_.dataDots && this._.options.showDots) {
+                this._.dots = this._.svg.append("g").attr("class", "dot").selectAll('circle').data(_.dataDots.features).enter().append('circle').attr('r', 2).attr('stroke', '#F00').style('opacity', 0.75);
+                refresh.call(this);
+                return this._.dots;
+            }
+        }
+    }
+
+    function refresh() {
+        if (this._.drag == null) {
+            this._.dots.style("display", 'none');
+        } else if (!this._.drag && this._.dots && this._.options.showDots) {
+            var proj = this._.proj;
+            var center = this._.proj.invert(this._.center);
+            this._.dots.attr('cx', function (d) {
+                return proj(d.geometry.coordinates)[0];
+            }).attr('cy', function (d) {
+                return proj(d.geometry.coordinates)[1];
+            }).style("display", function (d) {
+                return d3.geoDistance(d.geometry.coordinates, center) > 1.57 ? 'none' : 'inline';
+            });
+        }
+    }
+
+    return {
+        name: 'dotsPlugin',
+        onInit: function onInit() {
+            this.svgAddDots = svgAddDots;
+            this._.options.showDots = true;
+        },
+        onRefresh: function onRefresh() {
+            refresh.call(this);
+        },
+        data: function data(_data) {
+            _.dataDots = _data;
+        }
+    };
+};
+
+var dotsCanvas = function () {
+    var _ = { dataDots: null };
+
+    function canvasAddDots() {
+        if (_.dataDots && this._.options.showDots && !this._.drag) {
+            var proj = this._.proj;
+            var center = proj.invert(this._.center);
+            this.canvasPlugin.render(function (context) {
+                _.dataDots.features.forEach(function (d) {
+                    if (d3.geoDistance(d.geometry.coordinates, center) <= 1.57) {
+                        context.beginPath();
+                        context.fillStyle = '#F00';
+                        context.arc(proj(d.geometry.coordinates)[0], proj(d.geometry.coordinates)[1], 2, 0, 2 * Math.PI);
+                        context.fill();
+                        context.closePath();
+                    }
+                });
+            });
+        }
+    }
+
+    return {
+        name: 'dotsCanvas',
+        onInit: function onInit() {
+            this.canvasAddDots = canvasAddDots;
+            this._.options.showDots = true;
+        },
+        onRefresh: function onRefresh() {
+            canvasAddDots.call(this);
+        },
+        data: function data(_data) {
+            _.dataDots = _data;
+        }
+    };
+};
 
 var pingsPlugin = function () {
     /*eslint no-console: 0 */
@@ -1442,14 +1521,16 @@ app$1.plugins = {
     graticulePlugin: graticulePlugin,
     fauxGlobePlugin: fauxGlobePlugin,
     autorotatePlugin: autorotatePlugin,
+    countryTooltipPlugin: countryTooltipPlugin,
     placesPlugin: placesPlugin,
     worldCanvas: worldCanvas,
     worldPlugin: worldPlugin,
     worldThreejs: worldThreejs,
     centerPlugin: centerPlugin,
-    countryTooltipPlugin: countryTooltipPlugin,
     flattenPlugin: flattenPlugin,
     barPlugin: barPlugin,
+    dotsPlugin: dotsPlugin,
+    dotsCanvas: dotsCanvas,
     pingsPlugin: pingsPlugin,
     debugThreejs: debugThreejs,
     commonPlugins: commonPlugins
