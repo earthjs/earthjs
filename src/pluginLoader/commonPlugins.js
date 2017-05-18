@@ -1,4 +1,4 @@
-export default () => {
+export default (urlWorld) => {
     const _ = {checker: []};
     return {
         name: 'commonPlugins',
@@ -12,7 +12,7 @@ export default () => {
             rg(pl.oceanPlugin());
             rg(pl.canvasPlugin());
             rg(pl.graticuleCanvas());
-            rg(pl.worldCanvas('./d/world-110m.json'));
+            rg(pl.worldCanvas(urlWorld));
 
             this.canvasPlugin.selectAll('.canvas');
             this.ready(() => this.svgDraw());

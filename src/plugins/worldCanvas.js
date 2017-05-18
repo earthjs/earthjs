@@ -1,5 +1,7 @@
 // John J Czaplewski’s Block http://bl.ocks.org/jczaplew/6798471
-export default function(urlWorld, urlCountryNames) {
+export default (urlWorld, urlCountryNames) => {
+    /*eslint no-debugger: 0 */
+    /*eslint no-console: 0 */
     const _ = {world: null, countryNames: null, style: {}};
 
     function canvasAddWorldOrCountries() {
@@ -71,17 +73,12 @@ export default function(urlWorld, urlCountryNames) {
         onRefresh() {
             canvasAddWorldOrCountries.call(this);
         },
-        data(p) {
-            if (p) {
-                const data = p.worldCanvas.data()
-                _.countryNames = data.countryNames;
-                _.world = data.world;
-            } else {
-                return {
-                    countryNames: _.countryNames,
-                    world: _.world
-                }
-            }
+        data(data) {
+            _.world = data.world;
+            _.countryNames = data.countryNames;
+            _.land = topojson.feature(_.world, _.world.objects.land);
+            _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
+            _.countries = topojson.feature(_.world, _.world.objects.countries);
         },
         style(s) {
             if (s) {

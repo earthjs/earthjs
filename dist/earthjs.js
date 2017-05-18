@@ -768,7 +768,9 @@ var placesPlugin = function (urlPlaces) {
 };
 
 // John J Czaplewski’s Block http://bl.ocks.org/jczaplew/6798471
-var worldCanvas = function (urlWorld, urlCountryNames) {
+var worldCanvas = (function (urlWorld, urlCountryNames) {
+    /*eslint no-debugger: 0 */
+    /*eslint no-console: 0 */
     var _ = { world: null, countryNames: null, style: {} };
 
     function canvasAddWorldOrCountries() {
@@ -840,17 +842,12 @@ var worldCanvas = function (urlWorld, urlCountryNames) {
         onRefresh: function onRefresh() {
             canvasAddWorldOrCountries.call(this);
         },
-        data: function data(p) {
-            if (p) {
-                var data = p.worldCanvas.data();
-                _.countryNames = data.countryNames;
-                _.world = data.world;
-            } else {
-                return {
-                    countryNames: _.countryNames,
-                    world: _.world
-                };
-            }
+        data: function data(_data) {
+            _.world = _data.world;
+            _.countryNames = _data.countryNames;
+            _.land = topojson.feature(_.world, _.world.objects.land);
+            _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
+            _.countries = topojson.feature(_.world, _.world.objects.countries);
         },
         style: function style(s) {
             if (s) {
@@ -859,7 +856,7 @@ var worldCanvas = function (urlWorld, urlCountryNames) {
             return _.style;
         }
     };
-};
+});
 
 var worldPlugin = function (urlWorld, urlCountryNames) {
     var _ = { svg: null, q: null, world: null, countryNames: null };
@@ -967,17 +964,9 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
             }
             return _.svg;
         },
-        data: function data(p) {
-            if (p) {
-                var data = p.worldPlugin.data();
-                _.countryNames = data.countryNames;
-                _.world = data.world;
-            } else {
-                return {
-                    countryNames: _.countryNames,
-                    world: _.world
-                };
-            }
+        data: function data(_data) {
+            _.world = _data.world;
+            _.countryNames = _data.countryNames;
         }
     };
 };
@@ -1449,7 +1438,7 @@ var debugThreejs = function () {
     };
 };
 
-var commonPlugins = (function () {
+var commonPlugins = (function (urlWorld) {
     var _ = { checker: [] };
     return {
         name: 'commonPlugins',
@@ -1465,7 +1454,7 @@ var commonPlugins = (function () {
             rg(pl.oceanPlugin());
             rg(pl.canvasPlugin());
             rg(pl.graticuleCanvas());
-            rg(pl.worldCanvas('./d/world-110m.json'));
+            rg(pl.worldCanvas(urlWorld));
 
             this.canvasPlugin.selectAll('.canvas');
             this.ready(function () {

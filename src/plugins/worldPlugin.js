@@ -73,7 +73,6 @@ export default function(urlWorld, urlCountryNames) {
         onReady(err, world, countryNames) {
             _.world = world;
             _.countryNames = countryNames;
-
         },
         onInit() {
             this._.options.showLand = true;
@@ -107,17 +106,9 @@ export default function(urlWorld, urlCountryNames) {
             }
             return _.svg;
         },
-        data(p) {
-            if (p) {
-                const data = p.worldPlugin.data()
-                _.countryNames = data.countryNames;
-                _.world = data.world;
-            } else {
-                return {
-                    countryNames: _.countryNames,
-                    world: _.world
-                }
-            }
+        data(data) {
+            _.world = data.world;
+            _.countryNames = data.countryNames;
         }
     };
 }
