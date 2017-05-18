@@ -71,9 +71,10 @@ var versorFn = function () {
 };
 
 var versor = versorFn();
-var app$1 = (function () {
+var earthjs$1 = function earthjs() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
+    clearInterval(earthjs.ticker);
     options = Object.assign({
         select: '#earth',
         rotate: 130,
@@ -169,6 +170,7 @@ var app$1 = (function () {
                 });
             }
         }, interval);
+        earthjs.ticker = ticker;
         return planet;
     };
 
@@ -249,7 +251,7 @@ var app$1 = (function () {
             _[qkey] = Object.keys(_[qname]);
         }
     }
-});
+};
 
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 var versorDragPlugin = function () {
@@ -1499,7 +1501,7 @@ var commonPlugins = (function (urlWorld) {
     };
 });
 
-app$1.plugins = {
+earthjs$1.plugins = {
     versorDragPlugin: versorDragPlugin,
     wheelZoomPlugin: wheelZoomPlugin,
     threejsPlugin: threejsPlugin,
@@ -1525,7 +1527,7 @@ app$1.plugins = {
     commonPlugins: commonPlugins
 };
 
-return app$1;
+return earthjs$1;
 
 }());
 //# sourceMappingURL=earthjs.js.map

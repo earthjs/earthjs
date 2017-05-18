@@ -1,7 +1,8 @@
 import versorFn from './versor.js';
 
 const versor = versorFn();
-export default (options={}) => {
+const earthjs = (options={}) => {
+    clearInterval(earthjs.ticker);
     options = Object.assign({
         select: '#earth',
         rotate: 130,
@@ -119,6 +120,7 @@ export default (options={}) => {
                 });
             }
         }, interval);
+        earthjs.ticker = ticker;
         return planet;
     }
 
@@ -205,3 +207,4 @@ export default (options={}) => {
         }
     }
 }
+export default earthjs;
