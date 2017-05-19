@@ -17,7 +17,6 @@ export default function(urlWorld, urlCountryNames) {
                     this.svgAddLakes.call(this);
                 }
             }
-            // render to correct position
             refresh.call(this);
         }
     }
@@ -36,27 +35,21 @@ export default function(urlWorld, urlCountryNames) {
     }
 
     function svgAddWorld() {
-        const land = topojson.feature(_.world, _.world.objects.land);
-
         this._.world = _.svg.append("g").attr("class","land").append("path")
-            .datum(land);
+            .datum(_.land);
         return this._.world;
     }
 
     function svgAddCountries() {
-        const countries = topojson.feature(_.world, _.world.objects.countries).features;
-
         this._.countries = _.svg.append("g").attr("class","countries").selectAll("path")
-            .data(countries).enter().append("path").on('click', countryClick)
+            .data(_.countries.features).enter().append("path").on('click', countryClick)
                 .attr("id",function(d) {return 'x'+d.id});
         return this._.countries;
     }
 
     function svgAddLakes() {
-        const lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
-
         this._.lakes = _.svg.append("g").attr("class","lakes").append("path")
-            .datum(lakes);
+            .datum(_.lakes);
         return this._.lakes;
     }
 
@@ -71,8 +64,7 @@ export default function(urlWorld, urlCountryNames) {
         name: 'worldPlugin',
         urls: urls,
         onReady(err, world, countryNames) {
-            _.world = world;
-            _.countryNames = countryNames;
+            this.worldPlugin.data({world, countryNames});
         },
         onInit() {
             this._.options.showLand = true;
@@ -88,7 +80,20 @@ export default function(urlWorld, urlCountryNames) {
             refresh.call(this);
         },
         countries() {
-            return topojson.feature(_.world, _.world.objects.countries).features;
+            return _.countries.features;
+        },
+        data(data) {
+            if (data) {
+                _.world = data.world;
+                _.countryNames = data.countryNames;
+                _.land = topojson.feature(_.world, _.world.objects.land);
+                _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
+                _.countries = topojson.feature(_.world, _.world.objects.countries);
+            }
+            return {
+                world: _.world ,
+                countryNames: _.countryNames
+            }
         },
         countryName(d) {
             let cname = '';
@@ -106,9 +111,5 @@ export default function(urlWorld, urlCountryNames) {
             }
             return _.svg;
         },
-        data(data) {
-            _.world = data.world;
-            _.countryNames = data.countryNames;
-        }
     };
 }

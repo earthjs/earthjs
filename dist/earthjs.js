@@ -829,11 +829,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
         name: 'worldCanvas',
         urls: urls,
         onReady: function onReady(err, world, countryNames) {
-            _.world = world;
-            _.countryNames = countryNames;
-            _.land = topojson.feature(_.world, _.world.objects.land);
-            _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
-            _.countries = topojson.feature(_.world, _.world.objects.countries);
+            this.worldCanvas.data({ world: world, countryNames: countryNames });
         },
         onInit: function onInit() {
             this._.options.showLand = true;
@@ -845,11 +841,17 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
             canvasAddWorldOrCountries.call(this);
         },
         data: function data(_data) {
-            _.world = _data.world;
-            _.countryNames = _data.countryNames;
-            _.land = topojson.feature(_.world, _.world.objects.land);
-            _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
-            _.countries = topojson.feature(_.world, _.world.objects.countries);
+            if (_data) {
+                _.world = _data.world;
+                _.countryNames = _data.countryNames;
+                _.land = topojson.feature(_.world, _.world.objects.land);
+                _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
+                _.countries = topojson.feature(_.world, _.world.objects.countries);
+            }
+            return {
+                world: _.world,
+                countryNames: _.countryNames
+            };
         },
         style: function style(s) {
             if (s) {
@@ -879,7 +881,6 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
                     this.svgAddLakes.call(this);
                 }
             }
-            // render to correct position
             refresh.call(this);
         }
     }
@@ -898,25 +899,19 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
     }
 
     function svgAddWorld() {
-        var land = topojson.feature(_.world, _.world.objects.land);
-
-        this._.world = _.svg.append("g").attr("class", "land").append("path").datum(land);
+        this._.world = _.svg.append("g").attr("class", "land").append("path").datum(_.land);
         return this._.world;
     }
 
     function svgAddCountries() {
-        var countries = topojson.feature(_.world, _.world.objects.countries).features;
-
-        this._.countries = _.svg.append("g").attr("class", "countries").selectAll("path").data(countries).enter().append("path").on('click', countryClick).attr("id", function (d) {
+        this._.countries = _.svg.append("g").attr("class", "countries").selectAll("path").data(_.countries.features).enter().append("path").on('click', countryClick).attr("id", function (d) {
             return 'x' + d.id;
         });
         return this._.countries;
     }
 
     function svgAddLakes() {
-        var lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
-
-        this._.lakes = _.svg.append("g").attr("class", "lakes").append("path").datum(lakes);
+        this._.lakes = _.svg.append("g").attr("class", "lakes").append("path").datum(_.lakes);
         return this._.lakes;
     }
 
@@ -931,8 +926,7 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
         name: 'worldPlugin',
         urls: urls,
         onReady: function onReady(err, world, countryNames) {
-            _.world = world;
-            _.countryNames = countryNames;
+            this.worldPlugin.data({ world: world, countryNames: countryNames });
         },
         onInit: function onInit() {
             this._.options.showLand = true;
@@ -948,7 +942,20 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
             refresh.call(this);
         },
         countries: function countries() {
-            return topojson.feature(_.world, _.world.objects.countries).features;
+            return _.countries.features;
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.world = _data.world;
+                _.countryNames = _data.countryNames;
+                _.land = topojson.feature(_.world, _.world.objects.land);
+                _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
+                _.countries = topojson.feature(_.world, _.world.objects.countries);
+            }
+            return {
+                world: _.world,
+                countryNames: _.countryNames
+            };
         },
         countryName: function countryName(d) {
             var cname = '';
@@ -965,10 +972,6 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
-        },
-        data: function data(_data) {
-            _.world = _data.world;
-            _.countryNames = _data.countryNames;
         }
     };
 };

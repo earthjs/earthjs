@@ -58,11 +58,7 @@ export default (urlWorld, urlCountryNames) => {
         name: 'worldCanvas',
         urls: urls,
         onReady(err, world, countryNames) {
-            _.world = world;
-            _.countryNames = countryNames;
-            _.land = topojson.feature(_.world, _.world.objects.land);
-            _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
-            _.countries = topojson.feature(_.world, _.world.objects.countries);
+            this.worldCanvas.data({world, countryNames});
         },
         onInit() {
             this._.options.showLand = true;
@@ -74,11 +70,17 @@ export default (urlWorld, urlCountryNames) => {
             canvasAddWorldOrCountries.call(this);
         },
         data(data) {
-            _.world = data.world;
-            _.countryNames = data.countryNames;
-            _.land = topojson.feature(_.world, _.world.objects.land);
-            _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
-            _.countries = topojson.feature(_.world, _.world.objects.countries);
+            if (data) {
+                _.world = data.world;
+                _.countryNames = data.countryNames;
+                _.land = topojson.feature(_.world, _.world.objects.land);
+                _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
+                _.countries = topojson.feature(_.world, _.world.objects.countries);
+            }
+            return {
+                world: _.world ,
+                countryNames: _.countryNames
+            }
         },
         style(s) {
             if (s) {

@@ -30,7 +30,7 @@
         p2.register(earthjs.plugins.worldCanvas());
 
         p1.ready(function(){
-            p2.worldCanvas.data(p1);
+            p2.worldCanvas.data(p1.worldCanvas.data());
             p1.autorotatePlugin.sync([p2]);
             p1.versorDragPlugin.sync([p2]);
             p1.svgDraw([p2]);
