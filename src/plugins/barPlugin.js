@@ -18,14 +18,14 @@ export default urlBars => {
                 .attr("fill", "black");
             this._.mask = mask;
 
-            _.max = d3.max(_.bars, d => parseInt(d.Value))
+            _.max = d3.max(_.bars.features, d => parseInt(d.properties.mag))
 
             const scale = this._.proj.scale();
             _.lengthScale = d3.scaleLinear()
                 .domain([0, _.max])
                 .range([scale, scale+50])
 
-            this._.bar = gBar.selectAll("line").data(_.bars).enter().append("line")
+            this._.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line")
                 .attr("stroke", "red")
                 .attr("stroke-width", "2");
             // render to correct position
@@ -37,20 +37,20 @@ export default urlBars => {
     function refresh() {
         if (_.bars && this._.options.showBars) {
             const proj= this._.proj;
-            const centerPos = proj.invert([this._.options.width / 2, this._.options.height/2]);
+            const center = proj.invert(this._.center);
             this._.bar
-                .attr("x1", d => proj([d.Longitude, d.Latitude])[0])
-                .attr("y1", d => proj([d.Longitude, d.Latitude])[1])
+                .attr("x1", d => proj(d.geometry.coordinates)[0])
+                .attr("y1", d => proj(d.geometry.coordinates)[1])
                 .attr("x2", d => {
-                    _.barProjection.scale(_.lengthScale(d.Value));
-                    return _.barProjection([d.Longitude, d.Latitude])[0];
+                    _.barProjection.scale(_.lengthScale(d.properties.mag));
+                    return _.barProjection(d.geometry.coordinates)[0];
                 })
                 .attr("y2", d => {
-                    _.barProjection.scale(_.lengthScale(d.Value));
-                    return _.barProjection([d.Longitude, d.Latitude])[1];
+                    _.barProjection.scale(_.lengthScale(d.properties.mag));
+                    return _.barProjection(d.geometry.coordinates)[1];
                 })
                 .attr("mask", d => {
-                    const gDistance = d3.geoDistance([d.Longitude, d.Latitude], centerPos);
+                    const gDistance = d3.geoDistance(d.geometry.coordinates, center);
                     return gDistance < 1.57 ? null : "url(#edge)";
                 });
         }
@@ -96,12 +96,11 @@ export default urlBars => {
             }
             return _.svg;
         },
-        data(p) {
-            if (p) {
-                const data = p.barPlugin.data()
-                _.bars = data.bars;
+        data(data) {
+            if (data) {
+                _.bars = data;
             } else {
-                return {bars: _.bars}
+                return _.bars;
             }
         },
     }

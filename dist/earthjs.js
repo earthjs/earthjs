@@ -1149,14 +1149,14 @@ var barPlugin = (function (urlBars) {
             mask.append("use").attr("xlink:href", "#edgeCircle").attr("fill", "black");
             this._.mask = mask;
 
-            _.max = d3.max(_.bars, function (d) {
-                return parseInt(d.Value);
+            _.max = d3.max(_.bars.features, function (d) {
+                return parseInt(d.properties.mag);
             });
 
             var scale = this._.proj.scale();
             _.lengthScale = d3.scaleLinear().domain([0, _.max]).range([scale, scale + 50]);
 
-            this._.bar = gBar.selectAll("line").data(_.bars).enter().append("line").attr("stroke", "red").attr("stroke-width", "2");
+            this._.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line").attr("stroke", "red").attr("stroke-width", "2");
             // render to correct position
             refresh.call(this);
             return this._.bar;
@@ -1166,19 +1166,19 @@ var barPlugin = (function (urlBars) {
     function refresh() {
         if (_.bars && this._.options.showBars) {
             var proj = this._.proj;
-            var centerPos = proj.invert([this._.options.width / 2, this._.options.height / 2]);
+            var center = proj.invert(this._.center);
             this._.bar.attr("x1", function (d) {
-                return proj([d.Longitude, d.Latitude])[0];
+                return proj(d.geometry.coordinates)[0];
             }).attr("y1", function (d) {
-                return proj([d.Longitude, d.Latitude])[1];
+                return proj(d.geometry.coordinates)[1];
             }).attr("x2", function (d) {
-                _.barProjection.scale(_.lengthScale(d.Value));
-                return _.barProjection([d.Longitude, d.Latitude])[0];
+                _.barProjection.scale(_.lengthScale(d.properties.mag));
+                return _.barProjection(d.geometry.coordinates)[0];
             }).attr("y2", function (d) {
-                _.barProjection.scale(_.lengthScale(d.Value));
-                return _.barProjection([d.Longitude, d.Latitude])[1];
+                _.barProjection.scale(_.lengthScale(d.properties.mag));
+                return _.barProjection(d.geometry.coordinates)[1];
             }).attr("mask", function (d) {
-                var gDistance = d3.geoDistance([d.Longitude, d.Latitude], centerPos);
+                var gDistance = d3.geoDistance(d.geometry.coordinates, center);
                 return gDistance < 1.57 ? null : "url(#edge)";
             });
         }
@@ -1224,12 +1224,11 @@ var barPlugin = (function (urlBars) {
             }
             return _.svg;
         },
-        data: function data(p) {
-            if (p) {
-                var data = p.barPlugin.data();
-                _.bars = data.bars;
+        data: function data(_data) {
+            if (_data) {
+                _.bars = _data;
             } else {
-                return { bars: _.bars };
+                return _.bars;
             }
         }
     };

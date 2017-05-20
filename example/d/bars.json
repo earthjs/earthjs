@@ -1,0 +1,172 @@
+{
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "place": "Moscow",
+        "mag": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          37.6167,
+          55.75
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "place": "London",
+        "mag": 34
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.1275,
+          51.5072
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "place": "Berlin",
+        "mag": 12
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.3833,
+          52.5167
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "place": "Warsaw",
+        "mag": 25
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.0167,
+          52.2333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "place": "Prague",
+        "mag": 56
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.4167,
+          50.0833
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "place": "Paris",
+        "mag": 34
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3508,
+          48.8567
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "place": "Belgrade",
+        "mag": 62
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.4667,
+          44.8167
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "place": "Rome",
+        "mag": 25
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.5,
+          41.9
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "place": "Madrid",
+        "mag": 12
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.7167,
+          40.4
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "place": "Lisbon",
+        "mag": 41
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.1394,
+          38.7139
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "place": "Ottawa",
+        "mag": 34
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6919,
+          45.4214
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "place": "Cape Town",
+        "mag": 35
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.4239,
+          -33.9253
+        ]
+      }
+    }
+  ]
+}

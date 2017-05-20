@@ -11,6 +11,7 @@ const eQuakeApp = () => {
         onReady(err, world, equake) {
             const features = equake.features.filter(d => d.properties.mag>3);
             this.worldCanvas.data({world});
+            this.barPlugin.data({features});
             this.dotsCanvas.data({features});
             this.pingsCanvas.data({features});
         },
@@ -18,6 +19,7 @@ const eQuakeApp = () => {
             this.register(earthjs.plugins.commonPlugins());
             this.register(earthjs.plugins.pingsCanvas());
             this.register(earthjs.plugins.dotsCanvas());
+            this.register(earthjs.plugins.barPlugin());
             this.commonPlugins.addChecker('showPings:Pings:showPings'.split(':'));
             this.commonPlugins.addChecker('showDots:EQuake:showDots'.split(':'));
         }
