@@ -110,6 +110,7 @@ var earthjs$1 = function earthjs() {
             options: options,
             ltScale: ltScale
         },
+        $: {},
         ready: function ready(fn) {
             if (fn) {
                 _.ready = fn;
@@ -155,38 +156,36 @@ var earthjs$1 = function earthjs() {
         }
     };
 
-    planet._.defs = planet._.svg.append("defs");
     //----------------------------------------
-    var earth = null;
+    var earths = [];
     var ticker = null;
+
+    planet.svgDraw = function (twinEarth) {
+        var $ = planet.$;
+        earths = twinEarth || [];
+        _.renderOrder.forEach(function (renderer) {
+            $[renderer] && $[renderer].call(planet);
+        });
+        earths.forEach(function (p) {
+            p.svgDraw(null);
+        });
+        if (ticker === null && earths !== []) {
+            planet._.ticker.call(planet);
+        }
+        return planet;
+    };
+
+    planet._.defs = planet._.svg.append("defs");
     planet._.ticker = function (interval) {
         var ex = planet._.intervalRun;
         interval = interval || 50;
         ticker = setInterval(function () {
             ex.call(planet);
-            if (earth) {
-                earth.forEach(function (p) {
-                    p._.intervalRun.call(p);
-                });
-            }
+            earths.forEach(function (p) {
+                p._.intervalRun.call(p);
+            });
         }, interval);
         earthjs.ticker = ticker;
-        return planet;
-    };
-
-    planet.svgDraw = function (twinEarth) {
-        earth = twinEarth;
-        _.renderOrder.forEach(function (renderer) {
-            planet[renderer] && planet[renderer].call(planet);
-        });
-        if (earth) {
-            earth.forEach(function (p) {
-                p.svgDraw(null);
-            });
-        }
-        if (ticker === null && twinEarth !== null) {
-            planet._.ticker.call(planet);
-        }
         return planet;
     };
 
@@ -245,10 +244,9 @@ var earthjs$1 = function earthjs() {
     return planet;
     //----------------------------------------
     function qEvent(obj, qname) {
-        var qkey = qname + 'Keys';
         if (obj[qname]) {
             _[qname][obj.name] = obj[qname];
-            _[qkey] = Object.keys(_[qname]);
+            _[qname + 'Keys'] = Object.keys(_[qname]);
         }
     }
 };
@@ -395,8 +393,8 @@ var canvasPlugin = (function () {
     return {
         name: 'canvasPlugin',
         onInit: function onInit() {
-            this.svgAddCanvas = svgAddCanvas;
             this._.options.showCanvas = true;
+            this.$.svgAddCanvas = svgAddCanvas;
             _.path = d3.geoPath().projection(this._.proj);
         },
         onRefresh: function onRefresh() {
@@ -449,8 +447,8 @@ var oceanPlugin = function () {
     return {
         name: 'oceanPlugin',
         onInit: function onInit() {
+            this.$.svgAddOcean = svgAddOcean;
             this._.options.showOcean = true;
-            this.svgAddOcean = svgAddOcean;
             _.svg = this._.svg;
         },
         onResize: function onResize() {
@@ -501,7 +499,7 @@ var graticuleCanvas = function () {
     return {
         name: 'graticuleCanvas',
         onInit: function onInit() {
-            this.canvasAddGraticule = canvasAddGraticule;
+            this.$.canvasAddGraticule = canvasAddGraticule;
             this._.options.showGraticule = true;
         },
         onRefresh: function onRefresh() {
@@ -532,7 +530,7 @@ var graticulePlugin = function () {
     return {
         name: 'graticulePlugin',
         onInit: function onInit() {
-            this.svgAddGraticule = svgAddGraticule;
+            this.$.svgAddGraticule = svgAddGraticule;
             this._.options.showGraticule = true;
             _.svg = this._.svg;
         },
@@ -592,9 +590,9 @@ var fauxGlobePlugin = function () {
             this._.options.showGlobeShadow = true;
             this._.options.showGlobeShading = true;
             this._.options.showGlobeHilight = true;
-            this.svgAddDropShadow = svgAddDropShadow;
-            this.svgAddGlobeHilight = svgAddGlobeHilight;
-            this.svgAddGlobeShading = svgAddGlobeShading;
+            this.$.svgAddDropShadow = svgAddDropShadow;
+            this.$.svgAddGlobeHilight = svgAddGlobeHilight;
+            this.$.svgAddGlobeShading = svgAddGlobeShading;
             _.svg = this._.svg;
         },
         onResize: function onResize() {
@@ -670,8 +668,8 @@ var countryTooltipPlugin = function () {
         name: 'countryTooltipPlugin',
         onInit: function onInit() {
             var _this = this;
-            var originalsvgAddCountries = this.svgAddCountries;
-            this.svgAddCountries = function () {
+            var originalsvgAddCountries = this.$.svgAddCountries;
+            this.$.svgAddCountries = function () {
                 return originalsvgAddCountries.call(this).on("mouseover", function (d) {
                     var country = _this.worldPlugin.countryName.call(_this, d);
                     countryTooltip.text(country.name).style("left", d3.event.pageX + 7 + "px").style("top", d3.event.pageY - 15 + "px").style("display", "block").style("opacity", 1);
@@ -743,8 +741,8 @@ var placesPlugin = function (urlPlaces) {
             _.places = places;
         },
         onInit: function onInit() {
+            this.$.svgAddPlaces = svgAddPlaces;
             this._.options.showPlaces = true;
-            this.svgAddPlaces = svgAddPlaces;
             _.svg = this._.svg;
         },
         onRefresh: function onRefresh() {
@@ -834,7 +832,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
             this._.options.showLand = true;
             this._.options.showLakes = true;
             this._.options.showCountries = true;
-            this.canvasAddWorldOrCountries = canvasAddWorldOrCountries;
+            this.$.canvasAddWorldOrCountries = canvasAddWorldOrCountries;
         },
         onRefresh: function onRefresh() {
             canvasAddWorldOrCountries.call(this);
@@ -872,12 +870,12 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
         if (this._.options.showLand) {
             if (_.world) {
                 if (this._.options.showCountries) {
-                    this.svgAddCountries.call(this);
+                    this.$.svgAddCountries.call(this);
                 } else {
-                    this.svgAddWorld.call(this);
+                    this.$.svgAddWorld.call(this);
                 }
                 if (this._.options.showLakes) {
-                    this.svgAddLakes.call(this);
+                    this.$.svgAddLakes.call(this);
                 }
             }
             refresh.call(this);
@@ -931,10 +929,10 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
             this._.options.showLand = true;
             this._.options.showLakes = true;
             this._.options.showCountries = true;
-            this.svgAddWorldOrCountries = svgAddWorldOrCountries;
-            this.svgAddCountries = svgAddCountries;
-            this.svgAddLakes = svgAddLakes;
-            this.svgAddWorld = svgAddWorld;
+            this.$.svgAddWorldOrCountries = svgAddWorldOrCountries;
+            this.$.svgAddCountries = svgAddCountries;
+            this.$.svgAddLakes = svgAddLakes;
+            this.$.svgAddWorld = svgAddWorld;
             _.svg = this._.svg;
         },
         onRefresh: function onRefresh() {
@@ -1058,8 +1056,8 @@ var centerPlugin = (function () {
     return {
         name: 'centerPlugin',
         onInit: function onInit() {
-            _.svgAddCountriesOld = this.svgAddCountries;
-            this.svgAddCountries = svgAddCountries;
+            _.svgAddCountriesOld = this.$.svgAddCountries;
+            this.$.svgAddCountries = svgAddCountries;
         },
         go: function go(id) {
             var c = this.worldPlugin.countries();
@@ -1202,8 +1200,8 @@ var barPlugin = (function (urlBars) {
             }, 1);
         },
         onInit: function onInit() {
-            this.svgAddBar = svgAddBar;
-            this.svgClipPath = svgClipPath;
+            this.$.svgAddBar = svgAddBar;
+            this.$.svgClipPath = svgClipPath;
             this._.options.showBars = true;
             _.barProjection = this._.orthoGraphic();
             _.svg = this._.svg;
@@ -1267,7 +1265,7 @@ var dotsPlugin = function () {
     return {
         name: 'dotsPlugin',
         onInit: function onInit() {
-            this.svgAddDots = svgAddDots;
+            this.$.svgAddDots = svgAddDots;
             this._.options.showDots = true;
         },
         onRefresh: function onRefresh() {
@@ -1303,7 +1301,7 @@ var dotsCanvas = function () {
     return {
         name: 'dotsCanvas',
         onInit: function onInit() {
-            this.canvasAddDots = canvasAddDots;
+            this.$.canvasAddDots = canvasAddDots;
             this._.options.showDots = true;
         },
         onRefresh: function onRefresh() {
@@ -1414,7 +1412,7 @@ var pingsPlugin = function () {
         onInit: function onInit() {
             var _this = this;
 
-            this.svgAddPings = svgAddPings;
+            this.$.svgAddPings = svgAddPings;
             this._.options.showPings = true;
             setInterval(function () {
                 return animate.call(_this);

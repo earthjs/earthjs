@@ -31,8 +31,8 @@ export default function() {
     return {
         name: 'oceanPlugin',
         onInit() {
+            this.$.svgAddOcean = svgAddOcean;
             this._.options.showOcean = true;
-            this.svgAddOcean = svgAddOcean;
             _.svg = this._.svg;
         },
         onResize() {

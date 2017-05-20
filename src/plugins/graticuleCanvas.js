@@ -16,7 +16,7 @@ export default function() {
     return {
         name: 'graticuleCanvas',
         onInit() {
-            this.canvasAddGraticule = canvasAddGraticule;
+            this.$.canvasAddGraticule = canvasAddGraticule;
             this._.options.showGraticule = true;
         },
         onRefresh() {

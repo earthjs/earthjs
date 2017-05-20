@@ -54,6 +54,7 @@ const earthjs = (options={}) => {
             options,
             ltScale,
         },
+        $: {},
         ready(fn) {
             if (fn) {
                 _.ready = fn;
@@ -105,38 +106,36 @@ const earthjs = (options={}) => {
         }
     }
 
-    planet._.defs = planet._.svg.append("defs");
     //----------------------------------------
-    let earth = null;
+    let earths = [];
     let ticker = null;
+
+    planet.svgDraw = function(twinEarth) {
+        const $ = planet.$;
+        earths = twinEarth || [];
+        _.renderOrder.forEach(function(renderer) {
+            $[renderer] && $[renderer].call(planet);
+        });
+        earths.forEach(function(p) {
+            p.svgDraw(null);
+        });
+        if (ticker===null && earths!==[]) {
+            planet._.ticker.call(planet);
+        }
+        return planet;
+    }
+
+    planet._.defs = planet._.svg.append("defs");
     planet._.ticker = function(interval) {
         const ex = planet._.intervalRun;
         interval = interval || 50;
         ticker = setInterval(() => {
             ex.call(planet);
-            if (earth) {
-                earth.forEach(function(p) {
-                    p._.intervalRun.call(p);
-                });
-            }
+            earths.forEach(function(p) {
+                p._.intervalRun.call(p);
+            });
         }, interval);
         earthjs.ticker = ticker;
-        return planet;
-    }
-
-    planet.svgDraw = function(twinEarth) {
-        earth = twinEarth;
-        _.renderOrder.forEach(function(renderer) {
-            planet[renderer] && planet[renderer].call(planet);
-        });
-        if (earth) {
-            earth.forEach(function(p) {
-                p.svgDraw(null);
-            });
-        }
-        if (ticker===null && twinEarth!==null) {
-            planet._.ticker.call(planet);
-        }
         return planet;
     }
 
@@ -200,10 +199,9 @@ const earthjs = (options={}) => {
     return planet;
     //----------------------------------------
     function qEvent(obj, qname) {
-        const qkey = qname+'Keys';
         if (obj[qname]) {
             _[qname][obj.name] = obj[qname];
-            _[qkey] = Object.keys(_[qname]);
+            _[qname+'Keys'] = Object.keys(_[qname]);
         }
     }
 }

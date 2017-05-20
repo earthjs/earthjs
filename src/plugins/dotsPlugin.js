@@ -34,7 +34,7 @@ export default function() {
     return {
         name: 'dotsPlugin',
         onInit() {
-            this.svgAddDots = svgAddDots;
+            this.$.svgAddDots = svgAddDots;
             this._.options.showDots = true;
         },
         onRefresh() {

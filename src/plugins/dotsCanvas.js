@@ -24,7 +24,7 @@ export default function() {
     return {
         name: 'dotsCanvas',
         onInit() {
-            this.canvasAddDots = canvasAddDots;
+            this.$.canvasAddDots = canvasAddDots;
             this._.options.showDots = true;
         },
         onRefresh() {

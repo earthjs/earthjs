@@ -74,8 +74,8 @@ export default urlBars => {
             setTimeout(() => refresh.call(this),1);
         },
         onInit() {
-            this.svgAddBar = svgAddBar;
-            this.svgClipPath = svgClipPath;
+            this.$.svgAddBar = svgAddBar;
+            this.$.svgClipPath = svgClipPath;
             this._.options.showBars = true;
             _.barProjection = this._.orthoGraphic();
             _.svg = this._.svg;

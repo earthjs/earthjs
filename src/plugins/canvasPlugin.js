@@ -30,8 +30,8 @@ export default () => {
     return {
         name: 'canvasPlugin',
         onInit() {
-            this.svgAddCanvas = svgAddCanvas;
             this._.options.showCanvas = true;
+            this.$.svgAddCanvas = svgAddCanvas;
             _.path = d3.geoPath().projection(this._.proj);
         },
         onRefresh() {

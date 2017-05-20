@@ -64,7 +64,7 @@ export default (urlWorld, urlCountryNames) => {
             this._.options.showLand = true;
             this._.options.showLakes = true;
             this._.options.showCountries = true;
-            this.canvasAddWorldOrCountries = canvasAddWorldOrCountries;
+            this.$.canvasAddWorldOrCountries = canvasAddWorldOrCountries;
         },
         onRefresh() {
             canvasAddWorldOrCountries.call(this);

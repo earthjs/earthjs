@@ -75,9 +75,9 @@ export default function() {
             this._.options.showGlobeShadow = true;
             this._.options.showGlobeShading = true;
             this._.options.showGlobeHilight = true;
-            this.svgAddDropShadow = svgAddDropShadow;
-            this.svgAddGlobeHilight = svgAddGlobeHilight;
-            this.svgAddGlobeShading = svgAddGlobeShading;
+            this.$.svgAddDropShadow = svgAddDropShadow;
+            this.$.svgAddGlobeHilight = svgAddGlobeHilight;
+            this.$.svgAddGlobeShading = svgAddGlobeShading;
             _.svg = this._.svg;
         },
         onResize() {

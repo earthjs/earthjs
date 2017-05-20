@@ -39,8 +39,8 @@ export default () => {
     return {
         name: 'centerPlugin',
         onInit() {
-            _.svgAddCountriesOld = this.svgAddCountries;
-            this.svgAddCountries = svgAddCountries;
+            _.svgAddCountriesOld = this.$.svgAddCountries;
+            this.$.svgAddCountries = svgAddCountries;
         },
         go(id) {
             const c = this.worldPlugin.countries();

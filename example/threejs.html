@@ -18,7 +18,7 @@
         p.register(earthjs.plugins.worldThreejs());
         p.register(earthjs.plugins.canvasPlugin());
         p.register(earthjs.plugins.graticuleCanvas());
-        p.register(earthjs.plugins.barPlugin('./d/bars.csv'));
+        p.register(earthjs.plugins.barPlugin('./d/bars.json'));
 
         p.ready(function(){
             d3.select('#three-js').attr('style', 'opacity: 0.6');

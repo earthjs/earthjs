@@ -6,8 +6,8 @@ export default function() {
         name: 'countryTooltipPlugin',
         onInit() {
             const _this = this;
-            const originalsvgAddCountries = this.svgAddCountries;
-            this.svgAddCountries  = function() {
+            const originalsvgAddCountries = this.$.svgAddCountries;
+            this.$.svgAddCountries = function() {
                 return originalsvgAddCountries.call(this)
                 .on("mouseover", function(d) {
                     const country = _this.worldPlugin.countryName.call(_this, d);
