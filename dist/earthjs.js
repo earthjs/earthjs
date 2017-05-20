@@ -618,7 +618,6 @@ var fauxGlobePlugin = function () {
 var autorotatePlugin = (function (degPerSec) {
     /*eslint no-console: 0 */
     var _ = {
-        spin: true,
         lastTick: new Date(),
         degree: degPerSec,
         sync: []
@@ -637,7 +636,7 @@ var autorotatePlugin = (function (degPerSec) {
         },
         onInterval: function onInterval() {
             var now = new Date();
-            if (!_.spin || this._.drag) {
+            if (!this._.options.spin || this._.drag) {
                 _.lastTick = now;
             } else {
                 var delta = now - _.lastTick;
@@ -652,10 +651,10 @@ var autorotatePlugin = (function (degPerSec) {
             _.degree = degPerSec;
         },
         start: function start() {
-            _.spin = true;
+            this._.options.spin = true;
         },
         stop: function stop() {
-            _.spin = false;
+            this._.options.spin = false;
         },
         sync: function sync(arr) {
             _.sync = arr;
@@ -1317,6 +1316,56 @@ var dotsCanvas = function () {
     };
 };
 
+var pingsCanvas = function () {
+    var _ = { dataPings: null, pings: [] };
+
+    return {
+        name: 'pingsCanvas',
+        onInit: function onInit() {
+            this._.options.showPings = true;
+        },
+        onInterval: function onInterval() {
+            if (!this._.drag && this._.options.showPings) {
+                var center = void 0;
+                var proj = this._.proj;
+                if (_.pings.length <= 7) {
+                    center = this._.proj.invert(this._.center);
+                    var visible = _.dataPings.features.filter(function (d) {
+                        return d3.geoDistance(d.geometry.coordinates, center) <= 1.57;
+                    });
+                    var d = visible[Math.floor(Math.random() * (visible.length - 1))];
+                    _.pings.push({ r: 2.5, l: d.geometry.coordinates });
+                }
+                var p = _.pings[0];
+                if (d3.geoDistance(p.l, this._.proj.invert(this._.center)) > 1.57) {
+                    _.pings.shift();
+                } else {
+                    if (!this._.options.spin) {
+                        this._.refresh();
+                    }
+                    this.canvasPlugin.render(function (context) {
+                        context.beginPath();
+                        context.fillStyle = '#F80';
+                        context.arc(proj(p.l)[0], proj(p.l)[1], p.r, 0, 2 * Math.PI);
+                        context.fill();
+                        context.closePath();
+                        p.r = p.r + 0.2;
+                        if (p.r > 5) {
+                            _.pings.shift();
+                        } else if (_.pings.length > 1) {
+                            var _d = _.pings.shift();
+                            _.pings.push(_d);
+                        }
+                    });
+                }
+            }
+        },
+        data: function data(_data) {
+            _.dataPings = _data;
+        }
+    };
+};
+
 var pingsPlugin = function () {
     /*eslint no-console: 0 */
     var _ = { svg: null, dataPings: null, ping2: null };
@@ -1525,6 +1574,7 @@ earthjs$1.plugins = {
     barPlugin: barPlugin,
     dotsPlugin: dotsPlugin,
     dotsCanvas: dotsCanvas,
+    pingsCanvas: pingsCanvas,
     pingsPlugin: pingsPlugin,
     debugThreejs: debugThreejs,
     commonPlugins: commonPlugins

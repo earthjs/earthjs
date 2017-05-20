@@ -1,7 +1,6 @@
 export default degPerSec => {
     /*eslint no-console: 0 */
     const _ = {
-        spin: true,
         lastTick: new Date(),
         degree: degPerSec,
         sync: []
@@ -20,7 +19,7 @@ export default degPerSec => {
         },
         onInterval() {
             const now = new Date();
-            if (!_.spin || this._.drag) {
+            if (!this._.options.spin || this._.drag) {
                 _.lastTick = now;
             } else {
                 const delta = now - _.lastTick;
@@ -33,10 +32,10 @@ export default degPerSec => {
             _.degree = degPerSec;
         },
         start() {
-            _.spin = true;
+            this._.options.spin = true;
         },
         stop() {
-            _.spin = false;
+            this._.options.spin = false;
         },
         sync(arr) {
             _.sync = arr;

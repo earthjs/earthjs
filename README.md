@@ -32,6 +32,7 @@ Selected plugins bundled into library:
 * barPlugin,
 * dotsPlugin,
 * dotsCanvas,
+* pingsCanvas,
 * pingsPlugin,
 * debugThreejs,
 * commonPlugins,

@@ -19,6 +19,7 @@ import flattenPlugin from './src/plugins/flattenPlugin.js';
 import barPlugin from './src/plugins/barPlugin.js';
 import dotsPlugin from './src/plugins/dotsPlugin.js';
 import dotsCanvas from './src/plugins/dotsCanvas.js';
+import pingsCanvas from './src/plugins/pingsCanvas.js';
 import pingsPlugin from './src/plugins/pingsPlugin.js';
 import debugThreejs from './src/plugins/debugThreejs.js';
 import commonPlugins from './src/pluginLoader/commonPlugins';
@@ -43,6 +44,7 @@ app.plugins= {
     barPlugin,
     dotsPlugin,
     dotsCanvas,
+    pingsCanvas,
     pingsPlugin,
     debugThreejs,
     commonPlugins,
