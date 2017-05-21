@@ -23,7 +23,7 @@ export default function() {
                     _.pings.shift();
                 } else {
                     if (!this._.options.spin) {
-                        this._.refresh();
+                        this._.refresh(/anvas/);
                     }
                     this.canvasPlugin.render(function(context) {
                         context.beginPath();

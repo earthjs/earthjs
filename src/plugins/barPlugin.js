@@ -36,22 +36,23 @@ export default urlBars => {
 
     function refresh() {
         if (_.bars && this._.options.showBars) {
-            const proj= this._.proj;
-            const center = proj.invert(this._.center);
+            const proj1 = this._.proj;
+            const scale = _.lengthScale;
+            const proj2 = _.barProjection;
+            const center = proj1.invert(this._.center);
             this._.bar
-                .attr("x1", d => proj(d.geometry.coordinates)[0])
-                .attr("y1", d => proj(d.geometry.coordinates)[1])
-                .attr("x2", d => {
-                    _.barProjection.scale(_.lengthScale(d.properties.mag));
-                    return _.barProjection(d.geometry.coordinates)[0];
-                })
-                .attr("y2", d => {
-                    _.barProjection.scale(_.lengthScale(d.properties.mag));
-                    return _.barProjection(d.geometry.coordinates)[1];
-                })
-                .attr("mask", d => {
-                    const gDistance = d3.geoDistance(d.geometry.coordinates, center);
-                    return gDistance < 1.57 ? null : "url(#edge)";
+                .each(function(d) {
+                    const arr = d.geometry.coordinates;
+                    proj2.scale(scale(d.properties.mag));
+                    const distance = d3.geoDistance(arr, center);
+                    const d1 = proj1(arr);
+                    const d2 = proj2(arr);
+                    d3.select(this)
+                        .attr('x1', d1[0])
+                        .attr('y1', d1[1])
+                        .attr('x2', d2[0])
+                        .attr('y2', d2[1])
+                        .attr('mask', distance < 1.57 ? null : 'url(#edge)');
                 });
         }
     }

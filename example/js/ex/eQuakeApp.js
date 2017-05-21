@@ -21,7 +21,8 @@ const eQuakeApp = () => {
             this.register(earthjs.plugins.dotsCanvas());
             this.register(earthjs.plugins.barPlugin());
             this.commonPlugins.addChecker('showPings:Pings:showPings'.split(':'));
-            this.commonPlugins.addChecker('showDots:EQuake:showDots'.split(':'));
+            this.commonPlugins.addChecker('showBars:Bars:showBars'.split(':'));
+            this.commonPlugins.addChecker('showDots:Dots:showDots'.split(':'));
         }
     }
 }

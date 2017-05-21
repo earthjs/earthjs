@@ -211,8 +211,11 @@ var earthjs$1 = function earthjs() {
         return planet;
     };
 
-    planet._.refresh = function () {
-        _.onRefreshKeys.forEach(function (fn) {
+    planet._.refresh = function (filter) {
+        var keys = filter ? _.onRefreshKeys.filter(function (d) {
+            return filter.test(d);
+        }) : _.onRefreshKeys;
+        keys.forEach(function (fn) {
             _.onRefresh[fn].call(planet);
         });
         return planet;
@@ -1163,21 +1166,17 @@ var barPlugin = (function (urlBars) {
 
     function refresh() {
         if (_.bars && this._.options.showBars) {
-            var proj = this._.proj;
-            var center = proj.invert(this._.center);
-            this._.bar.attr("x1", function (d) {
-                return proj(d.geometry.coordinates)[0];
-            }).attr("y1", function (d) {
-                return proj(d.geometry.coordinates)[1];
-            }).attr("x2", function (d) {
-                _.barProjection.scale(_.lengthScale(d.properties.mag));
-                return _.barProjection(d.geometry.coordinates)[0];
-            }).attr("y2", function (d) {
-                _.barProjection.scale(_.lengthScale(d.properties.mag));
-                return _.barProjection(d.geometry.coordinates)[1];
-            }).attr("mask", function (d) {
-                var gDistance = d3.geoDistance(d.geometry.coordinates, center);
-                return gDistance < 1.57 ? null : "url(#edge)";
+            var proj1 = this._.proj;
+            var scale = _.lengthScale;
+            var proj2 = _.barProjection;
+            var center = proj1.invert(this._.center);
+            this._.bar.each(function (d) {
+                var arr = d.geometry.coordinates;
+                proj2.scale(scale(d.properties.mag));
+                var distance = d3.geoDistance(arr, center);
+                var d1 = proj1(arr);
+                var d2 = proj2(arr);
+                d3.select(this).attr('x1', d1[0]).attr('y1', d1[1]).attr('x2', d2[0]).attr('y2', d2[1]).attr('mask', distance < 1.57 ? null : 'url(#edge)');
             });
         }
     }
@@ -1338,7 +1337,7 @@ var pingsCanvas = function () {
                     _.pings.shift();
                 } else {
                     if (!this._.options.spin) {
-                        this._.refresh();
+                        this._.refresh(/anvas/);
                     }
                     this.canvasPlugin.render(function (context) {
                         context.beginPath();

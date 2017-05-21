@@ -161,8 +161,9 @@ const earthjs = (options={}) => {
         return planet;
     }
 
-    planet._.refresh = function() {
-        _.onRefreshKeys.forEach(function(fn) {
+    planet._.refresh = function(filter) {
+        const keys = filter ? _.onRefreshKeys.filter(d => filter.test(d)) : _.onRefreshKeys;
+        keys.forEach(function(fn) {
             _.onRefresh[fn].call(planet);
         });
         return planet;
