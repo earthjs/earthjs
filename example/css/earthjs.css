@@ -1,7 +1,7 @@
 body {
     margin: 0;
 }
-#earth, #three-js {
+#earth, #three-js,.canvas,.top {
     position: absolute;
     left: 0;
     top: 0;
@@ -12,9 +12,9 @@ body {
 #earth {
     z-index: 2;
 }
-.canvas {
-    position: relative;
-    z-index: 2;
+.canvas,.top {
+    /*position: relative;*/
+    z-index: 3;
 }
 .land path{
     fill: rgb(117, 87, 57);
@@ -78,4 +78,5 @@ body {
 .set-options {
     position: absolute;
     z-index: 999;
+    /*top: 25px;*/
 }
