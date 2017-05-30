@@ -1,6 +1,11 @@
 # Earthjs
 D3 Earth JS
 
+#### Live Example
+* [Quick Start](http://blockbuilder.org/earthjs/df9abf84c90586cb9e27d5f4b3d21d14)
+* [Complete Globe](http://blockbuilder.org/earthjs/562bbae9b4a22f826e40b9ee10445e23)
+* [Earthquake](https://earthjs.github.io/)
+
 Earthjs is a javascript library for easy building orthographic globe. Originally inspired by [planetary.js](https://github.com/BinaryMuse/planetary.js) (canvas) and [Faux-3d Shaded Globe](http://bl.ocks.org/dwtkns/4686432) (svg) and both was created using D3.v3.
 
 Earthjs created using D3.v4, design as pluggable modules.
@@ -80,11 +85,6 @@ This sample need to run on the webserver, you can use [nodejs web-server](https:
 </body>
 </html>
 ```
-#### Live Example
-* [Quick Start](http://blockbuilder.org/earthjs/df9abf84c90586cb9e27d5f4b3d21d14)
-* [Complete Globe](http://blockbuilder.org/earthjs/562bbae9b4a22f826e40b9ee10445e23)
-* [Earthquake](https://earthjs.github.io/)
-
 ## Writing Plugins
 Sample skeleton of plugin, five(5) event handler and you can add any function that will be live on the plugin namespace, you can check folder plugins for each functionality.
 ```javascript
