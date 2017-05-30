@@ -61,7 +61,8 @@ body {
     opacity:.6;
     fill: #A80;
 }
-.countryTooltip {
+.countryTooltip,
+.barTooltip {
     background: #fff;
     border: solid #ccc 1px;
     color: #666;

@@ -10,6 +10,7 @@ import graticulePlugin from './src/plugins/graticulePlugin.js';
 import fauxGlobePlugin from './src/plugins/fauxGlobePlugin.js';
 import autorotatePlugin from './src/plugins/autorotatePlugin.js';
 import countryTooltipPlugin from './src/plugins/countryTooltipPlugin.js';
+import barTooltipPlugin from './src/plugins/barTooltipPlugin.js';
 import placesPlugin from './src/plugins/placesPlugin.js';
 import worldCanvas from './src/plugins/worldCanvas.js';
 import worldPlugin from './src/plugins/worldPlugin.js';
@@ -35,6 +36,7 @@ app.plugins= {
     fauxGlobePlugin,
     autorotatePlugin,
     countryTooltipPlugin,
+    barTooltipPlugin,
     placesPlugin,
     worldCanvas,
     worldPlugin,

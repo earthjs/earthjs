@@ -23,6 +23,7 @@
         p.register(earthjs.plugins.placesPlugin('./d/places.json'));
         p.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
         p.register(earthjs.plugins.countryTooltipPlugin());
+        p.register(earthjs.plugins.barTooltipPlugin());
 
         p.ready(function(){
             p.register(earthjs.plugins.centerPlugin());

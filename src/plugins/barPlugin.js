@@ -1,4 +1,5 @@
 export default urlBars => {
+    /*eslint no-console: 0 */
     const _ = {svg:null, barProjection: null, q: null, bars: null};
 
     function svgAddBar() {
@@ -27,7 +28,8 @@ export default urlBars => {
 
             this._.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line")
                 .attr("stroke", "red")
-                .attr("stroke-width", "2");
+                .attr("stroke-width", "2")
+                .attr("data-index", (d, i) => i);
             // render to correct position
             refresh.call(this);
             return this._.bar;

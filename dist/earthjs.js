@@ -686,6 +686,40 @@ var countryTooltipPlugin = function () {
     };
 };
 
+// KoGor’s Block http://bl.ocks.org/KoGor/5994804
+var barTooltipPlugin = function () {
+    var barTooltip = d3.select("body").append("div").attr("class", "barTooltip");
+
+    return {
+        name: 'barTooltipPlugin',
+        onInit: function onInit() {
+            var _this = this;
+            var originalsvgAddBar = this.$.svgAddBar;
+            this.$.svgAddBar = function () {
+                return originalsvgAddBar.call(this).on("mouseover", function () {
+                    var i = +this.dataset.index;
+                    var d = _this.barPlugin.data().features[i];
+                    if (_this.barTooltipPlugin.onShow) {
+                        d = _this.barTooltipPlugin.onShow.call(this, d, i, barTooltip);
+                    }
+                    _this.barTooltipPlugin.show(d).style("left", d3.event.pageX + 7 + "px").style("top", d3.event.pageY - 15 + "px").style("display", "block").style("opacity", 1);
+                }).on("mouseout", function () {
+                    barTooltip.style("opacity", 0).style("display", "none");
+                }).on("mousemove", function () {
+                    barTooltip.style("left", d3.event.pageX + 7 + "px").style("top", d3.event.pageY - 15 + "px");
+                });
+            };
+        },
+        show: function show(d) {
+            var props = d.properties;
+            var title = Object.keys(props).map(function (k) {
+                return k + ': ' + props[k];
+            }).join("<br/>");
+            return barTooltip.html(title);
+        }
+    };
+};
+
 var placesPlugin = function (urlPlaces) {
     var _ = { svg: null, q: null, places: null };
 
@@ -1139,6 +1173,7 @@ var flattenPlugin = function () {
 };
 
 var barPlugin = (function (urlBars) {
+    /*eslint no-console: 0 */
     var _ = { svg: null, barProjection: null, q: null, bars: null };
 
     function svgAddBar() {
@@ -1157,7 +1192,9 @@ var barPlugin = (function (urlBars) {
             var scale = this._.proj.scale();
             _.lengthScale = d3.scaleLinear().domain([0, _.max]).range([scale, scale + 50]);
 
-            this._.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line").attr("stroke", "red").attr("stroke-width", "2");
+            this._.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line").attr("stroke", "red").attr("stroke-width", "2").attr("data-index", function (d, i) {
+                return i;
+            });
             // render to correct position
             refresh.call(this);
             return this._.bar;
@@ -1561,6 +1598,7 @@ earthjs$1.plugins = {
     fauxGlobePlugin: fauxGlobePlugin,
     autorotatePlugin: autorotatePlugin,
     countryTooltipPlugin: countryTooltipPlugin,
+    barTooltipPlugin: barTooltipPlugin,
     placesPlugin: placesPlugin,
     worldCanvas: worldCanvas,
     worldPlugin: worldPlugin,

@@ -20,9 +20,22 @@ const eQuakeApp = () => {
             this.register(earthjs.plugins.pingsCanvas());
             this.register(earthjs.plugins.dotsCanvas());
             this.register(earthjs.plugins.barPlugin());
+            this.register(earthjs.plugins.barTooltipPlugin());
             this.commonPlugins.addChecker('showPings:Pings:showPings'.split(':'));
             this.commonPlugins.addChecker('showBars:Bars:showBars'.split(':'));
             this.commonPlugins.addChecker('showDots:Dots:showDots'.split(':'));
+            var tt = this.barTooltipPlugin;
+            this.barTooltipPlugin.onShow = function(d) {
+                var {mag, tsunami, eventtime, place, detail} = d.properties;
+                if (!eventtime) {
+                    d3.json(detail, function(error, data) {
+                        var {eventtime} = data.properties.products.origin[0].properties;
+                        d.properties.eventtime = eventtime;
+                        tt.show({properties: {mag,tsunami,eventtime,place}});
+                    });
+                }
+                return {properties: {mag,tsunami,eventtime,place}};
+            }
         }
     }
 }
