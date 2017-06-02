@@ -6,8 +6,6 @@ const earthjs = (options={}) => {
     options = Object.assign({
         select: '#earth',
         rotate: 130,
-        height: 500,
-        width:  700,
     }, options);
     const _ = {
         onResize: {},
@@ -40,11 +38,17 @@ const earthjs = (options={}) => {
         loadingData: null
     }
     const drag = false;
-    const width = options.width;
-    const height = options.height;
-    const center = [width/2, height/2];
+    const svg = d3.selectAll(options.select);
+    let width = svg.attr('width'), height = svg.attr('height');
     const ltScale = d3.scaleLinear().domain([0, width]).range([-180, 180]);
-    const svg = d3.selectAll(options.select).attr("width", width).attr("height", height);
+    if (!width || !height) {
+        width = 700;
+        height = 500;
+        svg.attr("width", width).attr("height", height);
+    }
+    options.width = width;
+    options.height = height;
+    const center = [width/2, height/2];
     const planet = {
         _: {
             svg,
@@ -98,8 +102,8 @@ const earthjs = (options={}) => {
                 });
                 q.await(function() {
                     obj.onReady.apply(planet, arguments);
+                    _.ready && _.ready.call(planet);
                     _.loadingData = false;
-                    _.ready.call(planet);
                 });
             }
             return planet;

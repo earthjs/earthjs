@@ -96,7 +96,7 @@ export default function(url='/some/path.json') {
         // namespace for the plugins
         name: 'samplePlugin',
         // async ajax call and when finish, it will call onReady()
-        data: [url],
+        urls: [url],
         // event handler ajax
         onReady(err, places) {
             // code...(*)

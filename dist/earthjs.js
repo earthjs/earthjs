@@ -77,9 +77,7 @@ var earthjs$1 = function earthjs() {
     clearInterval(earthjs.ticker);
     options = Object.assign({
         select: '#earth',
-        rotate: 130,
-        height: 500,
-        width: 700
+        rotate: 130
     }, options);
     var _ = {
         onResize: {},
@@ -96,11 +94,18 @@ var earthjs$1 = function earthjs() {
         loadingData: null
     };
     var drag = false;
-    var width = options.width;
-    var height = options.height;
-    var center = [width / 2, height / 2];
+    var svg = d3.selectAll(options.select);
+    var width = svg.attr('width'),
+        height = svg.attr('height');
     var ltScale = d3.scaleLinear().domain([0, width]).range([-180, 180]);
-    var svg = d3.selectAll(options.select).attr("width", width).attr("height", height);
+    if (!width || !height) {
+        width = 700;
+        height = 500;
+        svg.attr("width", width).attr("height", height);
+    }
+    options.width = width;
+    options.height = height;
+    var center = [width / 2, height / 2];
     var planet = {
         _: {
             svg: svg,
@@ -148,8 +153,8 @@ var earthjs$1 = function earthjs() {
                 });
                 q.await(function () {
                     obj.onReady.apply(planet, arguments);
+                    _.ready && _.ready.call(planet);
                     _.loadingData = false;
-                    _.ready.call(planet);
                 });
             }
             return planet;
