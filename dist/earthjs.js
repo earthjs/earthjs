@@ -91,7 +91,8 @@ var earthjs$1 = function earthjs() {
 
         renderOrder: ['renderThree', 'svgAddDropShadow', 'svgAddCanvas', 'canvasAddGraticule', 'canvasAddWorldOrCountries', 'canvasAddDots', 'svgAddOcean', 'svgAddGlobeShading', 'svgAddGraticule', 'svgAddWorldOrCountries', 'svgAddGlobeHilight', 'svgAddPlaces', 'svgAddPings', 'svgAddDots', 'svgAddBar'],
         ready: null,
-        loadingData: null
+        loadingData: null,
+        promeses: []
     };
     var drag = false;
     var svg = d3.selectAll(options.select);
@@ -118,7 +119,33 @@ var earthjs$1 = function earthjs() {
         $: {},
         ready: function ready(fn) {
             if (fn) {
-                _.ready = fn;
+                if (_.promeses.length > 0) {
+                    _.loadingData = true;
+                    var q = d3.queue();
+                    _.promeses.forEach(function (obj) {
+                        obj.urls.forEach(function (url) {
+                            var ext = url.split('.').pop();
+                            if (ext === 'geojson') {
+                                ext = 'json';
+                            }
+                            q.defer(d3[ext], url);
+                        });
+                    });
+                    q.await(function () {
+                        var args = [].slice.call(arguments);
+                        var err = args.shift();
+                        _.promeses.forEach(function (obj) {
+                            var ln = obj.urls.length;
+                            var ar = args.slice(0, ln);
+                            ar.unshift(err);
+
+                            obj.onReady.apply(planet, ar);
+                            args = args.slice(ln);
+                        });
+                        _.loadingData = false;
+                        fn.call(planet);
+                    });
+                }
             } else {
                 return _.loadingData;
             }
@@ -142,19 +169,9 @@ var earthjs$1 = function earthjs() {
             qEvent(obj, 'onRefresh');
             qEvent(obj, 'onInterval');
             if (obj.urls && obj.onReady) {
-                _.loadingData = true;
-                var q = d3.queue();
-                obj.urls.forEach(function (url) {
-                    var ext = url.split('.').pop();
-                    if (ext === 'geojson') {
-                        ext = 'json';
-                    }
-                    q.defer(d3[ext], url);
-                });
-                q.await(function () {
-                    obj.onReady.apply(planet, arguments);
-                    _.ready && _.ready.call(planet);
-                    _.loadingData = false;
+                _.promeses.push({
+                    urls: obj.urls,
+                    onReady: obj.onReady
                 });
             }
             return planet;

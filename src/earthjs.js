@@ -35,7 +35,8 @@ const earthjs = (options={}) => {
             'svgAddBar',
         ],
         ready: null,
-        loadingData: null
+        loadingData: null,
+        promeses: []
     }
     const drag = false;
     const svg = d3.selectAll(options.select);
@@ -61,7 +62,33 @@ const earthjs = (options={}) => {
         $: {},
         ready(fn) {
             if (fn) {
-                _.ready = fn;
+                if (_.promeses.length>0) {
+                    _.loadingData = true;
+                    const q = d3.queue();
+                    _.promeses.forEach(obj => {
+                        obj.urls.forEach(url => {
+                            let ext = url.split('.').pop();
+                            if (ext==='geojson') {
+                                ext = 'json';
+                            }
+                            q.defer(d3[ext], url);
+                        });
+                    })
+                    q.await(function() {
+                        let args = [].slice.call(arguments);
+                        const err = args.shift();
+                        _.promeses.forEach(obj => {
+                            const ln = obj.urls.length;
+                            const ar = args.slice(0,ln);
+                            ar.unshift(err);
+
+                            obj.onReady.apply(planet, ar);
+                            args = args.slice(ln);
+                        });
+                        _.loadingData = false;
+                        fn.call(planet);
+                    });
+                }
             } else {
                 return _.loadingData;
             }
@@ -91,19 +118,9 @@ const earthjs = (options={}) => {
             qEvent(obj,'onRefresh');
             qEvent(obj,'onInterval');
             if (obj.urls && obj.onReady) {
-                _.loadingData = true;
-                const q = d3.queue();
-                obj.urls.forEach(url => {
-                    let ext = url.split('.').pop();
-                    if (ext==='geojson') {
-                        ext = 'json';
-                    }
-                    q.defer(d3[ext], url);
-                });
-                q.await(function() {
-                    obj.onReady.apply(planet, arguments);
-                    _.ready && _.ready.call(planet);
-                    _.loadingData = false;
+                _.promeses.push({
+                    urls: obj.urls,
+                    onReady: obj.onReady
                 });
             }
             return planet;

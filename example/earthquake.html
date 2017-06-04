@@ -12,8 +12,11 @@
     <canvas class="canvas"></canvas>
     <script type='text/javascript' src='./js/ex/eQuakeApp.js'></script>
     <script>
-        var p = earthjs({width: 1200, height: 900});
-        p.register(earthjs.plugins.eQuakeApp());
+        const g = earthjs({width: 1200, height: 900});
+        g.register(earthjs.plugins.eQuakeApp());
+        g.ready(function(){
+            g.svgDraw();
+        })
     </script>
 </body>
 </html>

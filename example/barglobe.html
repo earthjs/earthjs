@@ -8,15 +8,15 @@
 <body>
     <svg id="earth"></svg>
     <script>
-        var p = earthjs({width: 700, height: 500});
-        p.register(earthjs.plugins.wheelZoomPlugin());
-        p.register(earthjs.plugins.graticulePlugin());
-        p.register(earthjs.plugins.versorDragPlugin());
-        // p.register(earthjs.plugins.autorotatePlugin(10));
-        p.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
-        p.register(earthjs.plugins.barPlugin('./d/bars.json'));
-        p.ready(function(){
-            p.svgDraw();
+        const g = earthjs();
+        g.register(earthjs.plugins.wheelZoomPlugin());
+        g.register(earthjs.plugins.graticulePlugin());
+        g.register(earthjs.plugins.versorDragPlugin());
+        // g.register(earthjs.plugins.autorotatePlugin(10));
+        g.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
+        g.register(earthjs.plugins.barPlugin('./d/bars.json'));
+        g.ready(function(){
+            g.svgDraw();
         })
     </script>
 </body>

@@ -8,16 +8,16 @@
 <body>
     <svg class="earth e1"></svg>
     <script>
-        var p = earthjs({select:'.earth',width:1200,height:750});
-        p.register(earthjs.plugins.configPlugin());
-        p.register(earthjs.plugins.graticulePlugin());
-        p.register(earthjs.plugins.versorDragPlugin());
-        p.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
-        p.register(earthjs.plugins.countryTooltipPlugin());
-        p.register(earthjs.plugins.flattenPlugin());
-        p.ready(function(){
-            p.flattenPlugin.toMap();
-            p.svgDraw();
+        const g = earthjs({select:'.earth',width:1200,height:750});
+        g.register(earthjs.plugins.configPlugin());
+        g.register(earthjs.plugins.graticulePlugin());
+        g.register(earthjs.plugins.versorDragPlugin());
+        g.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
+        g.register(earthjs.plugins.countryTooltipPlugin());
+        g.register(earthjs.plugins.flattenPlugin());
+        g.ready(function(){
+            g.flattenPlugin.toMap();
+            g.svgDraw();
         })
     </script>
 </body>

@@ -14,9 +14,10 @@ export default function() {
                     if (e.sourceEvent) {
                         const t = e.transform;
                         if (e.sourceEvent.constructor.name==='WheelEvent') {
-                            _this._.proj.scale(t.k);
-                            _this._.resize.call(_this);
-                            _this._.refresh.call(_this);
+                            _this._.scale(t.k);
+                            // _this._.proj.scale(t.k);
+                            // _this._.resize.call(_this);
+                            // _this._.refresh.call(_this);
 
                         } else if (e.sourceEvent.constructor.name==='MouseEvent') {
                             const rX = rotateScale(t.x);// % 360;

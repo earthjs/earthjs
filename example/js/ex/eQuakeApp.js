@@ -24,12 +24,12 @@ const eQuakeApp = () => {
             this.commonPlugins.addChecker('showPings:Pings:showPings'.split(':'));
             this.commonPlugins.addChecker('showBars:Bars:showBars'.split(':'));
             this.commonPlugins.addChecker('showDots:Dots:showDots'.split(':'));
-            var tt = this.barTooltipPlugin;
+            const tt = this.barTooltipPlugin;
             this.barTooltipPlugin.onShow = function(d) {
-                var {mag, tsunami, eventtime, place, detail} = d.properties;
+                const {mag, tsunami, eventtime, place, detail} = d.properties;
                 if (!eventtime) {
                     d3.json(detail, function(error, data) {
-                        var {eventtime} = data.properties.products.origin[0].properties;
+                        const {eventtime} = data.properties.products.origin[0].properties;
                         d.properties.eventtime = eventtime;
                         tt.show({properties: {mag,tsunami,eventtime,place}});
                     });
@@ -40,4 +40,3 @@ const eQuakeApp = () => {
     }
 }
 earthjs.plugins.eQuakeApp = eQuakeApp;
-// countryNames

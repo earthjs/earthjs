@@ -11,30 +11,30 @@
     <div class="set-options"></div>
     <svg id="earth"></svg>
     <script>
-        var p = earthjs();
-        p.register(earthjs.plugins.autorotatePlugin(10));
-        p.register(earthjs.plugins.versorDragPlugin());
-        p.register(earthjs.plugins.wheelZoomPlugin());
-        p.register(earthjs.plugins.configPlugin());
-        p.register(earthjs.plugins.oceanPlugin());
-        p.register(earthjs.plugins.graticulePlugin());
-        p.register(earthjs.plugins.fauxGlobePlugin());
-        p.register(earthjs.plugins.barPlugin('./d/bars.json'));
-        p.register(earthjs.plugins.placesPlugin('./d/places.json'));
-        p.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
-        p.register(earthjs.plugins.countryTooltipPlugin());
-        p.register(earthjs.plugins.barTooltipPlugin());
+        const g = earthjs();
+        g.register(earthjs.plugins.autorotatePlugin(10));
+        g.register(earthjs.plugins.versorDragPlugin());
+        g.register(earthjs.plugins.wheelZoomPlugin());
+        g.register(earthjs.plugins.configPlugin());
+        g.register(earthjs.plugins.oceanPlugin());
+        g.register(earthjs.plugins.graticulePlugin());
+        g.register(earthjs.plugins.fauxGlobePlugin());
+        g.register(earthjs.plugins.barPlugin('./d/bars.json'));
+        g.register(earthjs.plugins.placesPlugin('./d/places.json'));
+        g.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
+        g.register(earthjs.plugins.countryTooltipPlugin());
+        g.register(earthjs.plugins.barTooltipPlugin());
 
-        p.ready(function(){
-            p.register(earthjs.plugins.centerPlugin());
-            p.centerPlugin.focused(function() {
-                p.autorotatePlugin.stop();
+        g.ready(function(){
+            g.register(earthjs.plugins.centerPlugin());
+            g.centerPlugin.focused(function() {
+                g.autorotatePlugin.stop();
                 options.spin = false;
             })
-            p.svgDraw();
+            g.svgDraw();
         })
 
-        var options = p.configPlugin.set();
+        var options = g.configPlugin.set();
         var buttonClick = function(str) {
             var arr = str.split(':'), key = arr[2];
             var resultx = {};
@@ -43,7 +43,7 @@
             console.log(resultx);
             if (key=='hideCountries')
                 resultx.hideLand = false;
-            p.configPlugin.set(resultx);
+            g.configPlugin.set(resultx);
         };
 
         var checker = [

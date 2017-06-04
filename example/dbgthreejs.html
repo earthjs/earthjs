@@ -11,19 +11,19 @@
 <body>
     <svg id="earth"></svg>
     <script>
-        var p = earthjs({width: 700, height: 500});
-        p.register(earthjs.plugins.autorotatePlugin(10));
-        p.register(earthjs.plugins.versorDragPlugin());
-        p.register(earthjs.plugins.threejsPlugin());
-        p.register(earthjs.plugins.debugThreejs());
-        p.register(earthjs.plugins.canvasPlugin());
-        p.register(earthjs.plugins.configPlugin());
-        p.register(earthjs.plugins.graticuleCanvas());
-        p.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
+        const g = earthjs();
+        g.register(earthjs.plugins.autorotatePlugin(10));
+        g.register(earthjs.plugins.versorDragPlugin());
+        g.register(earthjs.plugins.threejsPlugin());
+        g.register(earthjs.plugins.debugThreejs());
+        g.register(earthjs.plugins.canvasPlugin());
+        g.register(earthjs.plugins.configPlugin());
+        g.register(earthjs.plugins.graticuleCanvas());
+        g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
 
-        p.ready(function(){
+        g.ready(function(){
             d3.select('#three-js').attr('style', 'opacity: 0.6');
-            p.svgDraw();
+            g.svgDraw();
         })
     </script>
 </body>
