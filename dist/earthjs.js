@@ -74,6 +74,7 @@ var versor = versorFn();
 var earthjs$1 = function earthjs() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
+    /*eslint no-console: 0 */
     clearInterval(earthjs.ticker);
     options = Object.assign({
         select: '#earth',
@@ -254,8 +255,7 @@ var earthjs$1 = function earthjs() {
         var width = globe._.options.width;
         var height = globe._.options.height;
         var rotate = globe._.options.rotate;
-        var ltRotate = globe._.ltScale(rotate);
-        return d3.geoOrthographic().scale(width / 3.5).rotate([ltRotate, 0]).translate([width / 2, height / 2]).precision(0.1).clipAngle(90);
+        return d3.geoOrthographic().scale(width / 3.5).rotate([rotate, 0]).translate([width / 2, height / 2]).precision(0.1).clipAngle(90);
     };
 
     globe._.addRenderer = function (name) {
@@ -664,8 +664,8 @@ var autorotatePlugin = (function (degPerSec) {
             } else {
                 var delta = now - _.lastTick;
                 rotate.call(this, delta);
-                _.sync.forEach(function (p) {
-                    return rotate.call(p, delta);
+                _.sync.forEach(function (g) {
+                    return rotate.call(g, delta);
                 });
                 _.lastTick = now;
             }

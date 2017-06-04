@@ -2,6 +2,7 @@ import versorFn from './versor.js';
 
 const versor = versorFn();
 const earthjs = (options={}) => {
+    /*eslint no-console: 0 */
     clearInterval(earthjs.ticker);
     options = Object.assign({
         select: '#earth',
@@ -201,10 +202,9 @@ const earthjs = (options={}) => {
         const width = globe._.options.width;
         const height = globe._.options.height;
         const rotate = globe._.options.rotate;
-        const ltRotate = globe._.ltScale(rotate);
         return d3.geoOrthographic()
             .scale(width / 3.5)
-            .rotate([ltRotate, 0])
+            .rotate([rotate, 0])
             .translate([width / 2, height / 2])
             .precision(0.1)
             .clipAngle(90);

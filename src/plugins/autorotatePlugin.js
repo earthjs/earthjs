@@ -24,7 +24,7 @@ export default degPerSec => {
             } else {
                 const delta = now - _.lastTick;
                 rotate.call(this, delta);
-                _.sync.forEach(p => rotate.call(p, delta));
+                _.sync.forEach(g => rotate.call(g, delta));
                 _.lastTick = now;
             }
         },

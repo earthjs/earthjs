@@ -21,7 +21,7 @@
         g1.register(earthjs.plugins.graticuleCanvas());
         g1.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
 
-        const g2 = earthjs({select:'#earth2', rotate: 360});
+        const g2 = earthjs({select:'#earth2', rotate: 180});
         g2.register(earthjs.plugins.oceanPlugin());
         g2.register(earthjs.plugins.fauxGlobePlugin());
 
@@ -29,10 +29,11 @@
         g2.register(earthjs.plugins.graticuleCanvas());
         g2.register(earthjs.plugins.worldCanvas());
 
+        g1.autorotatePlugin.sync([g2]);
+        g1.versorDragPlugin.sync([g2]);
         g1.ready(function(){
-            g2.worldCanvas.data(g1.worldCanvas.data());
-            g1.autorotatePlugin.sync([g2]);
-            g1.versorDragPlugin.sync([g2]);
+            const d = g1.worldCanvas.data();
+            g2.worldCanvas.data(d);
             g1.svgDraw([g2]);
         })
     </script>
