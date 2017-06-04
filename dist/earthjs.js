@@ -101,8 +101,8 @@ var earthjs$1 = function earthjs() {
         height = svg.attr('height');
     var ltScale = d3.scaleLinear().domain([0, width]).range([-180, 180]);
     if (!width || !height) {
-        width = 700;
-        height = 500;
+        width = options.width || 700;
+        height = options.height || 500;
         svg.attr("width", width).attr("height", height);
     }
     options.width = width;

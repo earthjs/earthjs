@@ -44,8 +44,8 @@ const earthjs = (options={}) => {
     let width = svg.attr('width'), height = svg.attr('height');
     const ltScale = d3.scaleLinear().domain([0, width]).range([-180, 180]);
     if (!width || !height) {
-        width = 700;
-        height = 500;
+        width = options.width || 700;
+        height = options.height || 500;
         svg.attr("width", width).attr("height", height);
     }
     options.width = width;
