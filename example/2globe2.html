@@ -1,19 +1,27 @@
 <html>
 <head>
     <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
+    <style media="screen">
+        .globe-container {
+            position: relative;
+            float: left;
+        }
+    </style>
     <script type='text/javascript' src="./js/d3.min.js"></script>
     <script type='text/javascript' src="./js/topojson.min.js"></script>
     <script type='text/javascript' src='../dist/earthjs.js'></script>
 </head>
 <body>
     <span class="globe-container">
-        <svg id="earth"></svg>
-        <canvas id="earth1" class="canvas"></canvas>
-        <canvas id="earth2" class="canvas"></canvas>
+        <svg id="earth1"/>
+        <canvas id="earth1c" class="canvas"/>
+    </span>
+    <span class="globe-container">
+        <svg id="earth2"/>
+        <canvas id="earth2c" class="canvas"/>
     </span>
     <script>
-        const g1 = earthjs({rotate: 0});
-        const g2 = earthjs({rotate: 180});
+        const g1 = earthjs({select:'#earth1', rotate: 0});
         g1.register(earthjs.plugins.configPlugin());
         g1.register(earthjs.plugins.versorDragPlugin());
         g1.register(earthjs.plugins.autorotatePlugin(10));
@@ -25,19 +33,26 @@
         g1.register(earthjs.plugins.graticuleCanvas());
         g1.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
 
+        const g2 = earthjs({select:'#earth2', rotate: 180});
+        g2.register(earthjs.plugins.oceanPlugin());
+        g2.register(earthjs.plugins.fauxGlobePlugin());
+        g2.register(earthjs.plugins.barPlugin('./d/bars.json'));
+
         g2.register(earthjs.plugins.canvasPlugin());
+        g2.register(earthjs.plugins.graticuleCanvas());
         g2.register(earthjs.plugins.worldCanvas());
 
-        g1.worldCanvas.style({land: 'rgba(170 ,0, 217, 0.4)'});
-        g2.worldCanvas.style({land: 'rgba(7, 117, 207, 0.4)'});
-        g1.canvasPlugin.selectAll('#earth1');
-        g2.canvasPlugin.selectAll('#earth2');
+        g1.canvasPlugin.selectAll('#earth1c');
+        g2.canvasPlugin.selectAll('#earth2c');
         g1.autorotatePlugin.sync([g2]);
         g1.versorDragPlugin.sync([g2]);
         g1.ready(function(){
             const d = g1.worldCanvas.data();
             g2.worldCanvas.data(d);
             g1.svgDraw([g2]);
+        });
+        g2.ready(function(){
+            g2.svgDraw();
         });
     </script>
 </body>
