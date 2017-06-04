@@ -50,7 +50,7 @@ const earthjs = (options={}) => {
     options.width = width;
     options.height = height;
     const center = [width/2, height/2];
-    const planet = {
+    const globe = {
         _: {
             svg,
             drag,
@@ -82,11 +82,11 @@ const earthjs = (options={}) => {
                             const ar = args.slice(0,ln);
                             ar.unshift(err);
 
-                            obj.onReady.apply(planet, ar);
+                            obj.onReady.apply(globe, ar);
                             args = args.slice(ln);
                         });
                         _.loadingData = false;
-                        fn.call(planet);
+                        fn.call(globe);
                     });
                 }
             } else {
@@ -95,7 +95,7 @@ const earthjs = (options={}) => {
         },
         register(obj) {
             const ar = {};
-            planet[obj.name] = ar;
+            globe[obj.name] = ar;
             Object.keys(obj).forEach(function(fn) {
                 if ([
                     'urls',
@@ -106,13 +106,13 @@ const earthjs = (options={}) => {
                     'onInterval'].indexOf(fn)===-1) {
                     if (typeof(obj[fn])==='function') {
                         ar[fn] = function() {
-                            return obj[fn].apply(planet, arguments);
+                            return obj[fn].apply(globe, arguments);
                         }
                     }
                 }
             });
             if (obj.onInit) {
-                obj.onInit.call(planet);
+                obj.onInit.call(globe);
             }
             qEvent(obj,'onResize');
             qEvent(obj,'onRefresh');
@@ -123,7 +123,7 @@ const earthjs = (options={}) => {
                     onReady: obj.onReady
                 });
             }
-            return planet;
+            return globe;
         }
     }
 
@@ -131,77 +131,77 @@ const earthjs = (options={}) => {
     let earths = [];
     let ticker = null;
 
-    planet.svgDraw = function(twinEarth) {
-        const $ = planet.$;
+    globe.svgDraw = function(twinEarth) {
+        const $ = globe.$;
         earths = twinEarth || [];
         _.renderOrder.forEach(function(renderer) {
-            $[renderer] && $[renderer].call(planet);
+            $[renderer] && $[renderer].call(globe);
         });
         earths.forEach(function(p) {
             p.svgDraw(null);
         });
         if (ticker===null && earths!==[]) {
-            planet._.ticker.call(planet);
+            globe._.ticker.call(globe);
         }
-        return planet;
+        return globe;
     }
 
-    planet._.defs = planet._.svg.append("defs");
-    planet._.ticker = function(interval) {
-        const ex = planet._.intervalRun;
+    globe._.defs = globe._.svg.append("defs");
+    globe._.ticker = function(interval) {
+        const ex = globe._.intervalRun;
         interval = interval || 50;
         ticker = setInterval(() => {
-            ex.call(planet);
+            ex.call(globe);
             earths.forEach(function(p) {
                 p._.intervalRun.call(p);
             });
         }, interval);
         earthjs.ticker = ticker;
-        return planet;
+        return globe;
     }
 
     //----------------------------------------
     // Helper
-    planet._.scale = function(y) {
-        planet._.proj.scale(y);
-        planet._.resize.call(planet);
-        planet._.refresh.call(planet);
-        return planet;
+    globe._.scale = function(y) {
+        globe._.proj.scale(y);
+        globe._.resize.call(globe);
+        globe._.refresh.call(globe);
+        return globe;
     }
 
-    planet._.rotate = function(r) {
-        planet._.proj.rotate(r);
-        planet._.refresh.call(planet);
-        return planet;
+    globe._.rotate = function(r) {
+        globe._.proj.rotate(r);
+        globe._.refresh.call(globe);
+        return globe;
     }
 
-    planet._.intervalRun = function() {
+    globe._.intervalRun = function() {
         _.onIntervalKeys.forEach(function(fn) {
-            _.onInterval[fn].call(planet);
+            _.onInterval[fn].call(globe);
         });
-        return planet;
+        return globe;
     }
 
-    planet._.refresh = function(filter) {
+    globe._.refresh = function(filter) {
         const keys = filter ? _.onRefreshKeys.filter(d => filter.test(d)) : _.onRefreshKeys;
         keys.forEach(function(fn) {
-            _.onRefresh[fn].call(planet);
+            _.onRefresh[fn].call(globe);
         });
-        return planet;
+        return globe;
     }
 
-    planet._.resize = function() {
+    globe._.resize = function() {
         _.onResizeKeys.forEach(function(fn) {
-            _.onResize[fn].call(planet);
+            _.onResize[fn].call(globe);
         });
-        return planet;
+        return globe;
     }
 
-    planet._.orthoGraphic = function() {
-        const width = planet._.options.width;
-        const height= planet._.options.height;
-        const rotate = planet._.options.rotate;
-        const ltRotate = planet._.ltScale(rotate);
+    globe._.orthoGraphic = function() {
+        const width = globe._.options.width;
+        const height = globe._.options.height;
+        const rotate = globe._.options.rotate;
+        const ltRotate = globe._.ltScale(rotate);
         return d3.geoOrthographic()
             .scale(width / 3.5)
             .rotate([ltRotate, 0])
@@ -210,15 +210,15 @@ const earthjs = (options={}) => {
             .clipAngle(90);
     }
 
-    planet._.addRenderer = function(name) {
+    globe._.addRenderer = function(name) {
         if (_.renderOrder.indexOf(name)<0) {
             _.renderOrder.push(name);
         }
     }
 
-    planet._.proj = planet._.orthoGraphic();
-    planet._.path = d3.geoPath().projection(planet._.proj);
-    return planet;
+    globe._.proj = globe._.orthoGraphic();
+    globe._.path = d3.geoPath().projection(globe._.proj);
+    return globe;
     //----------------------------------------
     function qEvent(obj, qname) {
         if (obj[qname]) {
