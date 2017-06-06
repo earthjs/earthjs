@@ -40,12 +40,15 @@ export default function() {
                             const d = _.pings.shift();
                             _.pings.push(d);
                         }
-                    });
+                    }, _.drawTo);
                 }
             }
         },
         data(data) {
             _.dataPings = data;
+        },
+        drawTo(arr) {
+            _.drawTo = arr;
         },
     }
 }

@@ -16,7 +16,6 @@
         const g2 = earthjs({rotate: 180});
         g1.register(earthjs.plugins.configPlugin());
         g1.register(earthjs.plugins.versorDragPlugin());
-        g1.register(earthjs.plugins.autorotatePlugin(10));
 
         g1.register(earthjs.plugins.oceanPlugin());
         g1.register(earthjs.plugins.fauxGlobePlugin());
@@ -32,7 +31,6 @@
         g2.worldCanvas.style({land: 'rgba(7, 117, 207, 0.4)'});
         g1.canvasPlugin.selectAll('#earth1');
         g2.canvasPlugin.selectAll('#earth2');
-        g1.autorotatePlugin.sync([g2]);
         g1.versorDragPlugin.sync([g2]);
         g1.ready(function(){
             const d = g1.worldCanvas.data();

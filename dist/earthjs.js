@@ -401,6 +401,7 @@ var threejsPlugin = function () {
 
 // Bo Ericsson’s Block http://bl.ocks.org/boeric/aa80b0048b7e39dd71c8fbe958d1b1d4
 var canvasPlugin = (function () {
+    /*eslint no-console: 0 */
     var _ = { canvas: null, path: null, q: null };
 
     function svgAddCanvas() {
@@ -436,12 +437,16 @@ var canvasPlugin = (function () {
             }
             return _.canvas;
         },
-        render: function render(fn) {
+        render: function render(fn, drawTo) {
             if (this._.options.showCanvas) {
                 var _this = this;
-                _.canvas.each(function () {
+                _.canvas.each(function (obj, idx) {
                     var context = this.getContext("2d");
-                    fn.call(_this, context, _.path.context(context));
+                    if (!drawTo) {
+                        fn.call(_this, context, _.path.context(context));
+                    } else if (drawTo.indexOf(idx) > -1) {
+                        fn.call(_this, context, _.path.context(context));
+                    }
                 });
             }
         }
@@ -449,7 +454,7 @@ var canvasPlugin = (function () {
 });
 
 var oceanPlugin = function () {
-    var _ = { svg: null, q: null };
+    var _ = { svg: null, q: null, scale: 0 };
 
     function svgAddOcean() {
         _.svg.selectAll('#ocean,.ocean').remove();
@@ -465,7 +470,7 @@ var oceanPlugin = function () {
 
     function resize() {
         if (this._.ocean && this._.options.showOcean) {
-            this._.ocean.attr("r", this._.proj.scale());
+            this._.ocean.attr("r", this._.proj.scale() + _.scale);
         }
     }
 
@@ -485,6 +490,14 @@ var oceanPlugin = function () {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
+        },
+        scale: function scale(sz) {
+            if (sz) {
+                _.scale = sz;
+                resize.call(this);
+            } else {
+                return _.scale;
+            }
         }
     };
 };
@@ -508,6 +521,7 @@ var configPlugin = function () {
 
 var graticuleCanvas = function () {
     var datumGraticule = d3.geoGraticule()();
+    var _ = { style: {}, drawTo: null };
 
     function canvasAddGraticule() {
         if (this._.options.showGraticule) {
@@ -515,9 +529,9 @@ var graticuleCanvas = function () {
                 context.beginPath();
                 path(datumGraticule);
                 context.lineWidth = 0.3;
-                context.strokeStyle = 'rgba(119,119,119,0.4)';
+                context.strokeStyle = _.style.line || 'rgba(119,119,119,0.4)';
                 context.stroke();
-            });
+            }, _.drawTo);
         }
     }
 
@@ -529,6 +543,15 @@ var graticuleCanvas = function () {
         },
         onRefresh: function onRefresh() {
             canvasAddGraticule.call(this);
+        },
+        style: function style(s) {
+            if (s) {
+                _.style = s;
+            }
+            return _.style;
+        },
+        drawTo: function drawTo(arr) {
+            _.drawTo = arr;
         }
     };
 };
@@ -829,7 +852,7 @@ var placesPlugin = function (urlPlaces) {
 var worldCanvas = (function (urlWorld, urlCountryNames) {
     /*eslint no-debugger: 0 */
     /*eslint no-console: 0 */
-    var _ = { world: null, countryNames: null, style: {} };
+    var _ = { world: null, countryNames: null, style: {}, drawTo: null };
 
     function canvasAddWorldOrCountries() {
         if (_.world && this._.options.showLand) {
@@ -851,7 +874,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
             path(_.land);
             context.fillStyle = _.style.land || 'rgba(117, 87, 57, 0.4)';
             context.fill();
-        });
+        }, _.drawTo);
     }
 
     function canvasAddCountries() {
@@ -861,7 +884,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
             context.lineWidth = 0.5;
             context.strokeStyle = _.style.countries || 'rgba(80, 64, 39, 0.6)';
             context.stroke();
-        });
+        }, _.drawTo);
     }
 
     function canvasAddLakes() {
@@ -870,7 +893,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
             path(_.lakes);
             context.fillStyle = _.style.lakes || 'rgba(80, 87, 97, 0.4)';
             context.fill();
-        });
+        }, _.drawTo);
     }
 
     var urls = null;
@@ -914,6 +937,9 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
                 _.style = s;
             }
             return _.style;
+        },
+        drawTo: function drawTo(arr) {
+            _.drawTo = arr;
         }
     };
 });
@@ -1352,7 +1378,7 @@ var dotsCanvas = function () {
                         context.closePath();
                     }
                 });
-            });
+            }, _.drawTo);
         }
     }
 
@@ -1367,6 +1393,9 @@ var dotsCanvas = function () {
         },
         data: function data(_data) {
             _.dataDots = _data;
+        },
+        drawTo: function drawTo(arr) {
+            _.drawTo = arr;
         }
     };
 };
@@ -1411,12 +1440,15 @@ var pingsCanvas = function () {
                             var _d = _.pings.shift();
                             _.pings.push(_d);
                         }
-                    });
+                    }, _.drawTo);
                 }
             }
         },
         data: function data(_data) {
             _.dataPings = _data;
+        },
+        drawTo: function drawTo(arr) {
+            _.drawTo = arr;
         }
     };
 };

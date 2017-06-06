@@ -1,5 +1,5 @@
 export default function() {
-    const _ = {svg:null, q: null};
+    const _ = {svg:null, q: null, scale: 0};
 
     function svgAddOcean() {
         _.svg.selectAll('#ocean,.ocean').remove();
@@ -24,7 +24,7 @@ export default function() {
 
     function resize() {
         if (this._.ocean && this._.options.showOcean) {
-            this._.ocean.attr("r", this._.proj.scale());
+            this._.ocean.attr("r", this._.proj.scale()+_.scale);
         }
     }
 
@@ -44,6 +44,14 @@ export default function() {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
+        },
+        scale(sz) {
+            if (sz) {
+                _.scale = sz;
+                resize.call(this);
+            } else {
+                return _.scale;
+            }
         }
     }
 }

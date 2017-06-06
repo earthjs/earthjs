@@ -1,5 +1,6 @@
 // Bo Ericsson’s Block http://bl.ocks.org/boeric/aa80b0048b7e39dd71c8fbe958d1b1d4
 export default () => {
+    /*eslint no-console: 0 */
     const _ = {canvas: null, path: null, q: null}
 
     function svgAddCanvas() {
@@ -48,12 +49,16 @@ export default () => {
             }
             return _.canvas;
         },
-        render(fn) {
+        render(fn, drawTo) {
             if (this._.options.showCanvas) {
                 const _this = this;
-                _.canvas.each(function() {
+                _.canvas.each(function(obj, idx) {
                     const context = this.getContext("2d");
-                    fn.call(_this, context, _.path.context(context));
+                    if (!drawTo) {
+                        fn.call(_this, context, _.path.context(context));
+                    } else if (drawTo.indexOf(idx)>-1){
+                        fn.call(_this, context, _.path.context(context));
+                    }
                 });
             }
         }

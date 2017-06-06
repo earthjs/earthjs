@@ -17,7 +17,7 @@ export default function() {
                         context.closePath();
                     }
                 });
-            });
+            }, _.drawTo);
         }
     }
 
@@ -32,6 +32,9 @@ export default function() {
         },
         data(data) {
             _.dataDots = data;
+        },
+        drawTo(arr) {
+            _.drawTo = arr;
         },
     }
 }
