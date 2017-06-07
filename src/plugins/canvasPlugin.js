@@ -37,7 +37,7 @@ export default () => {
         },
         onRefresh() {
             const width = this._.options.width,
-                height= this._.options.height;
+                  height= this._.options.height;
             _.canvas.each(function() {
                 this.getContext("2d").clearRect(0, 0, width, height);
             });
@@ -49,15 +49,25 @@ export default () => {
             }
             return _.canvas;
         },
-        render(fn, drawTo) {
+        render(fn, drawTo, options) {
             if (this._.options.showCanvas) {
+                var rChange = false;
                 const _this = this;
+                const r = this._.proj.rotate();
                 _.canvas.each(function(obj, idx) {
                     const context = this.getContext("2d");
-                    if (!drawTo) {
+                    if (!drawTo || drawTo.indexOf(idx)>-1) {
+                        const o = options && options[idx];
+                        if (o && o.rotate) {
+                            const newR = [r[0]+o.rotate, r[1], r[2]];
+                            _this._.proj.rotate(newR);
+                            rChange = true;
+                        }
                         fn.call(_this, context, _.path.context(context));
-                    } else if (drawTo.indexOf(idx)>-1){
-                        fn.call(_this, context, _.path.context(context));
+                        if (rChange) {
+                            rChange = false;
+                            _this._.proj.rotate(r);
+                        }
                     }
                 });
             }

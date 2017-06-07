@@ -437,15 +437,25 @@ var canvasPlugin = (function () {
             }
             return _.canvas;
         },
-        render: function render(fn, drawTo) {
+        render: function render(fn, drawTo, options) {
             if (this._.options.showCanvas) {
+                var rChange = false;
                 var _this = this;
+                var r = this._.proj.rotate();
                 _.canvas.each(function (obj, idx) {
                     var context = this.getContext("2d");
-                    if (!drawTo) {
+                    if (!drawTo || drawTo.indexOf(idx) > -1) {
+                        var o = options && options[idx];
+                        if (o && o.rotate) {
+                            var newR = [r[0] + o.rotate, r[1], r[2]];
+                            _this._.proj.rotate(newR);
+                            rChange = true;
+                        }
                         fn.call(_this, context, _.path.context(context));
-                    } else if (drawTo.indexOf(idx) > -1) {
-                        fn.call(_this, context, _.path.context(context));
+                        if (rChange) {
+                            rChange = false;
+                            _this._.proj.rotate(r);
+                        }
                     }
                 });
             }
@@ -852,7 +862,7 @@ var placesPlugin = function (urlPlaces) {
 var worldCanvas = (function (urlWorld, urlCountryNames) {
     /*eslint no-debugger: 0 */
     /*eslint no-console: 0 */
-    var _ = { world: null, countryNames: null, style: {}, drawTo: null };
+    var _ = { world: null, countryNames: null, style: {}, drawTo: null, options: {} };
 
     function canvasAddWorldOrCountries() {
         if (_.world && this._.options.showLand) {
@@ -874,7 +884,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
             path(_.land);
             context.fillStyle = _.style.land || 'rgba(117, 87, 57, 0.4)';
             context.fill();
-        }, _.drawTo);
+        }, _.drawTo, _.options);
     }
 
     function canvasAddCountries() {
@@ -884,7 +894,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
             context.lineWidth = 0.5;
             context.strokeStyle = _.style.countries || 'rgba(80, 64, 39, 0.6)';
             context.stroke();
-        }, _.drawTo);
+        }, _.drawTo, _.options);
     }
 
     function canvasAddLakes() {
@@ -893,7 +903,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
             path(_.lakes);
             context.fillStyle = _.style.lakes || 'rgba(80, 87, 97, 0.4)';
             context.fill();
-        }, _.drawTo);
+        }, _.drawTo, _.options);
     }
 
     var urls = null;
@@ -940,6 +950,9 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
         },
         drawTo: function drawTo(arr) {
             _.drawTo = arr;
+        },
+        options: function options(_options) {
+            _.options = _options;
         }
     };
 });

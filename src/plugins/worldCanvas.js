@@ -2,7 +2,7 @@
 export default (urlWorld, urlCountryNames) => {
     /*eslint no-debugger: 0 */
     /*eslint no-console: 0 */
-    const _ = {world: null, countryNames: null, style: {}, drawTo: null};
+    const _ = {world: null, countryNames: null, style: {}, drawTo: null, options: {}};
 
     function canvasAddWorldOrCountries() {
         if (_.world && this._.options.showLand) {
@@ -24,7 +24,7 @@ export default (urlWorld, urlCountryNames) => {
             path(_.land);
             context.fillStyle = _.style.land || 'rgba(117, 87, 57, 0.4)';
             context.fill();
-        }, _.drawTo);
+        }, _.drawTo, _.options);
     }
 
     function canvasAddCountries() {
@@ -34,7 +34,7 @@ export default (urlWorld, urlCountryNames) => {
             context.lineWidth = 0.5;
             context.strokeStyle = _.style.countries || 'rgba(80, 64, 39, 0.6)';
             context.stroke();
-        }, _.drawTo);
+        }, _.drawTo, _.options);
     }
 
     function canvasAddLakes() {
@@ -43,7 +43,7 @@ export default (urlWorld, urlCountryNames) => {
             path(_.lakes);
             context.fillStyle = _.style.lakes || 'rgba(80, 87, 97, 0.4)';
             context.fill();
-        }, _.drawTo);
+        }, _.drawTo, _.options);
     }
 
     let urls = null;
@@ -90,6 +90,9 @@ export default (urlWorld, urlCountryNames) => {
         },
         drawTo(arr) {
             _.drawTo = arr;
+        },
+        options(options) {
+            _.options = options;
         }
     }
 }

@@ -1,0 +1,55 @@
+<html>
+<head>
+    <style media="screen">
+        .input-area {
+            position: absolute;
+            z-index: 5;
+        }
+    </style>
+    <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
+    <script type='text/javascript' src="./js/d3.min.js"></script>
+    <script type='text/javascript' src="./js/topojson.min.js"></script>
+    <script type='text/javascript' src='../dist/earthjs.js'></script>
+</head>
+<body>
+    <div class="input-area">
+        <input id="ocn" type="range" min="0" max="20" step="1" value="0"/><br/>
+        <input id="pan" type="range" min="0" max="50" step="1" value="0"/><br/>
+        <input id="rtt" type="range" min="0" max="180" step="1" value="0"/>
+    </div>
+    <svg id="earth"></svg>
+    <canvas></canvas>
+    <canvas></canvas>
+    <script>
+        const g = earthjs();
+        g.register(earthjs.plugins.versorDragPlugin());
+        g.register(earthjs.plugins.autorotatePlugin(10));
+        g.register(earthjs.plugins.oceanPlugin());
+        g.register(earthjs.plugins.canvasPlugin());
+        g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
+        g.canvasPlugin.selectAll('canvas');
+        // g.worldCanvas.options({
+        //     1: {rotate: 180}
+        // });
+        g.ready(function(){
+            g.svgDraw();
+        });
+        const canvas = d3.selectAll('canvas').nodes();
+        d3.select('#pan').on('input', function() {
+            canvas[0].style.top = this.value;
+            canvas[0].style.left = this.value;
+            canvas[1].style.top = this.value*2;
+            canvas[1].style.left = this.value*2;
+        })
+        d3.select('#ocn').on('input', function() {
+            g.oceanPlugin.scale(-this.value);
+        })
+        d3.select('#rtt').on('input', function() {
+            const rotate = +this.value;
+            g.worldCanvas.options({
+                1: {rotate}
+            });
+        })
+    </script>
+</body>
+</html>
