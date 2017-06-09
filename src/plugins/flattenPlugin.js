@@ -4,9 +4,7 @@ export default function() {
     return {
         name: 'flattenPlugin',
         onInit() {
-            const width = 700,
-                height = 500,
-                _this = this;
+            const _this = this;
 
             function animation() {
                 _this._.svg.transition()
@@ -49,8 +47,8 @@ export default function() {
 
             const g1 = this._.proj;
             const g2 = d3.geoEquirectangular()
-                .scale(width/4)
-                .translate([width / 2, height / 2]);
+                .scale(this._.options.width/7)
+                .translate(this._.center);
             _.proj = interpolatedProjection(g1, g2);
             // _.proj.center([0,0]);
             this._.animation = animation;

@@ -16,7 +16,7 @@ export default function() {
                   .attr("offset","100%").attr("stop-color", "#000")
                   .attr("stop-opacity","0")
             this._.dropShadow = _.svg.append("g").attr("class","drop_shadow").append("ellipse")
-                  .attr("cx", this._.options.width/2).attr("cy", this._.options.height-50)
+                  .attr("cx", this._.center[0]).attr("cy", this._.options.height-50)
                   .attr("rx", this._.proj.scale()*0.90)
                   .attr("ry", this._.proj.scale()*0.25)
                   .attr("class", "noclicks")
@@ -39,7 +39,7 @@ export default function() {
                   .attr("offset","100%").attr("stop-color", "#3e6184")
                   .attr("stop-opacity","0.3")
             this._.globeShading = _.svg.append("g").attr("class","shading").append("circle")
-                .attr("cx", this._.options.width / 2).attr("cy", this._.options.height / 2)
+                .attr("cx", this._.center[0]).attr("cy", this._.center[1])
                 .attr("r",  this._.proj.scale())
                 .attr("class","noclicks")
                 .style("fill", "url(#shading)");
@@ -61,7 +61,7 @@ export default function() {
                   .attr("offset", "100%").attr("stop-color", "#ba9")
                   .attr("stop-opacity","0.2");
             this._.globeHilight = _.svg.append("g").attr("class","hilight").append("circle")
-                .attr("cx", this._.options.width / 2).attr("cy", this._.options.height / 2)
+                .attr("cx", this._.center[0]).attr("cy", this._.center[1])
                 .attr("r",  this._.proj.scale())
                 .attr("class","noclicks")
                 .style("fill", "url(#hilight)");

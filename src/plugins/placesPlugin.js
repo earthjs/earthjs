@@ -36,20 +36,20 @@ export default function(urlPlaces) {
 
     function position_labels() {
         const _this = this;
-        const centerPos = this._.proj.invert([this._.options.width / 2, this._.options.height/2]);
+        const centerPos = this._.proj.invert(this._.center);
 
         this._.placeLabels
             .attr("text-anchor",function(d) {
                 const x = _this._.proj(d.geometry.coordinates)[0];
-                return x < _this._.options.width/2-20 ? "end" :
-                       x < _this._.options.width/2+20 ? "middle" :
+                return x < _this._.center[0]-20 ? "end" :
+                       x < _this._.center[0]+20 ? "middle" :
                        "start"
             })
             .attr("transform", function(d) {
                 const loc = _this._.proj(d.geometry.coordinates),
                     x = loc[0],
                     y = loc[1];
-                const offset = x < _this._.options.width/2 ? -5 : 5;
+                const offset = x < _this._.center[0] ? -5 : 5;
                 return "translate(" + (x+offset) + "," + (y-2) + ")"
             })
             .style("display", function(d) {

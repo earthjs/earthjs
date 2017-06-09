@@ -64,8 +64,8 @@ export default urlBars => {
         this._.defs.selectAll('clipPath').remove();
         this._.defs.append("clipPath").append("circle")
             .attr("id", "edgeCircle")
-            .attr("cx", this._.options.width / 2)
-            .attr("cy", this._.options.height / 2)
+            .attr("cx", this._.center[0])
+            .attr("cy", this._.center[1])
             .attr("r",  this._.proj.scale());
     }
 

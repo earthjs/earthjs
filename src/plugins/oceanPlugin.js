@@ -15,7 +15,7 @@ export default function() {
                 .attr("offset", "100%")
                 .attr("stop-color", "#9ab");
             this._.ocean = _.svg.append("g").attr("class","ocean").append("circle")
-                .attr("cx",this._.options.width / 2).attr("cy", this._.options.height / 2)
+                .attr("cx",this._.center[0]).attr("cy", this._.center[1])
                 .attr("class", "noclicks");
             resize.call(this);
             return this._.ocean;

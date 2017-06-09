@@ -48,9 +48,21 @@ const earthjs = (options={}) => {
         height = options.height || 500;
         svg.attr("width", width).attr("height", height);
     }
-    options.width = width;
-    options.height = height;
     const center = [width/2, height/2];
+    Object.defineProperty(options, 'width', {
+        get: () => width,
+        set: (x) => {
+            width = x;
+            center[0] = x/2;
+        }
+    });
+    Object.defineProperty(options, 'height', {
+        get: () => height,
+        set: (x) => {
+            height = x;
+            center[1] = x/2;
+        }
+    });
     const globe = {
         _: {
             svg,
