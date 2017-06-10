@@ -49,27 +49,30 @@ export default () => {
             }
             return _.canvas;
         },
-        render(fn, drawTo, options) {
+        render(fn, drawTo, options=[]) {
             if (this._.options.showCanvas) {
                 var rChange = false;
+                const proj = this._.proj;
+                const r = proj.rotate();
                 const _this = this;
-                const r = this._.proj.rotate();
                 _.canvas.each(function(obj, idx) {
-                    const context = this.getContext("2d");
                     if (!drawTo || drawTo.indexOf(idx)>-1) {
-                        const o = options && options[idx];
-                        if (o && o.rotate) {
-                            const newR = [r[0]+o.rotate, r[1], r[2]];
-                            _this._.proj.rotate(newR);
+                        const o = options[idx] || {};
+                        if (o.rotate) {
                             rChange = true;
-                        }
-                        fn.call(_this, context, _.path.context(context));
-                        if (rChange) {
+                            proj.rotate([r[0]+o.rotate, r[1], r[2]]);
+                        } else if (rChange) {
                             rChange = false;
-                            _this._.proj.rotate(r);
+                            proj.rotate(r);
                         }
+                        const context = this.getContext("2d");
+                        fn.call(_this, context, _.path.context(context));
                     }
                 });
+                if (rChange) {
+                    rChange = false;
+                    proj.rotate(r);
+                }
             }
         }
     }

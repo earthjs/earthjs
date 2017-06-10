@@ -1,13 +1,13 @@
 export default function() {
+    /*eslint no-console: 0 */
     return {
         name: 'wheelZoomPlugin',
         onInit() {
-            const _this = this;
-            this._.svg.on('wheel', function() {
-                const y = d3.event.deltaY+_this._.proj.scale();
-                if (y>230 && y<1000) {
-                    _this._.scale(y);
-                }
+            const __ = this._;
+            __.svg.on('wheel', function() {
+                let y = d3.event.deltaY+__.proj.scale();
+                y = (y<20 ? 20 : (y>999 ? 1000 : y));
+                __.scale(y);
             });
         }
     }

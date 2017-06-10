@@ -1,5 +1,13 @@
 <html>
 <head>
+    <style media="screen">
+        .input-area {
+            position: absolute;
+            z-index: 5;
+        }
+    </style>
+    <style id="js-controlled">
+    </style>
     <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
     <script type='text/javascript' src="./js/d3.min.js"></script>
     <script type='text/javascript' src="./js/topojson.min.js"></script>
@@ -10,34 +18,53 @@
             top: 0px;
             left: 0px;
         }
+        #earth2 {
+            z-index: 4;
+        }
     </style>
 </head>
 <body>
+    <div class="input-area">
+        <input id="pan" type="range" min="0" max="50" step="1" value="0"/>
+    </div>
     <svg id="earth"></svg>
     <canvas class="canvas"></canvas>
-    <svg id="earth2"></svg>
-  <script>
-    const g = earthjs({rotate: -40});
-    // g.register(earthjs.plugins.autorotatePlugin(10));
-    g.register(earthjs.plugins.versorDragPlugin());
-    g.register(earthjs.plugins.configPlugin());
-    g.register(earthjs.plugins.oceanPlugin());
-    g.register(earthjs.plugins.canvasPlugin());
-    g.register(earthjs.plugins.graticuleCanvas());
-    g.register(earthjs.plugins.fauxGlobePlugin());
-    // g.register(earthjs.plugins.placesPlugin('./d/places.json'));
-    g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
-    g.register(earthjs.plugins.barPlugin('./d/bars.json'));
-    g.worldCanvas.style({land: 'green'});
+    <svg id="earth2" width="700" height="500"></svg>
+    <script>
+        const g = earthjs({rotate: -40});
+        // g.register(earthjs.plugins.autorotatePlugin(10));
+        g.register(earthjs.plugins.versorDragPlugin());
+        g.register(earthjs.plugins.configPlugin());
+        g.register(earthjs.plugins.oceanPlugin());
+        g.register(earthjs.plugins.canvasPlugin());
+        g.register(earthjs.plugins.graticuleCanvas());
+        g.register(earthjs.plugins.fauxGlobePlugin());
+        // g.register(earthjs.plugins.placesPlugin('./d/places.json'));
+        g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
+        g.register(earthjs.plugins.barPlugin('./d/bars.json'));
+        g.worldCanvas.style({land: 'green'});
 
-    g.canvasPlugin.selectAll('.canvas');
-    // g.placesPlugin.selectAll('#earth2');
-    g.fauxGlobePlugin.selectAll('#earth2');
-    g.versorDragPlugin.selectAll('#earth2');
-    g.configPlugin.set({showCountries: false, showLakes: false});
-    g.ready(function(){
-        g.svgDraw();
-    })
-  </script>
+        g.canvasPlugin.selectAll('.canvas');
+        // g.placesPlugin.selectAll('#earth2');
+        g.barPlugin.selectAll('#earth2');
+        g.fauxGlobePlugin.selectAll('#earth2');
+        g.versorDragPlugin.selectAll('#earth2');
+        g.configPlugin.set({showCountries: false, showLakes: false});
+        g.ready(function(){
+            g.svgDraw();
+        })
+        const st = d3.select('#js-controlled');
+        d3.select('#pan').on('input', function() {
+            st.text(`
+canvas.canvas {
+    top: ${this.value}px;
+    left: ${this.value}px;
+}
+svg#earth2 {
+    top: ${this.value*2}px;
+    left: ${this.value*2}px;
+}`          );
+        })
+    </script>
 </body>
 </html>

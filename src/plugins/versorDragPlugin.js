@@ -3,8 +3,8 @@ export default function() {
     const _ = {svg:null, q: null, sync: []};
 
     function dragSetup() {
-        const _this = this,
-        versor = this._.versor;
+        const __ = this._;
+        const versor = __.versor;
         _.svg.call(d3.drag()
             .on('start', dragstarted)
             .on('end',   dragsended)
@@ -14,8 +14,7 @@ export default function() {
             r0, // Projection rotation as Euler angles at start.
             q0; // Projection rotation as versor at start.
 
-        function rotate(src) {
-            const r = src._.proj.rotate();
+        function rotate(r) {
             const d = r[0] - r0[0];
             r[0] = d + this._.proj.rotate()[0];
             if (r[0] >= 180)
@@ -24,27 +23,28 @@ export default function() {
         }
 
         function dragstarted() {
-            v0 = versor.cartesian(_this._.proj.invert(d3.mouse(this)));
-            r0 = _this._.proj.rotate();
+            v0 = versor.cartesian(__.proj.invert(d3.mouse(this)));
+            r0 = __.proj.rotate();
             q0 = versor(r0);
-            _this._.drag = null;
-            _this._.refresh();
+            __.drag = null;
+            __.refresh();
         }
 
         function dragged() {
-            const v1 = versor.cartesian(_this._.proj.rotate(r0).invert(d3.mouse(this))),
+            const v1 = versor.cartesian(__.proj.rotate(r0).invert(d3.mouse(this))),
                 q1 = versor.multiply(q0, versor.delta(v0, v1)),
                 r1 = versor.rotation(q1);
-            _this._.rotate(r1);
-            _this._.drag = true;
+            __.rotate(r1);
+            __.drag = true;
         }
 
         function dragsended() {
-            _.sync.forEach(function(p) {
-                rotate.call(p, _this);
+            const r = __.proj.rotate();
+            _.sync.forEach(function(g) {
+                rotate.call(g, r);
             })
-            _this._.drag = false;
-            _this._.refresh();
+            __.drag = false;
+            __.refresh();
         }
     }
 

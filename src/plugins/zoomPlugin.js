@@ -2,9 +2,9 @@ export default function() {
     return {
         name: 'zoomPlugin',
         onInit() {
-            const _this= this;
+            const __ = this._;
             const zoom = d3.zoom()
-                .scaleExtent([this._.proj.scale(), 1000])
+                .scaleExtent([__.proj.scale(), 1000])
                 .translateExtent([[-100, -100], [90, 100]]);
             zoom
                 .on("start", zoomstart)
@@ -14,31 +14,31 @@ export default function() {
                     if (e.sourceEvent) {
                         const t = e.transform;
                         if (e.sourceEvent.constructor.name==='WheelEvent') {
-                            _this._.scale(t.k);
+                            __.scale(t.k);
                         } else if (e.sourceEvent.constructor.name==='MouseEvent') {
                             const rX = rotateScale(t.x);
                             const rY = rotateScale(t.y);
 
-                            _this._.rotate([rX, -rY]).scale(t.k);
+                            __.rotate([rX, -rY]).scale(t.k);
                         }
                     }
                 });
 
-            const zoomSettings = d3.zoomIdentity.translate(0, 0).scale(this._.proj.scale());
+            const zoomSettings = d3.zoomIdentity.translate(0, 0).scale(__.proj.scale());
             const rotateScale  = d3.scaleLinear()
                 .domain([-1500, 0, 1500])
                 .range([-250, 0, 250]);
 
-            this.svg
+            __.svg
                 .call(zoom)
                 .call(zoom.transform, zoomSettings)
 
             function zoomstart(){
-                _this._.drag = true;
+                __.drag = true;
             }
 
             function zoomend(){
-                _this._.drag = false;
+                __.drag = false;
             }
         }
     }

@@ -10,14 +10,16 @@
     <svg class="earth e2"></svg>
     <script>
         const g = earthjs({select:'.earth'});
-        g.register(earthjs.plugins.oceanPlugin());
         g.register(earthjs.plugins.configPlugin());
+        g.register(earthjs.plugins.versorDragPlugin());
+        // g.register(earthjs.plugins.autorotatePlugin(10));
+
+        g.register(earthjs.plugins.oceanPlugin());
+        g.register(earthjs.plugins.fauxGlobePlugin());
+
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
         // g.register(earthjs.plugins.graticulePlugin());
-        g.register(earthjs.plugins.fauxGlobePlugin());
-        g.register(earthjs.plugins.versorDragPlugin());
-        // g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.placesPlugin('./d/places.json'));
         g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
         // g.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));

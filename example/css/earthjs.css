@@ -1,18 +1,18 @@
 body {
     margin: 0;
 }
-#earth, #three-js, canvas, .top {
+#earth, #three-js, .canvas, .top {
     position: absolute;
     left: 0;
     top: 0;
 }
-#three-js, canvas {
+#three-js, .canvas {
     pointer-events: none;
 }
 #earth {
     z-index: 2;
 }
-canvas, .top {
+.canvas, .top {
     /*position: relative;*/
     z-index: 3;
 }

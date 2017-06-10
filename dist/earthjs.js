@@ -198,6 +198,7 @@ var earthjs$1 = function earthjs() {
     //----------------------------------------
     var earths = [];
     var ticker = null;
+    var __ = globe._;
 
     globe.svgDraw = function (twinEarth) {
         var $ = globe.$;
@@ -209,14 +210,14 @@ var earthjs$1 = function earthjs() {
             p.svgDraw(null);
         });
         if (ticker === null && earths !== []) {
-            globe._.ticker.call(globe);
+            __.ticker();
         }
         return globe;
     };
 
-    globe._.defs = globe._.svg.append("defs");
-    globe._.ticker = function (interval) {
-        var ex = globe._.intervalRun;
+    __.defs = __.svg.append("defs");
+    __.ticker = function (interval) {
+        var ex = __.intervalRun;
         interval = interval || 50;
         ticker = setInterval(function () {
             ex.call(globe);
@@ -230,27 +231,27 @@ var earthjs$1 = function earthjs() {
 
     //----------------------------------------
     // Helper
-    globe._.scale = function (y) {
-        globe._.proj.scale(y);
-        globe._.resize.call(globe);
-        globe._.refresh.call(globe);
+    __.scale = function (y) {
+        __.proj.scale(y);
+        __.resize();
+        __.refresh();
         return globe;
     };
 
-    globe._.rotate = function (r) {
-        globe._.proj.rotate(r);
-        globe._.refresh.call(globe);
+    __.rotate = function (r) {
+        __.proj.rotate(r);
+        __.refresh();
         return globe;
     };
 
-    globe._.intervalRun = function () {
+    __.intervalRun = function () {
         _.onIntervalKeys.forEach(function (fn) {
             _.onInterval[fn].call(globe);
         });
         return globe;
     };
 
-    globe._.refresh = function (filter) {
+    __.refresh = function (filter) {
         var keys = filter ? _.onRefreshKeys.filter(function (d) {
             return filter.test(d);
         }) : _.onRefreshKeys;
@@ -260,28 +261,25 @@ var earthjs$1 = function earthjs() {
         return globe;
     };
 
-    globe._.resize = function () {
+    __.resize = function () {
         _.onResizeKeys.forEach(function (fn) {
             _.onResize[fn].call(globe);
         });
         return globe;
     };
 
-    globe._.orthoGraphic = function () {
-        var width = globe._.options.width;
-        var height = globe._.options.height;
-        var rotate = globe._.options.rotate;
-        return d3.geoOrthographic().scale(width / 3.5).rotate([rotate, 0]).translate([width / 2, height / 2]).precision(0.1).clipAngle(90);
+    __.orthoGraphic = function () {
+        return d3.geoOrthographic().scale(__.options.width / 3.5).rotate([__.options.rotate, 0]).translate(__.center).precision(0.1).clipAngle(90);
     };
 
-    globe._.addRenderer = function (name) {
+    __.addRenderer = function (name) {
         if (_.renderOrder.indexOf(name) < 0) {
             _.renderOrder.push(name);
         }
     };
 
-    globe._.proj = globe._.orthoGraphic();
-    globe._.path = d3.geoPath().projection(globe._.proj);
+    __.proj = __.orthoGraphic();
+    __.path = d3.geoPath().projection(__.proj);
     return globe;
     //----------------------------------------
     function qEvent(obj, qname) {
@@ -297,8 +295,8 @@ var versorDragPlugin = function () {
     var _ = { svg: null, q: null, sync: [] };
 
     function dragSetup() {
-        var _this = this,
-            versor = this._.versor;
+        var __ = this._;
+        var versor = __.versor;
         _.svg.call(d3.drag().on('start', dragstarted).on('end', dragsended).on('drag', dragged));
 
         var v0 = void 0,
@@ -307,8 +305,7 @@ var versorDragPlugin = function () {
             // Projection rotation as Euler angles at start.
         q0 = void 0; // Projection rotation as versor at start.
 
-        function rotate(src) {
-            var r = src._.proj.rotate();
+        function rotate(r) {
             var d = r[0] - r0[0];
             r[0] = d + this._.proj.rotate()[0];
             if (r[0] >= 180) r[0] -= 360;
@@ -316,27 +313,28 @@ var versorDragPlugin = function () {
         }
 
         function dragstarted() {
-            v0 = versor.cartesian(_this._.proj.invert(d3.mouse(this)));
-            r0 = _this._.proj.rotate();
+            v0 = versor.cartesian(__.proj.invert(d3.mouse(this)));
+            r0 = __.proj.rotate();
             q0 = versor(r0);
-            _this._.drag = null;
-            _this._.refresh();
+            __.drag = null;
+            __.refresh();
         }
 
         function dragged() {
-            var v1 = versor.cartesian(_this._.proj.rotate(r0).invert(d3.mouse(this))),
+            var v1 = versor.cartesian(__.proj.rotate(r0).invert(d3.mouse(this))),
                 q1 = versor.multiply(q0, versor.delta(v0, v1)),
                 r1 = versor.rotation(q1);
-            _this._.rotate(r1);
-            _this._.drag = true;
+            __.rotate(r1);
+            __.drag = true;
         }
 
         function dragsended() {
-            _.sync.forEach(function (p) {
-                rotate.call(p, _this);
+            var r = __.proj.rotate();
+            _.sync.forEach(function (g) {
+                rotate.call(g, r);
             });
-            _this._.drag = false;
-            _this._.refresh();
+            __.drag = false;
+            __.refresh();
         }
     }
 
@@ -361,15 +359,15 @@ var versorDragPlugin = function () {
 };
 
 var wheelZoomPlugin = function () {
+    /*eslint no-console: 0 */
     return {
         name: 'wheelZoomPlugin',
         onInit: function onInit() {
-            var _this = this;
-            this._.svg.on('wheel', function () {
-                var y = d3.event.deltaY + _this._.proj.scale();
-                if (y > 230 && y < 1000) {
-                    _this._.scale(y);
-                }
+            var __ = this._;
+            __.svg.on('wheel', function () {
+                var y = d3.event.deltaY + __.proj.scale();
+                y = y < 20 ? 20 : y > 999 ? 1000 : y;
+                __.scale(y);
             });
         }
     };
@@ -453,27 +451,32 @@ var canvasPlugin = (function () {
             }
             return _.canvas;
         },
-        render: function render(fn, drawTo, options) {
+        render: function render(fn, drawTo) {
+            var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
             if (this._.options.showCanvas) {
                 var rChange = false;
+                var proj = this._.proj;
+                var r = proj.rotate();
                 var _this = this;
-                var r = this._.proj.rotate();
                 _.canvas.each(function (obj, idx) {
-                    var context = this.getContext("2d");
                     if (!drawTo || drawTo.indexOf(idx) > -1) {
-                        var o = options && options[idx];
-                        if (o && o.rotate) {
-                            var newR = [r[0] + o.rotate, r[1], r[2]];
-                            _this._.proj.rotate(newR);
+                        var o = options[idx] || {};
+                        if (o.rotate) {
                             rChange = true;
-                        }
-                        fn.call(_this, context, _.path.context(context));
-                        if (rChange) {
+                            proj.rotate([r[0] + o.rotate, r[1], r[2]]);
+                        } else if (rChange) {
                             rChange = false;
-                            _this._.proj.rotate(r);
+                            proj.rotate(r);
                         }
+                        var context = this.getContext("2d");
+                        fn.call(_this, context, _.path.context(context));
                     }
                 });
+                if (rChange) {
+                    rChange = false;
+                    proj.rotate(r);
+                }
             }
         }
     };
@@ -535,8 +538,8 @@ var configPlugin = function () {
             if (newOpt) {
                 Object.assign(this._.options, newOpt);
                 if (newOpt.spin !== undefined) {
-                    var p = this.autorotatePlugin;
-                    newOpt.spin ? p.start() : p.stop();
+                    var rotate = this.autorotatePlugin;
+                    newOpt.spin ? rotate.start() : rotate.stop();
                 }
                 this.svgDraw();
             }

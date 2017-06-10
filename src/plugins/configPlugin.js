@@ -5,8 +5,8 @@ export default function() {
             if (newOpt) {
                 Object.assign(this._.options, newOpt);
                 if (newOpt.spin!==undefined) {
-                    const p = this.autorotatePlugin;
-                    newOpt.spin ? p.start() : p.stop();
+                    const rotate = this.autorotatePlugin;
+                    newOpt.spin ? rotate.start() :rotate.stop();
                 }
                 this.svgDraw();
             }

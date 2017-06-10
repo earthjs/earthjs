@@ -1,5 +1,13 @@
 <html>
 <head>
+    <style media="screen">
+        .input-area {
+            position: absolute;
+            z-index: 5;
+        }
+    </style>
+    <style id="js-controlled">
+    </style>
     <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
     <style media="screen">
         .globe-container {
@@ -12,6 +20,9 @@
     <script type='text/javascript' src='../dist/earthjs.js'></script>
 </head>
 <body>
+    <div class="input-area">
+        <input id="pan" type="range" min="0" max="50" step="1" value="0"/>
+    </div>
     <span class="globe-container">
         <svg id="earth1"/>
         <canvas id="earth1c" class="canvas"/>
@@ -54,6 +65,14 @@
         g2.ready(function(){
             g2.svgDraw();
         });
+        const st = d3.select('#js-controlled');
+        d3.select('#pan').on('input', function() {
+            st.text(`
+canvas.canvas {
+    top: ${this.value}px;
+    left: ${this.value}px;
+}`          );
+        })
     </script>
 </body>
 </html>

@@ -143,6 +143,7 @@ const earthjs = (options={}) => {
     //----------------------------------------
     let earths = [];
     let ticker = null;
+    const __ = globe._;
 
     globe.svgDraw = function(twinEarth) {
         const $ = globe.$;
@@ -154,14 +155,14 @@ const earthjs = (options={}) => {
             p.svgDraw(null);
         });
         if (ticker===null && earths!==[]) {
-            globe._.ticker.call(globe);
+            __.ticker();
         }
         return globe;
     }
 
-    globe._.defs = globe._.svg.append("defs");
-    globe._.ticker = function(interval) {
-        const ex = globe._.intervalRun;
+    __.defs = __.svg.append("defs");
+    __.ticker = function(interval) {
+        const ex = __.intervalRun;
         interval = interval || 50;
         ticker = setInterval(() => {
             ex.call(globe);
@@ -175,27 +176,27 @@ const earthjs = (options={}) => {
 
     //----------------------------------------
     // Helper
-    globe._.scale = function(y) {
-        globe._.proj.scale(y);
-        globe._.resize.call(globe);
-        globe._.refresh.call(globe);
+    __.scale = function(y) {
+        __.proj.scale(y);
+        __.resize();
+        __.refresh();
         return globe;
     }
 
-    globe._.rotate = function(r) {
-        globe._.proj.rotate(r);
-        globe._.refresh.call(globe);
+    __.rotate = function(r) {
+        __.proj.rotate(r);
+        __.refresh();
         return globe;
     }
 
-    globe._.intervalRun = function() {
+    __.intervalRun = function() {
         _.onIntervalKeys.forEach(function(fn) {
             _.onInterval[fn].call(globe);
         });
         return globe;
     }
 
-    globe._.refresh = function(filter) {
+    __.refresh = function(filter) {
         const keys = filter ? _.onRefreshKeys.filter(d => filter.test(d)) : _.onRefreshKeys;
         keys.forEach(function(fn) {
             _.onRefresh[fn].call(globe);
@@ -203,33 +204,30 @@ const earthjs = (options={}) => {
         return globe;
     }
 
-    globe._.resize = function() {
+    __.resize = function() {
         _.onResizeKeys.forEach(function(fn) {
             _.onResize[fn].call(globe);
         });
         return globe;
     }
 
-    globe._.orthoGraphic = function() {
-        const width = globe._.options.width;
-        const height = globe._.options.height;
-        const rotate = globe._.options.rotate;
+    __.orthoGraphic = function() {
         return d3.geoOrthographic()
-            .scale(width / 3.5)
-            .rotate([rotate, 0])
-            .translate([width / 2, height / 2])
+            .scale(__.options.width / 3.5)
+            .rotate([__.options.rotate, 0])
+            .translate(__.center)
             .precision(0.1)
             .clipAngle(90);
     }
 
-    globe._.addRenderer = function(name) {
+    __.addRenderer = function(name) {
         if (_.renderOrder.indexOf(name)<0) {
             _.renderOrder.push(name);
         }
     }
 
-    globe._.proj = globe._.orthoGraphic();
-    globe._.path = d3.geoPath().projection(globe._.proj);
+    __.proj = __.orthoGraphic();
+    __.path = d3.geoPath().projection(__.proj);
     return globe;
     //----------------------------------------
     function qEvent(obj, qname) {
