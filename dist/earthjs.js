@@ -626,58 +626,71 @@ var graticulePlugin = function () {
 
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
 var fauxGlobePlugin = function () {
+    /*eslint no-console: 0 */
     var _ = { svg: null, q: null };
 
     function svgAddDropShadow() {
+        var __ = this._;
         _.svg.selectAll('#drop_shadow,.drop_shadow').remove();
-        if (this._.options.showGlobeShadow) {
-            var drop_shadow = this._.defs.append("radialGradient").attr("id", "drop_shadow").attr("cx", "50%").attr("cy", "50%");
+        if (__.options.showGlobeShadow) {
+            var drop_shadow = __.defs.append("radialGradient").attr("id", "drop_shadow").attr("cx", "50%").attr("cy", "50%");
             drop_shadow.append("stop").attr("offset", "20%").attr("stop-color", "#000").attr("stop-opacity", ".5");
             drop_shadow.append("stop").attr("offset", "100%").attr("stop-color", "#000").attr("stop-opacity", "0");
-            this._.dropShadow = _.svg.append("g").attr("class", "drop_shadow").append("ellipse").attr("cx", this._.center[0]).attr("cy", this._.options.height - 50).attr("rx", this._.proj.scale() * 0.90).attr("ry", this._.proj.scale() * 0.25).attr("class", "noclicks").style("fill", "url(#drop_shadow)");
-            this._.dropShadow;
+            __.dropShadow = _.svg.append("g").attr("class", "drop_shadow").append("ellipse").attr("cx", __.center[0]).attr("cy", __.options.height - 50).attr("rx", __.proj.scale() * 0.90).attr("ry", __.proj.scale() * 0.25).attr("class", "noclicks").style("fill", "url(#drop_shadow)");
+            __.dropShadow;
         }
     }
 
     function svgAddGlobeShading() {
+        var __ = this._;
         _.svg.selectAll('#shading,.shading').remove();
-        if (this._.options.showGlobeShading) {
-            var globe_shading = this._.defs.append("radialGradient").attr("id", "shading").attr("cx", "50%").attr("cy", "40%");
+        if (__.options.showGlobeShading) {
+            var globe_shading = __.defs.append("radialGradient").attr("id", "shading").attr("cx", "50%").attr("cy", "40%");
             globe_shading.append("stop").attr("offset", "50%").attr("stop-color", "#9ab").attr("stop-opacity", "0");
             globe_shading.append("stop").attr("offset", "100%").attr("stop-color", "#3e6184").attr("stop-opacity", "0.3");
-            this._.globeShading = _.svg.append("g").attr("class", "shading").append("circle").attr("cx", this._.center[0]).attr("cy", this._.center[1]).attr("r", this._.proj.scale()).attr("class", "noclicks").style("fill", "url(#shading)");
-            return this._.globeShading;
+            __.globeShading = _.svg.append("g").attr("class", "shading").append("circle").attr("cx", __.center[0]).attr("cy", __.center[1]).attr("r", __.proj.scale()).attr("class", "noclicks").style("fill", "url(#shading)");
+            return __.globeShading;
         }
     }
 
     function svgAddGlobeHilight() {
+        var __ = this._;
         _.svg.selectAll('#hilight,.hilight').remove();
-        if (this._.options.showGlobeHilight) {
-            var globe_highlight = this._.defs.append("radialGradient").attr("id", "hilight").attr("cx", "75%").attr("cy", "25%");
+        if (__.options.showGlobeHilight) {
+            var globe_highlight = __.defs.append("radialGradient").attr("id", "hilight").attr("cx", "75%").attr("cy", "25%");
             globe_highlight.append("stop").attr("offset", "5%").attr("stop-color", "#ffd").attr("stop-opacity", "0.6");
             globe_highlight.append("stop").attr("offset", "100%").attr("stop-color", "#ba9").attr("stop-opacity", "0.2");
-            this._.globeHilight = _.svg.append("g").attr("class", "hilight").append("circle").attr("cx", this._.center[0]).attr("cy", this._.center[1]).attr("r", this._.proj.scale()).attr("class", "noclicks").style("fill", "url(#hilight)");
-            return this._.globeHilight;
+            __.globeHilight = _.svg.append("g").attr("class", "hilight").append("circle").attr("cx", __.center[0]).attr("cy", __.center[1]).attr("r", __.proj.scale()).attr("class", "noclicks").style("fill", "url(#hilight)");
+            return __.globeHilight;
         }
     }
 
     return {
         name: 'fauxGlobePlugin',
         onInit: function onInit() {
-            this._.options.showGlobeShadow = true;
-            this._.options.showGlobeShading = true;
-            this._.options.showGlobeHilight = true;
+            var options = this._.options;
+
+            options.showGlobeShadow = true;
+            options.showGlobeShading = true;
+            options.showGlobeHilight = true;
             this.$.svgAddDropShadow = svgAddDropShadow;
             this.$.svgAddGlobeHilight = svgAddGlobeHilight;
             this.$.svgAddGlobeShading = svgAddGlobeShading;
             _.svg = this._.svg;
         },
         onResize: function onResize() {
-            if (this._.globeShading && this._.options.showGlobeShading) {
-                this._.globeShading.attr("r", this._.proj.scale());
+            var __ = this._;
+            var options = __.options;
+
+            var scale = __.proj.scale();
+            if (__.globeShading && options.showGlobeShading) {
+                __.globeShading.attr("r", scale);
             }
-            if (this._.globeHilight && this._.options.showGlobeHilight) {
-                this._.globeHilight.attr("r", this._.proj.scale());
+            if (__.globeHilight && options.showGlobeHilight) {
+                __.globeHilight.attr("r", scale);
+            }
+            if (__.dropShadow && options.showGlobeShadow) {
+                __.dropShadow.attr("cy", scale + 250).attr("rx", scale * 0.90).attr("ry", scale * 0.25);
             }
         },
         selectAll: function selectAll(q) {

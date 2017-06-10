@@ -1,11 +1,13 @@
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
 export default function() {
+    /*eslint no-console: 0 */
     const _ = {svg:null, q: null};
 
     function svgAddDropShadow() {
+        const __ = this._;
         _.svg.selectAll('#drop_shadow,.drop_shadow').remove();
-        if (this._.options.showGlobeShadow) {
-            const drop_shadow = this._.defs.append("radialGradient")
+        if (__.options.showGlobeShadow) {
+            const drop_shadow = __.defs.append("radialGradient")
                   .attr("id", "drop_shadow")
                   .attr("cx", "50%")
                   .attr("cy", "50%");
@@ -15,20 +17,22 @@ export default function() {
                 drop_shadow.append("stop")
                   .attr("offset","100%").attr("stop-color", "#000")
                   .attr("stop-opacity","0")
-            this._.dropShadow = _.svg.append("g").attr("class","drop_shadow").append("ellipse")
-                  .attr("cx", this._.center[0]).attr("cy", this._.options.height-50)
-                  .attr("rx", this._.proj.scale()*0.90)
-                  .attr("ry", this._.proj.scale()*0.25)
+            __.dropShadow = _.svg.append("g").attr("class","drop_shadow").append("ellipse")
+                  .attr("cx", __.center[0])
+                  .attr("cy", __.options.height-50)
+                  .attr("rx", __.proj.scale()*0.90)
+                  .attr("ry", __.proj.scale()*0.25)
                   .attr("class", "noclicks")
                   .style("fill", "url(#drop_shadow)");
-            this._.dropShadow;
+            __.dropShadow;
         }
     }
 
     function svgAddGlobeShading() {
+        const __ = this._;
         _.svg.selectAll('#shading,.shading').remove();
-        if (this._.options.showGlobeShading) {
-            const globe_shading = this._.defs.append("radialGradient")
+        if (__.options.showGlobeShading) {
+            const globe_shading = __.defs.append("radialGradient")
                   .attr("id", "shading")
                   .attr("cx", "50%")
                   .attr("cy", "40%");
@@ -38,19 +42,20 @@ export default function() {
                 globe_shading.append("stop")
                   .attr("offset","100%").attr("stop-color", "#3e6184")
                   .attr("stop-opacity","0.3")
-            this._.globeShading = _.svg.append("g").attr("class","shading").append("circle")
-                .attr("cx", this._.center[0]).attr("cy", this._.center[1])
-                .attr("r",  this._.proj.scale())
+            __.globeShading = _.svg.append("g").attr("class","shading").append("circle")
+                .attr("cx", __.center[0]).attr("cy", __.center[1])
+                .attr("r",  __.proj.scale())
                 .attr("class","noclicks")
                 .style("fill", "url(#shading)");
-            return this._.globeShading;
+            return __.globeShading;
         }
     }
 
     function svgAddGlobeHilight() {
+        const __ = this._;
         _.svg.selectAll('#hilight,.hilight').remove();
-        if (this._.options.showGlobeHilight) {
-            const globe_highlight = this._.defs.append("radialGradient")
+        if (__.options.showGlobeHilight) {
+            const globe_highlight = __.defs.append("radialGradient")
                   .attr("id", "hilight")
                   .attr("cx", "75%")
                   .attr("cy", "25%");
@@ -60,32 +65,42 @@ export default function() {
                 globe_highlight.append("stop")
                   .attr("offset", "100%").attr("stop-color", "#ba9")
                   .attr("stop-opacity","0.2");
-            this._.globeHilight = _.svg.append("g").attr("class","hilight").append("circle")
-                .attr("cx", this._.center[0]).attr("cy", this._.center[1])
-                .attr("r",  this._.proj.scale())
+            __.globeHilight = _.svg.append("g").attr("class","hilight").append("circle")
+                .attr("cx", __.center[0]).attr("cy", __.center[1])
+                .attr("r",  __.proj.scale())
                 .attr("class","noclicks")
                 .style("fill", "url(#hilight)");
-            return this._.globeHilight;
+            return __.globeHilight;
         }
     }
 
     return {
         name: 'fauxGlobePlugin',
         onInit() {
-            this._.options.showGlobeShadow = true;
-            this._.options.showGlobeShading = true;
-            this._.options.showGlobeHilight = true;
-            this.$.svgAddDropShadow = svgAddDropShadow;
+            const {options} = this._;
+            options.showGlobeShadow  = true;
+            options.showGlobeShading = true;
+            options.showGlobeHilight = true;
+            this.$.svgAddDropShadow   = svgAddDropShadow;
             this.$.svgAddGlobeHilight = svgAddGlobeHilight;
             this.$.svgAddGlobeShading = svgAddGlobeShading;
             _.svg = this._.svg;
         },
         onResize() {
-            if (this._.globeShading && this._.options.showGlobeShading) {
-                this._.globeShading.attr("r", this._.proj.scale());
+            const __ = this._;
+            const {options} = __;
+            const scale = __.proj.scale();
+            if (__.globeShading && options.showGlobeShading) {
+                __.globeShading.attr("r", scale);
             }
-            if (this._.globeHilight && this._.options.showGlobeHilight) {
-                this._.globeHilight.attr("r", this._.proj.scale());
+            if (__.globeHilight && options.showGlobeHilight) {
+                __.globeHilight.attr("r", scale);
+            }
+            if (__.dropShadow && options.showGlobeShadow) {
+                __.dropShadow
+                .attr("cy", scale+250)
+                .attr("rx", scale*0.90)
+                .attr("ry", scale*0.25);
             }
         },
         selectAll(q) {
