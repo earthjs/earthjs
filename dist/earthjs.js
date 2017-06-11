@@ -269,7 +269,7 @@ var earthjs$1 = function earthjs() {
     };
 
     __.orthoGraphic = function () {
-        return d3.geoOrthographic().scale(__.options.width / 3.5).rotate([__.options.rotate, 0]).translate(__.center).precision(0.1).clipAngle(90);
+        return d3.geoOrthographic().rotate([__.options.rotate, 0]).scale(__.options.width / 3.5).translate(__.center).precision(0.1).clipAngle(90);
     };
 
     __.addRenderer = function (name) {
@@ -292,6 +292,7 @@ var earthjs$1 = function earthjs() {
 
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 var versorDragPlugin = function () {
+    /*eslint no-console: 0 */
     var _ = { svg: null, q: null, sync: [] };
 
     function dragSetup() {
@@ -1202,63 +1203,84 @@ var centerPlugin = (function () {
 });
 
 var flattenPlugin = function () {
-    var _ = { proj: null };
+    /*eslint no-console: 0 */
+    var _ = {};
+
+    function animation() {
+        var _this = this;
+        return _this._.svg.transition().duration(10500).tween("projection", function () {
+            return function (_x) {
+                animation.alpha(_x);
+                _this._.refresh();
+            };
+        });
+    }
+
+    function interpolatedProjection(a, b) {
+        var px = d3.geoProjection(raw).scale(1);
+        var alpha = void 0;
+
+        function raw(lamda, pi) {
+            var pa = a([lamda *= 180 / Math.PI, pi *= 180 / Math.PI]),
+                pb = b([lamda, pi]);
+            return [(1 - alpha) * pa[0] + alpha * pb[0], (alpha - 1) * pa[1] - alpha * pb[1]];
+        }
+
+        animation.alpha = function (_x) {
+            if (!arguments.length) {
+                return alpha;
+            }
+            alpha = +_x;
+            var ca = a.center(),
+                cb = b.center(),
+                ta = a.translate(),
+                tb = b.translate();
+            px.center([(1 - alpha) * ca[0] + alpha * cb[0], (1 - alpha) * ca[1] + alpha * cb[1]]);
+            px.translate([(1 - alpha) * ta[0] + alpha * tb[0], (1 - alpha) * ta[1] + alpha * tb[1]]);
+            return px;
+        };
+        animation.alpha(0);
+        return px;
+    }
+
+    //Rotate to default before animation
+    function defaultRotate() {
+        var __ = this._;
+        return d3.transition().duration(1500).tween("rotate", function () {
+            var r = d3.interpolate(__.proj.rotate(), [0, 0]);
+            return function (t) {
+                __.rotate(r(t));
+            };
+        });
+    }
 
     return {
         name: 'flattenPlugin',
         onInit: function onInit() {
-            var _this = this;
-
-            function animation() {
-                _this._.svg.transition().duration(10500).tween("projection", function () {
-                    return function (_x) {
-                        animation.alpha(_x);
-                        _this._.refresh();
-                    };
-                });
-            }
-
-            function interpolatedProjection(a, b) {
-                var px = d3.geoProjection(raw).scale(1);
-                var alpha = void 0;
-
-                function raw(lamda, pi) {
-                    var pa = a([lamda *= 180 / Math.PI, pi *= 180 / Math.PI]),
-                        pb = b([lamda, pi]);
-                    return [(1 - alpha) * pa[0] + alpha * pb[0], (alpha - 1) * pa[1] - alpha * pb[1]];
-                }
-
-                animation.alpha = function (_x) {
-                    if (!arguments.length) return alpha;
-                    var ta = a.translate(),
-                        tb = b.translate();
-                    alpha = +_x;
-                    tb[0] = ta[0];
-                    tb[1] = ta[1] / 1.2;
-                    // console.log(px.rotate(), _x);
-                    px.translate([(1 - alpha) * ta[0] + alpha * tb[0], (1 - alpha) * ta[1] + alpha * tb[1]]);
-                    return px;
-                };
-                animation.alpha(0);
-                return px;
-            }
-
             var g1 = this._.proj;
-            var g2 = d3.geoEquirectangular().scale(this._.options.width / 7).translate(this._.center);
-            _.proj = interpolatedProjection(g1, g2);
-            // _.proj.center([0,0]);
-            this._.animation = animation;
-            this._.px = _.proj;
-            this._.g1 = g1;
-            this._.g2 = g2;
+            var g2 = d3.geoEquirectangular().scale(this._.options.width / 6.3).translate(this._.center);
+            _.g1 = g1;
+            _.g2 = g2;
         },
         toMap: function toMap() {
-            // const r = this._.proj.rotate();
-            this._.path = d3.geoPath().projection(_.proj);
-            // this._.proj.rotate([r[0],0,0]);
-            // this._.proj.center([0,0]);
-            this.svgDraw();
-            this._.animation.call(this);
+            var _this2 = this;
+
+            defaultRotate.call(this).on('end', function () {
+                var proj = interpolatedProjection(_.g1, _.g2);
+                _this2._.path = d3.geoPath().projection(proj);
+                animation.call(_this2);
+            });
+        },
+        toGlobe: function toGlobe() {
+            var _this3 = this;
+
+            this._.rotate([0, 0, 0]);
+            var proj = interpolatedProjection(_.g2, _.g1);
+            this._.path = d3.geoPath().projection(proj);
+            animation.call(this).on('end', function () {
+                _this3._.path = d3.geoPath().projection(_this3._.proj);
+                _this3._.refresh();
+            });
         }
     };
 };
@@ -1268,37 +1290,39 @@ var barPlugin = (function (urlBars) {
     var _ = { svg: null, barProjection: null, q: null, bars: null };
 
     function svgAddBar() {
+        var __ = this._;
         _.svg.selectAll('.bar').remove();
-        if (_.bars && this._.options.showBars) {
+        if (_.bars && __.options.showBars) {
             var gBar = _.svg.append("g").attr("class", "bar");
             var mask = gBar.append("mask").attr("id", "edge");
             mask.append("rect").attr("x", 0).attr("y", 0).attr("width", "100%").attr("height", "100%").attr("fill", "white");
             mask.append("use").attr("xlink:href", "#edgeCircle").attr("fill", "black");
-            this._.mask = mask;
+            __.mask = mask;
 
             _.max = d3.max(_.bars.features, function (d) {
                 return parseInt(d.properties.mag);
             });
 
-            var scale = this._.proj.scale();
+            var scale = __.proj.scale();
             _.lengthScale = d3.scaleLinear().domain([0, _.max]).range([scale, scale + 50]);
 
-            this._.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line").attr("stroke", "red").attr("stroke-width", "2").attr("data-index", function (d, i) {
+            __.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line").attr("stroke", "red").attr("stroke-width", "2").attr("data-index", function (d, i) {
                 return i;
             });
             // render to correct position
             refresh.call(this);
-            return this._.bar;
+            return __.bar;
         }
     }
 
     function refresh() {
-        if (_.bars && this._.options.showBars) {
-            var proj1 = this._.proj;
+        var __ = this._;
+        if (_.bars && __.options.showBars) {
+            var proj1 = __.proj;
             var scale = _.lengthScale;
             var proj2 = _.barProjection;
-            var center = proj1.invert(this._.center);
-            this._.bar.each(function (d) {
+            var center = proj1.invert(__.center);
+            __.bar.each(function (d) {
                 var arr = d.geometry.coordinates;
                 proj2.scale(scale(d.properties.mag));
                 var distance = d3.geoDistance(arr, center);
@@ -1310,9 +1334,9 @@ var barPlugin = (function (urlBars) {
     }
 
     function svgClipPath() {
-        // mask creation
-        this._.defs.selectAll('clipPath').remove();
-        this._.defs.append("clipPath").append("circle").attr("id", "edgeCircle").attr("cx", this._.center[0]).attr("cy", this._.center[1]).attr("r", this._.proj.scale());
+        var __ = this._;
+        __.defs.selectAll('clipPath').remove();
+        __.defs.append("clipPath").append("circle").attr("id", "edgeCircle").attr("cx", __.center[0]).attr("cy", __.center[1]).attr("r", __.proj.scale());
     }
 
     return {
@@ -1327,11 +1351,12 @@ var barPlugin = (function (urlBars) {
             }, 1);
         },
         onInit: function onInit() {
+            var __ = this._;
             this.$.svgAddBar = svgAddBar;
             this.$.svgClipPath = svgClipPath;
             this._.options.showBars = true;
-            _.barProjection = this._.orthoGraphic();
-            _.svg = this._.svg;
+            _.barProjection = __.orthoGraphic();
+            _.svg = __.svg;
             svgClipPath.call(this);
         },
         onResize: function onResize() {

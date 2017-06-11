@@ -3,8 +3,9 @@ export default urlBars => {
     const _ = {svg:null, barProjection: null, q: null, bars: null};
 
     function svgAddBar() {
+        const __ = this._;
         _.svg.selectAll('.bar').remove();
-        if (_.bars && this._.options.showBars) {
+        if (_.bars && __.options.showBars) {
             const gBar = _.svg.append("g").attr("class","bar");
             const mask = gBar.append("mask")
                 .attr("id", "edge");
@@ -17,32 +18,33 @@ export default urlBars => {
             mask.append("use")
                 .attr("xlink:href", "#edgeCircle")
                 .attr("fill", "black");
-            this._.mask = mask;
+            __.mask = mask;
 
             _.max = d3.max(_.bars.features, d => parseInt(d.properties.mag))
 
-            const scale = this._.proj.scale();
+            const scale = __.proj.scale();
             _.lengthScale = d3.scaleLinear()
                 .domain([0, _.max])
                 .range([scale, scale+50])
 
-            this._.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line")
+            __.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line")
                 .attr("stroke", "red")
                 .attr("stroke-width", "2")
                 .attr("data-index", (d, i) => i);
             // render to correct position
             refresh.call(this);
-            return this._.bar;
+            return __.bar;
         }
     }
 
     function refresh() {
-        if (_.bars && this._.options.showBars) {
-            const proj1 = this._.proj;
+        const __ = this._;
+        if (_.bars && __.options.showBars) {
+            const proj1 = __.proj;
             const scale = _.lengthScale;
             const proj2 = _.barProjection;
-            const center = proj1.invert(this._.center);
-            this._.bar
+            const center = proj1.invert(__.center);
+            __.bar
                 .each(function(d) {
                     const arr = d.geometry.coordinates;
                     proj2.scale(scale(d.properties.mag));
@@ -60,13 +62,13 @@ export default urlBars => {
     }
 
     function svgClipPath() {
-        // mask creation
-        this._.defs.selectAll('clipPath').remove();
-        this._.defs.append("clipPath").append("circle")
+        const __ = this._;
+        __.defs.selectAll('clipPath').remove();
+        __.defs.append("clipPath").append("circle")
             .attr("id", "edgeCircle")
-            .attr("cx", this._.center[0])
-            .attr("cy", this._.center[1])
-            .attr("r",  this._.proj.scale());
+            .attr("cx", __.center[0])
+            .attr("cy", __.center[1])
+            .attr("r",  __.proj.scale());
     }
 
     return {
@@ -77,11 +79,12 @@ export default urlBars => {
             setTimeout(() => refresh.call(this),1);
         },
         onInit() {
+            const __ = this._;
             this.$.svgAddBar = svgAddBar;
             this.$.svgClipPath = svgClipPath;
             this._.options.showBars = true;
-            _.barProjection = this._.orthoGraphic();
-            _.svg = this._.svg;
+            _.barProjection = __.orthoGraphic();
+            _.svg = __.svg;
             svgClipPath.call(this);
         },
         onResize() {

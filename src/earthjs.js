@@ -213,8 +213,8 @@ const earthjs = (options={}) => {
 
     __.orthoGraphic = function() {
         return d3.geoOrthographic()
-            .scale(__.options.width / 3.5)
             .rotate([__.options.rotate, 0])
+            .scale(__.options.width / 3.5)
             .translate(__.center)
             .precision(0.1)
             .clipAngle(90);

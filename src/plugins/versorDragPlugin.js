@@ -1,5 +1,6 @@
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 export default function() {
+    /*eslint no-console: 0 */
     const _ = {svg:null, q: null, sync: []};
 
     function dragSetup() {
