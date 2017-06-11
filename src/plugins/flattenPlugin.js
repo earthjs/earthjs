@@ -51,7 +51,8 @@ export default function() {
         return d3.transition()
         .duration(1500)
         .tween("rotate", function() {
-            var r = d3.interpolate(__.proj.rotate(), [0, 0]);
+            __.rotate(__.proj.rotate());
+            var r = d3.interpolate(__.proj.rotate(), [0, 0, 0]);
             return function(t) {
                 __.rotate(r(t));
             };
@@ -72,7 +73,9 @@ export default function() {
             defaultRotate.call(this).on('end', () => {
                 const proj = interpolatedProjection(_.g1, _.g2);
                 this._.path = d3.geoPath().projection(proj);
-                animation.call(this);
+                animation.call(this).on('end', () => {
+                    this._.options.enableCenter = false;
+                })
             })
         },
         toGlobe() {
@@ -81,6 +84,7 @@ export default function() {
             this._.path = d3.geoPath().projection(proj);
             animation.call(this).on('end', () => {
                 this._.path = d3.geoPath().projection(this._.proj);
+                this._.options.enableCenter = true;
                 this._.refresh();
             })
         }

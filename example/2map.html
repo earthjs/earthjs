@@ -19,6 +19,7 @@
     <svg id="earth" class="e1"></svg>
     <script>
         const g = earthjs({width:1200, height:750});
+        g.register(earthjs.plugins.versorDragPlugin());
         g.register(earthjs.plugins.graticulePlugin());
         g.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
         g.register(earthjs.plugins.countryTooltipPlugin());

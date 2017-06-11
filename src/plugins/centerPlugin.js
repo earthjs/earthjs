@@ -1,5 +1,6 @@
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 export default () => {
+    /*eslint no-console: 0 */
     const _ = {focused: null, svgAddCountriesOld: null}
 
     function country(cnt, id) {
@@ -13,7 +14,7 @@ export default () => {
         d3.transition()
         .duration(2500)
         .tween("rotate", () => {
-            const  r = d3.interpolate(this._.proj.rotate(), [-p[0], -p[1]]);
+            const  r = d3.interpolate(this._.proj.rotate(), [-p[0], -p[1], 0]);
             return t => {
                 this._.rotate(r(t));
             };
@@ -24,13 +25,15 @@ export default () => {
         const _this = this;
         const countries = _.svgAddCountriesOld.call(this);
         countries.on("click", function() {
-            const id = this.id.replace('x', '');
-            const c = _this.worldPlugin.countries();
-            const focusedCountry = country(c, id);
-            const p = d3.geoCentroid(focusedCountry);
-            transition.call(_this, p);
-            if (typeof(_.focused)==='function') {
-                _.focused.call(_this);
+            if (_this._.options.enableCenter) {
+                const id = this.id.replace('x', '');
+                const c = _this.worldPlugin.countries();
+                const focusedCountry = country(c, id);
+                const p = d3.geoCentroid(focusedCountry);
+                transition.call(_this, p);
+                if (typeof(_.focused)==='function') {
+                    _.focused.call(_this);
+                }
             }
         });
         return countries;
@@ -41,6 +44,7 @@ export default () => {
         onInit() {
             _.svgAddCountriesOld = this.$.svgAddCountries;
             this.$.svgAddCountries = svgAddCountries;
+            this._.options.enableCenter = true;
         },
         go(id) {
             const c = this.worldPlugin.countries();

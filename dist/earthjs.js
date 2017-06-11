@@ -1146,6 +1146,7 @@ var worldThreejs = function () {
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var centerPlugin = (function () {
+    /*eslint no-console: 0 */
     var _ = { focused: null, svgAddCountriesOld: null };
 
     function country(cnt, id) {
@@ -1161,7 +1162,7 @@ var centerPlugin = (function () {
         var _this2 = this;
 
         d3.transition().duration(2500).tween("rotate", function () {
-            var r = d3.interpolate(_this2._.proj.rotate(), [-p[0], -p[1]]);
+            var r = d3.interpolate(_this2._.proj.rotate(), [-p[0], -p[1], 0]);
             return function (t) {
                 _this2._.rotate(r(t));
             };
@@ -1172,13 +1173,15 @@ var centerPlugin = (function () {
         var _this = this;
         var countries = _.svgAddCountriesOld.call(this);
         countries.on("click", function () {
-            var id = this.id.replace('x', '');
-            var c = _this.worldPlugin.countries();
-            var focusedCountry = country(c, id);
-            var p = d3.geoCentroid(focusedCountry);
-            transition.call(_this, p);
-            if (typeof _.focused === 'function') {
-                _.focused.call(_this);
+            if (_this._.options.enableCenter) {
+                var id = this.id.replace('x', '');
+                var c = _this.worldPlugin.countries();
+                var focusedCountry = country(c, id);
+                var p = d3.geoCentroid(focusedCountry);
+                transition.call(_this, p);
+                if (typeof _.focused === 'function') {
+                    _.focused.call(_this);
+                }
             }
         });
         return countries;
@@ -1189,6 +1192,7 @@ var centerPlugin = (function () {
         onInit: function onInit() {
             _.svgAddCountriesOld = this.$.svgAddCountries;
             this.$.svgAddCountries = svgAddCountries;
+            this._.options.enableCenter = true;
         },
         go: function go(id) {
             var c = this.worldPlugin.countries();
@@ -1247,7 +1251,8 @@ var flattenPlugin = function () {
     function defaultRotate() {
         var __ = this._;
         return d3.transition().duration(1500).tween("rotate", function () {
-            var r = d3.interpolate(__.proj.rotate(), [0, 0]);
+            __.rotate(__.proj.rotate());
+            var r = d3.interpolate(__.proj.rotate(), [0, 0, 0]);
             return function (t) {
                 __.rotate(r(t));
             };
@@ -1268,7 +1273,9 @@ var flattenPlugin = function () {
             defaultRotate.call(this).on('end', function () {
                 var proj = interpolatedProjection(_.g1, _.g2);
                 _this2._.path = d3.geoPath().projection(proj);
-                animation.call(_this2);
+                animation.call(_this2).on('end', function () {
+                    _this2._.options.enableCenter = false;
+                });
             });
         },
         toGlobe: function toGlobe() {
@@ -1279,6 +1286,7 @@ var flattenPlugin = function () {
             this._.path = d3.geoPath().projection(proj);
             animation.call(this).on('end', function () {
                 _this3._.path = d3.geoPath().projection(_this3._.proj);
+                _this3._.options.enableCenter = true;
                 _this3._.refresh();
             });
         }
