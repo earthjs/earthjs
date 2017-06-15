@@ -7,9 +7,9 @@ export default function() {
         const __ = this._;
         const versor = __.versor;
         _.svg.call(d3.drag()
-            .on('start', dragstarted)
-            .on('end',   dragsended)
-            .on('drag',  dragged));
+            .on('start',dragstarted)
+            .on('end',  dragsended)
+            .on('drag', dragged));
 
         let v0, // Mouse position in Cartesian coordinates at start of drag gesture.
             r0, // Projection rotation as Euler angles at start.
@@ -58,6 +58,10 @@ export default function() {
         selectAll(q) {
             if (q) {
                 _.q = q;
+                _.svg.call(d3.drag()
+                    .on('start',null)
+                    .on('end',  null)
+                    .on('drag', null));
                 _.svg = d3.selectAll(q);
                 dragSetup.call(this);
             }

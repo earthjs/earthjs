@@ -348,6 +348,7 @@ var versorDragPlugin = function () {
         selectAll: function selectAll(q) {
             if (q) {
                 _.q = q;
+                _.svg.call(d3.drag().on('start', null).on('end', null).on('drag', null));
                 _.svg = d3.selectAll(q);
                 dragSetup.call(this);
             }
