@@ -11,8 +11,10 @@
     <script>
         const g = earthjs({select:'.earth'});
         g.register(earthjs.plugins.configPlugin());
+        g.register(earthjs.plugins.wheelZoomPlugin());
         g.register(earthjs.plugins.versorDragPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
+        g.wheelZoomPlugin.selectAll('.e1');
         g.versorDragPlugin.selectAll('.e1');
 
         g.register(earthjs.plugins.oceanPlugin());
