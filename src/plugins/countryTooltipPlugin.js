@@ -1,8 +1,14 @@
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 export default function() {
     /*eslint no-console: 0 */
-    const _ = {show: false, countryName: ''};
+    const _ = {show: false};
     const countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
+
+    function refresh(mouse) {
+        return countryTooltip
+        .style("left", (mouse[0] + 7) + "px")
+        .style("top", (mouse[1] - 15) + "px")
+    }
 
     return {
         name: 'countryTooltipPlugin',
@@ -14,14 +20,11 @@ export default function() {
                 .on("mouseover", function(d) {
                     if (!_this._.drag) {
                         _.show = true;
-                        const mouse = d3.mouse(this);
                         const country = _this.worldPlugin.countryName.call(_this, d);
-                        _.countryName = country.name;
-                        countryTooltip.text(_.countryName)
-                        .style("left", (mouse[0] + 7) + "px")
-                        .style("top", (mouse[1] - 15) + "px")
+                        refresh(d3.mouse(this))
                         .style("display", "block")
-                        .style("opacity", 1);
+                        .style("opacity", 1)
+                        .text(country.name);
                     }
                 })
                 .on("mouseout", function() {
@@ -33,20 +36,14 @@ export default function() {
                 })
                 .on("mousemove", function() {
                     if (!_this._.drag) {
-                        const mouse = d3.mouse(this);
-                        countryTooltip
-                        .style("left", (mouse[0] + 7) + "px")
-                        .style("top", (mouse[1] - 15) + "px");
+                        refresh(d3.mouse(this));
                     }
                 });
             }
         },
         onRefresh() {
             if (this._.drag && _.show) {
-                const mouse = this.versorDragPlugin.mouse();
-                countryTooltip
-                .style("left", (mouse[0] + 7) + "px")
-                .style("top", (mouse[1] - 15) + "px");
+                refresh(this.versorDragPlugin.mouse());
             }
         },
     }

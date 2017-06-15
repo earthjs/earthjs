@@ -784,8 +784,12 @@ var autorotatePlugin = (function (degPerSec) {
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var countryTooltipPlugin = function () {
     /*eslint no-console: 0 */
-    var _ = { show: false, countryName: '' };
+    var _ = { show: false };
     var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
+
+    function refresh(mouse) {
+        return countryTooltip.style("left", mouse[0] + 7 + "px").style("top", mouse[1] - 15 + "px");
+    }
 
     return {
         name: 'countryTooltipPlugin',
@@ -796,10 +800,8 @@ var countryTooltipPlugin = function () {
                 return originalsvgAddCountries.call(this).on("mouseover", function (d) {
                     if (!_this._.drag) {
                         _.show = true;
-                        var mouse = d3.mouse(this);
                         var country = _this.worldPlugin.countryName.call(_this, d);
-                        _.countryName = country.name;
-                        countryTooltip.text(_.countryName).style("left", mouse[0] + 7 + "px").style("top", mouse[1] - 15 + "px").style("display", "block").style("opacity", 1);
+                        refresh(d3.mouse(this)).style("display", "block").style("opacity", 1).text(country.name);
                     }
                 }).on("mouseout", function () {
                     if (!_this._.drag) {
@@ -808,16 +810,14 @@ var countryTooltipPlugin = function () {
                     }
                 }).on("mousemove", function () {
                     if (!_this._.drag) {
-                        var mouse = d3.mouse(this);
-                        countryTooltip.style("left", mouse[0] + 7 + "px").style("top", mouse[1] - 15 + "px");
+                        refresh(d3.mouse(this));
                     }
                 });
             };
         },
         onRefresh: function onRefresh() {
             if (this._.drag && _.show) {
-                var mouse = this.versorDragPlugin.mouse();
-                countryTooltip.style("left", mouse[0] + 7 + "px").style("top", mouse[1] - 15 + "px");
+                refresh(this.versorDragPlugin.mouse());
             }
         }
     };
