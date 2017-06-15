@@ -1,5 +1,7 @@
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 export default function() {
+    /*eslint no-console: 0 */
+    const _ = {show: false, countryName: ''};
     const countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
 
     return {
@@ -10,21 +12,41 @@ export default function() {
             this.$.svgAddCountries = function() {
                 return originalsvgAddCountries.call(this)
                 .on("mouseover", function(d) {
-                    const country = _this.worldPlugin.countryName.call(_this, d);
-                    countryTooltip.text(country.name)
-                    .style("left", (d3.event.pageX + 7) + "px")
-                    .style("top", (d3.event.pageY - 15) + "px")
-                    .style("display", "block")
-                    .style("opacity", 1);
+                    if (!_this._.drag) {
+                        _.show = true;
+                        const mouse = d3.mouse(this);
+                        const country = _this.worldPlugin.countryName.call(_this, d);
+                        _.countryName = country.name;
+                        countryTooltip.text(_.countryName)
+                        .style("left", (mouse[0] + 7) + "px")
+                        .style("top", (mouse[1] - 15) + "px")
+                        .style("display", "block")
+                        .style("opacity", 1);
+                    }
                 })
                 .on("mouseout", function() {
-                    countryTooltip.style("opacity", 0)
-                    .style("display", "none");
+                    if (!_this._.drag) {
+                        _.show = false;
+                        countryTooltip.style("opacity", 0)
+                        .style("display", "none");
+                    }
                 })
                 .on("mousemove", function() {
-                    countryTooltip.style("left", (d3.event.pageX + 7) + "px")
-                    .style("top", (d3.event.pageY - 15) + "px");
+                    if (!_this._.drag) {
+                        const mouse = d3.mouse(this);
+                        countryTooltip
+                        .style("left", (mouse[0] + 7) + "px")
+                        .style("top", (mouse[1] - 15) + "px");
+                    }
                 });
+            }
+        },
+        onRefresh() {
+            if (this._.drag && _.show) {
+                const mouse = this.versorDragPlugin.mouse();
+                countryTooltip
+                .style("left", (mouse[0] + 7) + "px")
+                .style("top", (mouse[1] - 15) + "px");
             }
         },
     }

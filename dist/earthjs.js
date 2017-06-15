@@ -293,7 +293,7 @@ var earthjs$1 = function earthjs() {
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 var versorDragPlugin = function () {
     /*eslint no-console: 0 */
-    var _ = { svg: null, q: null, sync: [] };
+    var _ = { svg: null, q: null, sync: [], mouse: null };
 
     function dragSetup() {
         var __ = this._;
@@ -319,14 +319,17 @@ var versorDragPlugin = function () {
             q0 = versor(r0);
             __.drag = null;
             __.refresh();
+            _.mouse = null;
         }
 
         function dragged() {
-            var v1 = versor.cartesian(__.proj.rotate(r0).invert(d3.mouse(this))),
+            var mouse = d3.mouse(this);
+            var v1 = versor.cartesian(__.proj.rotate(r0).invert(mouse)),
                 q1 = versor.multiply(q0, versor.delta(v0, v1)),
                 r1 = versor.rotation(q1);
             __.rotate(r1);
             __.drag = true;
+            _.mouse = mouse;
         }
 
         function dragsended() {
@@ -336,6 +339,7 @@ var versorDragPlugin = function () {
             });
             __.drag = false;
             __.refresh();
+            _.mouse = null;
         }
     }
 
@@ -356,6 +360,9 @@ var versorDragPlugin = function () {
         },
         sync: function sync(arr) {
             _.sync = arr;
+        },
+        mouse: function mouse() {
+            return _.mouse;
         }
     };
 };
@@ -776,6 +783,8 @@ var autorotatePlugin = (function (degPerSec) {
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var countryTooltipPlugin = function () {
+    /*eslint no-console: 0 */
+    var _ = { show: false, countryName: '' };
     var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
 
     return {
@@ -785,14 +794,31 @@ var countryTooltipPlugin = function () {
             var originalsvgAddCountries = this.$.svgAddCountries;
             this.$.svgAddCountries = function () {
                 return originalsvgAddCountries.call(this).on("mouseover", function (d) {
-                    var country = _this.worldPlugin.countryName.call(_this, d);
-                    countryTooltip.text(country.name).style("left", d3.event.pageX + 7 + "px").style("top", d3.event.pageY - 15 + "px").style("display", "block").style("opacity", 1);
+                    if (!_this._.drag) {
+                        _.show = true;
+                        var mouse = d3.mouse(this);
+                        var country = _this.worldPlugin.countryName.call(_this, d);
+                        _.countryName = country.name;
+                        countryTooltip.text(_.countryName).style("left", mouse[0] + 7 + "px").style("top", mouse[1] - 15 + "px").style("display", "block").style("opacity", 1);
+                    }
                 }).on("mouseout", function () {
-                    countryTooltip.style("opacity", 0).style("display", "none");
+                    if (!_this._.drag) {
+                        _.show = false;
+                        countryTooltip.style("opacity", 0).style("display", "none");
+                    }
                 }).on("mousemove", function () {
-                    countryTooltip.style("left", d3.event.pageX + 7 + "px").style("top", d3.event.pageY - 15 + "px");
+                    if (!_this._.drag) {
+                        var mouse = d3.mouse(this);
+                        countryTooltip.style("left", mouse[0] + 7 + "px").style("top", mouse[1] - 15 + "px");
+                    }
                 });
             };
+        },
+        onRefresh: function onRefresh() {
+            if (this._.drag && _.show) {
+                var mouse = this.versorDragPlugin.mouse();
+                countryTooltip.style("left", mouse[0] + 7 + "px").style("top", mouse[1] - 15 + "px");
+            }
         }
     };
 };

@@ -1,7 +1,7 @@
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 export default function() {
     /*eslint no-console: 0 */
-    const _ = {svg:null, q: null, sync: []};
+    const _ = {svg:null, q: null, sync: [], mouse: null};
 
     function dragSetup() {
         const __ = this._;
@@ -29,14 +29,17 @@ export default function() {
             q0 = versor(r0);
             __.drag = null;
             __.refresh();
+            _.mouse = null;
         }
 
         function dragged() {
-            const v1 = versor.cartesian(__.proj.rotate(r0).invert(d3.mouse(this))),
+            const mouse = d3.mouse(this);
+            const v1 = versor.cartesian(__.proj.rotate(r0).invert(mouse)),
                 q1 = versor.multiply(q0, versor.delta(v0, v1)),
                 r1 = versor.rotation(q1);
             __.rotate(r1);
             __.drag = true;
+            _.mouse = mouse;
         }
 
         function dragsended() {
@@ -46,6 +49,7 @@ export default function() {
             })
             __.drag = false;
             __.refresh();
+            _.mouse = null;
         }
     }
 
@@ -69,6 +73,9 @@ export default function() {
         },
         sync(arr) {
             _.sync = arr;
+        },
+        mouse() {
+            return _.mouse;
         }
     }
 }
