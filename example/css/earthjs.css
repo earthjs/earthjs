@@ -1,7 +1,7 @@
 body {
     margin: 0;
 }
-#earth, #three-js, .canvas, .top {
+#earth, #three-js, .earth, .canvas, .top {
     position: absolute;
     left: 0;
     top: 0;
