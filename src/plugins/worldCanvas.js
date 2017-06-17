@@ -5,25 +5,35 @@ export default (urlWorld, urlCountryNames) => {
     const _ = {world: null, countryNames: null, style: {}, drawTo: null, options: {}};
 
     function canvasAddWorldOrCountries() {
-        if (_.world && this._.options.showLand) {
-            canvasAddWorld.call(this);
-            if (!this._.drag) {
-                if (this._.options.showCountries) {
-                    canvasAddCountries.call(this);
-                }
-                if (this._.options.showLakes) {
+        const __ = this._;
+        if (_.world && __.options.showLand) {
+            if (!__.drag && __.options.transparent || __.options.transparentWorld) {
+                __.proj.clipAngle(180);
+                this.canvasPlugin.render(function(context, path) {
+                    context.beginPath();
+                    path(_.land);
+                    context.fillStyle = _.style.backLand || 'rgba(119,119,119,0.2)';
+                    context.fill();
+                }, _.drawTo, _.options);
+                __.proj.clipAngle(90);
+            }
+            if (!__.drag && __.options.showCountries) {
+                canvasAddCountries.call(this);
+                if (__.options.showLakes) {
                     canvasAddLakes.call(this);
                 }
+            } else {
+                canvasAddWorld.call(this);
             }
-        }
-        if (this.countrySelectCanvas) {
-            const {country} = this.countrySelectCanvas.data();
-            this.canvasPlugin.render(function(context, path) {
-                context.beginPath();
-                path(country);
-                context.fillStyle = 'rgba(117, 0, 0, 0.4)';
-                context.fill();
-            });
+            if (this.countrySelectCanvas) {
+                const {country} = this.countrySelectCanvas.data();
+                this.canvasPlugin.render(function(context, path) {
+                    context.beginPath();
+                    path(country);
+                    context.fillStyle = 'rgba(117, 0, 0, 0.4)';
+                    context.fill();
+                });
+            }
         }
     }
 
@@ -41,7 +51,9 @@ export default (urlWorld, urlCountryNames) => {
             context.beginPath();
             path(_.countries);
             context.lineWidth = 0.5;
+            context.fillStyle = _.style.land || 'rgba(117, 87, 57, 0.4)';
             context.strokeStyle = _.style.countries || 'rgba(80, 64, 39, 0.6)';
+            context.fill();
             context.stroke();
         }, _.drawTo, _.options);
     }
@@ -70,9 +82,11 @@ export default (urlWorld, urlCountryNames) => {
             this.worldCanvas.data({world, countryNames});
         },
         onInit() {
-            this._.options.showLand = true;
-            this._.options.showLakes = true;
-            this._.options.showCountries = true;
+            const options = this._.options;
+            options.showLand = true;
+            options.showLakes = true;
+            options.showCountries = true;
+            options.transparentWorld = false;
             this.$.canvasAddWorldOrCountries = canvasAddWorldOrCountries;
         },
         onRefresh() {

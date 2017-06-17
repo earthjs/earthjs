@@ -3,7 +3,11 @@ export default function() {
     const _ = {style: {}, drawTo: null};
 
     function canvasAddGraticule() {
-        if (this._.options.showGraticule) {
+        const __ = this._;
+        if (__.options.showGraticule) {
+            if (__.options.transparent || __.options.transparentGraticule) {
+                __.proj.clipAngle(180);
+            }
             this.canvasPlugin.render(function(context, path) {
                 context.beginPath();
                 path(datumGraticule);
@@ -11,6 +15,7 @@ export default function() {
                 context.strokeStyle = _.style.line || 'rgba(119,119,119,0.4)';
                 context.stroke();
             }, _.drawTo);
+            __.proj.clipAngle(90);
         }
     }
 
@@ -18,6 +23,7 @@ export default function() {
         name: 'graticuleCanvas',
         onInit() {
             this.$.canvasAddGraticule = canvasAddGraticule;
+            this._.options.transparentGraticule = false;
             this._.options.showGraticule = true;
         },
         onRefresh() {

@@ -5,6 +5,7 @@ const earthjs = (options={}) => {
     /*eslint no-console: 0 */
     clearInterval(earthjs.ticker);
     options = Object.assign({
+        transparent: false,
         select: '#earth',
         rotate: 130,
     }, options);

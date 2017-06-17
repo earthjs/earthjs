@@ -23,7 +23,7 @@
         g.register(earthjs.plugins.countryTooltipCanvas());
 
         g.canvasPlugin.selectAll('.canvas');
-        g.configPlugin.set({showCountries: false, showLakes: false});
+        g.configPlugin.set({showCountries: true, showLakes: false});
         g.ready(function(){
             g.countrySelectCanvas.world(g.worldCanvas.data().world);
             g.svgDraw();
