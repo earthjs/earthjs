@@ -162,10 +162,10 @@ const earthjs = (options={}) => {
 
     __.defs = __.svg.append("defs");
     __.ticker = function(interval) {
-        const ex = __.intervalRun;
+        const intervalRun = __.intervalRun;
         interval = interval || 50;
-        ticker = setInterval(() => {
-            ex.call(globe);
+        ticker = setInterval(() => { // 33% less CPU compare with d3.timer
+            intervalRun.call(globe);
             earths.forEach(function(p) {
                 p._.intervalRun.call(p);
             });

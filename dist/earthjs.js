@@ -217,10 +217,11 @@ var earthjs$1 = function earthjs() {
 
     __.defs = __.svg.append("defs");
     __.ticker = function (interval) {
-        var ex = __.intervalRun;
+        var intervalRun = __.intervalRun;
         interval = interval || 50;
         ticker = setInterval(function () {
-            ex.call(globe);
+            // 33% less CPU compare with d3.timer
+            intervalRun.call(globe);
             earths.forEach(function (p) {
                 p._.intervalRun.call(p);
             });
@@ -746,14 +747,14 @@ var fauxGlobePlugin = function () {
 var autorotatePlugin = (function (degPerSec) {
     /*eslint no-console: 0 */
     var _ = {
-        lastTick: new Date(),
-        degree: degPerSec,
+        lastTick: new Date(), // d3.now(),
+        degree: degPerSec / 1000,
         sync: []
     };
 
     function rotate(delta) {
         var r = this._.proj.rotate();
-        r[0] += _.degree * delta / 1000;
+        r[0] += _.degree * delta;
         this._.rotate(r);
     }
 
@@ -763,20 +764,18 @@ var autorotatePlugin = (function (degPerSec) {
             this._.options.spin = true;
         },
         onInterval: function onInterval() {
-            var now = new Date();
-            if (!this._.options.spin || this._.drag) {
-                _.lastTick = now;
-            } else {
+            var now = new Date(); // d3.now();
+            if (this._.options.spin && !this._.drag) {
                 var delta = now - _.lastTick;
                 rotate.call(this, delta);
                 _.sync.forEach(function (g) {
                     return rotate.call(g, delta);
                 });
-                _.lastTick = now;
             }
+            _.lastTick = now;
         },
         speed: function speed(degPerSec) {
-            _.degree = degPerSec;
+            _.degree = degPerSec / 1000;
         },
         start: function start() {
             this._.options.spin = true;
