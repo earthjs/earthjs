@@ -27,6 +27,8 @@ Selected plugins bundled into library:
 * graticulePlugin,
 * fauxGlobePlugin,
 * autorotatePlugin,
+* countrySelectCanvas,
+* countryTooltipCanvas,
 * countryTooltipPlugin,
 * barTooltipPlugin,
 * placesPlugin,

@@ -16,6 +16,15 @@ export default (urlWorld, urlCountryNames) => {
                 }
             }
         }
+        if (this.countrySelectCanvas) {
+            const {country} = this.countrySelectCanvas.data();
+            this.canvasPlugin.render(function(context, path) {
+                context.beginPath();
+                path(country);
+                context.fillStyle = 'rgba(117, 0, 0, 0.4)';
+                context.fill();
+            });
+        }
     }
 
     function canvasAddWorld() {
@@ -81,6 +90,15 @@ export default (urlWorld, urlCountryNames) => {
                 world: _.world ,
                 countryNames: _.countryNames
             }
+        },
+        countryName(d) {
+            let cname = '';
+            if (_.countryNames) {
+                cname = _.countryNames.find(function(x) {
+                    return x.id==d.id;
+                });
+            }
+            return cname;
         },
         style(s) {
             if (s) {

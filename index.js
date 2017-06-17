@@ -9,6 +9,8 @@ import graticuleCanvas from './src/plugins/graticuleCanvas.js';
 import graticulePlugin from './src/plugins/graticulePlugin.js';
 import fauxGlobePlugin from './src/plugins/fauxGlobePlugin.js';
 import autorotatePlugin from './src/plugins/autorotatePlugin.js';
+import countrySelectCanvas from './src/plugins/countrySelectCanvas';
+import countryTooltipCanvas from './src/plugins/countryTooltipCanvas.js';
 import countryTooltipPlugin from './src/plugins/countryTooltipPlugin.js';
 import barTooltipPlugin from './src/plugins/barTooltipPlugin.js';
 import placesPlugin from './src/plugins/placesPlugin.js';
@@ -35,6 +37,8 @@ app.plugins= {
     graticulePlugin,
     fauxGlobePlugin,
     autorotatePlugin,
+    countrySelectCanvas,
+    countryTooltipCanvas,
     countryTooltipPlugin,
     barTooltipPlugin,
     placesPlugin,

@@ -293,7 +293,7 @@ var earthjs$1 = function earthjs() {
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 var versorDragPlugin = function () {
     /*eslint no-console: 0 */
-    var _ = { svg: null, q: null, sync: [], mouse: null };
+    var _ = { svg: null, q: null, sync: [], mouse: null, onDrag: {}, onDragKeys: [] };
 
     function dragSetup() {
         var __ = this._;
@@ -323,6 +323,8 @@ var versorDragPlugin = function () {
         }
 
         function dragged() {
+            var _this = this;
+
             var mouse = d3.mouse(this);
             var v1 = versor.cartesian(__.proj.rotate(r0).invert(mouse)),
                 q1 = versor.multiply(q0, versor.delta(v0, v1)),
@@ -330,6 +332,9 @@ var versorDragPlugin = function () {
             __.rotate(r1);
             __.drag = true;
             _.mouse = mouse;
+            _.onDragKeys.forEach(function (k) {
+                _.onDrag[k].call(_this, mouse);
+            });
         }
 
         function dragsended() {
@@ -363,6 +368,10 @@ var versorDragPlugin = function () {
         },
         mouse: function mouse() {
             return _.mouse;
+        },
+        onDrag: function onDrag(obj) {
+            Object.assign(_.onDrag, obj);
+            _.onDragKeys = Object.keys(_.onDrag);
         }
     };
 };
@@ -782,6 +791,134 @@ var autorotatePlugin = (function (degPerSec) {
 });
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
+var countrySelectCanvas = function () {
+    /*eslint no-debugger: 0 */
+    /*eslint no-console: 0 */
+    var _ = { countries: null, country: null, mouse: null, onHover: {}, onHoverKeys: [] };
+
+    // https://github.com/d3/d3-polygon
+    function polygonContains(polygon, point) {
+        var n = polygon.length;
+        var p = polygon[n - 1];
+        var x = point[0],
+            y = point[1];
+        var x0 = p[0],
+            y0 = p[1];
+        var x1, y1;
+        var inside = false;
+        for (var i = 0; i < n; ++i) {
+            p = polygon[i], x1 = p[0], y1 = p[1];
+            if (y1 > y !== y0 > y && x < (x0 - x1) * (y - y1) / (y0 - y1) + x1) inside = !inside;
+            x0 = x1, y0 = y1;
+        }
+        return inside;
+    }
+
+    return {
+        name: 'countrySelectCanvas',
+        onInit: function onInit() {
+            var __ = this._;
+            var worldCanvas = this.worldCanvas;
+
+            var _worldCanvas$data = worldCanvas.data(),
+                world = _worldCanvas$data.world;
+
+            if (world) {
+                _.countries = topojson.feature(world, world.objects.countries);
+            }
+            var mouseMoveHandler = function mouseMoveHandler() {
+                var _this = this;
+
+                var mouse = d3.mouse(this);
+                var pos = __.proj.invert(mouse);
+                _.country = _.countries.features.find(function (f) {
+                    return f.geometry.coordinates.find(function (c1) {
+                        return polygonContains(c1, pos) || c1.find(function (c2) {
+                            return polygonContains(c2, pos);
+                        });
+                    });
+                });
+                _.mouse = mouse;
+                _.onHoverKeys.forEach(function (k) {
+                    _.onHover[k].call(_this, _.mouse, _.country);
+                });
+            };
+            __.svg.on("mousemove", mouseMoveHandler);
+            if (this.versorDragPlugin) {
+                this.versorDragPlugin.onDrag({
+                    countrySelectCanvas: mouseMoveHandler
+                });
+            }
+        },
+        data: function data() {
+            return {
+                country: _.country,
+                mouse: _.mouse
+            };
+        },
+        onHover: function onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverKeys = Object.keys(_.onHover);
+        },
+        world: function world(w) {
+            _.countries = topojson.feature(w, w.objects.countries);
+        }
+    };
+};
+
+// KoGor’s Block http://bl.ocks.org/KoGor/5994804
+var countryTooltipCanvas = function () {
+    /*eslint no-debugger: 0 */
+    /*eslint no-console: 0 */
+    var _ = { show: false };
+    var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
+
+    function refresh(mouse) {
+        return countryTooltip.style("left", mouse[0] + 7 + "px").style("top", mouse[1] - 15 + "px");
+    }
+
+    function hideTooltip() {
+        countryTooltip.style("opacity", 0).style("display", "none");
+    }
+
+    return {
+        name: 'countryTooltipCanvas',
+        onInit: function onInit() {
+            var _this = this;
+            var toolTipsHandler = function toolTipsHandler() {
+                var _this$countrySelectCa = _this.countrySelectCanvas.data(),
+                    country = _this$countrySelectCa.country,
+                    mouse = _this$countrySelectCa.mouse;
+
+                if (country) {
+                    var countryName = _this.worldCanvas.countryName(country);
+                    if (countryName) {
+                        refresh(mouse).style("display", "block").style("opacity", 1).text(countryName.name);
+                    } else {
+                        hideTooltip();
+                    }
+                } else {
+                    hideTooltip();
+                }
+            };
+            this.countrySelectCanvas.onHover({
+                countryTooltipCanvas: toolTipsHandler
+            });
+            if (this.versorDragPlugin) {
+                this.versorDragPlugin.onDrag({
+                    countryTooltipCanvas: toolTipsHandler
+                });
+            }
+        },
+        onRefresh: function onRefresh() {
+            if (this._.drag && _.show) {
+                refresh(this.versorDragPlugin.mouse());
+            }
+        }
+    };
+};
+
+// KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var countryTooltipPlugin = function () {
     /*eslint no-console: 0 */
     var _ = { show: false };
@@ -958,6 +1095,17 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
                 }
             }
         }
+        if (this.countrySelectCanvas) {
+            var _countrySelectCanvas$ = this.countrySelectCanvas.data(),
+                country = _countrySelectCanvas$.country;
+
+            this.canvasPlugin.render(function (context, path) {
+                context.beginPath();
+                path(country);
+                context.fillStyle = 'rgba(117, 0, 0, 0.4)';
+                context.fill();
+            });
+        }
     }
 
     function canvasAddWorld() {
@@ -1023,6 +1171,15 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
                 world: _.world,
                 countryNames: _.countryNames
             };
+        },
+        countryName: function countryName(d) {
+            var cname = '';
+            if (_.countryNames) {
+                cname = _.countryNames.find(function (x) {
+                    return x.id == d.id;
+                });
+            }
+            return cname;
         },
         style: function style(s) {
             if (s) {
@@ -1776,6 +1933,8 @@ earthjs$1.plugins = {
     graticulePlugin: graticulePlugin,
     fauxGlobePlugin: fauxGlobePlugin,
     autorotatePlugin: autorotatePlugin,
+    countrySelectCanvas: countrySelectCanvas,
+    countryTooltipCanvas: countryTooltipCanvas,
     countryTooltipPlugin: countryTooltipPlugin,
     barTooltipPlugin: barTooltipPlugin,
     placesPlugin: placesPlugin,

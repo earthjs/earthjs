@@ -8,7 +8,6 @@
 <body>
     <svg id="earth"></svg>
     <canvas class="canvas"></canvas>
-    <canvas class="canvas2"></canvas>
     <script>
         const g = earthjs();
         g.register(earthjs.plugins.autorotatePlugin(10));
@@ -19,11 +18,14 @@
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
         g.register(earthjs.plugins.fauxGlobePlugin());
-        g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
+        g.register(earthjs.plugins.worldCanvas('./d/world-110m.json', './d/world-110m-country-names.tsv'));
+        g.register(earthjs.plugins.countrySelectCanvas());
+        g.register(earthjs.plugins.countryTooltipCanvas());
 
-        g.canvasPlugin.selectAll('.canvas,.canvas2');
+        g.canvasPlugin.selectAll('.canvas');
         g.configPlugin.set({showCountries: false, showLakes: false});
         g.ready(function(){
+            g.countrySelectCanvas.world(g.worldCanvas.data().world);
             g.svgDraw();
         })
     </script>

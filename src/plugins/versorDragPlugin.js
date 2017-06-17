@@ -1,7 +1,7 @@
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 export default function() {
     /*eslint no-console: 0 */
-    const _ = {svg:null, q: null, sync: [], mouse: null};
+    const _ = {svg:null, q: null, sync: [], mouse: null, onDrag: {}, onDragKeys: []};
 
     function dragSetup() {
         const __ = this._;
@@ -40,6 +40,9 @@ export default function() {
             __.rotate(r1);
             __.drag = true;
             _.mouse = mouse;
+            _.onDragKeys.forEach(k => {
+                _.onDrag[k].call(this, mouse);
+            });
         }
 
         function dragsended() {
@@ -76,6 +79,10 @@ export default function() {
         },
         mouse() {
             return _.mouse;
+        },
+        onDrag(obj) {
+            Object.assign(_.onDrag, obj);
+            _.onDragKeys = Object.keys(_.onDrag);
         }
     }
 }
