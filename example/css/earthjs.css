@@ -49,6 +49,11 @@ body {
     stroke: black;
     stroke-width: 0.5;
 }
+.dot path {
+    fill: rgba(100,0,0,.4);
+    stroke: rgba(100,0,0,.6);
+    stroke-width: 0.2;
+}
 .labels {
     font: 8px sans-serif;
     fill: black;

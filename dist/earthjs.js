@@ -1625,7 +1625,13 @@ var dotsPlugin = function () {
         if (_.dataDots && this._.options.showDots && !this._.drag) {
             this._.svg.selectAll('.dot').remove();
             if (_.dataDots && this._.options.showDots) {
-                this._.dots = this._.svg.append("g").attr("class", "dot").selectAll('circle').data(_.dataDots.features).enter().append('circle').attr('r', 2).attr('stroke', '#F00').style('opacity', 0.75);
+                var circles = [];
+                var circle = d3.geoCircle();
+                _.dataDots.features.forEach(function (d) {
+                    var coord = d.geometry.coordinates;
+                    circles.push(circle.center(coord).radius(0.5)());
+                });
+                this._.dots = this._.svg.append('g').attr('class', 'dot').selectAll('path').data(circles).enter().append('path');
                 refresh.call(this);
                 return this._.dots;
             }
@@ -1633,17 +1639,10 @@ var dotsPlugin = function () {
     }
 
     function refresh() {
-        if (this._.drag == null) {
-            this._.dots.style("display", 'none');
-        } else if (!this._.drag && this._.dots && this._.options.showDots) {
-            var proj = this._.proj;
+        if (this._.dots && this._.options.showDots) {
             var center = this._.proj.invert(this._.center);
-            this._.dots.attr('cx', function (d) {
-                return proj(d.geometry.coordinates)[0];
-            }).attr('cy', function (d) {
-                return proj(d.geometry.coordinates)[1];
-            }).style("display", function (d) {
-                return d3.geoDistance(d.geometry.coordinates, center) > 1.57 ? 'none' : 'inline';
+            this._.dots.attr('d', this._.path).style('display', function (coord) {
+                return d3.geoDistance(coord, center) > 1.57 ? 'none' : 'inline';
             });
         }
     }
@@ -1674,17 +1673,6 @@ var dotsCanvas = function () {
             var proj = this._.proj;
             var center = proj.invert(this._.center);
             this.canvasPlugin.render(function (context, path) {
-                // _.dataDots.features.forEach(function(d) {
-                //     if (d3.geoDistance(d.geometry.coordinates, center) <= 1.57) {
-                //         context.beginPath();
-                //         context.fillStyle = '#F00';
-                //         context.arc(
-                //             proj(d.geometry.coordinates)[0],
-                //             proj(d.geometry.coordinates)[1], 2,0,2*Math.PI);
-                //         context.fill();
-                //         context.closePath();
-                //     }
-                // });
                 _.dataDots.features.forEach(function (d) {
                     var coord = d.geometry.coordinates;
                     if (d3.geoDistance(coord, center) <= 1.57) {

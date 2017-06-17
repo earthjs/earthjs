@@ -8,17 +8,6 @@ export default function() {
             const proj = this._.proj;
             const center = proj.invert(this._.center);
             this.canvasPlugin.render(function(context, path) {
-                // _.dataDots.features.forEach(function(d) {
-                //     if (d3.geoDistance(d.geometry.coordinates, center) <= 1.57) {
-                //         context.beginPath();
-                //         context.fillStyle = '#F00';
-                //         context.arc(
-                //             proj(d.geometry.coordinates)[0],
-                //             proj(d.geometry.coordinates)[1], 2,0,2*Math.PI);
-                //         context.fill();
-                //         context.closePath();
-                //     }
-                // });
                 _.dataDots.features.forEach(function(d) {
                     const coord = d.geometry.coordinates;
                     if (d3.geoDistance(coord, center) <= 1.57) {
