@@ -15,7 +15,9 @@ export default function() {
                 context.strokeStyle = _.style.line || 'rgba(119,119,119,0.4)';
                 context.stroke();
             }, _.drawTo);
-            __.proj.clipAngle(90);
+            if (__.options.transparent || __.options.transparentGraticule) {
+                __.proj.clipAngle(90);
+            }
         }
     }
 

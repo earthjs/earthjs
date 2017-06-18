@@ -12,8 +12,15 @@ export default function() {
     }
 
     function refresh() {
-        if ($.graticule && this._.options.showGraticule) {
-            $.graticule.attr("d", this._.path);
+        const __ = this._;
+        if ($.graticule && __.options.showGraticule) {
+            if (__.options.transparent || __.options.transparentGraticule) {
+                __.proj.clipAngle(180);
+                $.graticule.attr("d", this._.path);
+                __.proj.clipAngle(90);
+            } else {
+                $.graticule.attr("d", this._.path);
+            }
         }
     }
 

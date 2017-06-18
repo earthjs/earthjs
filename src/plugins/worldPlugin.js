@@ -1,11 +1,15 @@
 export default function(urlWorld, urlCountryNames) {
+    /*eslint no-console: 0 */
     const _ = {svg:null, q: null, world: null, countryNames: null};
     const $ = {};
 
     function svgAddWorldOrCountries() {
-        _.svg.selectAll('.land,.lakes,.countries').remove();
+        _.svg.selectAll('.landbg,.land,.lakes,.countries').remove();
         if (this._.options.showLand) {
             if (_.world) {
+                if (this._.options.transparent || this._.options.transparentWorld) {
+                    _.svgAddWorldBg.call(this);
+                }
                 if (this._.options.showCountries) {
                     _.svgAddCountries.call(this);
                 } else {
@@ -21,6 +25,11 @@ export default function(urlWorld, urlCountryNames) {
 
     function refresh() {
         if (_.world && this._.options.showLand) {
+            if (this._.options.transparent || this._.options.transparentWorld) {
+                this._.proj.clipAngle(180);
+                $.worldBg.attr("d", this._.path);
+                this._.proj.clipAngle(90);
+            }
             if (this._.options.showCountries) {
                 $.countries.attr("d", this._.path);
             } else {
@@ -30,6 +39,11 @@ export default function(urlWorld, urlCountryNames) {
                 $.lakes.attr("d", this._.path);
             }
         }
+    }
+
+    function svgAddWorldBg() {
+        $.worldBg = _.svg.append("g").attr("class","landbg").append("path").datum(_.land)
+        .attr('fill', 'rgba(119,119,119,0.2)');
     }
 
     function svgAddWorld() {
@@ -63,8 +77,10 @@ export default function(urlWorld, urlCountryNames) {
             this._.options.showLand = true;
             this._.options.showLakes = true;
             this._.options.showCountries = true;
+            this._.options.transparentWorld = false;
             this.$fn.svgAddWorldOrCountries = svgAddWorldOrCountries;
             _.svgAddCountries = svgAddCountries;
+            _.svgAddWorldBg = svgAddWorldBg;
             _.svgAddLakes = svgAddLakes;
             _.svgAddWorld = svgAddWorld;
             _.svg = this._.svg;
