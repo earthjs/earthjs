@@ -20,12 +20,10 @@ export default urlBars => {
                 .attr("fill", "black");
             __.mask = mask;
 
-            _.max = d3.max(_.bars.features, d => parseInt(d.properties.mag))
+            _.max = d3.max(_.bars.features, d => parseInt(d.geometry.value))
 
             const scale = __.proj.scale();
-            _.lengthScale = d3.scaleLinear()
-                .domain([0, _.max])
-                .range([scale, scale+50])
+            _.lengthScale = d3.scaleLinear().domain([0, _.max]).range([scale, scale+50]);
 
             __.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line")
                 .attr("stroke", "red")
@@ -47,7 +45,7 @@ export default urlBars => {
             __.bar
                 .each(function(d) {
                     const arr = d.geometry.coordinates;
-                    proj2.scale(scale(d.properties.mag));
+                    proj2.scale(scale(d.geometry.value));
                     const distance = d3.geoDistance(arr, center);
                     const d1 = proj1(arr);
                     const d2 = proj2(arr);

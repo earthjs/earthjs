@@ -9,11 +9,26 @@ const eQuakeApp = () => {
             'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson',
         ],
         onReady(err, world, equake) {
-            const features = equake.features.filter(d => d.properties.mag>3);
+            const features = equake.features.filter(d => d.properties.mag>=3);
+            const maxMag = features.map(d => d.properties.mag).sort(d3.descending)[0];
+            const scale = d3.scaleLinear().domain([3, maxMag]).range([0.5, 2]);
+            features.forEach(d => {
+                d.geometry.value = d.properties.mag;
+                d.geometry.radius = scale(d.properties.mag);
+            });
+            const dataMssg = {
+                features,
+                geometry: {
+                    radius: 1,
+                    lineWidth: 0.5,
+                    fillStyle: 'rgba(100,0,0,.4)',
+                    strokeStyle: 'rgba(100,0,0,.6)'
+                }
+            }
             this.worldCanvas.data({world});
-            this.barPlugin.data({features});
-            this.dotsCanvas.data({features});
-            this.pingsCanvas.data({features});
+            this.barPlugin.data(dataMssg);
+            this.dotsCanvas.data(dataMssg);
+            this.pingsCanvas.data(dataMssg);
         },
         onInit() {
             this.register(earthjs.plugins.commonPlugins());
@@ -36,6 +51,7 @@ const eQuakeApp = () => {
                 }
                 return {properties: {mag,tsunami,eventtime,place}};
             }
+            this._.options.transparent = true;
         }
     }
 }

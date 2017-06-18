@@ -1534,7 +1534,7 @@ var barPlugin = (function (urlBars) {
             __.mask = mask;
 
             _.max = d3.max(_.bars.features, function (d) {
-                return parseInt(d.properties.mag);
+                return parseInt(d.geometry.value);
             });
 
             var scale = __.proj.scale();
@@ -1558,7 +1558,7 @@ var barPlugin = (function (urlBars) {
             var center = proj1.invert(__.center);
             __.bar.each(function (d) {
                 var arr = d.geometry.coordinates;
-                proj2.scale(scale(d.properties.mag));
+                proj2.scale(scale(d.geometry.value));
                 var distance = d3.geoDistance(arr, center);
                 var d1 = proj1(arr);
                 var d2 = proj2(arr);
@@ -1622,29 +1622,46 @@ var dotsPlugin = function () {
     var _ = { dataDots: null };
 
     function svgAddDots() {
-        if (_.dataDots && this._.options.showDots && !this._.drag) {
-            this._.svg.selectAll('.dot').remove();
-            if (_.dataDots && this._.options.showDots) {
+        var __ = this._;
+        if (_.dataDots && __.options.showDots && !__.drag) {
+            __.svg.selectAll('.dot').remove();
+            if (_.dataDots && __.options.showDots) {
                 var circles = [];
-                var circle = d3.geoCircle();
-                _.dataDots.features.forEach(function (d) {
-                    var coord = d.geometry.coordinates;
-                    circles.push(circle.center(coord).radius(0.5)());
+                _.circles.forEach(function (d) {
+                    circles.push(d.circle);
                 });
-                this._.dots = this._.svg.append('g').attr('class', 'dot').selectAll('path').data(circles).enter().append('path');
+                __.dots = __.svg.append('g').attr('class', 'dot').selectAll('path').data(circles).enter().append('path');
+                if (_.dataDots.geometry) {
+                    var _g = _.dataDots.geometry;
+                    _g.lineWidth && __.dots.style('stroke-width', _g.lineWidth);
+                    _g.fillStyle && __.dots.style('fill', _g.fillStyle);
+                    _g.strokeStyle && __.dots.style('stroke', _g.strokeStyle);
+                }
                 refresh.call(this);
-                return this._.dots;
+                return __.dots;
             }
         }
     }
 
     function refresh() {
-        if (this._.dots && this._.options.showDots) {
-            var center = this._.proj.invert(this._.center);
-            this._.dots.attr('d', this._.path).style('display', function (coord) {
-                return d3.geoDistance(coord, center) > 1.57 ? 'none' : 'inline';
+        var __ = this._;
+        if (__.dots && __.options.showDots) {
+            __.dots.attr('d', __.path).style('display', function (d) {
+                return d3.geoDistance(d.coordinates, __.proj.invert(__.center)) > 1.57 ? 'none' : 'inline';
             });
         }
+    }
+
+    function initData() {
+        var geoCircle = d3.geoCircle();
+        var _g = _.dataDots.geometry || {};
+        var _r = _g.radius || 0.5;
+        _.circles = _.dataDots.features.map(function (d) {
+            var coordinates = d.geometry.coordinates;
+            var r = d.geometry.radius || _r;
+            var circle = geoCircle.center(coordinates).radius(r)();
+            return { coordinates: coordinates, circle: circle };
+        });
     }
 
     return {
@@ -1658,37 +1675,48 @@ var dotsPlugin = function () {
         },
         data: function data(_data) {
             _.dataDots = _data;
+            initData();
         }
     };
 };
 
 var dotsCanvas = function () {
-    var _ = { dataDots: null };
+    var _ = { dataDots: null, circles: [] };
 
     function canvasAddDots() {
         if (_.dataDots && this._.options.showDots) {
-            // && !this._.drag
             var circles = [];
-            var circle = d3.geoCircle();
             var proj = this._.proj;
+            var _g = _.dataDots.geometry || {};
             var center = proj.invert(this._.center);
             this.canvasPlugin.render(function (context, path) {
-                _.dataDots.features.forEach(function (d) {
-                    var coord = d.geometry.coordinates;
-                    if (d3.geoDistance(coord, center) <= 1.57) {
-                        circles.push(circle.center(coord).radius(0.5)());
+                _.circles.forEach(function (d) {
+                    if (d3.geoDistance(d.coordinates, center) <= 1.57) {
+                        circles.push(d.circle);
                     }
                 });
                 context.beginPath();
                 path({ type: 'GeometryCollection', geometries: circles });
-                context.fillStyle = 'rgba(100,0,0,.4)';
-                context.lineWidth = 0.2;
-                context.strokeStyle = 'rgba(100,0,0,.6)';
+                context.lineWidth = _g.lineWidth || 0.2;
+                context.fillStyle = _g.fillStyle || 'rgba(100,0,0,.4)';
+                context.strokeStyle = _g.strokeStyle || 'rgba(100,0,0,.6)';
                 context.fill();
                 context.stroke();
                 context.closePath();
             }, _.drawTo);
         }
+    }
+
+    function initData() {
+        var geoCircle = d3.geoCircle();
+        var _g = _.dataDots.geometry || {};
+        var _r = _g.radius || 0.5;
+        _.circles = _.dataDots.features.map(function (d) {
+            var coordinates = d.geometry.coordinates;
+            var r = d.geometry.radius || _r;
+            var circle = geoCircle.center(coordinates).radius(r)();
+            return { coordinates: coordinates, circle: circle };
+        });
     }
 
     return {
@@ -1702,6 +1730,7 @@ var dotsCanvas = function () {
         },
         data: function data(_data) {
             _.dataDots = _data;
+            initData();
         },
         drawTo: function drawTo(arr) {
             _.drawTo = arr;

@@ -2,32 +2,47 @@ export default function() {
     const _ = {dataDots: null};
 
     function svgAddDots() {
-        if (_.dataDots && this._.options.showDots && !this._.drag) {
-            this._.svg.selectAll('.dot').remove();
-            if (_.dataDots && this._.options.showDots) {
+        const __ = this._;
+        if (_.dataDots && __.options.showDots && !__.drag) {
+            __.svg.selectAll('.dot').remove();
+            if (_.dataDots && __.options.showDots) {
                 const circles = [];
-                const circle = d3.geoCircle();
-                _.dataDots.features.forEach(function(d) {
-                    const coord = d.geometry.coordinates;
-                    circles.push(circle.center(coord).radius(0.5)());
+                _.circles.forEach(function(d) {
+                    circles.push(d.circle);
                 });
-                this._.dots = this._.svg.append('g').attr('class','dot').selectAll('path')
-                    .data(circles).enter().append('path');
+                __.dots = __.svg.append('g').attr('class','dot').selectAll('path')
+                .data(circles).enter().append('path');
+                if (_.dataDots.geometry) {
+                    const _g = _.dataDots.geometry;
+                    _g.lineWidth   && __.dots.style('stroke-width', _g.lineWidth);
+                    _g.fillStyle   && __.dots.style('fill',         _g.fillStyle);
+                    _g.strokeStyle && __.dots.style('stroke',       _g.strokeStyle);
+                }
                 refresh.call(this);
-                return this._.dots;
+                return __.dots;
             }
         }
     }
 
     function refresh() {
-        if (this._.dots && this._.options.showDots) {
-            const center = this._.proj.invert(this._.center);
-            this._.dots
-                .attr('d', this._.path)
-                .style('display', function(coord) {
-                    return d3.geoDistance(coord, center) > 1.57 ? 'none' : 'inline';
-                });
+        const __ = this._;
+        if (__.dots && __.options.showDots) {
+            __.dots.attr('d', __.path).style('display', function(d) {
+                return d3.geoDistance(d.coordinates, __.proj.invert(__.center)) > 1.57 ? 'none' : 'inline';
+            });
         }
+    }
+
+    function initData() {
+        const geoCircle = d3.geoCircle();
+        const _g = _.dataDots.geometry || {};
+        const _r = _g.radius || 0.5;
+        _.circles = _.dataDots.features.map(function(d) {
+            const coordinates = d.geometry.coordinates;
+            const r = d.geometry.radius || _r;
+            const circle = geoCircle.center(coordinates).radius(r)();
+            return {coordinates, circle};
+        });
     }
 
     return {
@@ -41,6 +56,7 @@ export default function() {
         },
         data(data) {
             _.dataDots = data;
+            initData();
         },
     }
 }
