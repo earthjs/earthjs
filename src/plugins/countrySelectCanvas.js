@@ -30,7 +30,11 @@ export default function() {
                 _.countries = topojson.feature(world, world.objects.countries);
             }
             const mouseMoveHandler = function() {
-                const mouse = [d3.event.clientX, d3.event.clientY]; //d3.mouse(this);
+                let event = d3.event;
+                if (event.sourceEvent) {
+                    event = event.sourceEvent;
+                }
+                const mouse = [event.clientX, event.clientY]; //d3.mouse(this);
                 const pos = __.proj.invert(d3.mouse(this));
                 _.country = _.countries.features.find(function(f) {
                     return f.geometry.coordinates.find(function(c1) {

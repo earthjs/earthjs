@@ -849,7 +849,11 @@ var countrySelectCanvas = function () {
             var mouseMoveHandler = function mouseMoveHandler() {
                 var _this = this;
 
-                var mouse = [d3.event.clientX, d3.event.clientY]; //d3.mouse(this);
+                var event = d3.event;
+                if (event.sourceEvent) {
+                    event = event.sourceEvent;
+                }
+                var mouse = [event.clientX, event.clientY]; //d3.mouse(this);
                 var pos = __.proj.invert(d3.mouse(this));
                 _.country = _.countries.features.find(function (f) {
                     return f.geometry.coordinates.find(function (c1) {
