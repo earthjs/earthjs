@@ -4,7 +4,7 @@ export default function() {
     /*eslint no-console: 0 */
     const barTooltip = d3.select("body").append("div").attr("class", "barTooltip");
 
-    function svgAddBarTooltip() {
+    function addBarTooltip() {
         const _this = this;
         this.barPlugin.$bar()
         .on("mouseover", function() {
@@ -32,7 +32,7 @@ export default function() {
     return {
         name: 'barTooltipPlugin',
         onInit() {
-            this.$.svgAddBarTooltip = svgAddBarTooltip;
+            this.$fn.addBarTooltip = addBarTooltip;
         },
         show(d) {
             const props = d.properties;

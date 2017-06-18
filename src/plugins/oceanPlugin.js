@@ -30,7 +30,7 @@ export default function() {
     return {
         name: 'oceanPlugin',
         onInit() {
-            this.$.svgAddOcean = svgAddOcean;
+            this.$fn.svgAddOcean = svgAddOcean;
             this._.options.showOcean = true;
             _.svg = this._.svg;
         },

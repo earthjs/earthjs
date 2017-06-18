@@ -40,7 +40,7 @@ export default function() {
     return {
         name: 'countryTooltipPlugin',
         onInit() {
-            this.$.addCountryTooltip = addCountryTooltip;
+            this.$fn.addCountryTooltip = addCountryTooltip;
         },
         onRefresh() {
             if (this._.drag && _.show) {

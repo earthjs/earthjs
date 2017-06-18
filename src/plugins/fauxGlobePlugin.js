@@ -2,6 +2,7 @@
 export default function() {
     /*eslint no-console: 0 */
     const _ = {svg:null, q: null};
+    const $ = {};
 
     function svgAddDropShadow() {
         const __ = this._;
@@ -17,7 +18,7 @@ export default function() {
                 drop_shadow.append("stop")
                   .attr("offset","100%").attr("stop-color", "#000")
                   .attr("stop-opacity","0")
-            _.dropShadow = _.svg.append("g").attr("class","drop_shadow").append("ellipse")
+            $.dropShadow = _.svg.append("g").attr("class","drop_shadow").append("ellipse")
                   .attr("cx", __.center[0])
                   .attr("cy", __.options.height-50)
                   .attr("rx", __.proj.scale()*0.90)
@@ -41,7 +42,7 @@ export default function() {
                 globe_shading.append("stop")
                   .attr("offset","100%").attr("stop-color", "#3e6184")
                   .attr("stop-opacity","0.3")
-            _.globeShading = _.svg.append("g").attr("class","shading").append("circle")
+            $.globeShading = _.svg.append("g").attr("class","shading").append("circle")
                 .attr("cx", __.center[0]).attr("cy", __.center[1])
                 .attr("r",  __.proj.scale())
                 .attr("class","noclicks")
@@ -63,7 +64,7 @@ export default function() {
                 globe_highlight.append("stop")
                   .attr("offset", "100%").attr("stop-color", "#ba9")
                   .attr("stop-opacity","0.2");
-            _.globeHilight = _.svg.append("g").attr("class","hilight").append("circle")
+            $.globeHilight = _.svg.append("g").attr("class","hilight").append("circle")
                 .attr("cx", __.center[0]).attr("cy", __.center[1])
                 .attr("r",  __.proj.scale())
                 .attr("class","noclicks")
@@ -78,23 +79,23 @@ export default function() {
             options.showGlobeShadow  = true;
             options.showGlobeShading = true;
             options.showGlobeHilight = true;
-            this.$.svgAddDropShadow   = svgAddDropShadow;
-            this.$.svgAddGlobeHilight = svgAddGlobeHilight;
-            this.$.svgAddGlobeShading = svgAddGlobeShading;
+            this.$fn.svgAddDropShadow   = svgAddDropShadow;
+            this.$fn.svgAddGlobeHilight = svgAddGlobeHilight;
+            this.$fn.svgAddGlobeShading = svgAddGlobeShading;
             _.svg = this._.svg;
         },
         onResize() {
             const __ = this._;
             const {options} = __;
             const scale = __.proj.scale();
-            if (_.globeShading && options.showGlobeShading) {
-                _.globeShading.attr("r", scale);
+            if ($.globeShading && options.showGlobeShading) {
+                $.globeShading.attr("r", scale);
             }
-            if (_.globeHilight && options.showGlobeHilight) {
-                _.globeHilight.attr("r", scale);
+            if ($.globeHilight && options.showGlobeHilight) {
+                $.globeHilight.attr("r", scale);
             }
-            if (_.dropShadow && options.showGlobeShadow) {
-                _.dropShadow
+            if ($.dropShadow && options.showGlobeShadow) {
+                $.dropShadow
                 .attr("cy", scale+250)
                 .attr("rx", scale*0.90)
                 .attr("ry", scale*0.25);

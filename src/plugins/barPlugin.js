@@ -19,7 +19,7 @@ export default urlBars => {
             mask.append("use")
                 .attr("xlink:href", "#edgeCircle")
                 .attr("fill", "black");
-            __.mask = mask;
+            // $.mask = mask;
 
             _.max = d3.max(_.bars.features, d => parseInt(d.geometry.value))
 
@@ -77,8 +77,7 @@ export default urlBars => {
         },
         onInit() {
             const __ = this._;
-            this.$.svgAddBar = svgAddBar;
-            this.$.svgClipPath = svgClipPath;
+            this.$fn.svgAddBar = svgAddBar;
             this._.options.showBars = true;
             _.barProjection = __.orthoGraphic();
             _.svg = __.svg;

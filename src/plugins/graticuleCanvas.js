@@ -22,7 +22,7 @@ export default function() {
     return {
         name: 'graticuleCanvas',
         onInit() {
-            this.$.canvasAddGraticule = canvasAddGraticule;
+            this.$fn.canvasAddGraticule = canvasAddGraticule;
             this._.options.transparentGraticule = false;
             this._.options.showGraticule = true;
         },

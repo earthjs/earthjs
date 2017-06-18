@@ -35,7 +35,7 @@ const earthjs = (options={}) => {
             'svgAddPings',
             'svgAddDots',
             'svgAddBar',
-            'svgAddBarTooltip',
+            'addBarTooltip',
             'addCountryTooltip',
             'addCountryCenteroid',
         ],
@@ -74,7 +74,7 @@ const earthjs = (options={}) => {
             center,
             options,
         },
-        $: {},
+        $fn: {},
         $slc: {},
         ready(fn) {
             if (fn) {
@@ -155,10 +155,10 @@ const earthjs = (options={}) => {
     const __ = globe._;
 
     globe.svgDraw = function(twinEarth) {
-        const $ = globe.$;
+        const $fn = globe.$fn;
         earths = twinEarth || [];
         _.renderOrder.forEach(function(renderer) {
-            $[renderer] && $[renderer].call(globe);
+            $fn[renderer] && $fn[renderer].call(globe);
         });
         earths.forEach(function(p) {
             p.svgDraw(null);

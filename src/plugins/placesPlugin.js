@@ -63,7 +63,7 @@ export default function(urlPlaces) {
             _.places = places;
         },
         onInit() {
-            this.$.svgAddPlaces = svgAddPlaces;
+            this.$fn.svgAddPlaces = svgAddPlaces;
             this._.options.showPlaces = true;
             _.svg = this._.svg;
         },

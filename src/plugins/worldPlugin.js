@@ -7,12 +7,12 @@ export default function(urlWorld, urlCountryNames) {
         if (this._.options.showLand) {
             if (_.world) {
                 if (this._.options.showCountries) {
-                    this.$.svgAddCountries.call(this);
+                    _.svgAddCountries.call(this);
                 } else {
-                    this.$.svgAddWorld.call(this);
+                    _.svgAddWorld.call(this);
                 }
                 if (this._.options.showLakes) {
-                    this.$.svgAddLakes.call(this);
+                    _.svgAddLakes.call(this);
                 }
             }
             refresh.call(this);
@@ -63,10 +63,10 @@ export default function(urlWorld, urlCountryNames) {
             this._.options.showLand = true;
             this._.options.showLakes = true;
             this._.options.showCountries = true;
-            this.$.svgAddWorldOrCountries = svgAddWorldOrCountries;
-            this.$.svgAddCountries = svgAddCountries;
-            this.$.svgAddLakes = svgAddLakes;
-            this.$.svgAddWorld = svgAddWorld;
+            this.$fn.svgAddWorldOrCountries = svgAddWorldOrCountries;
+            _.svgAddCountries = svgAddCountries;
+            _.svgAddLakes = svgAddLakes;
+            _.svgAddWorld = svgAddWorld;
             _.svg = this._.svg;
         },
         onRefresh() {
