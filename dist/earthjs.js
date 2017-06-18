@@ -155,9 +155,14 @@ var earthjs$1 = function earthjs() {
                         _.promeses.forEach(function (obj) {
                             var ln = obj.urls.length;
                             var ar = args.slice(0, ln);
+                            var ready = globe[obj.name].ready;
                             ar.unshift(err);
 
-                            obj.onReady.apply(globe, ar);
+                            if (ready) {
+                                ready.apply(globe, ar);
+                            } else {
+                                obj.onReady.apply(globe, ar);
+                            }
                             args = args.slice(ln);
                         });
                         _.loadingData = false;
@@ -188,6 +193,7 @@ var earthjs$1 = function earthjs() {
             qEvent(obj, 'onInterval');
             if (obj.urls && obj.onReady) {
                 _.promeses.push({
+                    name: obj.name,
                     urls: obj.urls,
                     onReady: obj.onReady
                 });

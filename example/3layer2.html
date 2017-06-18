@@ -34,25 +34,36 @@
         const g = earthjs({rotate: -40});
         // g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.versorDragPlugin());
+        g.versorDragPlugin.selectAll('#earth2');
+
         g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.oceanPlugin());
+
         g.register(earthjs.plugins.canvasPlugin());
+        g.canvasPlugin.selectAll('.canvas');
+
         g.register(earthjs.plugins.graticuleCanvas());
+
         g.register(earthjs.plugins.fauxGlobePlugin());
+        g.fauxGlobePlugin.selectAll('#earth2');
+
         // g.register(earthjs.plugins.placesPlugin('./d/places.json'));
         g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
-        g.register(earthjs.plugins.barPlugin('./d/bars.json'));
         g.worldCanvas.style({land: 'green'});
 
-        g.canvasPlugin.selectAll('.canvas');
-        // g.placesPlugin.selectAll('#earth2');
+        g.register(earthjs.plugins.barPlugin('./d/bars.json'));
         g.barPlugin.selectAll('#earth2');
-        g.fauxGlobePlugin.selectAll('#earth2');
-        g.versorDragPlugin.selectAll('#earth2');
+        g.barPlugin.ready = function(err, json) {
+            json.features.forEach(d => d.geometry.value = d.properties.mag);
+            g.barPlugin.data(json);
+        };
+
+        // g.placesPlugin.selectAll('#earth2');
         g.configPlugin.set({showCountries: false, showLakes: false});
         g.ready(function(){
             g.svgDraw();
-        })
+        });
+
         const st = d3.select('#js-controlled');
         d3.select('#pan').on('input', function() {
             st.text(`

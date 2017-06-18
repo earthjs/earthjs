@@ -25,6 +25,10 @@
         g.register(earthjs.plugins.countryTooltipPlugin());
         g.register(earthjs.plugins.barTooltipPlugin());
 
+        g.barPlugin.ready = function(err, json) {
+            json.features.forEach(d => d.geometry.value = d.properties.mag);
+            g.barPlugin.data(json);
+        };
         g.ready(function(){
             g.register(earthjs.plugins.centerPlugin());
             g.centerPlugin.focused(function() {

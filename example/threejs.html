@@ -19,6 +19,10 @@
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
         g.register(earthjs.plugins.barPlugin('./d/bars.json'));
+        g.barPlugin.ready = function(err, json) {
+            json.features.forEach(d => d.geometry.value = d.properties.mag);
+            g.barPlugin.data(json);
+        };
 
         g.ready(function(){
             d3.select('#three-js').attr('style', 'opacity: 0.6');

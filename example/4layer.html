@@ -43,6 +43,10 @@
         g.worldCanvas.drawTo([0]);
         g.fauxGlobePlugin.selectAll('.x3');
         g.barPlugin.selectAll('.x3');
+        g.barPlugin.ready = function(err, json) {
+            json.features.forEach(d => d.geometry.value = d.properties.mag);
+            g.barPlugin.data(json);
+        };
 
         g.ready(function(){
             g.svgDraw();

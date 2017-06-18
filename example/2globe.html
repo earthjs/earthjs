@@ -25,6 +25,10 @@
         g2.register(earthjs.plugins.oceanPlugin());
         g2.register(earthjs.plugins.fauxGlobePlugin());
         g2.register(earthjs.plugins.barPlugin('./d/bars.json'));
+        g2.barPlugin.ready = function(err, json) {
+            json.features.forEach(d => d.geometry.value = d.properties.mag);
+            g2.barPlugin.data(json);
+        };
 
         g2.register(earthjs.plugins.canvasPlugin());
         g2.register(earthjs.plugins.graticuleCanvas());

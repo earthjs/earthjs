@@ -94,9 +94,14 @@ const earthjs = (options={}) => {
                         _.promeses.forEach(obj => {
                             const ln = obj.urls.length;
                             const ar = args.slice(0,ln);
+                            const ready = globe[obj.name].ready;
                             ar.unshift(err);
 
-                            obj.onReady.apply(globe, ar);
+                            if (ready) {
+                                ready.apply(globe, ar);
+                            } else {
+                                obj.onReady.apply(globe, ar);                                
+                            }
                             args = args.slice(ln);
                         });
                         _.loadingData = false;
@@ -133,6 +138,7 @@ const earthjs = (options={}) => {
             qEvent(obj,'onInterval');
             if (obj.urls && obj.onReady) {
                 _.promeses.push({
+                    name: obj.name,
                     urls: obj.urls,
                     onReady: obj.onReady
                 });
