@@ -6,7 +6,7 @@ export default function() {
 
     function svgAddBarTooltip() {
         const _this = this;
-        this._.bar
+        this.$slc.bar
         .on("mouseover", function() {
             const i = +this.dataset.index;
             var d = _this.barPlugin.data().features[i];

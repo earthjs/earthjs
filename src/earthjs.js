@@ -75,6 +75,7 @@ const earthjs = (options={}) => {
             ltScale,
         },
         $: {},
+        $slc: {},
         ready(fn) {
             if (fn) {
                 if (_.promeses.length>0) {

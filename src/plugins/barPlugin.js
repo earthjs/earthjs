@@ -25,12 +25,11 @@ export default urlBars => {
             const scale = __.proj.scale();
             _.lengthScale = d3.scaleLinear().domain([0, _.max]).range([scale, scale+50]);
 
-            __.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line")
+            this.$slc.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line")
                 .attr("stroke", "red")
                 .attr("stroke-width", "2")
                 .attr("data-index", (d, i) => i);
             refresh.call(this);
-            return __.bar;
         }
     }
 
@@ -41,7 +40,7 @@ export default urlBars => {
             const scale = _.lengthScale;
             const proj2 = _.barProjection;
             const center = proj1.invert(__.center);
-            __.bar
+            this.$slc.bar
                 .each(function(d) {
                     const arr = d.geometry.coordinates;
                     proj2.scale(scale(d.geometry.value));

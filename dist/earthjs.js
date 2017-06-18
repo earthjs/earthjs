@@ -135,6 +135,7 @@ var earthjs$1 = function earthjs() {
             ltScale: ltScale
         },
         $: {},
+        $slc: {},
         ready: function ready(fn) {
             if (fn) {
                 if (_.promeses.length > 0) {
@@ -980,7 +981,7 @@ var barTooltipPlugin = function () {
 
     function svgAddBarTooltip() {
         var _this = this;
-        this._.bar.on("mouseover", function () {
+        this.$slc.bar.on("mouseover", function () {
             var i = +this.dataset.index;
             var d = _this.barPlugin.data().features[i];
             if (_this.barTooltipPlugin.onShow) {
@@ -1549,11 +1550,10 @@ var barPlugin = (function (urlBars) {
             var scale = __.proj.scale();
             _.lengthScale = d3.scaleLinear().domain([0, _.max]).range([scale, scale + 50]);
 
-            __.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line").attr("stroke", "red").attr("stroke-width", "2").attr("data-index", function (d, i) {
+            this.$slc.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line").attr("stroke", "red").attr("stroke-width", "2").attr("data-index", function (d, i) {
                 return i;
             });
             refresh.call(this);
-            return __.bar;
         }
     }
 
@@ -1564,7 +1564,7 @@ var barPlugin = (function (urlBars) {
             var scale = _.lengthScale;
             var proj2 = _.barProjection;
             var center = proj1.invert(__.center);
-            __.bar.each(function (d) {
+            this.$slc.bar.each(function (d) {
                 var arr = d.geometry.coordinates;
                 proj2.scale(scale(d.geometry.value));
                 var distance = d3.geoDistance(arr, center);
