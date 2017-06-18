@@ -4,18 +4,19 @@ export default function(urlWorld, urlCountryNames) {
     const $ = {};
 
     function svgAddWorldOrCountries() {
+        const __ = this._;
         _.svg.selectAll('.landbg,.land,.lakes,.countries').remove();
-        if (this._.options.showLand) {
+        if (__.options.showLand) {
             if (_.world) {
-                if (this._.options.transparent || this._.options.transparentWorld) {
+                if (__.options.transparent || __.options.transparentWorld) {
                     _.svgAddWorldBg.call(this);
                 }
-                if (this._.options.showCountries) {
+                if (__.options.showCountries) {
                     _.svgAddCountries.call(this);
                 } else {
                     _.svgAddWorld.call(this);
                 }
-                if (this._.options.showLakes) {
+                if (__.options.showLakes) {
                     _.svgAddLakes.call(this);
                 }
             }
@@ -24,19 +25,20 @@ export default function(urlWorld, urlCountryNames) {
     }
 
     function refresh() {
-        if (_.world && this._.options.showLand) {
-            if (this._.options.transparent || this._.options.transparentWorld) {
-                this._.proj.clipAngle(180);
-                $.worldBg.attr("d", this._.path);
-                this._.proj.clipAngle(90);
+        const __ = this._;
+        if (_.world && __.options.showLand) {
+            if (__.options.transparent || __.options.transparentWorld) {
+                __.proj.clipAngle(180);
+                $.worldBg.attr("d", __.path);
+                __.proj.clipAngle(90);
             }
-            if (this._.options.showCountries) {
-                $.countries.attr("d", this._.path);
+            if (__.options.showCountries) {
+                $.countries.attr("d", __.path);
             } else {
-                $.world.attr("d", this._.path);
+                $.world.attr("d", __.path);
             }
-            if (this._.options.showLakes) {
-                $.lakes.attr("d", this._.path);
+            if (__.options.showLakes) {
+                $.lakes.attr("d", __.path);
             }
         }
     }
@@ -74,16 +76,18 @@ export default function(urlWorld, urlCountryNames) {
             this.worldPlugin.data({world, countryNames});
         },
         onInit() {
-            this._.options.showLand = true;
-            this._.options.showLakes = true;
-            this._.options.showCountries = true;
-            this._.options.transparentWorld = false;
+            const __ = this._;
+            const options = __.options;
+            options.showLand = true;
+            options.showLakes = true;
+            options.showCountries = true;
+            options.transparentWorld = false;
             this.$fn.svgAddWorldOrCountries = svgAddWorldOrCountries;
             _.svgAddCountries = svgAddCountries;
             _.svgAddWorldBg = svgAddWorldBg;
             _.svgAddLakes = svgAddLakes;
             _.svgAddWorld = svgAddWorld;
-            _.svg = this._.svg;
+            _.svg = __.svg;
         },
         onRefresh() {
             refresh.call(this);

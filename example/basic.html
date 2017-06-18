@@ -9,6 +9,7 @@
     <svg id="earth" width="1000" height="800"></svg>
     <script>
         const g = earthjs();
+        g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.versorDragPlugin());
         g.register(earthjs.plugins.graticulePlugin());
         g.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));

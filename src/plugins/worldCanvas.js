@@ -7,7 +7,7 @@ export default (urlWorld, urlCountryNames) => {
     function canvasAddWorldOrCountries() {
         const __ = this._;
         if (_.world && __.options.showLand) {
-            if (!__.drag && __.options.transparent || __.options.transparentWorld) {
+            if (__.options.transparent || __.options.transparentWorld) {
                 __.proj.clipAngle(180);
                 this.canvasPlugin.render(function(context, path) {
                     context.beginPath();
@@ -50,9 +50,9 @@ export default (urlWorld, urlCountryNames) => {
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
             path(_.countries);
-            context.lineWidth = 0.5;
+            context.lineWidth = 0.1;
             context.fillStyle = _.style.land || 'rgba(117, 87, 57, 0.4)';
-            context.strokeStyle = _.style.countries || 'rgba(80, 64, 39, 0.6)';
+            context.strokeStyle = _.style.countries || 'rgb(239, 237, 234)';
             context.fill();
             context.stroke();
         }, _.drawTo, _.options);

@@ -6,9 +6,10 @@ const eQuakeApp = () => {
         name: 'eQuakeApp',
         urls: [
             './d/world-110m.json',
+            './d/world-110m-country-names.tsv',
             'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson',
         ],
-        onReady(err, world, equake) {
+        onReady(err, world, countryNames, equake) {
             const features = equake.features.filter(d => d.properties.mag>=3);
             const maxMag = features.map(d => d.properties.mag).sort(d3.descending)[0];
             const scale = d3.scaleLinear().domain([3, maxMag]).range([0.5, 2]);
@@ -25,7 +26,8 @@ const eQuakeApp = () => {
                     strokeStyle: 'rgba(100,0,0,.6)'
                 }
             }
-            this.worldCanvas.data({world});
+            this.worldCanvas.data({world, countryNames});
+            this.countrySelectCanvas.world(world);
             this.barPlugin.data(dataMssg);
             this.dotsCanvas.data(dataMssg);
             this.pingsCanvas.data(dataMssg);
@@ -36,6 +38,8 @@ const eQuakeApp = () => {
             this.register(earthjs.plugins.dotsCanvas());
             this.register(earthjs.plugins.barPlugin());
             this.register(earthjs.plugins.barTooltipPlugin());
+            this.register(earthjs.plugins.countrySelectCanvas());
+            this.register(earthjs.plugins.countryTooltipCanvas());
             this.commonPlugins.addChecker('showPings:Pings:showPings'.split(':'));
             this.commonPlugins.addChecker('showBars:Bars:showBars'.split(':'));
             this.commonPlugins.addChecker('showDots:Dots:showDots'.split(':'));

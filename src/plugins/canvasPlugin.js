@@ -4,26 +4,27 @@ export default () => {
     const _ = {canvas: null, path: null, q: null}
 
     function svgAddCanvas() {
-        if (this._.options.showCanvas) {
+        const __ = this._;
+        if (__.options.showCanvas) {
             if (!_.canvas) {
-                const fObject = this._.svg.append("g").attr("class","canvas").append("foreignObject")
+                const fObject = __.svg.append("g").attr("class","canvas").append("foreignObject")
                 .attr("x", 0)
                 .attr("y", 0)
-                .attr("width", this._.options.width)
-                .attr("height", this._.options.height);
+                .attr("width", __.options.width)
+                .attr("height", __.options.height);
                 const fBody = fObject.append("xhtml:body")
                 .style("margin", "0px")
                 .style("padding", "0px")
                 .style("background-color", "none")
-                .style("width", this._.options.width + "px")
-                .style("height", this._.options.height + "px");
+                .style("width", __.options.width + "px")
+                .style("height", __.options.height + "px");
                 _.canvas = fBody.append("canvas");
             }
             _.canvas
             .attr("x", 0)
             .attr("y", 0)
-            .attr("width", this._.options.width)
-            .attr("height", this._.options.height);
+            .attr("width", __.options.width)
+            .attr("height", __.options.height);
             return _.canvas;
         }
     }
@@ -36,8 +37,7 @@ export default () => {
             _.path = d3.geoPath().projection(this._.proj);
         },
         onRefresh() {
-            const width = this._.options.width,
-                  height= this._.options.height;
+            const {width, height} = this._.options;
             _.canvas.each(function() {
                 this.getContext("2d").clearRect(0, 0, width, height);
             });
@@ -50,9 +50,10 @@ export default () => {
             return _.canvas;
         },
         render(fn, drawTo, options=[]) {
-            if (this._.options.showCanvas) {
+            const __ = this._;
+            if (__.options.showCanvas) {
                 var rChange = false;
-                const proj = this._.proj;
+                const proj = __.proj;
                 const r = proj.rotate();
                 const _this = this;
                 _.canvas.each(function(obj, idx) {
