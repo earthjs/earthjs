@@ -21,10 +21,10 @@ export default () => {
         })
     }
 
-    function svgAddCountries() {
+    function addCountryCenteroid() {
         const _this = this;
-        const countries = _.svgAddCountriesOld.call(this);
-        countries.on("click", function() {
+        this.worldPlugin.$countries()
+        .on("click", function() {
             if (_this._.options.enableCenter) {
                 const id = this.id.replace('x', '');
                 const c = _this.worldPlugin.countries();
@@ -36,14 +36,12 @@ export default () => {
                 }
             }
         });
-        return countries;
     }
 
     return {
         name: 'centerPlugin',
         onInit() {
-            _.svgAddCountriesOld = this.$.svgAddCountries;
-            this.$.svgAddCountries = svgAddCountries;
+            this.$.addCountryCenteroid = addCountryCenteroid;
             this._.options.enableCenter = true;
         },
         go(id) {

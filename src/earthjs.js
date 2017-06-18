@@ -35,7 +35,9 @@ const earthjs = (options={}) => {
             'svgAddPings',
             'svgAddDots',
             'svgAddBar',
-            'svgAddBarTooltip'
+            'svgAddBarTooltip',
+            'addCountryTooltip',
+            'addCountryCenteroid',
         ],
         ready: null,
         loadingData: null,
@@ -44,7 +46,6 @@ const earthjs = (options={}) => {
     const drag = false;
     const svg = d3.selectAll(options.select);
     let width = svg.attr('width'), height = svg.attr('height');
-    const ltScale = d3.scaleLinear().domain([0, width]).range([-180, 180]);
     if (!width || !height) {
         width = options.width || 700;
         height = options.height || 500;
@@ -72,7 +73,6 @@ const earthjs = (options={}) => {
             versor,
             center,
             options,
-            ltScale,
         },
         $: {},
         $slc: {},
@@ -169,7 +169,7 @@ const earthjs = (options={}) => {
         return globe;
     }
 
-    __.defs = __.svg.append("defs");
+    globe.$slc.defs = __.svg.append("defs");
     __.ticker = function(interval) {
         const intervalRun = __.intervalRun;
         interval = interval || 50;

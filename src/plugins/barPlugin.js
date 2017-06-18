@@ -1,6 +1,7 @@
 export default urlBars => {
     /*eslint no-console: 0 */
     const _ = {svg:null, barProjection: null, q: null, bars: null};
+    const $ = {};
 
     function svgAddBar() {
         const __ = this._;
@@ -25,7 +26,7 @@ export default urlBars => {
             const scale = __.proj.scale();
             _.lengthScale = d3.scaleLinear().domain([0, _.max]).range([scale, scale+50]);
 
-            this.$slc.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line")
+            $.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line")
                 .attr("stroke", "red")
                 .attr("stroke-width", "2")
                 .attr("data-index", (d, i) => i);
@@ -40,7 +41,7 @@ export default urlBars => {
             const scale = _.lengthScale;
             const proj2 = _.barProjection;
             const center = proj1.invert(__.center);
-            this.$slc.bar
+            $.bar
                 .each(function(d) {
                     const arr = d.geometry.coordinates;
                     proj2.scale(scale(d.geometry.value));
@@ -59,8 +60,8 @@ export default urlBars => {
 
     function svgClipPath() {
         const __ = this._;
-        __.defs.selectAll('clipPath').remove();
-        __.defs.append("clipPath").append("circle")
+        this.$slc.defs.selectAll('clipPath').remove();
+        this.$slc.defs.append("clipPath").append("circle")
             .attr("id", "edgeCircle")
             .attr("cx", __.center[0])
             .attr("cy", __.center[1])
@@ -105,5 +106,8 @@ export default urlBars => {
                 return _.bars;
             }
         },
+        $bar() {
+            return $.bar;
+        }
     }
 }

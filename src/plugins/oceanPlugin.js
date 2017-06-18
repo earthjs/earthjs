@@ -4,7 +4,7 @@ export default function() {
     function svgAddOcean() {
         _.svg.selectAll('#ocean,.ocean').remove();
         if (this._.options.showOcean) {
-            const ocean_fill = this._.defs.append("radialGradient")
+            const ocean_fill = this.$slc.defs.append("radialGradient")
                 .attr("id", "ocean")
                 .attr("cx", "75%")
                 .attr("cy", "25%");
@@ -14,17 +14,16 @@ export default function() {
             ocean_fill.append("stop")
                 .attr("offset", "100%")
                 .attr("stop-color", "#9ab");
-            this._.ocean = _.svg.append("g").attr("class","ocean").append("circle")
+            _.ocean = _.svg.append("g").attr("class","ocean").append("circle")
                 .attr("cx",this._.center[0]).attr("cy", this._.center[1])
                 .attr("class", "noclicks");
             resize.call(this);
-            return this._.ocean;
         }
     }
 
     function resize() {
-        if (this._.ocean && this._.options.showOcean) {
-            this._.ocean.attr("r", this._.proj.scale()+_.scale);
+        if (_.ocean && this._.options.showOcean) {
+            _.ocean.attr("r", this._.proj.scale()+_.scale);
         }
     }
 

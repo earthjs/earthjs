@@ -7,7 +7,7 @@ export default function() {
         const __ = this._;
         _.svg.selectAll('#drop_shadow,.drop_shadow').remove();
         if (__.options.showGlobeShadow) {
-            const drop_shadow = __.defs.append("radialGradient")
+            const drop_shadow = this.$slc.defs.append("radialGradient")
                   .attr("id", "drop_shadow")
                   .attr("cx", "50%")
                   .attr("cy", "50%");
@@ -17,14 +17,13 @@ export default function() {
                 drop_shadow.append("stop")
                   .attr("offset","100%").attr("stop-color", "#000")
                   .attr("stop-opacity","0")
-            __.dropShadow = _.svg.append("g").attr("class","drop_shadow").append("ellipse")
+            _.dropShadow = _.svg.append("g").attr("class","drop_shadow").append("ellipse")
                   .attr("cx", __.center[0])
                   .attr("cy", __.options.height-50)
                   .attr("rx", __.proj.scale()*0.90)
                   .attr("ry", __.proj.scale()*0.25)
                   .attr("class", "noclicks")
                   .style("fill", "url(#drop_shadow)");
-            __.dropShadow;
         }
     }
 
@@ -32,7 +31,7 @@ export default function() {
         const __ = this._;
         _.svg.selectAll('#shading,.shading').remove();
         if (__.options.showGlobeShading) {
-            const globe_shading = __.defs.append("radialGradient")
+            const globe_shading = this.$slc.defs.append("radialGradient")
                   .attr("id", "shading")
                   .attr("cx", "50%")
                   .attr("cy", "40%");
@@ -42,12 +41,11 @@ export default function() {
                 globe_shading.append("stop")
                   .attr("offset","100%").attr("stop-color", "#3e6184")
                   .attr("stop-opacity","0.3")
-            __.globeShading = _.svg.append("g").attr("class","shading").append("circle")
+            _.globeShading = _.svg.append("g").attr("class","shading").append("circle")
                 .attr("cx", __.center[0]).attr("cy", __.center[1])
                 .attr("r",  __.proj.scale())
                 .attr("class","noclicks")
                 .style("fill", "url(#shading)");
-            return __.globeShading;
         }
     }
 
@@ -55,7 +53,7 @@ export default function() {
         const __ = this._;
         _.svg.selectAll('#hilight,.hilight').remove();
         if (__.options.showGlobeHilight) {
-            const globe_highlight = __.defs.append("radialGradient")
+            const globe_highlight = this.$slc.defs.append("radialGradient")
                   .attr("id", "hilight")
                   .attr("cx", "75%")
                   .attr("cy", "25%");
@@ -65,12 +63,11 @@ export default function() {
                 globe_highlight.append("stop")
                   .attr("offset", "100%").attr("stop-color", "#ba9")
                   .attr("stop-opacity","0.2");
-            __.globeHilight = _.svg.append("g").attr("class","hilight").append("circle")
+            _.globeHilight = _.svg.append("g").attr("class","hilight").append("circle")
                 .attr("cx", __.center[0]).attr("cy", __.center[1])
                 .attr("r",  __.proj.scale())
                 .attr("class","noclicks")
                 .style("fill", "url(#hilight)");
-            return __.globeHilight;
         }
     }
 
@@ -90,14 +87,14 @@ export default function() {
             const __ = this._;
             const {options} = __;
             const scale = __.proj.scale();
-            if (__.globeShading && options.showGlobeShading) {
-                __.globeShading.attr("r", scale);
+            if (_.globeShading && options.showGlobeShading) {
+                _.globeShading.attr("r", scale);
             }
-            if (__.globeHilight && options.showGlobeHilight) {
-                __.globeHilight.attr("r", scale);
+            if (_.globeHilight && options.showGlobeHilight) {
+                _.globeHilight.attr("r", scale);
             }
-            if (__.dropShadow && options.showGlobeShadow) {
-                __.dropShadow
+            if (_.dropShadow && options.showGlobeShadow) {
+                _.dropShadow
                 .attr("cy", scale+250)
                 .attr("rx", scale*0.90)
                 .attr("ry", scale*0.25);

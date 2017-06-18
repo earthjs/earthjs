@@ -4,6 +4,33 @@ export default function() {
     const _ = {show: false};
     const countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
 
+    function addCountryTooltip() {
+        const _this = this;
+        this.worldPlugin.$countries()
+        .on("mouseover", function(d) {
+            if (!_this._.drag) {
+                _.show = true;
+                const country = _this.worldPlugin.countryName.call(_this, d);
+                refresh(d3.mouse(this))
+                .style("display", "block")
+                .style("opacity", 1)
+                .text(country.name);
+            }
+        })
+        .on("mouseout", function() {
+            if (!_this._.drag) {
+                _.show = false;
+                countryTooltip.style("opacity", 0)
+                .style("display", "none");
+            }
+        })
+        .on("mousemove", function() {
+            if (!_this._.drag) {
+                refresh(d3.mouse(this));
+            }
+        });
+    }
+
     function refresh(mouse) {
         return countryTooltip
         .style("left", (mouse[0] + 7) + "px")
@@ -13,33 +40,7 @@ export default function() {
     return {
         name: 'countryTooltipPlugin',
         onInit() {
-            const _this = this;
-            const originalsvgAddCountries = this.$.svgAddCountries;
-            this.$.svgAddCountries = function() {
-                return originalsvgAddCountries.call(this)
-                .on("mouseover", function(d) {
-                    if (!_this._.drag) {
-                        _.show = true;
-                        const country = _this.worldPlugin.countryName.call(_this, d);
-                        refresh(d3.mouse(this))
-                        .style("display", "block")
-                        .style("opacity", 1)
-                        .text(country.name);
-                    }
-                })
-                .on("mouseout", function() {
-                    if (!_this._.drag) {
-                        _.show = false;
-                        countryTooltip.style("opacity", 0)
-                        .style("display", "none");
-                    }
-                })
-                .on("mousemove", function() {
-                    if (!_this._.drag) {
-                        refresh(d3.mouse(this));
-                    }
-                });
-            }
+            this.$.addCountryTooltip = addCountryTooltip;
         },
         onRefresh() {
             if (this._.drag && _.show) {

@@ -1,8 +1,6 @@
 export default function(urlWorld, urlCountryNames) {
     const _ = {svg:null, q: null, world: null, countryNames: null};
-    const countryClick = function() {
-        // console.log(d);
-    }
+    const $ = {};
 
     function svgAddWorldOrCountries() {
         _.svg.selectAll('.land,.lakes,.countries').remove();
@@ -24,33 +22,28 @@ export default function(urlWorld, urlCountryNames) {
     function refresh() {
         if (_.world && this._.options.showLand) {
             if (this._.options.showCountries) {
-                this._.countries.attr("d", this._.path);
+                $.countries.attr("d", this._.path);
             } else {
-                this._.world.attr("d", this._.path);
+                $.world.attr("d", this._.path);
             }
             if (this._.options.showLakes) {
-                this._.lakes.attr("d", this._.path);
+                $.lakes.attr("d", this._.path);
             }
         }
     }
 
     function svgAddWorld() {
-        this._.world = _.svg.append("g").attr("class","land").append("path")
-            .datum(_.land);
-        return this._.world;
+        $.world = _.svg.append("g").attr("class","land").append("path").datum(_.land);
     }
 
     function svgAddCountries() {
-        this._.countries = _.svg.append("g").attr("class","countries").selectAll("path")
-            .data(_.countries.features).enter().append("path").on('click', countryClick)
-                .attr("id",function(d) {return 'x'+d.id});
-        return this._.countries;
+        $.countries = _.svg.append("g").attr("class","countries").selectAll("path")
+            .data(_.countries.features).enter().append("path")
+            .attr("id",function(d) {return 'x'+d.id});
     }
 
     function svgAddLakes() {
-        this._.lakes = _.svg.append("g").attr("class","lakes").append("path")
-            .datum(_.lakes);
-        return this._.lakes;
+        $.lakes = _.svg.append("g").attr("class","lakes").append("path").datum(_.lakes);
     }
 
     let urls = null;
@@ -111,5 +104,8 @@ export default function(urlWorld, urlCountryNames) {
             }
             return _.svg;
         },
+        $countries() {
+            return $.countries;
+        }
     };
 }

@@ -1,5 +1,6 @@
 export default function(urlPlaces) {
     const _ = {svg:null, q: null, places: null};
+    const $ = {};
 
     function svgAddPlaces() {
         _.svg.selectAll('.points,.labels').remove();
@@ -13,32 +14,30 @@ export default function(urlPlaces) {
     }
 
     function refresh() {
-        if (this._.placePoints) {
-            this._.placePoints.attr("d", this._.path);
+        if ($.placePoints) {
+            $.placePoints.attr("d", this._.path);
             position_labels.call(this);
         }
     }
 
     function svgAddPlacePoints() {
-        this._.placePoints = _.svg.append("g").attr("class","points").selectAll("path")
+        $.placePoints = _.svg.append("g").attr("class","points").selectAll("path")
             .data(_.places.features).enter().append("path")
             .attr("class", "point");
-        return this._.placePoints;
     }
 
     function svgAddPlaceLabels() {
-        this._.placeLabels = _.svg.append("g").attr("class","labels").selectAll("text")
+        $.placeLabels = _.svg.append("g").attr("class","labels").selectAll("text")
             .data(_.places.features).enter().append("text")
             .attr("class", "label")
             .text(function(d) { return d.properties.name });
-        return this._.placeLabels;
     }
 
     function position_labels() {
         const _this = this;
         const centerPos = this._.proj.invert(this._.center);
 
-        this._.placeLabels
+        $.placeLabels
             .attr("text-anchor",function(d) {
                 const x = _this._.proj(d.geometry.coordinates)[0];
                 return x < _this._.center[0]-20 ? "end" :

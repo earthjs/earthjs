@@ -1,5 +1,6 @@
 export default function() {
     const _ = {dataDots: null};
+    const $ = {};
 
     function svgAddDots() {
         const __ = this._;
@@ -10,24 +11,23 @@ export default function() {
                 _.circles.forEach(function(d) {
                     circles.push(d.circle);
                 });
-                __.dots = __.svg.append('g').attr('class','dot').selectAll('path')
+                $.dots = __.svg.append('g').attr('class','dot').selectAll('path')
                 .data(circles).enter().append('path');
                 if (_.dataDots.geometry) {
                     const _g = _.dataDots.geometry;
-                    _g.lineWidth   && __.dots.style('stroke-width', _g.lineWidth);
-                    _g.fillStyle   && __.dots.style('fill',         _g.fillStyle);
-                    _g.strokeStyle && __.dots.style('stroke',       _g.strokeStyle);
+                    _g.lineWidth   && $.dots.style('stroke-width', _g.lineWidth);
+                    _g.fillStyle   && $.dots.style('fill',         _g.fillStyle);
+                    _g.strokeStyle && $.dots.style('stroke',       _g.strokeStyle);
                 }
                 refresh.call(this);
-                return __.dots;
             }
         }
     }
 
     function refresh() {
         const __ = this._;
-        if (__.dots && __.options.showDots) {
-            __.dots.attr('d', __.path).style('display', function(d) {
+        if ($.dots && __.options.showDots) {
+            $.dots.attr('d', __.path).style('display', function(d) {
                 return d3.geoDistance(d.coordinates, __.proj.invert(__.center)) > 1.57 ? 'none' : 'inline';
             });
         }

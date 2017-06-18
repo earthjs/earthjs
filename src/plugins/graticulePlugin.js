@@ -1,21 +1,19 @@
 export default function() {
-    const datumGraticule = d3.geoGraticule();
-    const _ = {svg:null, q: null}
+    const _ = {svg:null, q: null, graticule: d3.geoGraticule()}
+    const $ = {};
 
     function svgAddGraticule() {
         _.svg.selectAll('.graticule').remove();
         if (this._.options.showGraticule) {
-            this._.graticule = _.svg.append("g").attr("class","graticule").append("path")
-                .datum(datumGraticule)
-                .attr("class", "noclicks");
+            $.graticule = _.svg.append("g").attr("class","graticule").append("path")
+                .datum(_.graticule).attr("class", "noclicks");
             refresh.call(this);
-            return this._.graticule;
         }
     }
 
     function refresh() {
-        if (this._.graticule && this._.options.showGraticule) {
-            this._.graticule.attr("d", this._.path);
+        if ($.graticule && this._.options.showGraticule) {
+            $.graticule.attr("d", this._.path);
         }
     }
 
