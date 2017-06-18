@@ -35,6 +35,7 @@ const earthjs = (options={}) => {
             'svgAddPings',
             'svgAddDots',
             'svgAddBar',
+            'svgAddBarTooltip'
         ],
         ready: null,
         loadingData: null,
@@ -100,7 +101,7 @@ const earthjs = (options={}) => {
                             if (ready) {
                                 ready.apply(globe, ar);
                             } else {
-                                obj.onReady.apply(globe, ar);                                
+                                obj.onReady.apply(globe, ar);
                             }
                             args = args.slice(ln);
                         });

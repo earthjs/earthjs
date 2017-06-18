@@ -29,7 +29,6 @@ export default urlBars => {
                 .attr("stroke", "red")
                 .attr("stroke-width", "2")
                 .attr("data-index", (d, i) => i);
-            // render to correct position
             refresh.call(this);
             return __.bar;
         }

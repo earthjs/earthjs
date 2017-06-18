@@ -91,7 +91,7 @@ var earthjs$1 = function earthjs() {
         onInterval: {},
         onIntervalKeys: [],
 
-        renderOrder: ['renderThree', 'svgAddDropShadow', 'svgAddCanvas', 'canvasAddGraticule', 'canvasAddWorldOrCountries', 'canvasAddDots', 'svgAddOcean', 'svgAddGlobeShading', 'svgAddGraticule', 'svgAddWorldOrCountries', 'svgAddGlobeHilight', 'svgAddPlaces', 'svgAddPings', 'svgAddDots', 'svgAddBar'],
+        renderOrder: ['renderThree', 'svgAddDropShadow', 'svgAddCanvas', 'canvasAddGraticule', 'canvasAddWorldOrCountries', 'canvasAddDots', 'svgAddOcean', 'svgAddGlobeShading', 'svgAddGraticule', 'svgAddWorldOrCountries', 'svgAddGlobeHilight', 'svgAddPlaces', 'svgAddPings', 'svgAddDots', 'svgAddBar', 'svgAddBarTooltip'],
         ready: null,
         loadingData: null,
         promeses: []
@@ -974,27 +974,30 @@ var countryTooltipPlugin = function () {
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var barTooltipPlugin = function () {
+    /*eslint no-debugger: 0 */
+    /*eslint no-console: 0 */
     var barTooltip = d3.select("body").append("div").attr("class", "barTooltip");
+
+    function svgAddBarTooltip() {
+        var _this = this;
+        this._.bar.on("mouseover", function () {
+            var i = +this.dataset.index;
+            var d = _this.barPlugin.data().features[i];
+            if (_this.barTooltipPlugin.onShow) {
+                d = _this.barTooltipPlugin.onShow.call(this, d, i, barTooltip);
+            }
+            _this.barTooltipPlugin.show(d).style("left", d3.event.pageX + 7 + "px").style("top", d3.event.pageY - 15 + "px").style("display", "block").style("opacity", 1);
+        }).on("mouseout", function () {
+            barTooltip.style("opacity", 0).style("display", "none");
+        }).on("mousemove", function () {
+            barTooltip.style("left", d3.event.pageX + 7 + "px").style("top", d3.event.pageY - 15 + "px");
+        });
+    }
 
     return {
         name: 'barTooltipPlugin',
         onInit: function onInit() {
-            var _this = this;
-            var originalsvgAddBar = this.$.svgAddBar;
-            this.$.svgAddBar = function () {
-                return originalsvgAddBar.call(this).on("mouseover", function () {
-                    var i = +this.dataset.index;
-                    var d = _this.barPlugin.data().features[i];
-                    if (_this.barTooltipPlugin.onShow) {
-                        d = _this.barTooltipPlugin.onShow.call(this, d, i, barTooltip);
-                    }
-                    _this.barTooltipPlugin.show(d).style("left", d3.event.pageX + 7 + "px").style("top", d3.event.pageY - 15 + "px").style("display", "block").style("opacity", 1);
-                }).on("mouseout", function () {
-                    barTooltip.style("opacity", 0).style("display", "none");
-                }).on("mousemove", function () {
-                    barTooltip.style("left", d3.event.pageX + 7 + "px").style("top", d3.event.pageY - 15 + "px");
-                });
-            };
+            this.$.svgAddBarTooltip = svgAddBarTooltip;
         },
         show: function show(d) {
             var props = d.properties;
@@ -1549,7 +1552,6 @@ var barPlugin = (function (urlBars) {
             __.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line").attr("stroke", "red").attr("stroke-width", "2").attr("data-index", function (d, i) {
                 return i;
             });
-            // render to correct position
             refresh.call(this);
             return __.bar;
         }
