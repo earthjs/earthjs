@@ -1,7 +1,7 @@
 export default degPerSec => {
     /*eslint no-console: 0 */
     const _ = {
-        lastTick: new Date(), // d3.now(),
+        lastTick: new Date(),
         degree: degPerSec/1000,
         sync: []
     }
@@ -18,7 +18,7 @@ export default degPerSec => {
             this._.options.spin = true;
         },
         onInterval() {
-            const now = new Date(); // d3.now();
+            const now = new Date();
             if (this._.options.spin && !this._.drag) {
                 const delta = now - _.lastTick;
                 rotate.call(this, delta);

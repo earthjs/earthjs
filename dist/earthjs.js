@@ -755,7 +755,7 @@ var fauxGlobePlugin = function () {
 var autorotatePlugin = (function (degPerSec) {
     /*eslint no-console: 0 */
     var _ = {
-        lastTick: new Date(), // d3.now(),
+        lastTick: new Date(),
         degree: degPerSec / 1000,
         sync: []
     };
@@ -772,7 +772,7 @@ var autorotatePlugin = (function (degPerSec) {
             this._.options.spin = true;
         },
         onInterval: function onInterval() {
-            var now = new Date(); // d3.now();
+            var now = new Date();
             if (this._.options.spin && !this._.drag) {
                 var delta = now - _.lastTick;
                 rotate.call(this, delta);
@@ -1531,7 +1531,6 @@ var barPlugin = (function (urlBars) {
             var mask = gBar.append("mask").attr("id", "edge");
             mask.append("rect").attr("x", 0).attr("y", 0).attr("width", "100%").attr("height", "100%").attr("fill", "white");
             mask.append("use").attr("xlink:href", "#edgeCircle").attr("fill", "black");
-            // $.mask = mask;
 
             _.max = d3.max(_.bars.features, function (d) {
                 return parseInt(d.geometry.value);

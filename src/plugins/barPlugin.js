@@ -19,7 +19,6 @@ export default urlBars => {
             mask.append("use")
                 .attr("xlink:href", "#edgeCircle")
                 .attr("fill", "black");
-            // $.mask = mask;
 
             _.max = d3.max(_.bars.features, d => parseInt(d.geometry.value))
 
