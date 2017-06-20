@@ -15,8 +15,10 @@
         const g1 = earthjs({rotate: 0});
         const g2 = earthjs({rotate: 180});
         g1.register(earthjs.plugins.configPlugin());
+        g1.register(earthjs.plugins.wheelZoomPlugin());
         g1.register(earthjs.plugins.versorDragPlugin());
 
+        g1.register(earthjs.plugins.dropShadowPlugin());
         g1.register(earthjs.plugins.oceanPlugin());
         g1.register(earthjs.plugins.fauxGlobePlugin());
 

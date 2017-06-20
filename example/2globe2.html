@@ -38,6 +38,7 @@
         g1.register(earthjs.plugins.autorotatePlugin(10));
         g1.register(earthjs.plugins.configPlugin());
 
+        g1.register(earthjs.plugins.dropShadowPlugin());
         g1.register(earthjs.plugins.oceanPlugin());
         g1.register(earthjs.plugins.fauxGlobePlugin());
 
@@ -47,6 +48,7 @@
 
         const g2 = earthjs({select:'#earth2', rotate: 180});
         g2.register(earthjs.plugins.configPlugin());
+        g2.register(earthjs.plugins.dropShadowPlugin());
         g2.register(earthjs.plugins.oceanPlugin());
         g2.register(earthjs.plugins.fauxGlobePlugin());
         g2.register(earthjs.plugins.barPlugin('./d/bars.json'));

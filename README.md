@@ -25,6 +25,7 @@ Selected plugins bundled into library:
 * configPlugin,
 * graticuleCanvas,
 * graticulePlugin,
+* dropShadowPlugin,
 * fauxGlobePlugin,
 * autorotatePlugin,
 * countrySelectCanvas,

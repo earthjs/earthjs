@@ -7,6 +7,7 @@ import oceanPlugin from './src/plugins/oceanPlugin.js';
 import configPlugin from './src/plugins/configPlugin.js';
 import graticuleCanvas from './src/plugins/graticuleCanvas.js';
 import graticulePlugin from './src/plugins/graticulePlugin.js';
+import dropShadowPlugin from './src/plugins/dropShadowPlugin.js';
 import fauxGlobePlugin from './src/plugins/fauxGlobePlugin.js';
 import autorotatePlugin from './src/plugins/autorotatePlugin.js';
 import countrySelectCanvas from './src/plugins/countrySelectCanvas';
@@ -35,6 +36,7 @@ app.plugins= {
     configPlugin,
     graticuleCanvas,
     graticulePlugin,
+    dropShadowPlugin,
     fauxGlobePlugin,
     autorotatePlugin,
     countrySelectCanvas,

@@ -77,40 +77,38 @@ const earthjs = (options={}) => {
         $fn: {},
         $slc: {},
         ready(fn) {
-            if (fn) {
-                if (_.promeses.length>0) {
-                    _.loadingData = true;
-                    const q = d3.queue();
-                    _.promeses.forEach(obj => {
-                        obj.urls.forEach(url => {
-                            let ext = url.split('.').pop();
-                            if (ext==='geojson') {
-                                ext = 'json';
-                            }
-                            q.defer(d3[ext], url);
-                        });
-                    })
-                    q.await(function() {
-                        let args = [].slice.call(arguments);
-                        const err = args.shift();
-                        _.promeses.forEach(obj => {
-                            const ln = obj.urls.length;
-                            const ar = args.slice(0,ln);
-                            const ready = globe[obj.name].ready;
-                            ar.unshift(err);
-
-                            if (ready) {
-                                ready.apply(globe, ar);
-                            } else {
-                                obj.onReady.apply(globe, ar);
-                            }
-                            args = args.slice(ln);
-                        });
-                        _.loadingData = false;
-                        fn.call(globe);
+            if (fn && _.promeses.length>0) {
+                const q = d3.queue();
+                _.loadingData = true;
+                _.promeses.forEach(obj => {
+                    obj.urls.forEach(url => {
+                        let ext = url.split('.').pop();
+                        if (ext==='geojson') {
+                            ext = 'json';
+                        }
+                        q.defer(d3[ext], url);
                     });
-                }
-            } else {
+                })
+                q.await(function() {
+                    let args = [].slice.call(arguments);
+                    const err = args.shift();
+                    _.promeses.forEach(obj => {
+                        const ln = obj.urls.length;
+                        const ar = args.slice(0,ln);
+                        const ready = globe[obj.name].ready;
+                        ar.unshift(err);
+
+                        if (ready) {
+                            ready.apply(globe, ar);
+                        } else {
+                            obj.onReady.apply(globe, ar);
+                        }
+                        args = args.slice(ln);
+                    });
+                    _.loadingData = false;
+                    fn.call(globe);
+                });
+            } else if (arguments.length===0) {
                 return _.loadingData;
             }
         },

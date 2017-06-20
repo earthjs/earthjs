@@ -16,6 +16,7 @@
         g.register(earthjs.plugins.versorDragPlugin());
         g.register(earthjs.plugins.wheelZoomPlugin());
         g.register(earthjs.plugins.configPlugin());
+        g.register(earthjs.plugins.dropShadowPlugin());
         g.register(earthjs.plugins.oceanPlugin());
         g.register(earthjs.plugins.graticulePlugin());
         g.register(earthjs.plugins.fauxGlobePlugin());
@@ -58,7 +59,7 @@
             'hideLand:Land:showLand',
             'country:Country:showCountries',
             'places:Places:showPlaces',
-            'shadow:Shadow:showGlobeShadow',
+            'shadow:Shadow:showDropShadow',
             'bars:Bars:showBars',
             'spin:Spin:spin',
         ].map(function(d) {return d.split(':')});

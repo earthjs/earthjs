@@ -4,30 +4,6 @@ export default function() {
     const _ = {svg:null, q: null};
     const $ = {};
 
-    function svgAddDropShadow() {
-        const __ = this._;
-        _.svg.selectAll('#drop_shadow,.drop_shadow').remove();
-        if (__.options.showGlobeShadow) {
-            const drop_shadow = this.$slc.defs.append("radialGradient")
-                  .attr("id", "drop_shadow")
-                  .attr("cx", "50%")
-                  .attr("cy", "50%");
-                drop_shadow.append("stop")
-                  .attr("offset","20%").attr("stop-color", "#000")
-                  .attr("stop-opacity",".5")
-                drop_shadow.append("stop")
-                  .attr("offset","100%").attr("stop-color", "#000")
-                  .attr("stop-opacity","0")
-            $.dropShadow = _.svg.append("g").attr("class","drop_shadow").append("ellipse")
-                  .attr("cx", __.center[0])
-                  .attr("cy", __.options.height-50)
-                  .attr("rx", __.proj.scale()*0.90)
-                  .attr("ry", __.proj.scale()*0.25)
-                  .attr("class", "noclicks")
-                  .style("fill", "url(#drop_shadow)");
-        }
-    }
-
     function svgAddGlobeShading() {
         const __ = this._;
         _.svg.selectAll('#shading,.shading').remove();
@@ -76,10 +52,8 @@ export default function() {
         name: 'fauxGlobePlugin',
         onInit() {
             const {options} = this._;
-            options.showGlobeShadow  = true;
             options.showGlobeShading = true;
             options.showGlobeHilight = true;
-            this.$fn.svgAddDropShadow   = svgAddDropShadow;
             this.$fn.svgAddGlobeHilight = svgAddGlobeHilight;
             this.$fn.svgAddGlobeShading = svgAddGlobeShading;
             _.svg = this._.svg;
@@ -93,12 +67,6 @@ export default function() {
             }
             if ($.globeHilight && options.showGlobeHilight) {
                 $.globeHilight.attr("r", scale);
-            }
-            if ($.dropShadow && options.showGlobeShadow) {
-                $.dropShadow
-                .attr("cy", scale+250)
-                .attr("rx", scale*0.90)
-                .attr("ry", scale*0.25);
             }
         },
         selectAll(q) {

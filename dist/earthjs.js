@@ -135,40 +135,38 @@ var earthjs$1 = function earthjs() {
         $fn: {},
         $slc: {},
         ready: function ready(fn) {
-            if (fn) {
-                if (_.promeses.length > 0) {
-                    _.loadingData = true;
-                    var q = d3.queue();
+            if (fn && _.promeses.length > 0) {
+                var q = d3.queue();
+                _.loadingData = true;
+                _.promeses.forEach(function (obj) {
+                    obj.urls.forEach(function (url) {
+                        var ext = url.split('.').pop();
+                        if (ext === 'geojson') {
+                            ext = 'json';
+                        }
+                        q.defer(d3[ext], url);
+                    });
+                });
+                q.await(function () {
+                    var args = [].slice.call(arguments);
+                    var err = args.shift();
                     _.promeses.forEach(function (obj) {
-                        obj.urls.forEach(function (url) {
-                            var ext = url.split('.').pop();
-                            if (ext === 'geojson') {
-                                ext = 'json';
-                            }
-                            q.defer(d3[ext], url);
-                        });
-                    });
-                    q.await(function () {
-                        var args = [].slice.call(arguments);
-                        var err = args.shift();
-                        _.promeses.forEach(function (obj) {
-                            var ln = obj.urls.length;
-                            var ar = args.slice(0, ln);
-                            var ready = globe[obj.name].ready;
-                            ar.unshift(err);
+                        var ln = obj.urls.length;
+                        var ar = args.slice(0, ln);
+                        var ready = globe[obj.name].ready;
+                        ar.unshift(err);
 
-                            if (ready) {
-                                ready.apply(globe, ar);
-                            } else {
-                                obj.onReady.apply(globe, ar);
-                            }
-                            args = args.slice(ln);
-                        });
-                        _.loadingData = false;
-                        fn.call(globe);
+                        if (ready) {
+                            ready.apply(globe, ar);
+                        } else {
+                            obj.onReady.apply(globe, ar);
+                        }
+                        args = args.slice(ln);
                     });
-                }
-            } else {
+                    _.loadingData = false;
+                    fn.call(globe);
+                });
+            } else if (arguments.length === 0) {
                 return _.loadingData;
             }
         },
@@ -689,7 +687,7 @@ var graticulePlugin = function () {
 };
 
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
-var fauxGlobePlugin = function () {
+var dropShadowPlugin = function () {
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null };
     var $ = {};
@@ -697,13 +695,47 @@ var fauxGlobePlugin = function () {
     function svgAddDropShadow() {
         var __ = this._;
         _.svg.selectAll('#drop_shadow,.drop_shadow').remove();
-        if (__.options.showGlobeShadow) {
+        if (__.options.showDropShadow) {
             var drop_shadow = this.$slc.defs.append("radialGradient").attr("id", "drop_shadow").attr("cx", "50%").attr("cy", "50%");
             drop_shadow.append("stop").attr("offset", "20%").attr("stop-color", "#000").attr("stop-opacity", ".5");
             drop_shadow.append("stop").attr("offset", "100%").attr("stop-color", "#000").attr("stop-opacity", "0");
             $.dropShadow = _.svg.append("g").attr("class", "drop_shadow").append("ellipse").attr("cx", __.center[0]).attr("cy", __.options.height - 50).attr("rx", __.proj.scale() * 0.90).attr("ry", __.proj.scale() * 0.25).attr("class", "noclicks").style("fill", "url(#drop_shadow)");
         }
     }
+
+    return {
+        name: 'dropShadowPlugin',
+        onInit: function onInit() {
+            var options = this._.options;
+
+            options.showDropShadow = true;
+            this.$fn.svgAddDropShadow = svgAddDropShadow;
+            _.svg = this._.svg;
+        },
+        onResize: function onResize() {
+            var __ = this._;
+            var options = __.options;
+
+            var scale = __.proj.scale();
+            if ($.dropShadow && options.showDropShadow) {
+                $.dropShadow.attr("cy", scale + 250).attr("rx", scale * 0.90).attr("ry", scale * 0.25);
+            }
+        },
+        selectAll: function selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
+            return _.svg;
+        }
+    };
+};
+
+// Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
+var fauxGlobePlugin = function () {
+    /*eslint no-console: 0 */
+    var _ = { svg: null, q: null };
+    var $ = {};
 
     function svgAddGlobeShading() {
         var __ = this._;
@@ -732,10 +764,8 @@ var fauxGlobePlugin = function () {
         onInit: function onInit() {
             var options = this._.options;
 
-            options.showGlobeShadow = true;
             options.showGlobeShading = true;
             options.showGlobeHilight = true;
-            this.$fn.svgAddDropShadow = svgAddDropShadow;
             this.$fn.svgAddGlobeHilight = svgAddGlobeHilight;
             this.$fn.svgAddGlobeShading = svgAddGlobeShading;
             _.svg = this._.svg;
@@ -750,9 +780,6 @@ var fauxGlobePlugin = function () {
             }
             if ($.globeHilight && options.showGlobeHilight) {
                 $.globeHilight.attr("r", scale);
-            }
-            if ($.dropShadow && options.showGlobeShadow) {
-                $.dropShadow.attr("cy", scale + 250).attr("rx", scale * 0.90).attr("ry", scale * 0.25);
             }
         },
         selectAll: function selectAll(q) {
@@ -2022,6 +2049,7 @@ earthjs$1.plugins = {
     configPlugin: configPlugin,
     graticuleCanvas: graticuleCanvas,
     graticulePlugin: graticulePlugin,
+    dropShadowPlugin: dropShadowPlugin,
     fauxGlobePlugin: fauxGlobePlugin,
     autorotatePlugin: autorotatePlugin,
     countrySelectCanvas: countrySelectCanvas,
