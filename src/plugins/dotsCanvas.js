@@ -1,4 +1,4 @@
-export default function() {
+export default urlDots => {
     const _ = {dataDots: null, circles: []};
 
     function canvasAddDots() {
@@ -39,6 +39,10 @@ export default function() {
 
     return {
         name: 'dotsCanvas',
+        urls: urlDots && [urlDots],
+        onReady(err, dots) {
+            this.dotsCanvas.data(dots);
+        },
         onInit() {
             this.$fn.canvasAddDots = canvasAddDots;
             this._.options.showDots = true;
@@ -47,8 +51,13 @@ export default function() {
             canvasAddDots.call(this);
         },
         data(data) {
-            _.dataDots = data;
-            initData();
+            if (data) {
+                _.dataDots = data;
+                initData();
+                setTimeout(() => canvasAddDots.call(this),1);
+            } else {
+                return _.dataDots;
+            }
         },
         drawTo(arr) {
             _.drawTo = arr;

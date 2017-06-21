@@ -71,8 +71,7 @@ export default urlBars => {
         name: 'barPlugin',
         urls: urlBars && [urlBars],
         onReady(err, bars) {
-            _.bars = bars;
-            setTimeout(() => refresh.call(this),1);
+            this.barPlugin.data(bars);
         },
         onInit() {
             const __ = this._;
@@ -100,6 +99,7 @@ export default urlBars => {
         data(data) {
             if (data) {
                 _.bars = data;
+                setTimeout(() => refresh.call(this),1);
             } else {
                 return _.bars;
             }

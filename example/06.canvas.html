@@ -1,0 +1,51 @@
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
+    <script type='text/javascript' src="./js/d3.min.js"></script>
+    <script type='text/javascript' src="./js/topojson.min.js"></script>
+    <script type='text/javascript' src='../dist/earthjs.js'></script>
+</head>
+<body>
+    <svg id="earth"></svg>
+    <script>
+        const g = earthjs();
+        g.register(earthjs.plugins.configPlugin());
+        g.register(earthjs.plugins.wheelZoomPlugin());
+        g.register(earthjs.plugins.versorDragPlugin());
+        g.register(earthjs.plugins.autorotatePlugin(10));
+        g.register(earthjs.plugins.dropShadowPlugin());
+        g.register(earthjs.plugins.oceanPlugin());
+        g.register(earthjs.plugins.canvasPlugin());
+        g.register(earthjs.plugins.graticuleCanvas());
+        g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
+        g.register(earthjs.plugins.fauxGlobePlugin());
+        g.configPlugin.set({
+            transparent: true,
+            showCountries: false,
+            showLakes: false
+        });
+        g.register(earthjs.plugins.barPlugin());
+        g.register(earthjs.plugins.dotsCanvas('./d/bars.json'));
+        g.dotsCanvas.ready = function(err, json) {
+            const features = json.features;
+            const maxMag = features.map(d => d.properties.mag).sort(d3.descending)[0];
+            const scale = d3.scaleLinear().domain([3, maxMag]).range([0.5, 2]);
+            json.features.forEach(d => {
+                d.geometry.value = d.properties.mag
+                d.geometry.radius = scale(d.properties.mag);
+            });
+            json.geometry = {
+                radius: 1,
+                lineWidth: 0.5,
+                fillStyle: 'rgba(100,0,0,.4)',
+                strokeStyle: 'rgba(100,0,0,.6)'
+            }
+            g.barPlugin.data(json);
+            g.dotsCanvas.data(json);
+        };
+        g.ready(function(){
+            g.svgDraw();
+        })
+    </script>
+</body>
+</html>

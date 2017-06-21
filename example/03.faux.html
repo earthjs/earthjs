@@ -11,15 +11,18 @@
         const g = earthjs();
         g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.wheelZoomPlugin());
-        g.register(earthjs.plugins.graticulePlugin());
         g.register(earthjs.plugins.versorDragPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
+        g.register(earthjs.plugins.dropShadowPlugin());
+        g.register(earthjs.plugins.oceanPlugin());
+        g.register(earthjs.plugins.graticulePlugin());
         g.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
-        g.register(earthjs.plugins.barPlugin('./d/bars.json'));
-        g.barPlugin.ready = function(err, json) {
-            json.features.forEach(d => d.geometry.value = d.properties.mag);
-            g.barPlugin.data(json);
-        };
+        g.register(earthjs.plugins.fauxGlobePlugin());
+        g.configPlugin.set({
+            transparent: true,
+            showCountries: false,
+            showLakes: false
+        });
         g.ready(function(){
             g.svgDraw();
         })

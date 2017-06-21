@@ -80,6 +80,12 @@ export default (urlWorld, urlCountryNames) => {
         urls: urls,
         onReady(err, world, countryNames) {
             this.worldCanvas.data({world, countryNames});
+            // if (this.countrySelectCanvas) {
+            //     const selectHandler = () => canvasAddWorldOrCountries.call(this);
+            //     this.countrySelectCanvas.onHover({
+            //         countryTooltipCanvas: selectHandler
+            //     });
+            // }
         },
         onInit() {
             const options = this._.options;

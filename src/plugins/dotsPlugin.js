@@ -1,4 +1,4 @@
-export default function() {
+export default urlDots => {
     const _ = {dataDots: null};
     const $ = {};
 
@@ -47,6 +47,10 @@ export default function() {
 
     return {
         name: 'dotsPlugin',
+        urls: urlDots && [urlDots],
+        onReady(err, dots) {
+            this.dotsPlugin.data(dots);
+        },
         onInit() {
             this.$fn.svgAddDots = svgAddDots;
             this._.options.showDots = true;
@@ -55,8 +59,13 @@ export default function() {
             refresh.call(this);
         },
         data(data) {
-            _.dataDots = data;
-            initData();
+            if (data) {
+                _.dataDots = data;
+                initData();
+                setTimeout(() => refresh.call(this),1);
+            } else {
+                return _.dataDots;
+            }
         },
     }
 }

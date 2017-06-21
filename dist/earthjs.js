@@ -1215,6 +1215,12 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
         urls: urls,
         onReady: function onReady(err, world, countryNames) {
             this.worldCanvas.data({ world: world, countryNames: countryNames });
+            // if (this.countrySelectCanvas) {
+            //     const selectHandler = () => canvasAddWorldOrCountries.call(this);
+            //     this.countrySelectCanvas.onHover({
+            //         countryTooltipCanvas: selectHandler
+            //     });
+            // }
         },
         onInit: function onInit() {
             var options = this._.options;
@@ -1637,12 +1643,7 @@ var barPlugin = (function (urlBars) {
         name: 'barPlugin',
         urls: urlBars && [urlBars],
         onReady: function onReady(err, bars) {
-            var _this = this;
-
-            _.bars = bars;
-            setTimeout(function () {
-                return refresh.call(_this);
-            }, 1);
+            this.barPlugin.data(bars);
         },
         onInit: function onInit() {
             var __ = this._;
@@ -1668,8 +1669,13 @@ var barPlugin = (function (urlBars) {
             return _.svg;
         },
         data: function data(_data) {
+            var _this = this;
+
             if (_data) {
                 _.bars = _data;
+                setTimeout(function () {
+                    return refresh.call(_this);
+                }, 1);
             } else {
                 return _.bars;
             }
@@ -1680,7 +1686,7 @@ var barPlugin = (function (urlBars) {
     };
 });
 
-var dotsPlugin = function () {
+var dotsPlugin = (function (urlDots) {
     var _ = { dataDots: null };
     var $ = {};
 
@@ -1728,6 +1734,10 @@ var dotsPlugin = function () {
 
     return {
         name: 'dotsPlugin',
+        urls: urlDots && [urlDots],
+        onReady: function onReady(err, dots) {
+            this.dotsPlugin.data(dots);
+        },
         onInit: function onInit() {
             this.$fn.svgAddDots = svgAddDots;
             this._.options.showDots = true;
@@ -1736,13 +1746,22 @@ var dotsPlugin = function () {
             refresh.call(this);
         },
         data: function data(_data) {
-            _.dataDots = _data;
-            initData();
+            var _this = this;
+
+            if (_data) {
+                _.dataDots = _data;
+                initData();
+                setTimeout(function () {
+                    return refresh.call(_this);
+                }, 1);
+            } else {
+                return _.dataDots;
+            }
         }
     };
-};
+});
 
-var dotsCanvas = function () {
+var dotsCanvas = (function (urlDots) {
     var _ = { dataDots: null, circles: [] };
 
     function canvasAddDots() {
@@ -1783,6 +1802,10 @@ var dotsCanvas = function () {
 
     return {
         name: 'dotsCanvas',
+        urls: urlDots && [urlDots],
+        onReady: function onReady(err, dots) {
+            this.dotsCanvas.data(dots);
+        },
         onInit: function onInit() {
             this.$fn.canvasAddDots = canvasAddDots;
             this._.options.showDots = true;
@@ -1791,14 +1814,23 @@ var dotsCanvas = function () {
             canvasAddDots.call(this);
         },
         data: function data(_data) {
-            _.dataDots = _data;
-            initData();
+            var _this = this;
+
+            if (_data) {
+                _.dataDots = _data;
+                initData();
+                setTimeout(function () {
+                    return canvasAddDots.call(_this);
+                }, 1);
+            } else {
+                return _.dataDots;
+            }
         },
         drawTo: function drawTo(arr) {
             _.drawTo = arr;
         }
     };
-};
+});
 
 var pingsCanvas = function () {
     var _ = { dataPings: null, pings: [] };
