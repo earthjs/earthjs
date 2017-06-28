@@ -53,9 +53,12 @@ export default function() {
         name: 'pingsPlugin',
         onInit() {
             this._.options.showPings = true;
-            this.$fn.svgAddPings = svgAddPings;
+            // this.$fn.svgAddPings = svgAddPings;
             setInterval(() => animate.call(this), 3000);
             _.svg = this._.svg;
+        },
+        onCreate() {
+            svgAddPings.call(this);
         },
         onRefresh() {
             refresh.call(this);

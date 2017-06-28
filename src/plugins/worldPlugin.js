@@ -8,15 +8,15 @@ export default function(urlWorld, urlCountryNames) {
         _.svg.selectAll('.landbg,.land,.lakes,.countries').remove();
         if (__.options.showLand) {
             if (_.world) {
-                if (__.options.transparent || __.options.transparentWorld) {
+                if (__.options.transparent || __.options.transparentLand) {
                     _.svgAddWorldBg.call(this);
                 }
-                if (__.options.showCountries) {
+                if (!__.drag && __.options.showCountries) {
                     _.svgAddCountries.call(this);
                 } else {
                     _.svgAddWorld.call(this);
                 }
-                if (__.options.showLakes) {
+                if (!__.drag && __.options.showLakes) {
                     _.svgAddLakes.call(this);
                 }
             }
@@ -27,7 +27,7 @@ export default function(urlWorld, urlCountryNames) {
     function refresh() {
         const __ = this._;
         if (_.world && __.options.showLand) {
-            if (__.options.transparent || __.options.transparentWorld) {
+            if (__.options.transparent || __.options.transparentLand) {
                 __.proj.clipAngle(180);
                 $.worldBg.attr("d", __.path);
                 __.proj.clipAngle(90);
@@ -81,13 +81,16 @@ export default function(urlWorld, urlCountryNames) {
             options.showLand = true;
             options.showLakes = true;
             options.showCountries = true;
-            options.transparentWorld = false;
-            this.$fn.svgAddWorldOrCountries = svgAddWorldOrCountries;
+            options.transparentLand = false;
+            // this.$fn.svgAddWorldOrCountries = svgAddWorldOrCountries;
             _.svgAddCountries = svgAddCountries;
             _.svgAddWorldBg = svgAddWorldBg;
             _.svgAddLakes = svgAddLakes;
             _.svgAddWorld = svgAddWorld;
             _.svg = __.svg;
+        },
+        onCreate() {
+            svgAddWorldOrCountries.call(this);
         },
         onRefresh() {
             refresh.call(this);

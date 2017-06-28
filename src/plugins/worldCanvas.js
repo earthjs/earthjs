@@ -2,12 +2,19 @@
 export default (urlWorld, urlCountryNames) => {
     /*eslint no-debugger: 0 */
     /*eslint no-console: 0 */
-    const _ = {world: null, countryNames: null, style: {}, drawTo: null, options: {}};
+    const color = {
+        0:'rgba(117, 87, 57, 0.4)',
+        1:'rgba(138, 96, 56, 0.4)',
+        2:'rgba(140,104, 63, 0.4)',
+        3:'rgba(149,114, 74, 0.4)',
+        4:'rgba(153,126, 87, 0.4)',
+        5:'rgba(155,141,115, 0.4)'}
+    const _ = {world: null, countryNames: null, style: {}, drawTo: null, options: {}, landColor: 0};
 
     function canvasAddWorldOrCountries() {
         const __ = this._;
         if (_.world && __.options.showLand) {
-            if (__.options.transparent || __.options.transparentWorld) {
+            if (__.options.transparent || __.options.transparentLand) {
                 __.proj.clipAngle(180);
                 this.canvasPlugin.render(function(context, path) {
                     context.beginPath();
@@ -17,31 +24,29 @@ export default (urlWorld, urlCountryNames) => {
                 }, _.drawTo, _.options);
                 __.proj.clipAngle(90);
             }
-            if (!__.drag && __.options.showCountries) {
-                canvasAddCountries.call(this);
-                if (__.options.showLakes) {
-                    canvasAddLakes.call(this);
-                }
-            } else {
-                canvasAddWorld.call(this);
+            canvasAddWorld.call(this);
+            if (!__.drag) {
+                __.options.showCountries && canvasAddCountries.call(this);
+                __.options.showLakes && canvasAddLakes.call(this);
             }
-            if (this.countrySelectCanvas) {
-                const {country} = this.countrySelectCanvas.data();
+            if (this.hoverCanvas && __.options.showCountrySelected) {
+                const {country} = this.hoverCanvas.data();
                 this.canvasPlugin.render(function(context, path) {
                     context.beginPath();
                     path(country);
                     context.fillStyle = 'rgba(117, 0, 0, 0.4)';
                     context.fill();
-                });
+                }, _.drawTo, _.options);
             }
         }
     }
 
     function canvasAddWorld() {
         this.canvasPlugin.render(function(context, path) {
+            const c = _.landColor;
             context.beginPath();
             path(_.land);
-            context.fillStyle = _.style.land || 'rgba(117, 87, 57, 0.4)';
+            context.fillStyle = _.style.land || typeof(c)==='number' ? color[c] : c;
             context.fill();
         }, _.drawTo, _.options);
     }
@@ -51,9 +56,7 @@ export default (urlWorld, urlCountryNames) => {
             context.beginPath();
             path(_.countries);
             context.lineWidth = 0.1;
-            context.fillStyle = _.style.land || 'rgba(117, 87, 57, 0.4)';
             context.strokeStyle = _.style.countries || 'rgb(239, 237, 234)';
-            context.fill();
             context.stroke();
         }, _.drawTo, _.options);
     }
@@ -80,20 +83,33 @@ export default (urlWorld, urlCountryNames) => {
         urls: urls,
         onReady(err, world, countryNames) {
             this.worldCanvas.data({world, countryNames});
-            // if (this.countrySelectCanvas) {
-            //     const selectHandler = () => canvasAddWorldOrCountries.call(this);
-            //     this.countrySelectCanvas.onHover({
-            //         countryTooltipCanvas: selectHandler
-            //     });
-            // }
+            Object.defineProperty(this._.options, 'landColor', {
+                get: () => _.landColor,
+                set: (x) => {
+                    _.landColor = x;
+                }
+            });
         },
         onInit() {
             const options = this._.options;
             options.showLand = true;
             options.showLakes = true;
             options.showCountries = true;
-            options.transparentWorld = false;
-            this.$fn.canvasAddWorldOrCountries = canvasAddWorldOrCountries;
+            options.transparentLand = false;
+            options.showCountrySelected = true;
+            options.landColor = 0;
+            // this.$fn.canvasAddWorldOrCountries = canvasAddWorldOrCountries;
+        },
+        onCreate() {
+            canvasAddWorldOrCountries.call(this);
+            if (this.hoverCanvas) {
+                const worldCanvas = () => {
+                    if (!this._.options.spin) {
+                        this._.refresh()
+                    }
+                };
+                this.hoverCanvas.addSelectCountryEvent({worldCanvas});
+            }
         },
         onRefresh() {
             canvasAddWorldOrCountries.call(this);

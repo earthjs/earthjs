@@ -8,30 +8,31 @@ export default function() {
         const _this = this;
         this.worldPlugin.$countries()
         .on("mouseover", function(d) {
-            if (!_this._.drag) {
+            if (_this._.options.showCountryTooltip) {
                 _.show = true;
                 const country = _this.worldPlugin.countryName.call(_this, d);
-                refresh(d3.mouse(this))
+                refresh()
                 .style("display", "block")
                 .style("opacity", 1)
                 .text(country.name);
             }
         })
         .on("mouseout", function() {
-            if (!_this._.drag) {
-                _.show = false;
-                countryTooltip.style("opacity", 0)
-                .style("display", "none");
-            }
+            _.show = false;
+            countryTooltip.style("opacity", 0)
+            .style("display", "none");
         })
         .on("mousemove", function() {
-            if (!_this._.drag) {
-                refresh(d3.mouse(this));
+            if (_this._.options.showCountryTooltip) {
+                refresh();
             }
         });
     }
 
     function refresh(mouse) {
+        if (!mouse) {
+            mouse = [d3.event.pageX, d3.event.pageY];
+        }
         return countryTooltip
         .style("left", (mouse[0] + 7) + "px")
         .style("top", (mouse[1] - 15) + "px")
@@ -40,7 +41,11 @@ export default function() {
     return {
         name: 'countryTooltipPlugin',
         onInit() {
-            this.$fn.addCountryTooltip = addCountryTooltip;
+            // this.$fn.addCountryTooltip = addCountryTooltip;
+            this._.options.showCountryTooltip = true;
+        },
+        onCreate() {
+            addCountryTooltip.call(this);
         },
         onRefresh() {
             if (this._.drag && _.show) {

@@ -1,22 +1,35 @@
 export default function() {
-    const _ = {svg:null, q: null, scale: 0};
+    const color = {
+        0:['rgba(221, 221, 255, 0.6)', 'rgba(153, 170, 187,0.8)'],
+        1:['rgba(159, 240, 232, 0.6)', 'rgba(  5, 242, 219,0.8)'],
+        2:['rgba(152, 234, 242, 0.6)', 'rgba(  5, 219, 242,0.8)'],
+        3:['rgba(114, 162, 181, 0.6)', 'rgba(  4, 138, 191,0.8)'],
+        4:['rgba( 96, 123, 148, 0.6)', 'rgba( 10,  93, 166,0.8)'],
+        5:['rgba( 87, 102, 131, 0.6)', 'rgba(  8,  52, 140,0.8)']};
+    const _ = {svg:null, q: null, scale: 0, oceanColor: 0};
 
     function svgAddOcean() {
         _.svg.selectAll('#ocean,.ocean').remove();
         if (this._.options.showOcean) {
+            let c = _.oceanColor;
             const ocean_fill = this.$slc.defs.append("radialGradient")
-                .attr("id", "ocean")
-                .attr("cx", "75%")
-                .attr("cy", "25%");
-            ocean_fill.append("stop")
+            .attr("id", "ocean")
+            .attr("cx", "75%")
+            .attr("cy", "25%");
+            if (typeof(c)==='number') {
+                c = color[c];
+                ocean_fill.append("stop")
                 .attr("offset", "5%")
-                .attr("stop-color", "#ddf");
+                .attr("stop-color", c[0]);
+            } else if (typeof(c)==='string') {
+                c = [c, c];
+            }
             ocean_fill.append("stop")
-                .attr("offset", "100%")
-                .attr("stop-color", "#9ab");
+            .attr("offset", "100%")
+            .attr("stop-color", c[1]);
             _.ocean = _.svg.append("g").attr("class","ocean").append("circle")
-                .attr("cx",this._.center[0]).attr("cy", this._.center[1])
-                .attr("class", "noclicks");
+            .attr("cx",this._.center[0]).attr("cy", this._.center[1])
+            .attr("class", "noclicks");
             resize.call(this);
         }
     }
@@ -30,9 +43,18 @@ export default function() {
     return {
         name: 'oceanPlugin',
         onInit() {
-            this.$fn.svgAddOcean = svgAddOcean;
+            // this.$fn.svgAddOcean = svgAddOcean;
             this._.options.showOcean = true;
+            Object.defineProperty(this._.options, 'oceanColor', {
+                get: () => _.oceanColor,
+                set: (x) => {
+                    _.oceanColor = x;
+                }
+            });
             _.svg = this._.svg;
+        },
+        onCreate() {
+            svgAddOcean.call(this);
         },
         onResize() {
             resize.call(this);
@@ -51,6 +73,9 @@ export default function() {
             } else {
                 return _.scale;
             }
+        },
+        recreate() {
+            svgAddOcean.call(this);
         }
     }
 }

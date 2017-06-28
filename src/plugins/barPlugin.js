@@ -1,6 +1,6 @@
 export default urlBars => {
     /*eslint no-console: 0 */
-    const _ = {svg:null, barProjection: null, q: null, bars: null};
+    const _ = {svg:null, barProjection: null, q: null, bars: null, valuePath: null};
     const $ = {};
 
     function svgAddBar() {
@@ -75,19 +75,22 @@ export default urlBars => {
         },
         onInit() {
             const __ = this._;
-            this.$fn.svgAddBar = svgAddBar;
+            // this.$fn.svgAddBar = svgAddBar;
             __.options.showBars = true;
             _.barProjection = __.orthoGraphic();
             _.svg = __.svg;
             svgClipPath.call(this);
         },
-        onResize() {
-            svgClipPath.call(this);
+        onCreate() {
             svgAddBar.call(this);
         },
         onRefresh() {
             _.barProjection.rotate(this._.proj.rotate());
             refresh.call(this);
+        },
+        onResize() {
+            svgClipPath.call(this);
+            svgAddBar.call(this);
         },
         selectAll(q) {
             if (q) {
@@ -96,8 +99,19 @@ export default urlBars => {
             }
             return _.svg;
         },
+        valuePath(path) {
+            _.valuePath = path;
+        },
         data(data) {
             if (data) {
+                if (_.valuePath) {
+                    const p = _.valuePath.split('.');
+                    data.features.forEach(d => {
+                        let v = d;
+                        p.forEach(o => v = v[o]);
+                        d.geometry.value = v;
+                    });
+                }
                 _.bars = data;
                 setTimeout(() => refresh.call(this),1);
             } else {

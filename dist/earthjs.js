@@ -82,20 +82,49 @@ var earthjs$1 = function earthjs() {
         rotate: 130
     }, options);
     var _ = {
-        onResize: {},
-        onResizeKeys: [],
+        onCreate: {},
+        onCreateKeys: [],
 
         onRefresh: {},
         onRefreshKeys: [],
 
+        onResize: {},
+        onResizeKeys: [],
+
         onInterval: {},
         onIntervalKeys: [],
 
-        renderOrder: ['renderThree', 'svgAddDropShadow', 'svgAddCanvas', 'canvasAddGraticule', 'canvasAddWorldOrCountries', 'canvasAddDots', 'svgAddOcean', 'svgAddGlobeShading', 'svgAddGraticule', 'svgAddWorldOrCountries', 'svgAddGlobeHilight', 'svgAddPlaces', 'svgAddPings', 'svgAddDots', 'svgAddBar', 'addBarTooltip', 'addCountryTooltip', 'addCountryCenteroid'],
+        // renderOrder: [
+        //     'renderThree',
+        //     'svgAddDropShadow',
+        //     'svgAddCanvas',
+        //     'canvasAddGraticule',
+        //     'canvasAddWorldOrCountries',
+        //     'canvasAddDots',
+        //     'svgAddOcean',
+        //     'svgAddGlobeShading',
+        //     'svgAddGraticule',
+        //     'svgAddWorldOrCountries',
+        //     'svgAddGlobeHilight',
+        //     'svgAddPlaces',
+        //     'svgAddPings',
+        //     'svgAddDots',
+        //     'svgAddBar',
+        //     'addBarTooltip',
+        //     'addCountryTooltip',
+        //     'addCountryCenteroid',
+        // ],
         ready: null,
+        promeses: [],
         loadingData: null,
-        promeses: []
+        recreateSvgOrCanvas: function recreateSvgOrCanvas() {
+            _.onCreateKeys.forEach(function (fn) {
+                _.onCreate[fn].call(globe);
+            });
+            return globe;
+        }
     };
+    window.__ = _;
     var drag = false;
     var svg = d3.selectAll(options.select);
     var width = svg.attr('width'),
@@ -132,7 +161,7 @@ var earthjs$1 = function earthjs() {
             center: center,
             options: options
         },
-        $fn: {},
+        // $fn: {},
         $slc: {},
         ready: function ready(fn) {
             if (fn && _.promeses.length > 0) {
@@ -174,7 +203,7 @@ var earthjs$1 = function earthjs() {
             var ar = {};
             globe[obj.name] = ar;
             Object.keys(obj).forEach(function (fn) {
-                if (['urls', 'onReady', 'onInit', 'onResize', 'onRefresh', 'onInterval'].indexOf(fn) === -1) {
+                if (['urls', 'onReady', 'onInit', 'onCreate', 'onRefresh', 'onResize', 'onInterval'].indexOf(fn) === -1) {
                     if (typeof obj[fn] === 'function') {
                         ar[fn] = function () {
                             return obj[fn].apply(globe, arguments);
@@ -185,6 +214,7 @@ var earthjs$1 = function earthjs() {
             if (obj.onInit) {
                 obj.onInit.call(globe);
             }
+            qEvent(obj, 'onCreate');
             qEvent(obj, 'onResize');
             qEvent(obj, 'onRefresh');
             qEvent(obj, 'onInterval');
@@ -205,11 +235,12 @@ var earthjs$1 = function earthjs() {
     var __ = globe._;
 
     globe.svgDraw = function (twinEarth) {
-        var $fn = globe.$fn;
+        // const $fn = globe.$fn;
         earths = twinEarth || [];
-        _.renderOrder.forEach(function (renderer) {
-            $fn[renderer] && $fn[renderer].call(globe);
-        });
+        // _.renderOrder.forEach(function(renderer) {
+        //     $fn[renderer] && $fn[renderer].call(globe);
+        // });
+        _.recreateSvgOrCanvas();
         earths.forEach(function (p) {
             p.svgDraw(null);
         });
@@ -220,16 +251,16 @@ var earthjs$1 = function earthjs() {
     };
 
     globe.$slc.defs = __.svg.append("defs");
-    __.ticker = function (interval) {
-        var intervalRun = __.intervalRun;
-        interval = interval || 50;
+    __.ticker = function (intervalTicker) {
+        var interval = __.interval;
+        intervalTicker = intervalTicker || 50;
         ticker = setInterval(function () {
             // 33% less CPU compare with d3.timer
-            intervalRun.call(globe);
+            interval.call(globe);
             earths.forEach(function (p) {
-                p._.intervalRun.call(p);
+                p._.interval.call(p);
             });
-        }, interval);
+        }, intervalTicker);
         earthjs.ticker = ticker;
         return globe;
     };
@@ -249,7 +280,7 @@ var earthjs$1 = function earthjs() {
         return globe;
     };
 
-    __.intervalRun = function () {
+    __.interval = function () {
         _.onIntervalKeys.forEach(function (fn) {
             _.onInterval[fn].call(globe);
         });
@@ -277,11 +308,11 @@ var earthjs$1 = function earthjs() {
         return d3.geoOrthographic().rotate([__.options.rotate, 0]).scale(__.options.width / 3.5).translate(__.center).precision(0.1).clipAngle(90);
     };
 
-    __.addRenderer = function (name) {
-        if (_.renderOrder.indexOf(name) < 0) {
-            _.renderOrder.push(name);
-        }
-    };
+    // __.addRenderer = function(name) {
+    //     if (_.renderOrder.indexOf(name)<0) {
+    //         _.renderOrder.push(name);
+    //     }
+    // }
 
     __.proj = __.orthoGraphic();
     __.path = d3.geoPath().projection(__.proj);
@@ -472,25 +503,34 @@ var canvasPlugin = (function () {
                 _.canvas = fBody.append("canvas");
             }
             _.canvas.attr("x", 0).attr("y", 0).attr("width", __.options.width).attr("height", __.options.height);
-            return _.canvas;
         }
+        if (_.canvas) {
+            refresh.call(this);
+        }
+    }
+
+    function refresh() {
+        var _$options = this._.options,
+            width = _$options.width,
+            height = _$options.height;
+
+        _.canvas.each(function () {
+            this.getContext("2d").clearRect(0, 0, width, height);
+        });
     }
 
     return {
         name: 'canvasPlugin',
         onInit: function onInit() {
             this._.options.showCanvas = true;
-            this.$fn.svgAddCanvas = svgAddCanvas;
+            // this.$fn.svgAddCanvas = svgAddCanvas;
             _.path = d3.geoPath().projection(this._.proj);
         },
+        onCreate: function onCreate() {
+            svgAddCanvas.call(this);
+        },
         onRefresh: function onRefresh() {
-            var _$options = this._.options,
-                width = _$options.width,
-                height = _$options.height;
-
-            _.canvas.each(function () {
-                this.getContext("2d").clearRect(0, 0, width, height);
-            });
+            refresh.call(this);
         },
         selectAll: function selectAll(q) {
             if (q) {
@@ -531,15 +571,133 @@ var canvasPlugin = (function () {
     };
 });
 
+// KoGor’s Block http://bl.ocks.org/KoGor/5994804
+var hoverCanvas = function () {
+    /*eslint no-console: 0 */
+    var _ = {
+        mouse: null,
+        country: null,
+        countries: null,
+        addSelectCircleEvent: {},
+        addSelectCircleEventKeys: [],
+        addSelectCountryEvent: {},
+        addSelectCountryEventKeys: []
+    };
+
+    // https://github.com/d3/d3-polygon
+    function polygonContains(polygon, point) {
+        var n = polygon.length;
+        var p = polygon[n - 1];
+        var x = point[0],
+            y = point[1];
+        var x0 = p[0],
+            y0 = p[1];
+        var x1, y1;
+        var inside = false;
+        for (var i = 0; i < n; ++i) {
+            p = polygon[i], x1 = p[0], y1 = p[1];
+            if (y1 > y !== y0 > y && x < (x0 - x1) * (y - y1) / (y0 - y1) + x1) inside = !inside;
+            x0 = x1, y0 = y1;
+        }
+        return inside;
+    }
+
+    function initMouseMoveHandler() {
+        if (this.worldCanvas) {
+            var _worldCanvas$data = this.worldCanvas.data(),
+                world = _worldCanvas$data.world;
+
+            if (world) {
+                _.countries = topojson.feature(world, world.objects.countries);
+            }
+        }
+        var __ = this._;
+        var mouseMoveHandler = function mouseMoveHandler() {
+            var _this = this;
+
+            var event = d3.event;
+            if (event.sourceEvent) {
+                event = event.sourceEvent;
+            }
+            var mouse = [event.clientX, event.clientY]; //d3.mouse(this);
+            var pos = __.proj.invert(d3.mouse(this));
+            _.pos = pos;
+            _.dot = null;
+            _.mouse = mouse;
+            _.country = null;
+            _.addSelectCircleEventKeys.forEach(function (k) {
+                _.dot = _.addSelectCircleEvent[k].call(_this, _.mouse, pos);
+            });
+            if (_.countries && !_.dot) {
+                _.country = _.countries.features.find(function (f) {
+                    return f.geometry.coordinates.find(function (c1) {
+                        return polygonContains(c1, pos) || c1.find(function (c2) {
+                            return polygonContains(c2, pos);
+                        });
+                    });
+                });
+                _.addSelectCountryEventKeys.forEach(function (k) {
+                    _.addSelectCountryEvent[k].call(_this, _.mouse, _.country);
+                });
+            }
+        };
+        __.svg.on("mousemove", mouseMoveHandler);
+        if (this.versorDragPlugin) {
+            this.versorDragPlugin.onDrag({
+                hoverCanvas: mouseMoveHandler
+            });
+        }
+    }
+
+    return {
+        name: 'hoverCanvas',
+        onInit: function onInit() {
+            initMouseMoveHandler.call(this);
+        },
+        addSelectCircleEvent: function addSelectCircleEvent(obj) {
+            Object.assign(_.addSelectCircleEvent, obj);
+            _.addSelectCircleEventKeys = Object.keys(_.addSelectCircleEvent);
+        },
+        addSelectCountryEvent: function addSelectCountryEvent(obj) {
+            Object.assign(_.addSelectCountryEvent, obj);
+            _.addSelectCountryEventKeys = Object.keys(_.addSelectCountryEvent);
+        },
+        world: function world(w) {
+            _.countries = topojson.feature(w, w.objects.countries);
+        },
+        data: function data() {
+            return {
+                pos: _.pos,
+                dot: _.dot,
+                mouse: _.mouse,
+                country: _.country
+            };
+        }
+    };
+};
+
 var oceanPlugin = function () {
-    var _ = { svg: null, q: null, scale: 0 };
+    var color = {
+        0: ['rgba(221, 221, 255, 0.6)', 'rgba(153, 170, 187,0.8)'],
+        1: ['rgba(159, 240, 232, 0.6)', 'rgba(  5, 242, 219,0.8)'],
+        2: ['rgba(152, 234, 242, 0.6)', 'rgba(  5, 219, 242,0.8)'],
+        3: ['rgba(114, 162, 181, 0.6)', 'rgba(  4, 138, 191,0.8)'],
+        4: ['rgba( 96, 123, 148, 0.6)', 'rgba( 10,  93, 166,0.8)'],
+        5: ['rgba( 87, 102, 131, 0.6)', 'rgba(  8,  52, 140,0.8)'] };
+    var _ = { svg: null, q: null, scale: 0, oceanColor: 0 };
 
     function svgAddOcean() {
         _.svg.selectAll('#ocean,.ocean').remove();
         if (this._.options.showOcean) {
+            var c = _.oceanColor;
             var ocean_fill = this.$slc.defs.append("radialGradient").attr("id", "ocean").attr("cx", "75%").attr("cy", "25%");
-            ocean_fill.append("stop").attr("offset", "5%").attr("stop-color", "#ddf");
-            ocean_fill.append("stop").attr("offset", "100%").attr("stop-color", "#9ab");
+            if (typeof c === 'number') {
+                c = color[c];
+                ocean_fill.append("stop").attr("offset", "5%").attr("stop-color", c[0]);
+            } else if (typeof c === 'string') {
+                c = [c, c];
+            }
+            ocean_fill.append("stop").attr("offset", "100%").attr("stop-color", c[1]);
             _.ocean = _.svg.append("g").attr("class", "ocean").append("circle").attr("cx", this._.center[0]).attr("cy", this._.center[1]).attr("class", "noclicks");
             resize.call(this);
         }
@@ -554,9 +712,20 @@ var oceanPlugin = function () {
     return {
         name: 'oceanPlugin',
         onInit: function onInit() {
-            this.$fn.svgAddOcean = svgAddOcean;
+            // this.$fn.svgAddOcean = svgAddOcean;
             this._.options.showOcean = true;
+            Object.defineProperty(this._.options, 'oceanColor', {
+                get: function get() {
+                    return _.oceanColor;
+                },
+                set: function set(x) {
+                    _.oceanColor = x;
+                }
+            });
             _.svg = this._.svg;
+        },
+        onCreate: function onCreate() {
+            svgAddOcean.call(this);
         },
         onResize: function onResize() {
             resize.call(this);
@@ -575,6 +744,9 @@ var oceanPlugin = function () {
             } else {
                 return _.scale;
             }
+        },
+        recreate: function recreate() {
+            svgAddOcean.call(this);
         }
     };
 };
@@ -622,9 +794,12 @@ var graticuleCanvas = function () {
     return {
         name: 'graticuleCanvas',
         onInit: function onInit() {
-            this.$fn.canvasAddGraticule = canvasAddGraticule;
+            // this.$fn.canvasAddGraticule = canvasAddGraticule;
             this._.options.transparentGraticule = false;
             this._.options.showGraticule = true;
+        },
+        onCreate: function onCreate() {
+            canvasAddGraticule.call(this);
         },
         onRefresh: function onRefresh() {
             canvasAddGraticule.call(this);
@@ -669,9 +844,12 @@ var graticulePlugin = function () {
     return {
         name: 'graticulePlugin',
         onInit: function onInit() {
-            this.$fn.svgAddGraticule = svgAddGraticule;
+            // this.$fn.svgAddGraticule = svgAddGraticule;
             this._.options.showGraticule = true;
             _.svg = this._.svg;
+        },
+        onCreate: function onCreate() {
+            svgAddGraticule.call(this);
         },
         onRefresh: function onRefresh() {
             refresh.call(this);
@@ -699,8 +877,14 @@ var dropShadowPlugin = function () {
             var drop_shadow = this.$slc.defs.append("radialGradient").attr("id", "drop_shadow").attr("cx", "50%").attr("cy", "50%");
             drop_shadow.append("stop").attr("offset", "20%").attr("stop-color", "#000").attr("stop-opacity", ".5");
             drop_shadow.append("stop").attr("offset", "100%").attr("stop-color", "#000").attr("stop-opacity", "0");
-            $.dropShadow = _.svg.append("g").attr("class", "drop_shadow").append("ellipse").attr("cx", __.center[0]).attr("cy", __.options.height - 50).attr("rx", __.proj.scale() * 0.90).attr("ry", __.proj.scale() * 0.25).attr("class", "noclicks").style("fill", "url(#drop_shadow)");
+            $.dropShadow = _.svg.append("g").attr("class", "drop_shadow").append("ellipse").attr("cx", __.center[0]).attr("class", "noclicks").style("fill", "url(#drop_shadow)");
+            resize.call(this);
         }
+    }
+
+    function resize() {
+        var scale = this._.proj.scale();
+        $.dropShadow.attr("cy", scale + this._.center[1]).attr("rx", scale * 0.90).attr("ry", scale * 0.25);
     }
 
     return {
@@ -709,16 +893,15 @@ var dropShadowPlugin = function () {
             var options = this._.options;
 
             options.showDropShadow = true;
-            this.$fn.svgAddDropShadow = svgAddDropShadow;
+            // this.$fn.svgAddDropShadow = svgAddDropShadow;
             _.svg = this._.svg;
         },
+        onCreate: function onCreate() {
+            svgAddDropShadow.call(this);
+        },
         onResize: function onResize() {
-            var __ = this._;
-            var options = __.options;
-
-            var scale = __.proj.scale();
-            if ($.dropShadow && options.showDropShadow) {
-                $.dropShadow.attr("cy", scale + 250).attr("rx", scale * 0.90).attr("ry", scale * 0.25);
+            if ($.dropShadow && this._.options.showDropShadow) {
+                resize.call(this);
             }
         },
         selectAll: function selectAll(q) {
@@ -766,9 +949,13 @@ var fauxGlobePlugin = function () {
 
             options.showGlobeShading = true;
             options.showGlobeHilight = true;
-            this.$fn.svgAddGlobeHilight = svgAddGlobeHilight;
-            this.$fn.svgAddGlobeShading = svgAddGlobeShading;
+            // this.$fn.svgAddGlobeShading = svgAddGlobeShading;
+            // this.$fn.svgAddGlobeHilight = svgAddGlobeHilight;
             _.svg = this._.svg;
+        },
+        onCreate: function onCreate() {
+            svgAddGlobeShading.call(this);
+            svgAddGlobeHilight.call(this);
         },
         onResize: function onResize() {
             var __ = this._;
@@ -837,91 +1024,42 @@ var autorotatePlugin = (function (degPerSec) {
     };
 });
 
-// KoGor’s Block http://bl.ocks.org/KoGor/5994804
-var countrySelectCanvas = function () {
-    /*eslint no-debugger: 0 */
+var dotTooltipCanvas = (function () {
     /*eslint no-console: 0 */
-    var _ = { countries: null, country: null, mouse: null, onHover: {}, onHoverKeys: [] };
-
-    // https://github.com/d3/d3-polygon
-    function polygonContains(polygon, point) {
-        var n = polygon.length;
-        var p = polygon[n - 1];
-        var x = point[0],
-            y = point[1];
-        var x0 = p[0],
-            y0 = p[1];
-        var x1, y1;
-        var inside = false;
-        for (var i = 0; i < n; ++i) {
-            p = polygon[i], x1 = p[0], y1 = p[1];
-            if (y1 > y !== y0 > y && x < (x0 - x1) * (y - y1) / (y0 - y1) + x1) inside = !inside;
-            x0 = x1, y0 = y1;
-        }
-        return inside;
-    }
+    var dotTooltip = d3.select("body").append("div").attr("class", "dotTooltip");
 
     return {
-        name: 'countrySelectCanvas',
+        name: 'dotTooltipCanvas',
         onInit: function onInit() {
-            var __ = this._;
-            var worldCanvas = this.worldCanvas;
+            var _this = this;
 
-            var _worldCanvas$data = worldCanvas.data(),
-                world = _worldCanvas$data.world;
-
-            if (world) {
-                _.countries = topojson.feature(world, world.objects.countries);
-            }
-            var mouseMoveHandler = function mouseMoveHandler() {
-                var _this = this;
-
-                var event = d3.event;
-                if (event.sourceEvent) {
-                    event = event.sourceEvent;
+            // this.$fn.canvasAddDots = canvasAddDots;
+            var dotHandler = function dotHandler(mouse, d) {
+                if (d) {
+                    if (_this.dotTooltipCanvas.onShow) {
+                        d = _this.dotTooltipCanvas.onShow.call(_this, d, dotTooltip);
+                    }
+                    _this.dotTooltipCanvas.show(d.properties).style("display", "block").style("opacity", 1).style("left", mouse[0] + 7 + "px").style("top", mouse[1] - 15 + "px");
+                } else {
+                    dotTooltip.style("opacity", 0).style("display", "none");
                 }
-                var mouse = [event.clientX, event.clientY]; //d3.mouse(this);
-                var pos = __.proj.invert(d3.mouse(this));
-                _.country = _.countries.features.find(function (f) {
-                    return f.geometry.coordinates.find(function (c1) {
-                        return polygonContains(c1, pos) || c1.find(function (c2) {
-                            return polygonContains(c2, pos);
-                        });
-                    });
-                });
-                _.mouse = mouse;
-                _.onHoverKeys.forEach(function (k) {
-                    _.onHover[k].call(_this, _.mouse, _.country);
-                });
             };
-            __.svg.on("mousemove", mouseMoveHandler);
-            if (this.versorDragPlugin) {
-                this.versorDragPlugin.onDrag({
-                    countrySelectCanvas: mouseMoveHandler
-                });
-            }
+            this.dotsCanvas.addSelectDotEvent({
+                dotTooltipCanvas: dotHandler
+            });
         },
-        data: function data() {
-            return {
-                country: _.country,
-                mouse: _.mouse
-            };
-        },
-        onHover: function onHover(obj) {
-            Object.assign(_.onHover, obj);
-            _.onHoverKeys = Object.keys(_.onHover);
-        },
-        world: function world(w) {
-            _.countries = topojson.feature(w, w.objects.countries);
+        show: function show(props) {
+            var title = Object.keys(props).map(function (k) {
+                return k + ': ' + props[k];
+            }).join("<br/>");
+            return dotTooltip.html(title);
         }
     };
-};
+});
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var countryTooltipCanvas = function () {
-    /*eslint no-debugger: 0 */
     /*eslint no-console: 0 */
-    var _ = { show: false };
     var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
 
     function refresh(mouse) {
@@ -936,14 +1074,15 @@ var countryTooltipCanvas = function () {
         name: 'countryTooltipCanvas',
         onInit: function onInit() {
             var _this = this;
-            var toolTipsHandler = function toolTipsHandler() {
-                var _this$countrySelectCa = _this.countrySelectCanvas.data(),
-                    country = _this$countrySelectCa.country,
-                    mouse = _this$countrySelectCa.mouse;
 
-                if (country) {
+            var toolTipsHandler = function toolTipsHandler() {
+                var _hoverCanvas$data = _this.hoverCanvas.data(),
+                    country = _hoverCanvas$data.country,
+                    mouse = _hoverCanvas$data.mouse;
+
+                if (country && _this._.options.showCountryTooltip) {
                     var countryName = _this.worldCanvas.countryName(country);
-                    if (countryName) {
+                    if (countryName && !(_this.barTooltipPlugin && _this.barTooltipPlugin.visible())) {
                         refresh(mouse).style("display", "block").style("opacity", 1).text(countryName.name);
                     } else {
                         hideTooltip();
@@ -952,7 +1091,7 @@ var countryTooltipCanvas = function () {
                     hideTooltip();
                 }
             };
-            this.countrySelectCanvas.onHover({
+            this.hoverCanvas.addSelectCountryEvent({
                 countryTooltipCanvas: toolTipsHandler
             });
             if (this.versorDragPlugin) {
@@ -960,9 +1099,10 @@ var countryTooltipCanvas = function () {
                     countryTooltipCanvas: toolTipsHandler
                 });
             }
+            this._.options.showCountryTooltip = true;
         },
         onRefresh: function onRefresh() {
-            if (this._.drag && _.show) {
+            if (this._.drag) {
                 refresh(this.versorDragPlugin.mouse());
             }
         }
@@ -978,31 +1118,36 @@ var countryTooltipPlugin = function () {
     function addCountryTooltip() {
         var _this = this;
         this.worldPlugin.$countries().on("mouseover", function (d) {
-            if (!_this._.drag) {
+            if (_this._.options.showCountryTooltip) {
                 _.show = true;
                 var country = _this.worldPlugin.countryName.call(_this, d);
-                refresh(d3.mouse(this)).style("display", "block").style("opacity", 1).text(country.name);
+                refresh().style("display", "block").style("opacity", 1).text(country.name);
             }
         }).on("mouseout", function () {
-            if (!_this._.drag) {
-                _.show = false;
-                countryTooltip.style("opacity", 0).style("display", "none");
-            }
+            _.show = false;
+            countryTooltip.style("opacity", 0).style("display", "none");
         }).on("mousemove", function () {
-            if (!_this._.drag) {
-                refresh(d3.mouse(this));
+            if (_this._.options.showCountryTooltip) {
+                refresh();
             }
         });
     }
 
     function refresh(mouse) {
+        if (!mouse) {
+            mouse = [d3.event.pageX, d3.event.pageY];
+        }
         return countryTooltip.style("left", mouse[0] + 7 + "px").style("top", mouse[1] - 15 + "px");
     }
 
     return {
         name: 'countryTooltipPlugin',
         onInit: function onInit() {
-            this.$fn.addCountryTooltip = addCountryTooltip;
+            // this.$fn.addCountryTooltip = addCountryTooltip;
+            this._.options.showCountryTooltip = true;
+        },
+        onCreate: function onCreate() {
+            addCountryTooltip.call(this);
         },
         onRefresh: function onRefresh() {
             if (this._.drag && _.show) {
@@ -1016,28 +1161,53 @@ var countryTooltipPlugin = function () {
 var barTooltipPlugin = function () {
     /*eslint no-debugger: 0 */
     /*eslint no-console: 0 */
+    var _ = { mouseXY: [0, 0], visible: false };
     var barTooltip = d3.select("body").append("div").attr("class", "barTooltip");
 
     function addBarTooltip() {
         var _this = this;
         this.barPlugin.$bar().on("mouseover", function () {
-            var i = +this.dataset.index;
-            var d = _this.barPlugin.data().features[i];
-            if (_this.barTooltipPlugin.onShow) {
-                d = _this.barTooltipPlugin.onShow.call(this, d, i, barTooltip);
+            if (_this._.options.showBarTooltip) {
+                _.visible = true;
+                _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
+                var i = +this.dataset.index;
+                var d = _this.barPlugin.data().features[i];
+                if (_this.barTooltipPlugin.onShow) {
+                    d = _this.barTooltipPlugin.onShow.call(this, d, barTooltip);
+                }
+                _this.barTooltipPlugin.show(d).style("display", "block").style("opacity", 1);
+                refresh();
             }
-            _this.barTooltipPlugin.show(d).style("left", d3.event.pageX + 7 + "px").style("top", d3.event.pageY - 15 + "px").style("display", "block").style("opacity", 1);
         }).on("mouseout", function () {
+            _.visible = false;
             barTooltip.style("opacity", 0).style("display", "none");
         }).on("mousemove", function () {
-            barTooltip.style("left", d3.event.pageX + 7 + "px").style("top", d3.event.pageY - 15 + "px");
+            if (_this._.options.showBarTooltip) {
+                _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
+                refresh();
+            }
         });
+    }
+
+    function refresh() {
+        barTooltip.style("left", _.mouseXY[0] + 7 + "px").style("top", _.mouseXY[1] - 15 + "px");
     }
 
     return {
         name: 'barTooltipPlugin',
         onInit: function onInit() {
-            this.$fn.addBarTooltip = addBarTooltip;
+            // this.$fn.addBarTooltip = addBarTooltip;
+            this._.options.showBarTooltip = true;
+        },
+        onCreate: function onCreate() {
+            addBarTooltip.call(this);
+        },
+        onResize: function onResize() {
+            addBarTooltip.call(this);
+            barTooltip.style("opacity", 0).style("display", "none");
+        },
+        onRefresh: function onRefresh() {
+            refresh.call(this);
         },
         show: function show(d) {
             var props = d.properties;
@@ -1045,6 +1215,9 @@ var barTooltipPlugin = function () {
                 return k + ': ' + props[k];
             }).join("<br/>");
             return barTooltip.html(title);
+        },
+        visible: function visible() {
+            return _.visible;
         }
     };
 };
@@ -1106,9 +1279,12 @@ var placesPlugin = function (urlPlaces) {
             _.places = places;
         },
         onInit: function onInit() {
-            this.$fn.svgAddPlaces = svgAddPlaces;
+            // this.$fn.svgAddPlaces = svgAddPlaces;
             this._.options.showPlaces = true;
             _.svg = this._.svg;
+        },
+        onCreate: function onCreate() {
+            svgAddPlaces.call(this);
         },
         onRefresh: function onRefresh() {
             refresh.call(this);
@@ -1135,12 +1311,19 @@ var placesPlugin = function (urlPlaces) {
 var worldCanvas = (function (urlWorld, urlCountryNames) {
     /*eslint no-debugger: 0 */
     /*eslint no-console: 0 */
-    var _ = { world: null, countryNames: null, style: {}, drawTo: null, options: {} };
+    var color = {
+        0: 'rgba(117, 87, 57, 0.4)',
+        1: 'rgba(138, 96, 56, 0.4)',
+        2: 'rgba(140,104, 63, 0.4)',
+        3: 'rgba(149,114, 74, 0.4)',
+        4: 'rgba(153,126, 87, 0.4)',
+        5: 'rgba(155,141,115, 0.4)' };
+    var _ = { world: null, countryNames: null, style: {}, drawTo: null, options: {}, landColor: 0 };
 
     function canvasAddWorldOrCountries() {
         var __ = this._;
         if (_.world && __.options.showLand) {
-            if (__.options.transparent || __.options.transparentWorld) {
+            if (__.options.transparent || __.options.transparentLand) {
                 __.proj.clipAngle(180);
                 this.canvasPlugin.render(function (context, path) {
                     context.beginPath();
@@ -1150,33 +1333,31 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
                 }, _.drawTo, _.options);
                 __.proj.clipAngle(90);
             }
-            if (!__.drag && __.options.showCountries) {
-                canvasAddCountries.call(this);
-                if (__.options.showLakes) {
-                    canvasAddLakes.call(this);
-                }
-            } else {
-                canvasAddWorld.call(this);
+            canvasAddWorld.call(this);
+            if (!__.drag) {
+                __.options.showCountries && canvasAddCountries.call(this);
+                __.options.showLakes && canvasAddLakes.call(this);
             }
-            if (this.countrySelectCanvas) {
-                var _countrySelectCanvas$ = this.countrySelectCanvas.data(),
-                    country = _countrySelectCanvas$.country;
+            if (this.hoverCanvas && __.options.showCountrySelected) {
+                var _hoverCanvas$data = this.hoverCanvas.data(),
+                    country = _hoverCanvas$data.country;
 
                 this.canvasPlugin.render(function (context, path) {
                     context.beginPath();
                     path(country);
                     context.fillStyle = 'rgba(117, 0, 0, 0.4)';
                     context.fill();
-                });
+                }, _.drawTo, _.options);
             }
         }
     }
 
     function canvasAddWorld() {
         this.canvasPlugin.render(function (context, path) {
+            var c = _.landColor;
             context.beginPath();
             path(_.land);
-            context.fillStyle = _.style.land || 'rgba(117, 87, 57, 0.4)';
+            context.fillStyle = _.style.land || typeof c === 'number' ? color[c] : c;
             context.fill();
         }, _.drawTo, _.options);
     }
@@ -1186,9 +1367,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
             context.beginPath();
             path(_.countries);
             context.lineWidth = 0.1;
-            context.fillStyle = _.style.land || 'rgba(117, 87, 57, 0.4)';
             context.strokeStyle = _.style.countries || 'rgb(239, 237, 234)';
-            context.fill();
             context.stroke();
         }, _.drawTo, _.options);
     }
@@ -1215,20 +1394,37 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
         urls: urls,
         onReady: function onReady(err, world, countryNames) {
             this.worldCanvas.data({ world: world, countryNames: countryNames });
-            // if (this.countrySelectCanvas) {
-            //     const selectHandler = () => canvasAddWorldOrCountries.call(this);
-            //     this.countrySelectCanvas.onHover({
-            //         countryTooltipCanvas: selectHandler
-            //     });
-            // }
+            Object.defineProperty(this._.options, 'landColor', {
+                get: function get() {
+                    return _.landColor;
+                },
+                set: function set(x) {
+                    _.landColor = x;
+                }
+            });
         },
         onInit: function onInit() {
             var options = this._.options;
             options.showLand = true;
             options.showLakes = true;
             options.showCountries = true;
-            options.transparentWorld = false;
-            this.$fn.canvasAddWorldOrCountries = canvasAddWorldOrCountries;
+            options.transparentLand = false;
+            options.showCountrySelected = true;
+            options.landColor = 0;
+            // this.$fn.canvasAddWorldOrCountries = canvasAddWorldOrCountries;
+        },
+        onCreate: function onCreate() {
+            var _this = this;
+
+            canvasAddWorldOrCountries.call(this);
+            if (this.hoverCanvas) {
+                var worldCanvas = function worldCanvas() {
+                    if (!_this._.options.spin) {
+                        _this._.refresh();
+                    }
+                };
+                this.hoverCanvas.addSelectCountryEvent({ worldCanvas: worldCanvas });
+            }
         },
         onRefresh: function onRefresh() {
             canvasAddWorldOrCountries.call(this);
@@ -1280,15 +1476,15 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
         _.svg.selectAll('.landbg,.land,.lakes,.countries').remove();
         if (__.options.showLand) {
             if (_.world) {
-                if (__.options.transparent || __.options.transparentWorld) {
+                if (__.options.transparent || __.options.transparentLand) {
                     _.svgAddWorldBg.call(this);
                 }
-                if (__.options.showCountries) {
+                if (!__.drag && __.options.showCountries) {
                     _.svgAddCountries.call(this);
                 } else {
                     _.svgAddWorld.call(this);
                 }
-                if (__.options.showLakes) {
+                if (!__.drag && __.options.showLakes) {
                     _.svgAddLakes.call(this);
                 }
             }
@@ -1299,7 +1495,7 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
     function refresh() {
         var __ = this._;
         if (_.world && __.options.showLand) {
-            if (__.options.transparent || __.options.transparentWorld) {
+            if (__.options.transparent || __.options.transparentLand) {
                 __.proj.clipAngle(180);
                 $.worldBg.attr("d", __.path);
                 __.proj.clipAngle(90);
@@ -1352,13 +1548,16 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
             options.showLand = true;
             options.showLakes = true;
             options.showCountries = true;
-            options.transparentWorld = false;
-            this.$fn.svgAddWorldOrCountries = svgAddWorldOrCountries;
+            options.transparentLand = false;
+            // this.$fn.svgAddWorldOrCountries = svgAddWorldOrCountries;
             _.svgAddCountries = svgAddCountries;
             _.svgAddWorldBg = svgAddWorldBg;
             _.svgAddLakes = svgAddLakes;
             _.svgAddWorld = svgAddWorld;
             _.svg = __.svg;
+        },
+        onCreate: function onCreate() {
+            svgAddWorldOrCountries.call(this);
         },
         onRefresh: function onRefresh() {
             refresh.call(this);
@@ -1485,8 +1684,11 @@ var centerPlugin = (function () {
     return {
         name: 'centerPlugin',
         onInit: function onInit() {
-            this.$fn.addCountryCenteroid = addCountryCenteroid;
+            // this.$fn.addCountryCenteroid = addCountryCenteroid;
             this._.options.enableCenter = true;
+        },
+        onCreate: function onCreate() {
+            addCountryCenteroid.call(this);
         },
         go: function go(id) {
             var c = this.worldPlugin.countries();
@@ -1589,7 +1791,7 @@ var flattenPlugin = function () {
 
 var barPlugin = (function (urlBars) {
     /*eslint no-console: 0 */
-    var _ = { svg: null, barProjection: null, q: null, bars: null };
+    var _ = { svg: null, barProjection: null, q: null, bars: null, valuePath: null };
     var $ = {};
 
     function svgAddBar() {
@@ -1647,19 +1849,22 @@ var barPlugin = (function (urlBars) {
         },
         onInit: function onInit() {
             var __ = this._;
-            this.$fn.svgAddBar = svgAddBar;
+            // this.$fn.svgAddBar = svgAddBar;
             __.options.showBars = true;
             _.barProjection = __.orthoGraphic();
             _.svg = __.svg;
             svgClipPath.call(this);
         },
-        onResize: function onResize() {
-            svgClipPath.call(this);
+        onCreate: function onCreate() {
             svgAddBar.call(this);
         },
         onRefresh: function onRefresh() {
             _.barProjection.rotate(this._.proj.rotate());
             refresh.call(this);
+        },
+        onResize: function onResize() {
+            svgClipPath.call(this);
+            svgAddBar.call(this);
         },
         selectAll: function selectAll(q) {
             if (q) {
@@ -1668,10 +1873,23 @@ var barPlugin = (function (urlBars) {
             }
             return _.svg;
         },
+        valuePath: function valuePath(path) {
+            _.valuePath = path;
+        },
         data: function data(_data) {
             var _this = this;
 
             if (_data) {
+                if (_.valuePath) {
+                    var p = _.valuePath.split('.');
+                    _data.features.forEach(function (d) {
+                        var v = d;
+                        p.forEach(function (o) {
+                            return v = v[o];
+                        });
+                        d.geometry.value = v;
+                    });
+                }
                 _.bars = _data;
                 setTimeout(function () {
                     return refresh.call(_this);
@@ -1687,36 +1905,52 @@ var barPlugin = (function (urlBars) {
 });
 
 var dotsPlugin = (function (urlDots) {
-    var _ = { dataDots: null };
+    /*eslint no-console: 0 */
+    var _ = { dataDots: null, radiusPath: null };
     var $ = {};
 
     function svgAddDots() {
         var __ = this._;
-        if (_.dataDots && __.options.showDots && !__.drag) {
-            __.svg.selectAll('.dot').remove();
-            if (_.dataDots && __.options.showDots) {
-                var circles = [];
-                _.circles.forEach(function (d) {
-                    circles.push(d.circle);
-                });
-                $.dots = __.svg.append('g').attr('class', 'dot').selectAll('path').data(circles).enter().append('path');
-                if (_.dataDots.geometry) {
-                    var _g = _.dataDots.geometry;
-                    _g.lineWidth && $.dots.style('stroke-width', _g.lineWidth);
-                    _g.fillStyle && $.dots.style('fill', _g.fillStyle);
-                    _g.strokeStyle && $.dots.style('stroke', _g.strokeStyle);
-                }
-                refresh.call(this);
+        _.svg.selectAll('.dot').remove();
+        if (_.dataDots && __.options.showDots) {
+            var circles = [];
+            _.circles.forEach(function (d) {
+                circles.push(d.circle);
+            });
+            $.dots = _.svg.append('g').attr('class', 'dot').selectAll('path').data(circles).enter().append('path');
+            if (_.dataDots.geometry) {
+                var _g = _.dataDots.geometry || {};
+                $.dots.style('stroke-width', _g.lineWidth || 0.2).style('fill', _g.fillStyle || 'rgba(100,0,0,.4)').style('stroke', _g.strokeStyle || 'rgba(119,119,119,.4)');
             }
+            refresh.call(this);
         }
     }
 
     function refresh() {
         var __ = this._;
+        var coordinate = void 0,
+            gdistance = void 0;
         if ($.dots && __.options.showDots) {
-            $.dots.attr('d', __.path).style('display', function (d) {
-                return d3.geoDistance(d.coordinates, __.proj.invert(__.center)) > 1.57 ? 'none' : 'inline';
-            });
+            var _g = _.dataDots.geometry || {};
+            if (__.options.transparent || __.options.transparentDots) {
+                __.proj.clipAngle(180);
+                $.dots.style('display', 'inline');
+                $.dots.style('fill', function (d, i) {
+                    coordinate = d.coordinates[0][i];
+                    gdistance = d3.geoDistance(coordinate, __.proj.invert(__.center));
+                    return gdistance > 1.57 ? 'none' : _g.fillStyle || 'rgba(100,0,0,.4)';
+                });
+                $.dots.attr('d', __.path);
+                __.proj.clipAngle(90);
+            } else {
+                $.dots.style('display', function (d, i) {
+                    coordinate = d.coordinates[0][i];
+                    gdistance = d3.geoDistance(coordinate, __.proj.invert(__.center));
+                    return gdistance > 1.57 ? 'none' : 'inline';
+                });
+                $.dots.style('fill', _g.fillStyle || 'rgba(100,0,0,.4)');
+                $.dots.attr('d', __.path);
+            }
         }
     }
 
@@ -1739,16 +1973,41 @@ var dotsPlugin = (function (urlDots) {
             this.dotsPlugin.data(dots);
         },
         onInit: function onInit() {
-            this.$fn.svgAddDots = svgAddDots;
+            // this.$fn.svgAddDots = svgAddDots;
             this._.options.showDots = true;
+            _.svg = this._.svg;
+        },
+        onCreate: function onCreate() {
+            svgAddDots.call(this);
         },
         onRefresh: function onRefresh() {
             refresh.call(this);
+        },
+        radiusPath: function radiusPath(path) {
+            _.radiusPath = path;
         },
         data: function data(_data) {
             var _this = this;
 
             if (_data) {
+                if (_.radiusPath) {
+                    var p = _.radiusPath.split('.');
+                    var x = _data.features.map(function (d) {
+                        var v = d;
+                        p.forEach(function (o) {
+                            return v = v[o];
+                        });
+                        return v;
+                    }).sort();
+                    var scale = d3.scaleLinear().domain([x[0], x.pop()]).range([0.5, 2]);
+                    _data.features.forEach(function (d) {
+                        var v = d;
+                        p.forEach(function (o) {
+                            return v = v[o];
+                        });
+                        d.geometry.radius = scale(v);
+                    });
+                }
                 _.dataDots = _data;
                 initData();
                 setTimeout(function () {
@@ -1757,27 +2016,51 @@ var dotsPlugin = (function (urlDots) {
             } else {
                 return _.dataDots;
             }
+        },
+        selectAll: function selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
+            return _.svg;
         }
     };
 });
 
-var dotsCanvas = (function (urlDots) {
-    var _ = { dataDots: null, circles: [] };
+var dotsCanvas = (function (urlJson) {
+    /*eslint no-console: 0 */
+    var _ = { dataDots: null, circles: [], radiusPath: null, onDot: {}, onDotKeys: [] };
 
     function canvasAddDots() {
         if (_.dataDots && this._.options.showDots) {
-            var circles = [];
+            var __ = this._;
             var proj = this._.proj;
             var _g = _.dataDots.geometry || {};
             var center = proj.invert(this._.center);
+            var circles1 = [];
+            var circles2 = [];
+            _.circles.forEach(function (d) {
+                if (d3.geoDistance(d.coordinates, center) > 1.57) {
+                    circles1.push(d.circle);
+                } else {
+                    circles2.push(d.circle);
+                }
+            });
+            if (__.options.transparent || __.options.transparentDots) {
+                __.proj.clipAngle(180);
+                this.canvasPlugin.render(function (context, path) {
+                    context.beginPath();
+                    path({ type: 'GeometryCollection', geometries: circles1 });
+                    context.lineWidth = 0.2;
+                    context.strokeStyle = 'rgba(119,119,119,.4)';
+                    context.stroke();
+                    context.closePath();
+                }, _.drawTo);
+                __.proj.clipAngle(90);
+            }
             this.canvasPlugin.render(function (context, path) {
-                _.circles.forEach(function (d) {
-                    if (d3.geoDistance(d.coordinates, center) <= 1.57) {
-                        circles.push(d.circle);
-                    }
-                });
                 context.beginPath();
-                path({ type: 'GeometryCollection', geometries: circles });
+                path({ type: 'GeometryCollection', geometries: circles2 });
                 context.lineWidth = _g.lineWidth || 0.2;
                 context.fillStyle = _g.fillStyle || 'rgba(100,0,0,.4)';
                 context.strokeStyle = _g.strokeStyle || 'rgba(100,0,0,.6)';
@@ -1794,33 +2077,83 @@ var dotsCanvas = (function (urlDots) {
         var _r = _g.radius || 0.5;
         _.circles = _.dataDots.features.map(function (d) {
             var coordinates = d.geometry.coordinates;
+            var properties = d.properties;
             var r = d.geometry.radius || _r;
             var circle = geoCircle.center(coordinates).radius(r)();
-            return { coordinates: coordinates, circle: circle };
+            return { properties: properties, coordinates: coordinates, circle: circle };
+        });
+    }
+
+    function initCircleHandler() {
+        var _this = this;
+
+        var circleHandler = function circleHandler(mouse, pos) {
+            var detected = null;
+            _.circles.forEach(function (d) {
+                if (mouse && !detected) {
+                    var geoDistance = d3.geoDistance(d.coordinates, pos);
+                    if (geoDistance <= 0.02) {
+                        detected = d;
+                    }
+                }
+            });
+            _.onDotKeys.forEach(function (k) {
+                _.onDot[k].call(_this, mouse, detected);
+            });
+            return detected;
+        };
+        this.hoverCanvas.addSelectCircleEvent({
+            dotsCanvas: circleHandler
         });
     }
 
     return {
         name: 'dotsCanvas',
-        urls: urlDots && [urlDots],
-        onReady: function onReady(err, dots) {
-            this.dotsCanvas.data(dots);
+        urls: urlJson && [urlJson],
+        onReady: function onReady(err, json) {
+            this.dotsCanvas.data(json);
         },
         onInit: function onInit() {
-            this.$fn.canvasAddDots = canvasAddDots;
+            // this.$fn.canvasAddDots = canvasAddDots;
+            initCircleHandler.call(this);
+            this._.options.transparentDots = false;
             this._.options.showDots = true;
+        },
+        onCreate: function onCreate() {
+            canvasAddDots.call(this);
         },
         onRefresh: function onRefresh() {
             canvasAddDots.call(this);
         },
+        radiusPath: function radiusPath(path) {
+            _.radiusPath = path;
+        },
         data: function data(_data) {
-            var _this = this;
+            var _this2 = this;
 
             if (_data) {
+                if (_.radiusPath) {
+                    var p = _.radiusPath.split('.');
+                    var x = _data.features.map(function (d) {
+                        var v = d;
+                        p.forEach(function (o) {
+                            return v = v[o];
+                        });
+                        return v;
+                    }).sort();
+                    var scale = d3.scaleLinear().domain([x[0], x.pop()]).range([0.5, 2]);
+                    _data.features.forEach(function (d) {
+                        var v = d;
+                        p.forEach(function (o) {
+                            return v = v[o];
+                        });
+                        d.geometry.radius = scale(v);
+                    });
+                }
                 _.dataDots = _data;
                 initData();
                 setTimeout(function () {
-                    return canvasAddDots.call(_this);
+                    return canvasAddDots.call(_this2);
                 }, 1);
             } else {
                 return _.dataDots;
@@ -1828,6 +2161,10 @@ var dotsCanvas = (function (urlDots) {
         },
         drawTo: function drawTo(arr) {
             _.drawTo = arr;
+        },
+        addSelectDotEvent: function addSelectDotEvent(obj) {
+            Object.assign(_.onDot, obj);
+            _.onDotKeys = Object.keys(_.onDot);
         }
     };
 });
@@ -1935,11 +2272,14 @@ var pingsPlugin = function () {
             var _this = this;
 
             this._.options.showPings = true;
-            this.$fn.svgAddPings = svgAddPings;
+            // this.$fn.svgAddPings = svgAddPings;
             setInterval(function () {
                 return animate.call(_this);
             }, 3000);
             _.svg = this._.svg;
+        },
+        onCreate: function onCreate() {
+            svgAddPings.call(this);
         },
         onRefresh: function onRefresh() {
             refresh.call(this);
@@ -2011,63 +2351,118 @@ var debugThreejs = function () {
     };
 };
 
-var commonPlugins = (function (urlWorld) {
-    var _ = { checker: [] };
+var commonPlugins = (function (urlWorld, urlCountryNames) {
+    /*eslint no-console: 0 */
+    var _ = { checker: [], ocn: 0, spd: 10, pan: 0, clr: 0 };
+
+    _.checker = [':Shadow:showDropShadow', ':Ocean:showOcean', ':Graticule:showGraticule', ':Land:showLand', ':Country:showCountries', ':Lakes:showLakes', ':Transparent:transparent',
+    // ':TGraticule:transparentGraticule',
+    // ':TLand:transparentLand',
+    ':Canvas:showCanvas', ':Spin:spin'].map(function (d) {
+        return d.split(':');
+    });
+
+    function addPlugins() {
+        var _this2 = this;
+
+        var r = this.register;
+        var p = earthjs.plugins;
+        r(p.autorotatePlugin(10));
+        r(p.versorDragPlugin());
+        r(p.wheelZoomPlugin());
+        r(p.configPlugin());
+        r(p.dropShadowPlugin());
+        r(p.oceanPlugin());
+        r(p.canvasPlugin());
+        r(p.graticuleCanvas());
+        r(p.worldCanvas(urlWorld, urlCountryNames));
+        this._.options.oceanColor = 2;
+        this._.options.transparent = true;
+        this.canvasPlugin.selectAll('.canvas');
+        this.graticuleCanvas.drawTo([0]);
+        this.worldCanvas.drawTo([1]);
+
+        _.options = this.configPlugin.set();
+        _.buttonClick = function (str) {
+            var arr = str.split(':'),
+                key = arr[2],
+                resultx = {},
+                options = _this2.configPlugin.set();
+            options[key] = !options[key];
+            resultx[key] = options[key];
+            if (key == 'transparent') {
+                if (options.transparentGraticule || options.transparentLand) {
+                    resultx.transparent = false;
+                }
+                resultx.transparentGraticule = false;
+                resultx.transparentLand = false;
+            } else if (key == 'showCountries' || key == 'showLakes') {
+                resultx.showLand = true;
+            } else if (key == 'transparentGraticule' || key == 'transparentLand') {
+                if (options.transparent) {
+                    resultx.transparentGraticule = false;
+                    resultx.transparentLand = false;
+                }
+                resultx.transparent = false;
+            }
+            _this2.configPlugin.set(resultx);
+        };
+    }
+
+    function rangeInput(opt, id, min, max, stp, vl, handler) {
+        opt.append('br');
+        opt.append('input').attr('id', id).attr('type', 'range').attr('min', min).attr('max', max).attr('step', stp).attr('value', vl).on('input', handler);
+    }
+
+    function enableController() {
+        var _this3 = this;
+
+        var _this = this;
+        var opt = d3.select('.set-options');
+        var opt2 = d3.select('.set-options2');
+        opt.selectAll('button, input, br').remove();
+        opt2.selectAll('button, input, br').remove();
+        if (this._.options.showControll) {
+            opt.selectAll('button').data(_.checker).enter().append('button').text(function (d) {
+                return d[1];
+            }).on('click', function (d) {
+                return _.buttonClick.call(_this3, d.join(':'));
+            });
+            rangeInput(opt2, 'pan', 0, 400, 1, _.pan, function () {
+                _.pan = +this.value;
+                for (var i = 1; i < nodes.length; i++) {
+                    // nodes[i].style.top = (_.pan * i)+'px';
+                    nodes[i].style.left = _.pan * i + 'px';
+                }
+            });
+            rangeInput(opt2, 'ocn', 0, 20, 1, _.ocn, function () {
+                _.ocn = this.value;_this.oceanPlugin.scale(-_.ocn);
+            });
+            rangeInput(opt2, 'spd', 10, 200, 10, _.spd, function () {
+                _.spd = this.value;_this.autorotatePlugin.speed(_.spd);
+            });
+            var nodes = d3.selectAll('.ea-layer').nodes();
+            window.nodes = nodes;
+            rangeInput(opt2, 'clr', 0, 5, 1, _this._.options.oceanColor, function () {
+                _this._.options.oceanColor = +this.value;
+                _this.oceanPlugin.recreate();
+            });
+        }
+    }
+
     return {
         name: 'commonPlugins',
         onInit: function onInit() {
-            var _this = this;
-
-            var rg = this.register;
-            var pl = earthjs.plugins;
-            rg(pl.autorotatePlugin(10));
-            rg(pl.versorDragPlugin());
-            rg(pl.wheelZoomPlugin());
-            rg(pl.configPlugin());
-            rg(pl.oceanPlugin());
-            rg(pl.canvasPlugin());
-            rg(pl.graticuleCanvas());
-            rg(pl.worldCanvas(urlWorld));
-
-            this.canvasPlugin.selectAll('.canvas');
-            this.ready(function () {
-                return _this.svgDraw();
-            });
-
-            _.options = this.configPlugin.set();
-            _.buttonClick = function (str) {
-                var arr = str.split(':'),
-                    key = arr[2],
-                    resultx = {},
-                    options = _.options;
-                options[key] = !options[key];
-                resultx[key] = options[key];
-                if (key == 'hideCountries') resultx.hideLand = false;
-                _this.configPlugin.set(resultx);
-            };
-
-            _.checker = ['ocean:Ocean:showOcean', 'graticule:Graticule:showGraticule', 'hideLand:Land:showLand', 'spin:Spin:spin'].map(function (d) {
-                return d.split(':');
-            });
-            var opt = d3.select('.set-options');
-            opt.selectAll('button').data(_.checker).enter().append('button').text(function (d) {
-                return d[1];
-            }).on('click', function (d) {
-                return _.buttonClick.call(_this, d.join(':'));
-            });
+            addPlugins.call(this);
+            this._.options.showControll = true;
+        },
+        onCreate: function onCreate() {
+            enableController.call(this);
         },
         addChecker: function addChecker(checker) {
-            var _this2 = this;
-
             _.checker.push(checker);
             _.options = this.configPlugin.set();
-
-            var opt = d3.select('.set-options');
-            opt.selectAll('button').data(_.checker).enter().append('button').text(function (d) {
-                return d[1];
-            }).on('click', function (d) {
-                return _.buttonClick.call(_this2, d.join(':'));
-            });
+            enableController.call(this);
         }
     };
 });
@@ -2077,6 +2472,7 @@ earthjs$1.plugins = {
     wheelZoomPlugin: wheelZoomPlugin,
     threejsPlugin: threejsPlugin,
     canvasPlugin: canvasPlugin,
+    hoverCanvas: hoverCanvas,
     oceanPlugin: oceanPlugin,
     configPlugin: configPlugin,
     graticuleCanvas: graticuleCanvas,
@@ -2084,7 +2480,7 @@ earthjs$1.plugins = {
     dropShadowPlugin: dropShadowPlugin,
     fauxGlobePlugin: fauxGlobePlugin,
     autorotatePlugin: autorotatePlugin,
-    countrySelectCanvas: countrySelectCanvas,
+    dotTooltipCanvas: dotTooltipCanvas,
     countryTooltipCanvas: countryTooltipCanvas,
     countryTooltipPlugin: countryTooltipPlugin,
     barTooltipPlugin: barTooltipPlugin,

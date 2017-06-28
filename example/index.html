@@ -20,9 +20,9 @@
         g.register(earthjs.plugins.oceanPlugin());
         g.register(earthjs.plugins.graticulePlugin());
         g.register(earthjs.plugins.fauxGlobePlugin());
-        g.register(earthjs.plugins.barPlugin('./d/bars.json'));
-        g.register(earthjs.plugins.placesPlugin('./d/places.json'));
         g.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
+        g.register(earthjs.plugins.placesPlugin('./d/places.json'));
+        g.register(earthjs.plugins.barPlugin('./d/bars.json'));
         g.register(earthjs.plugins.countryTooltipPlugin());
         g.register(earthjs.plugins.barTooltipPlugin());
 
@@ -52,16 +52,16 @@
         };
 
         var checker = [
-            'ocean:Ocean:showOcean',
-            'shading:Shading:showGlobeShading',
-            'hilight:Hilight:showGlobeHilight',
-            'graticule:Graticule:showGraticule',
-            'hideLand:Land:showLand',
-            'country:Country:showCountries',
-            'places:Places:showPlaces',
-            'shadow:Shadow:showDropShadow',
-            'bars:Bars:showBars',
-            'spin:Spin:spin',
+            ':Ocean:showOcean',
+            ':Shading:showGlobeShading',
+            ':Hilight:showGlobeHilight',
+            ':Graticule:showGraticule',
+            ':Land:showLand',
+            ':Country:showCountries',
+            ':Places:showPlaces',
+            ':Shadow:showDropShadow',
+            ':Bars:showBars',
+            ':Spin:spin',
         ].map(function(d) {return d.split(':')});
         var opt = d3.select('.set-options');
         opt.selectAll('button').data(checker).enter().append('button')

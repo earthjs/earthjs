@@ -1,20 +1,37 @@
-export default urlDots => {
-    const _ = {dataDots: null, circles: []};
+export default urlJson => {
+    /*eslint no-console: 0 */
+    const _ = {dataDots: null, circles: [], radiusPath: null, onDot: {}, onDotKeys: []};
 
     function canvasAddDots() {
         if (_.dataDots && this._.options.showDots) {
-            const circles = [];
+            const __ = this._;
             const proj = this._.proj;
             const _g = _.dataDots.geometry || {};
             const center = proj.invert(this._.center);
+            let circles1 = [];
+            let circles2 = [];
+            _.circles.forEach(function(d) {
+                if (d3.geoDistance(d.coordinates, center) > 1.57) {
+                    circles1.push(d.circle);
+                } else {
+                    circles2.push(d.circle);
+                }
+            });
+            if (__.options.transparent || __.options.transparentDots) {
+                __.proj.clipAngle(180);
+                this.canvasPlugin.render(function(context, path) {
+                    context.beginPath();
+                    path({type: 'GeometryCollection', geometries: circles1});
+                    context.lineWidth = 0.2;
+                    context.strokeStyle = 'rgba(119,119,119,.4)';
+                    context.stroke();
+                    context.closePath();
+                }, _.drawTo);
+                __.proj.clipAngle(90);
+            }
             this.canvasPlugin.render(function(context, path) {
-                _.circles.forEach(function(d) {
-                    if (d3.geoDistance(d.coordinates, center) <= 1.57) {
-                        circles.push(d.circle);
-                    }
-                });
                 context.beginPath();
-                path({type: 'GeometryCollection', geometries: circles});
+                path({type: 'GeometryCollection', geometries: circles2});
                 context.lineWidth = _g.lineWidth ||  0.2;
                 context.fillStyle = _g.fillStyle || 'rgba(100,0,0,.4)';
                 context.strokeStyle = _g.strokeStyle || 'rgba(100,0,0,.6)';
@@ -31,27 +48,73 @@ export default urlDots => {
         const _r = _g.radius || 0.5;
         _.circles = _.dataDots.features.map(function(d) {
             const coordinates = d.geometry.coordinates;
+            const properties = d.properties;
             const r = d.geometry.radius || _r;
             const circle = geoCircle.center(coordinates).radius(r)();
-            return {coordinates, circle};
+            return {properties, coordinates, circle};
+        });
+    }
+
+    function initCircleHandler() {
+        const circleHandler = (mouse, pos) => {
+            let detected = null;
+            _.circles.forEach(function(d) {
+                if (mouse && !detected) {
+                    const geoDistance = d3.geoDistance(d.coordinates, pos);
+                    if (geoDistance <= 0.02) {
+                        detected = d;
+                    }
+                }
+            });
+            _.onDotKeys.forEach(k => {
+                _.onDot[k].call(this, mouse, detected);
+            });
+            return detected;
+        }
+        this.hoverCanvas.addSelectCircleEvent({
+            dotsCanvas: circleHandler
         });
     }
 
     return {
         name: 'dotsCanvas',
-        urls: urlDots && [urlDots],
-        onReady(err, dots) {
-            this.dotsCanvas.data(dots);
+        urls: urlJson && [urlJson],
+        onReady(err, json) {
+            this.dotsCanvas.data(json);
         },
         onInit() {
-            this.$fn.canvasAddDots = canvasAddDots;
+            // this.$fn.canvasAddDots = canvasAddDots;
+            initCircleHandler.call(this);
+            this._.options.transparentDots = false;
             this._.options.showDots = true;
+        },
+        onCreate() {
+            canvasAddDots.call(this);
         },
         onRefresh() {
             canvasAddDots.call(this);
         },
+        radiusPath(path) {
+            _.radiusPath = path;
+        },
         data(data) {
             if (data) {
+                if (_.radiusPath) {
+                    const p = _.radiusPath.split('.');
+                    const x = data.features.map(d => {
+                        let v = d;
+                        p.forEach(o => v = v[o]);
+                        return v;
+                    }).sort();
+                    const scale = d3.scaleLinear()
+                        .domain([x[0], x.pop()])
+                        .range([0.5, 2]);
+                    data.features.forEach(d => {
+                        let v = d;
+                        p.forEach(o => v = v[o]);
+                        d.geometry.radius = scale(v);
+                    });
+                }
                 _.dataDots = data;
                 initData();
                 setTimeout(() => canvasAddDots.call(this),1);
@@ -61,6 +124,10 @@ export default urlDots => {
         },
         drawTo(arr) {
             _.drawTo = arr;
+        },
+        addSelectDotEvent(obj) {
+            Object.assign(_.onDot, obj);
+            _.onDotKeys = Object.keys(_.onDot);
         },
     }
 }

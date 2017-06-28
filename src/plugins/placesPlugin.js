@@ -63,9 +63,12 @@ export default function(urlPlaces) {
             _.places = places;
         },
         onInit() {
-            this.$fn.svgAddPlaces = svgAddPlaces;
+            // this.$fn.svgAddPlaces = svgAddPlaces;
             this._.options.showPlaces = true;
             _.svg = this._.svg;
+        },
+        onCreate() {
+            svgAddPlaces.call(this);
         },
         onRefresh() {
             refresh.call(this);

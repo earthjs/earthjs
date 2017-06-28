@@ -10,39 +10,49 @@ const earthjs = (options={}) => {
         rotate: 130,
     }, options);
     const _ = {
-        onResize: {},
-        onResizeKeys: [],
+        onCreate: {},
+        onCreateKeys: [],
 
         onRefresh: {},
         onRefreshKeys: [],
 
+        onResize: {},
+        onResizeKeys: [],
+
         onInterval: {},
         onIntervalKeys: [],
 
-        renderOrder: [
-            'renderThree',
-            'svgAddDropShadow',
-            'svgAddCanvas',
-            'canvasAddGraticule',
-            'canvasAddWorldOrCountries',
-            'canvasAddDots',
-            'svgAddOcean',
-            'svgAddGlobeShading',
-            'svgAddGraticule',
-            'svgAddWorldOrCountries',
-            'svgAddGlobeHilight',
-            'svgAddPlaces',
-            'svgAddPings',
-            'svgAddDots',
-            'svgAddBar',
-            'addBarTooltip',
-            'addCountryTooltip',
-            'addCountryCenteroid',
-        ],
+        // renderOrder: [
+        //     'renderThree',
+        //     'svgAddDropShadow',
+        //     'svgAddCanvas',
+        //     'canvasAddGraticule',
+        //     'canvasAddWorldOrCountries',
+        //     'canvasAddDots',
+        //     'svgAddOcean',
+        //     'svgAddGlobeShading',
+        //     'svgAddGraticule',
+        //     'svgAddWorldOrCountries',
+        //     'svgAddGlobeHilight',
+        //     'svgAddPlaces',
+        //     'svgAddPings',
+        //     'svgAddDots',
+        //     'svgAddBar',
+        //     'addBarTooltip',
+        //     'addCountryTooltip',
+        //     'addCountryCenteroid',
+        // ],
         ready: null,
+        promeses: [],
         loadingData: null,
-        promeses: []
+        recreateSvgOrCanvas: function() {
+            _.onCreateKeys.forEach(function(fn) {
+                _.onCreate[fn].call(globe);
+            });
+            return globe;
+        }
     }
+    window.__ = _;
     const drag = false;
     const svg = d3.selectAll(options.select);
     let width = svg.attr('width'), height = svg.attr('height');
@@ -74,7 +84,7 @@ const earthjs = (options={}) => {
             center,
             options,
         },
-        $fn: {},
+        // $fn: {},
         $slc: {},
         ready(fn) {
             if (fn && _.promeses.length>0) {
@@ -120,8 +130,9 @@ const earthjs = (options={}) => {
                     'urls',
                     'onReady',
                     'onInit',
-                    'onResize',
+                    'onCreate',
                     'onRefresh',
+                    'onResize',
                     'onInterval'].indexOf(fn)===-1) {
                     if (typeof(obj[fn])==='function') {
                         ar[fn] = function() {
@@ -133,6 +144,7 @@ const earthjs = (options={}) => {
             if (obj.onInit) {
                 obj.onInit.call(globe);
             }
+            qEvent(obj,'onCreate');
             qEvent(obj,'onResize');
             qEvent(obj,'onRefresh');
             qEvent(obj,'onInterval');
@@ -153,11 +165,12 @@ const earthjs = (options={}) => {
     const __ = globe._;
 
     globe.svgDraw = function(twinEarth) {
-        const $fn = globe.$fn;
+        // const $fn = globe.$fn;
         earths = twinEarth || [];
-        _.renderOrder.forEach(function(renderer) {
-            $fn[renderer] && $fn[renderer].call(globe);
-        });
+        // _.renderOrder.forEach(function(renderer) {
+        //     $fn[renderer] && $fn[renderer].call(globe);
+        // });
+        _.recreateSvgOrCanvas();
         earths.forEach(function(p) {
             p.svgDraw(null);
         });
@@ -168,15 +181,15 @@ const earthjs = (options={}) => {
     }
 
     globe.$slc.defs = __.svg.append("defs");
-    __.ticker = function(interval) {
-        const intervalRun = __.intervalRun;
-        interval = interval || 50;
+    __.ticker = function(intervalTicker) {
+        const interval = __.interval;
+        intervalTicker = intervalTicker || 50;
         ticker = setInterval(() => { // 33% less CPU compare with d3.timer
-            intervalRun.call(globe);
+            interval.call(globe);
             earths.forEach(function(p) {
-                p._.intervalRun.call(p);
+                p._.interval.call(p);
             });
-        }, interval);
+        }, intervalTicker);
         earthjs.ticker = ticker;
         return globe;
     }
@@ -196,7 +209,7 @@ const earthjs = (options={}) => {
         return globe;
     }
 
-    __.intervalRun = function() {
+    __.interval = function() {
         _.onIntervalKeys.forEach(function(fn) {
             _.onInterval[fn].call(globe);
         });
@@ -227,11 +240,11 @@ const earthjs = (options={}) => {
             .clipAngle(90);
     }
 
-    __.addRenderer = function(name) {
-        if (_.renderOrder.indexOf(name)<0) {
-            _.renderOrder.push(name);
-        }
-    }
+    // __.addRenderer = function(name) {
+    //     if (_.renderOrder.indexOf(name)<0) {
+    //         _.renderOrder.push(name);
+    //     }
+    // }
 
     __.proj = __.orthoGraphic();
     __.path = d3.geoPath().projection(__.proj);

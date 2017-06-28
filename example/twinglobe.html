@@ -7,6 +7,7 @@
     <style>
         svg.earth {
             position: inherit;
+            pointer-events: inherit;
         }
     </style>
 </head>
@@ -19,8 +20,8 @@
         g.register(earthjs.plugins.wheelZoomPlugin());
         g.register(earthjs.plugins.versorDragPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
-        g.wheelZoomPlugin.selectAll('.e1');
-        g.versorDragPlugin.selectAll('.e1');
+        // g.wheelZoomPlugin.selectAll('.e1');
+        // g.versorDragPlugin.selectAll('.e1');
 
         g.register(earthjs.plugins.dropShadowPlugin());
         g.register(earthjs.plugins.oceanPlugin());

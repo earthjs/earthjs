@@ -27,9 +27,12 @@ export default function() {
     return {
         name: 'graticulePlugin',
         onInit() {
-            this.$fn.svgAddGraticule = svgAddGraticule;
+            // this.$fn.svgAddGraticule = svgAddGraticule;
             this._.options.showGraticule = true;
             _.svg = this._.svg;
+        },
+        onCreate() {
+            svgAddGraticule.call(this);
         },
         onRefresh() {
             refresh.call(this);

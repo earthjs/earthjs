@@ -1,8 +1,6 @@
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 export default function() {
-    /*eslint no-debugger: 0 */
     /*eslint no-console: 0 */
-    const _ = {show: false};
     const countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
 
     function refresh(mouse) {
@@ -20,12 +18,11 @@ export default function() {
     return {
         name: 'countryTooltipCanvas',
         onInit() {
-            const _this = this;
-            const toolTipsHandler = function() {
-                const {country, mouse} = _this.countrySelectCanvas.data();
-                if (country) {
-                    const countryName = _this.worldCanvas.countryName(country);
-                    if (countryName) {
+            const toolTipsHandler = () => {
+                const {country, mouse} = this.hoverCanvas.data();
+                if (country && this._.options.showCountryTooltip) {
+                    const countryName = this.worldCanvas.countryName(country);
+                    if (countryName && !(this.barTooltipPlugin && this.barTooltipPlugin.visible())) {
                         refresh(mouse)
                         .style("display", "block")
                         .style("opacity", 1)
@@ -37,7 +34,7 @@ export default function() {
                     hideTooltip()
                 }
             }
-            this.countrySelectCanvas.onHover({
+            this.hoverCanvas.addSelectCountryEvent({
                 countryTooltipCanvas: toolTipsHandler
             });
             if (this.versorDragPlugin) {
@@ -45,9 +42,10 @@ export default function() {
                     countryTooltipCanvas: toolTipsHandler
                 });
             }
+            this._.options.showCountryTooltip = true;
         },
         onRefresh() {
-            if (this._.drag && _.show) {
+            if (this._.drag) {
                 refresh(this.versorDragPlugin.mouse());
             }
         },

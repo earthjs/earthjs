@@ -1,0 +1,5830 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.033,
+          12.517
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".aw"
+        ],
+        "area": 180,
+        "region": "Americas",
+        "name": "Aruba",
+        "capital": "Oranjestad",
+        "currency": [
+          "AWG"
+        ],
+        "languages": {
+          "nld": "Dutch",
+          "pap": "Papiamento"
+        },
+        "callingCode": [
+          "297"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+            -0.071389,
+            -75.250973
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [""],
+        "area": 14000000,
+        "region": "Antartica",
+        "name": "Antartica",
+        "capital": "",
+        "currency": [""],
+        "languages": {"all": "*"},
+        "callingCode": ["0"]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          69.167,
+          34.533
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".af"
+        ],
+        "area": 652230,
+        "region": "Asia",
+        "name": "Afghanistan",
+        "capital": "Kabul",
+        "currency": [
+          "AFN"
+        ],
+        "languages": {
+          "prs": "Dari",
+          "pus": "Pashto",
+          "tuk": "Turkmen"
+        },
+        "callingCode": [
+          "93"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.233,
+          -8.833
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ao"
+        ],
+        "area": 1246700,
+        "region": "Africa",
+        "name": "Angola",
+        "capital": "Luanda",
+        "currency": [
+          "AOA"
+        ],
+        "languages": {
+          "por": "Portuguese"
+        },
+        "callingCode": [
+          "244"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -63.05,
+          18.217
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ai"
+        ],
+        "area": 91,
+        "region": "Americas",
+        "name": "Anguilla",
+        "capital": "The Valley",
+        "currency": [
+          "XCD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "1264"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.817,
+          41.317
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".al"
+        ],
+        "area": 28748,
+        "region": "Europe",
+        "name": "Albania",
+        "capital": "Tirana",
+        "currency": [
+          "ALL"
+        ],
+        "languages": {
+          "sqi": "Albanian"
+        },
+        "callingCode": [
+          "355"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.5,
+          42.5
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ad"
+        ],
+        "area": 468,
+        "region": "Europe",
+        "name": "Andorra",
+        "capital": "Andorra la Vella",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "cat": "Catalan"
+        },
+        "callingCode": [
+          "376"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          54.367,
+          24.467
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ae",
+          "امارات."
+        ],
+        "area": 83600,
+        "region": "Asia",
+        "name": "United Arab Emirates",
+        "capital": "Abu Dhabi",
+        "currency": [
+          "AED"
+        ],
+        "languages": {
+          "ara": "Arabic"
+        },
+        "callingCode": [
+          "971"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -58.367,
+          -34.6
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ar"
+        ],
+        "area": 2780400,
+        "region": "Americas",
+        "name": "Argentina",
+        "capital": "Buenos Aires",
+        "currency": [
+          "ARS"
+        ],
+        "languages": {
+          "grn": "Guaraní",
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "54"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          44.517,
+          40.183
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".am"
+        ],
+        "area": 29743,
+        "region": "Asia",
+        "name": "Armenia",
+        "capital": "Yerevan",
+        "currency": [
+          "AMD"
+        ],
+        "languages": {
+          "hye": "Armenian",
+          "rus": "Russian"
+        },
+        "callingCode": [
+          "374"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -170.7,
+          -14.267
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".as"
+        ],
+        "area": 199,
+        "region": "Oceania",
+        "name": "American Samoa",
+        "capital": "Pago Pago",
+        "currency": [
+          "USD"
+        ],
+        "languages": {
+          "eng": "English",
+          "smo": "Samoan"
+        },
+        "callingCode": [
+          "1684"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.117,
+          -35.3
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".au"
+        ],
+        "area": 7692024,
+        "region": "Oceania",
+        "name": "Australia",
+        "capital": "Canberra",
+        "currency": [
+          "AUD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "61"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.367,
+          48.2
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".at"
+        ],
+        "area": 83871,
+        "region": "Europe",
+        "name": "Austria",
+        "capital": "Vienna",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "bar": "Austro-Bavarian German"
+        },
+        "callingCode": [
+          "43"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          49.883,
+          40.367
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".az"
+        ],
+        "area": 86600,
+        "region": "Asia",
+        "name": "Azerbaijan",
+        "capital": "Baku",
+        "currency": [
+          "AZN"
+        ],
+        "languages": {
+          "aze": "Azerbaijani",
+          "rus": "Russian"
+        },
+        "callingCode": [
+          "994"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.367,
+          -3.383
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".bi"
+        ],
+        "area": 27834,
+        "region": "Africa",
+        "name": "Burundi",
+        "capital": "Bujumbura",
+        "currency": [
+          "BIF"
+        ],
+        "languages": {
+          "fra": "French",
+          "run": "Kirundi"
+        },
+        "callingCode": [
+          "257"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.35,
+          50.833
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".be"
+        ],
+        "area": 30528,
+        "region": "Europe",
+        "name": "Belgium",
+        "capital": "Brussels",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "deu": "German",
+          "fra": "French",
+          "nld": "Dutch"
+        },
+        "callingCode": [
+          "32"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.6,
+          6.5
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".bj"
+        ],
+        "area": 112622,
+        "region": "Africa",
+        "name": "Benin",
+        "capital": "Porto-Novo",
+        "currency": [
+          "XOF"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "229"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.533,
+          12.35
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".bf"
+        ],
+        "area": 272967,
+        "region": "Africa",
+        "name": "Burkina Faso",
+        "capital": "Ouagadougou",
+        "currency": [
+          "XOF"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "226"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          90.367,
+          23.7
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".bd"
+        ],
+        "area": 147570,
+        "region": "Asia",
+        "name": "Bangladesh",
+        "capital": "Dhaka",
+        "currency": [
+          "BDT"
+        ],
+        "languages": {
+          "ben": "Bengali"
+        },
+        "callingCode": [
+          "880"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.333,
+          42.7
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".bg"
+        ],
+        "area": 110879,
+        "region": "Europe",
+        "name": "Bulgaria",
+        "capital": "Sofia",
+        "currency": [
+          "BGN"
+        ],
+        "languages": {
+          "bul": "Bulgarian"
+        },
+        "callingCode": [
+          "359"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          50.583,
+          26.217
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".bh"
+        ],
+        "area": 765,
+        "region": "Asia",
+        "name": "Bahrain",
+        "capital": "Manama",
+        "currency": [
+          "BHD"
+        ],
+        "languages": {
+          "ara": "Arabic"
+        },
+        "callingCode": [
+          "973"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.333,
+          25.05
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".bs"
+        ],
+        "area": 13943,
+        "region": "Americas",
+        "name": "Bahamas",
+        "capital": "Nassau",
+        "currency": [
+          "BSD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "1242"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.35,
+          43.85
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ba"
+        ],
+        "area": 51209,
+        "region": "Europe",
+        "name": "Bosnia and Herzegovina",
+        "capital": "Sarajevo",
+        "currency": [
+          "BAM"
+        ],
+        "languages": {
+          "bos": "Bosnian",
+          "hrv": "Croatian",
+          "srp": "Serbian"
+        },
+        "callingCode": [
+          "387"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.567,
+          53.9
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".by"
+        ],
+        "area": 207600,
+        "region": "Europe",
+        "name": "Belarus",
+        "capital": "Minsk",
+        "currency": [
+          "BYN"
+        ],
+        "languages": {
+          "bel": "Belarusian",
+          "rus": "Russian"
+        },
+        "callingCode": [
+          "375"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -88.767,
+          17.25
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".bz"
+        ],
+        "area": 22966,
+        "region": "Americas",
+        "name": "Belize",
+        "capital": "Belmopan",
+        "currency": [
+          "BZD"
+        ],
+        "languages": {
+          "bjz": "Belizean Creole",
+          "eng": "English",
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "501"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+            -64.790337,
+            32.299507
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".bm"
+        ],
+        "area": 54,
+        "region": "Americas",
+        "name": "Bermuda",
+        "capital": "Hamilton",
+        "currency": [
+          "BMD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "1441"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -65.25,
+          -19.033
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".bo"
+        ],
+        "area": 1098581,
+        "region": "Americas",
+        "name": "Bolivia",
+        "capital": "Sucre",
+        "currency": [
+          "BOB",
+          "BOV"
+        ],
+        "languages": {
+          "aym": "Aymara",
+          "grn": "Guaraní",
+          "que": "Quechua",
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "591"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+            -51.92528,
+            -14.235004
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".br"
+        ],
+        "area": 8515767,
+        "region": "Americas",
+        "name": "Brazil",
+        "capital": "Brasília",
+        "currency": [
+          "BRL"
+        ],
+        "languages": {
+          "por": "Portuguese"
+        },
+        "callingCode": [
+          "55"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.617,
+          13.083
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".bb"
+        ],
+        "area": 430,
+        "region": "Americas",
+        "name": "Barbados",
+        "capital": "Bridgetown",
+        "currency": [
+          "BBD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "1246"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          114.933,
+          4.883
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".bn"
+        ],
+        "area": 5765,
+        "region": "Asia",
+        "name": "Brunei",
+        "capital": "Bandar Seri Begawan",
+        "currency": [
+          "BND"
+        ],
+        "languages": {
+          "msa": "Malay"
+        },
+        "callingCode": [
+          "673"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          89.633,
+          27.467
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".bt"
+        ],
+        "area": 38394,
+        "region": "Asia",
+        "name": "Bhutan",
+        "capital": "Thimphu",
+        "currency": [
+          "BTN",
+          "INR"
+        ],
+        "languages": {
+          "dzo": "Dzongkha"
+        },
+        "callingCode": [
+          "975"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.9,
+          -24.65
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".bw"
+        ],
+        "area": 582000,
+        "region": "Africa",
+        "name": "Botswana",
+        "capital": "Gaborone",
+        "currency": [
+          "BWP"
+        ],
+        "languages": {
+          "eng": "English",
+          "tsn": "Tswana"
+        },
+        "callingCode": [
+          "267"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.583,
+          4.35
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".cf"
+        ],
+        "area": 622984,
+        "region": "Africa",
+        "name": "Central African Republic",
+        "capital": "Bangui",
+        "currency": [
+          "XAF"
+        ],
+        "languages": {
+          "fra": "French",
+          "sag": "Sango"
+        },
+        "callingCode": [
+          "236"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.683,
+          45.417
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ca"
+        ],
+        "area": 9984670,
+        "region": "Americas",
+        "name": "Canada",
+        "capital": "Ottawa",
+        "currency": [
+          "CAD"
+        ],
+        "languages": {
+          "eng": "English",
+          "fra": "French"
+        },
+        "callingCode": [
+          "1"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.45,
+          46.95
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ch"
+        ],
+        "area": 41284,
+        "region": "Europe",
+        "name": "Switzerland",
+        "capital": "Bern",
+        "currency": [
+          "CHE",
+          "CHF",
+          "CHW"
+        ],
+        "languages": {
+          "fra": "French",
+          "gsw": "Swiss German",
+          "ita": "Italian",
+          "roh": "Romansh"
+        },
+        "callingCode": [
+          "41"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.667,
+          -33.45
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".cl"
+        ],
+        "area": 756102,
+        "region": "Americas",
+        "name": "Chile",
+        "capital": "Santiago",
+        "currency": [
+          "CLF",
+          "CLP"
+        ],
+        "languages": {
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "56"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.4,
+          39.9
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".cn",
+          ".中国",
+          ".中國",
+          ".公司",
+          ".网络"
+        ],
+        "area": 9706961,
+        "region": "Asia",
+        "name": "China",
+        "capital": "Beijing",
+        "currency": [
+          "CNY"
+        ],
+        "languages": {
+          "zho": "Chinese"
+        },
+        "callingCode": [
+          "86"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -5.283,
+          6.817
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ci"
+        ],
+        "area": 322463,
+        "region": "Africa",
+        "name": "Ivory Coast",
+        "capital": "Yamoussoukro",
+        "currency": [
+          "XOF"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "225"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.317,
+          -4.317
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".cd"
+        ],
+        "area": 2344858,
+        "region": "Africa",
+        "name": "DR Congo",
+        "capital": "Kinshasa",
+        "currency": [
+          "CDF"
+        ],
+        "languages": {
+          "fra": "French",
+          "kon": "Kikongo",
+          "lin": "Lingala",
+          "lua": "Tshiluba",
+          "swa": "Swahili"
+        },
+        "callingCode": [
+          "243"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.283,
+          -4.267
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".cg"
+        ],
+        "area": 342000,
+        "region": "Africa",
+        "name": "Republic of the Congo",
+        "capital": "Brazzaville",
+        "currency": [
+          "XAF"
+        ],
+        "languages": {
+          "fra": "French",
+          "kon": "Kikongo",
+          "lin": "Lingala"
+        },
+        "callingCode": [
+          "242"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -159.767,
+          -21.2
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ck"
+        ],
+        "area": 236,
+        "region": "Oceania",
+        "name": "Cook Islands",
+        "capital": "Avarua",
+        "currency": [
+          "NZD"
+        ],
+        "languages": {
+          "eng": "English",
+          "rar": "Cook Islands Māori"
+        },
+        "callingCode": [
+          "682"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.2,
+          -11.75
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".km"
+        ],
+        "area": 1862,
+        "region": "Africa",
+        "name": "Comoros",
+        "capital": "Moroni",
+        "currency": [
+          "KMF"
+        ],
+        "languages": {
+          "ara": "Arabic",
+          "fra": "French",
+          "zdj": "Comorian"
+        },
+        "callingCode": [
+          "269"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -23.517,
+          14.917
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".cv"
+        ],
+        "area": 4033,
+        "region": "Africa",
+        "name": "Cape Verde",
+        "capital": "Praia",
+        "currency": [
+          "CVE"
+        ],
+        "languages": {
+          "por": "Portuguese"
+        },
+        "callingCode": [
+          "238"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.383,
+          23.133
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".cu"
+        ],
+        "area": 109884,
+        "region": "Americas",
+        "name": "Cuba",
+        "capital": "Havana",
+        "currency": [
+          "CUC",
+          "CUP"
+        ],
+        "languages": {
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "53"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -68.933,
+          12.117
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".cw"
+        ],
+        "area": 444,
+        "region": "Americas",
+        "name": "Curaçao",
+        "capital": "Willemstad",
+        "currency": [
+          "ANG"
+        ],
+        "languages": {
+          "eng": "English",
+          "nld": "Dutch",
+          "pap": "Papiamento"
+        },
+        "callingCode": [
+          "5999"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -81.2546,
+          19.3133
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ky"
+        ],
+        "area": 264,
+        "region": "Americas",
+        "name": "Cayman Islands",
+        "capital": "George Town",
+        "currency": [
+          "KYD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "1345"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.35,
+          35.167
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".cy"
+        ],
+        "area": 9251,
+        "region": "Europe",
+        "name": "Cyprus",
+        "capital": "Nicosia",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "ell": "Greek",
+          "tur": "Turkish"
+        },
+        "callingCode": [
+          "357"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.417,
+          50.083
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".cz"
+        ],
+        "area": 78865,
+        "region": "Europe",
+        "name": "Czechia",
+        "capital": "Prague",
+        "currency": [
+          "CZK"
+        ],
+        "languages": {
+          "ces": "Czech",
+          "slk": "Slovak"
+        },
+        "callingCode": [
+          "420"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.417,
+          52.517
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".de"
+        ],
+        "area": 357114,
+        "region": "Europe",
+        "name": "Germany",
+        "capital": "Berlin",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "deu": "German"
+        },
+        "callingCode": [
+          "49"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -61.383,
+          15.3
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".dm"
+        ],
+        "area": 751,
+        "region": "Americas",
+        "name": "Dominica",
+        "capital": "Roseau",
+        "currency": [
+          "XCD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "1767"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.567,
+          55.667
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".dk"
+        ],
+        "area": 43094,
+        "region": "Europe",
+        "name": "Denmark",
+        "capital": "Copenhagen",
+        "currency": [
+          "DKK"
+        ],
+        "languages": {
+          "dan": "Danish"
+        },
+        "callingCode": [
+          "45"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -69.917,
+          18.483
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".do"
+        ],
+        "area": 48671,
+        "region": "Americas",
+        "name": "Dominican Republic",
+        "capital": "Santo Domingo",
+        "currency": [
+          "DOP"
+        ],
+        "languages": {
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "1809",
+          "1829",
+          "1849"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.217,
+          36.7
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".dz",
+          "الجزائر."
+        ],
+        "area": 2381741,
+        "region": "Africa",
+        "name": "Algeria",
+        "capital": "Algiers",
+        "currency": [
+          "DZD"
+        ],
+        "languages": {
+          "ara": "Arabic"
+        },
+        "callingCode": [
+          "213"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.583,
+          0.25
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ec"
+        ],
+        "area": 276841,
+        "region": "Americas",
+        "name": "Ecuador",
+        "capital": "Quito",
+        "currency": [
+          "USD"
+        ],
+        "languages": {
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "593"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.217,
+          30.05
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".eg",
+          ".مصر"
+        ],
+        "area": 1002450,
+        "region": "Africa",
+        "name": "Egypt",
+        "capital": "Cairo",
+        "currency": [
+          "EGP"
+        ],
+        "languages": {
+          "ara": "Arabic"
+        },
+        "callingCode": [
+          "20"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          38.933,
+          15.333
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".er"
+        ],
+        "area": 117600,
+        "region": "Africa",
+        "name": "Eritrea",
+        "capital": "Asmara",
+        "currency": [
+          "ERN"
+        ],
+        "languages": {
+          "ara": "Arabic",
+          "eng": "English",
+          "tir": "Tigrinya"
+        },
+        "callingCode": [
+          "291"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.683,
+          40.4
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".es"
+        ],
+        "area": 505992,
+        "region": "Europe",
+        "name": "Spain",
+        "capital": "Madrid",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "cat": "Catalan",
+          "eus": "Basque",
+          "glg": "Galician",
+          "oci": "Occitan",
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "34"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.75,
+          59.433
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ee"
+        ],
+        "area": 45227,
+        "region": "Europe",
+        "name": "Estonia",
+        "capital": "Tallinn",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "est": "Estonian"
+        },
+        "callingCode": [
+          "372"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          38.733,
+          9.017
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".et"
+        ],
+        "area": 1104300,
+        "region": "Africa",
+        "name": "Ethiopia",
+        "capital": "Addis Ababa",
+        "currency": [
+          "ETB"
+        ],
+        "languages": {
+          "amh": "Amharic"
+        },
+        "callingCode": [
+          "251"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.933,
+          60.167
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".fi"
+        ],
+        "area": 338424,
+        "region": "Europe",
+        "name": "Finland",
+        "capital": "Helsinki",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "fin": "Finnish",
+          "swe": "Swedish"
+        },
+        "callingCode": [
+          "358"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          178.433,
+          -18.133
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".fj"
+        ],
+        "area": 18272,
+        "region": "Oceania",
+        "name": "Fiji",
+        "capital": "Suva",
+        "currency": [
+          "FJD"
+        ],
+        "languages": {
+          "eng": "English",
+          "fij": "Fijian",
+          "hif": "Fiji Hindi"
+        },
+        "callingCode": [
+          "679"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+            -59.820557,
+            -51.563412
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".fk"
+        ],
+        "area": 12173,
+        "region": "Americas",
+        "name": "Falkland Islands",
+        "capital": "Stanley",
+        "currency": [
+          "FKP"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "500"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.333,
+          48.867
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".fr"
+        ],
+        "area": 551695,
+        "region": "Europe",
+        "name": "France",
+        "capital": "Paris",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "33"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          158.183,
+          6.917
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".fm"
+        ],
+        "area": 702,
+        "region": "Oceania",
+        "name": "Micronesia",
+        "capital": "Palikir",
+        "currency": [
+          "USD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "691"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.45,
+          0.383
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ga"
+        ],
+        "area": 267668,
+        "region": "Africa",
+        "name": "Gabon",
+        "capital": "Libreville",
+        "currency": [
+          "XAF"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "241"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.117,
+          51.5
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".uk"
+        ],
+        "area": 242900,
+        "region": "Europe",
+        "name": "United Kingdom",
+        "capital": "London",
+        "currency": [
+          "GBP"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "44"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          44.783,
+          41.717
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ge"
+        ],
+        "area": 69700,
+        "region": "Asia",
+        "name": "Georgia",
+        "capital": "Tbilisi",
+        "currency": [
+          "GEL"
+        ],
+        "languages": {
+          "kat": "Georgian"
+        },
+        "callingCode": [
+          "995"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.2,
+          5.55
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".gh"
+        ],
+        "area": 238533,
+        "region": "Africa",
+        "name": "Ghana",
+        "capital": "Accra",
+        "currency": [
+          "GHS"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "233"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -5.35,
+          36.133
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".gi"
+        ],
+        "area": 6,
+        "region": "Europe",
+        "name": "Gibraltar",
+        "capital": "Gibraltar",
+        "currency": [
+          "GIP"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "350"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -13.7,
+          9.517
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".gn"
+        ],
+        "area": 245857,
+        "region": "Africa",
+        "name": "Guinea",
+        "capital": "Conakry",
+        "currency": [
+          "GNF"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "224"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -61.717,
+          15.983
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".gp"
+        ],
+        "area": 1628,
+        "region": "Americas",
+        "name": "Guadeloupe",
+        "capital": "Basse-Terre",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "590"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.567,
+          13.45
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".gm"
+        ],
+        "area": 10689,
+        "region": "Africa",
+        "name": "Gambia",
+        "capital": "Banjul",
+        "currency": [
+          "GMD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "220"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -15.583,
+          11.85
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".gw"
+        ],
+        "area": 36125,
+        "region": "Africa",
+        "name": "Guinea-Bissau",
+        "capital": "Bissau",
+        "currency": [
+          "XOF"
+        ],
+        "languages": {
+          "por": "Portuguese"
+        },
+        "callingCode": [
+          "245"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.767,
+          3.75
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".gq"
+        ],
+        "area": 28051,
+        "region": "Africa",
+        "name": "Equatorial Guinea",
+        "capital": "Malabo",
+        "currency": [
+          "XAF"
+        ],
+        "languages": {
+          "fra": "French",
+          "por": "Portuguese",
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "240"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.717,
+          37.967
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".gr"
+        ],
+        "area": 131990,
+        "region": "Europe",
+        "name": "Greece",
+        "capital": "Athens",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "ell": "Greek"
+        },
+        "callingCode": [
+          "30"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -51.75,
+          64.167
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".gl"
+        ],
+        "area": 2166086,
+        "region": "Americas",
+        "name": "Greenland",
+        "capital": "Nuuk",
+        "currency": [
+          "DKK"
+        ],
+        "languages": {
+          "kal": "Greenlandic"
+        },
+        "callingCode": [
+          "299"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -90.55,
+          14.633
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".gt"
+        ],
+        "area": 108889,
+        "region": "Americas",
+        "name": "Guatemala",
+        "capital": "Guatemala City",
+        "currency": [
+          "GTQ"
+        ],
+        "languages": {
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "502"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -52.317,
+          4.917
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".gf"
+        ],
+        "area": 83534,
+        "region": "Americas",
+        "name": "French Guiana",
+        "capital": "Cayenne",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "594"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -87.217,
+          14.083
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".hn"
+        ],
+        "area": 112492,
+        "region": "Americas",
+        "name": "Honduras",
+        "capital": "Tegucigalpa",
+        "currency": [
+          "HNL"
+        ],
+        "languages": {
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "504"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.983,
+          45.817
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".hr"
+        ],
+        "area": 56594,
+        "region": "Europe",
+        "name": "Croatia",
+        "capital": "Zagreb",
+        "currency": [
+          "HRK"
+        ],
+        "languages": {
+          "hrv": "Croatian"
+        },
+        "callingCode": [
+          "385"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -72.333,
+          18.533
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ht"
+        ],
+        "area": 27750,
+        "region": "Americas",
+        "name": "Haiti",
+        "capital": "Port-au-Prince",
+        "currency": [
+          "HTG",
+          "USD"
+        ],
+        "languages": {
+          "fra": "French",
+          "hat": "Haitian Creole"
+        },
+        "callingCode": [
+          "509"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.05,
+          47.467
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".hu"
+        ],
+        "area": 93028,
+        "region": "Europe",
+        "name": "Hungary",
+        "capital": "Budapest",
+        "currency": [
+          "HUF"
+        ],
+        "languages": {
+          "hun": "Hungarian"
+        },
+        "callingCode": [
+          "36"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.75,
+          -6.133
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".id"
+        ],
+        "area": 1904569,
+        "region": "Asia",
+        "name": "Indonesia",
+        "capital": "Jakarta",
+        "currency": [
+          "IDR"
+        ],
+        "languages": {
+          "ind": "Indonesian"
+        },
+        "callingCode": [
+          "62"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.483,
+          54.133
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".im"
+        ],
+        "area": 572,
+        "region": "Europe",
+        "name": "Isle of Man",
+        "capital": "Douglas",
+        "currency": [
+          "GBP"
+        ],
+        "languages": {
+          "eng": "English",
+          "glv": "Manx"
+        },
+        "callingCode": [
+          "44"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2,
+          28.617
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".in"
+        ],
+        "area": 3287590,
+        "region": "Asia",
+        "name": "India",
+        "capital": "New Delhi",
+        "currency": [
+          "INR"
+        ],
+        "languages": {
+          "eng": "English",
+          "hin": "Hindi",
+          "tam": "Tamil"
+        },
+        "callingCode": [
+          "91"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.267,
+          53.333
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ie"
+        ],
+        "area": 70273,
+        "region": "Europe",
+        "name": "Ireland",
+        "capital": "Dublin",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "eng": "English",
+          "gle": "Irish"
+        },
+        "callingCode": [
+          "353"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          51.417,
+          35.683
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ir",
+          "ایران."
+        ],
+        "area": 1648195,
+        "region": "Asia",
+        "name": "Iran",
+        "capital": "Tehran",
+        "currency": [
+          "IRR"
+        ],
+        "languages": {
+          "fas": "Persian"
+        },
+        "callingCode": [
+          "98"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          44.417,
+          33.317
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".iq"
+        ],
+        "area": 438317,
+        "region": "Asia",
+        "name": "Iraq",
+        "capital": "Baghdad",
+        "currency": [
+          "IQD"
+        ],
+        "languages": {
+          "ara": "Arabic",
+          "arc": "Aramaic",
+          "ckb": "Sorani"
+        },
+        "callingCode": [
+          "964"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.217,
+          31.783
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".il"
+        ],
+        "area": 20770,
+        "region": "Asia",
+        "name": "Israel",
+        "capital": "Jerusalem",
+        "currency": [
+          "ILS"
+        ],
+        "languages": {
+          "ara": "Arabic",
+          "heb": "Hebrew"
+        },
+        "callingCode": [
+          "972"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.5,
+          41.9
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".it"
+        ],
+        "area": 301336,
+        "region": "Europe",
+        "name": "Italy",
+        "capital": "Rome",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "bar": "Austro-Bavarian German",
+          "ita": "Italian",
+          "srd": "Sardinian"
+        },
+        "callingCode": [
+          "39"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.297508,
+          18.109581
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".jm"
+        ],
+        "area": 10991,
+        "region": "Americas",
+        "name": "Jamaica",
+        "capital": "Kingston",
+        "currency": [
+          "JMD"
+        ],
+        "languages": {
+          "eng": "English",
+          "jam": "Jamaican Patois"
+        },
+        "callingCode": [
+          "1876"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.933,
+          31.95
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".jo",
+          "الاردن."
+        ],
+        "area": 89342,
+        "region": "Asia",
+        "name": "Jordan",
+        "capital": "Amman",
+        "currency": [
+          "JOD"
+        ],
+        "languages": {
+          "ara": "Arabic"
+        },
+        "callingCode": [
+          "962"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.767,
+          35.683
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".jp",
+          ".みんな"
+        ],
+        "area": 377930,
+        "region": "Asia",
+        "name": "Japan",
+        "capital": "Tokyo",
+        "currency": [
+          "JPY"
+        ],
+        "languages": {
+          "jpn": "Japanese"
+        },
+        "callingCode": [
+          "81"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          71.45,
+          51.183
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".kz",
+          ".қаз"
+        ],
+        "area": 2724900,
+        "region": "Asia",
+        "name": "Kazakhstan",
+        "capital": "Astana",
+        "currency": [
+          "KZT"
+        ],
+        "languages": {
+          "kaz": "Kazakh",
+          "rus": "Russian"
+        },
+        "callingCode": [
+          "76",
+          "77"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          36.817,
+          -1.283
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ke"
+        ],
+        "area": 580367,
+        "region": "Africa",
+        "name": "Kenya",
+        "capital": "Nairobi",
+        "currency": [
+          "KES"
+        ],
+        "languages": {
+          "eng": "English",
+          "swa": "Swahili"
+        },
+        "callingCode": [
+          "254"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.6,
+          42.867
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".kg"
+        ],
+        "area": 199951,
+        "region": "Asia",
+        "name": "Kyrgyzstan",
+        "capital": "Bishkek",
+        "currency": [
+          "KGS"
+        ],
+        "languages": {
+          "kir": "Kyrgyz",
+          "rus": "Russian"
+        },
+        "callingCode": [
+          "996"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.917,
+          11.55
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".kh"
+        ],
+        "area": 181035,
+        "region": "Asia",
+        "name": "Cambodia",
+        "capital": "Phnom Penh",
+        "currency": [
+          "KHR"
+        ],
+        "languages": {
+          "khm": "Khmer"
+        },
+        "callingCode": [
+          "855"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          172.983,
+          1.317
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ki"
+        ],
+        "area": 811,
+        "region": "Oceania",
+        "name": "Kiribati",
+        "capital": "South Tarawa",
+        "currency": [
+          "AUD"
+        ],
+        "languages": {
+          "eng": "English",
+          "gil": "Gilbertese"
+        },
+        "callingCode": [
+          "686"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.983,
+          37.55
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".kr",
+          ".한국"
+        ],
+        "area": 100210,
+        "region": "Asia",
+        "name": "South Korea",
+        "capital": "Seoul",
+        "currency": [
+          "KRW"
+        ],
+        "languages": {
+          "kor": "Korean"
+        },
+        "callingCode": [
+          "82"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.167,
+          42.667
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [],
+        "area": 10908,
+        "region": "Europe",
+        "name": "Kosovo",
+        "capital": "Pristina",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "sqi": "Albanian",
+          "srp": "Serbian"
+        },
+        "callingCode": [
+          "383"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.967,
+          29.367
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".kw"
+        ],
+        "area": 17818,
+        "region": "Asia",
+        "name": "Kuwait",
+        "capital": "Kuwait City",
+        "currency": [
+          "KWD"
+        ],
+        "languages": {
+          "ara": "Arabic"
+        },
+        "callingCode": [
+          "965"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.617,
+          17.95
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".la"
+        ],
+        "area": 236800,
+        "region": "Asia",
+        "name": "Laos",
+        "capital": "Vientiane",
+        "currency": [
+          "LAK"
+        ],
+        "languages": {
+          "lao": "Lao"
+        },
+        "callingCode": [
+          "856"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.5,
+          33.883
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".lb"
+        ],
+        "area": 10452,
+        "region": "Asia",
+        "name": "Lebanon",
+        "capital": "Beirut",
+        "currency": [
+          "LBP"
+        ],
+        "languages": {
+          "ara": "Arabic",
+          "fra": "French"
+        },
+        "callingCode": [
+          "961"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -10.767,
+          6.317
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".lr"
+        ],
+        "area": 111369,
+        "region": "Africa",
+        "name": "Liberia",
+        "capital": "Monrovia",
+        "currency": [
+          "LRD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "231"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.183,
+          32.9
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ly"
+        ],
+        "area": 1759540,
+        "region": "Africa",
+        "name": "Libya",
+        "capital": "Tripoli",
+        "currency": [
+          "LYD"
+        ],
+        "languages": {
+          "ara": "Arabic"
+        },
+        "callingCode": [
+          "218"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.983,
+          14.017
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".lc"
+        ],
+        "area": 616,
+        "region": "Americas",
+        "name": "Saint Lucia",
+        "capital": "Castries",
+        "currency": [
+          "XCD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "1758"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.517,
+          47.133
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".li"
+        ],
+        "area": 160,
+        "region": "Europe",
+        "name": "Liechtenstein",
+        "capital": "Vaduz",
+        "currency": [
+          "CHF"
+        ],
+        "languages": {
+          "deu": "German"
+        },
+        "callingCode": [
+          "423"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          79.867,
+          6.883
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".lk",
+          ".இலங்கை",
+          ".ලංකා"
+        ],
+        "area": 65610,
+        "region": "Asia",
+        "name": "Sri Lanka",
+        "capital": "Colombo",
+        "currency": [
+          "LKR"
+        ],
+        "languages": {
+          "sin": "Sinhala",
+          "tam": "Tamil"
+        },
+        "callingCode": [
+          "94"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.467,
+          -29.3
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ls"
+        ],
+        "area": 30355,
+        "region": "Africa",
+        "name": "Lesotho",
+        "capital": "Maseru",
+        "currency": [
+          "LSL",
+          "ZAR"
+        ],
+        "languages": {
+          "eng": "English",
+          "sot": "Sotho"
+        },
+        "callingCode": [
+          "266"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.283,
+          54.683
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".lt"
+        ],
+        "area": 65300,
+        "region": "Europe",
+        "name": "Lithuania",
+        "capital": "Vilnius",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "lit": "Lithuanian"
+        },
+        "callingCode": [
+          "370"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.133,
+          56.967
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".lv"
+        ],
+        "area": 64559,
+        "region": "Europe",
+        "name": "Latvia",
+        "capital": "Riga",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "lav": "Latvian"
+        },
+        "callingCode": [
+          "371"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.833,
+          34.033
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ma",
+          "المغرب."
+        ],
+        "area": 446550,
+        "region": "Africa",
+        "name": "Morocco",
+        "capital": "Rabat",
+        "currency": [
+          "MAD"
+        ],
+        "languages": {
+          "ara": "Arabic",
+          "ber": "Berber"
+        },
+        "callingCode": [
+          "212"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.4,
+          43.733
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".mc"
+        ],
+        "area": 2.02,
+        "region": "Europe",
+        "name": "Monaco",
+        "capital": "Monaco",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "377"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.517,
+          -18.933
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".mg"
+        ],
+        "area": 587041,
+        "region": "Africa",
+        "name": "Madagascar",
+        "capital": "Antananarivo",
+        "currency": [
+          "MGA"
+        ],
+        "languages": {
+          "fra": "French",
+          "mlg": "Malagasy"
+        },
+        "callingCode": [
+          "261"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.117,
+          19.4
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".mx"
+        ],
+        "area": 1964375,
+        "region": "Americas",
+        "name": "Mexico",
+        "capital": "Mexico City",
+        "currency": [
+          "MXN"
+        ],
+        "languages": {
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "52"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          171.267,
+          7.067
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".mh"
+        ],
+        "area": 181,
+        "region": "Oceania",
+        "name": "Marshall Islands",
+        "capital": "Majuro",
+        "currency": [
+          "USD"
+        ],
+        "languages": {
+          "eng": "English",
+          "mah": "Marshallese"
+        },
+        "callingCode": [
+          "692"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.433,
+          42
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".mk"
+        ],
+        "area": 25713,
+        "region": "Europe",
+        "name": "Macedonia",
+        "capital": "Skopje",
+        "currency": [
+          "MKD"
+        ],
+        "languages": {
+          "mkd": "Macedonian"
+        },
+        "callingCode": [
+          "389"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8,
+          12.65
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ml"
+        ],
+        "area": 1240192,
+        "region": "Africa",
+        "name": "Mali",
+        "capital": "Bamako",
+        "currency": [
+          "XOF"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "223"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.5,
+          35.9
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".mt"
+        ],
+        "area": 316,
+        "region": "Europe",
+        "name": "Malta",
+        "capital": "Valletta",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "eng": "English",
+          "mlt": "Maltese"
+        },
+        "callingCode": [
+          "356"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          96.1,
+          19.75
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".mm"
+        ],
+        "area": 676578,
+        "region": "Asia",
+        "name": "Myanmar",
+        "capital": "Naypyidaw",
+        "currency": [
+          "MMK"
+        ],
+        "languages": {
+          "mya": "Burmese"
+        },
+        "callingCode": [
+          "95"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.267,
+          42.467
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".me"
+        ],
+        "area": 13812,
+        "region": "Europe",
+        "name": "Montenegro",
+        "capital": "Podgorica",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "srp": "Montenegrin"
+        },
+        "callingCode": [
+          "382"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.917,
+          47.917
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".mn"
+        ],
+        "area": 1564110,
+        "region": "Asia",
+        "name": "Mongolia",
+        "capital": "Ulan Bator",
+        "currency": [
+          "MNT"
+        ],
+        "languages": {
+          "mon": "Mongolian"
+        },
+        "callingCode": [
+          "976"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          145.75,
+          15.183
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".mp"
+        ],
+        "area": 464,
+        "region": "Oceania",
+        "name": "Northern Mariana Islands",
+        "capital": "Saipan",
+        "currency": [
+          "USD"
+        ],
+        "languages": {
+          "cal": "Carolinian",
+          "cha": "Chamorro",
+          "eng": "English"
+        },
+        "callingCode": [
+          "1670"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          32.583,
+          -25.967
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".mz"
+        ],
+        "area": 801590,
+        "region": "Africa",
+        "name": "Mozambique",
+        "capital": "Maputo",
+        "currency": [
+          "MZN"
+        ],
+        "languages": {
+          "por": "Portuguese"
+        },
+        "callingCode": [
+          "258"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -15.95,
+          18.1
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".mr"
+        ],
+        "area": 1030700,
+        "region": "Africa",
+        "name": "Mauritania",
+        "capital": "Nouakchott",
+        "currency": [
+          "MRO"
+        ],
+        "languages": {
+          "ara": "Arabic"
+        },
+        "callingCode": [
+          "222"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -61.083,
+          14.6
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".mq"
+        ],
+        "area": 1128,
+        "region": "Americas",
+        "name": "Martinique",
+        "capital": "Fort-de-France",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "596"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          57.5,
+          -20.167
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".mu"
+        ],
+        "area": 2040,
+        "region": "Africa",
+        "name": "Mauritius",
+        "capital": "Port Louis",
+        "currency": [
+          "MUR"
+        ],
+        "languages": {
+          "eng": "English",
+          "fra": "French",
+          "mfe": "Mauritian Creole"
+        },
+        "callingCode": [
+          "230"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.783,
+          -13.983
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".mw"
+        ],
+        "area": 118484,
+        "region": "Africa",
+        "name": "Malawi",
+        "capital": "Lilongwe",
+        "currency": [
+          "MWK"
+        ],
+        "languages": {
+          "eng": "English",
+          "nya": "Chewa"
+        },
+        "callingCode": [
+          "265"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.683,
+          3.133
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".my"
+        ],
+        "area": 330803,
+        "region": "Asia",
+        "name": "Malaysia",
+        "capital": "Kuala Lumpur",
+        "currency": [
+          "MYR"
+        ],
+        "languages": {
+          "eng": "English",
+          "msa": "Malay"
+        },
+        "callingCode": [
+          "60"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          45.217,
+          -12.783
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".yt"
+        ],
+        "area": 374,
+        "region": "Africa",
+        "name": "Mayotte",
+        "capital": "Mamoudzou",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "262"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.1,
+          13.517
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ne"
+        ],
+        "area": 1267000,
+        "region": "Africa",
+        "name": "Niger",
+        "capital": "Niamey",
+        "currency": [
+          "XOF"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "227"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          167.967,
+          -29.067
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".nf"
+        ],
+        "area": 36,
+        "region": "Oceania",
+        "name": "Norfolk Island",
+        "capital": "Kingston",
+        "currency": [
+          "AUD"
+        ],
+        "languages": {
+          "eng": "English",
+          "pih": "Norfuk"
+        },
+        "callingCode": [
+          "672"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.483,
+          9.067
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ng"
+        ],
+        "area": 923768,
+        "region": "Africa",
+        "name": "Nigeria",
+        "capital": "Abuja",
+        "currency": [
+          "NGN"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "234"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.25,
+          12.133
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ni"
+        ],
+        "area": 130373,
+        "region": "Americas",
+        "name": "Nicaragua",
+        "capital": "Managua",
+        "currency": [
+          "NIO"
+        ],
+        "languages": {
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "505"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -169.917,
+          -19.05
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".nu"
+        ],
+        "area": 260,
+        "region": "Oceania",
+        "name": "Niue",
+        "capital": "Alofi",
+        "currency": [
+          "NZD"
+        ],
+        "languages": {
+          "eng": "English",
+          "niu": "Niuean"
+        },
+        "callingCode": [
+          "683"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.883,
+          52.367
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".nl"
+        ],
+        "area": 41850,
+        "region": "Europe",
+        "name": "Netherlands",
+        "capital": "Amsterdam",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "nld": "Dutch"
+        },
+        "callingCode": [
+          "31"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.75,
+          59.95
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".no"
+        ],
+        "area": 323802,
+        "region": "Europe",
+        "name": "Norway",
+        "capital": "Oslo",
+        "currency": [
+          "NOK"
+        ],
+        "languages": {
+          "nno": "Norwegian Nynorsk",
+          "nob": "Norwegian Bokmål",
+          "smi": "Sami"
+        },
+        "callingCode": [
+          "47"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.333,
+          27.7
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".np"
+        ],
+        "area": 147181,
+        "region": "Asia",
+        "name": "Nepal",
+        "capital": "Kathmandu",
+        "currency": [
+          "NPR"
+        ],
+        "languages": {
+          "nep": "Nepali"
+        },
+        "callingCode": [
+          "977"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.767,
+          -41.283
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".nz"
+        ],
+        "area": 270467,
+        "region": "Oceania",
+        "name": "New Zealand",
+        "capital": "Wellington",
+        "currency": [
+          "NZD"
+        ],
+        "languages": {
+          "eng": "English",
+          "mri": "Māori",
+          "nzs": "New Zealand Sign Language"
+        },
+        "callingCode": [
+          "64"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          58.533,
+          23.6
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".om"
+        ],
+        "area": 309500,
+        "region": "Asia",
+        "name": "Oman",
+        "capital": "Muscat",
+        "currency": [
+          "OMR"
+        ],
+        "languages": {
+          "ara": "Arabic"
+        },
+        "callingCode": [
+          "968"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          73.067,
+          33.717
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".pk"
+        ],
+        "area": 881912,
+        "region": "Asia",
+        "name": "Pakistan",
+        "capital": "Islamabad",
+        "currency": [
+          "PKR"
+        ],
+        "languages": {
+          "eng": "English",
+          "urd": "Urdu"
+        },
+        "callingCode": [
+          "92"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.517,
+          8.983
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".pa"
+        ],
+        "area": 75417,
+        "region": "Americas",
+        "name": "Panama",
+        "capital": "Panama City",
+        "currency": [
+          "PAB",
+          "USD"
+        ],
+        "languages": {
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "507"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -130.1,
+          -25.067
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".pn"
+        ],
+        "area": 47,
+        "region": "Oceania",
+        "name": "Pitcairn Islands",
+        "capital": "Adamstown",
+        "currency": [
+          "NZD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "64"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.017,
+          -12.033
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".pe"
+        ],
+        "area": 1285216,
+        "region": "Americas",
+        "name": "Peru",
+        "capital": "Lima",
+        "currency": [
+          "PEN"
+        ],
+        "languages": {
+          "aym": "Aymara",
+          "que": "Quechua",
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "51"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.967,
+          14.583
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ph"
+        ],
+        "area": 342353,
+        "region": "Asia",
+        "name": "Philippines",
+        "capital": "Manila",
+        "currency": [
+          "PHP"
+        ],
+        "languages": {
+          "eng": "English",
+          "fil": "Filipino"
+        },
+        "callingCode": [
+          "63"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          147.167,
+          -9.467
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".pg"
+        ],
+        "area": 462840,
+        "region": "Oceania",
+        "name": "Papua New Guinea",
+        "capital": "Port Moresby",
+        "currency": [
+          "PGK"
+        ],
+        "languages": {
+          "eng": "English",
+          "hmo": "Hiri Motu",
+          "tpi": "Tok Pisin"
+        },
+        "callingCode": [
+          "675"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21,
+          52.233
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".pl"
+        ],
+        "area": 312679,
+        "region": "Europe",
+        "name": "Poland",
+        "capital": "Warsaw",
+        "currency": [
+          "PLN"
+        ],
+        "languages": {
+          "pol": "Polish"
+        },
+        "callingCode": [
+          "48"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.067,
+          18.45
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".pr"
+        ],
+        "area": 8870,
+        "region": "Americas",
+        "name": "Puerto Rico",
+        "capital": "San Juan",
+        "currency": [
+          "USD"
+        ],
+        "languages": {
+          "eng": "English",
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "1787",
+          "1939"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          125.75,
+          39.033
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".kp"
+        ],
+        "area": 120538,
+        "region": "Asia",
+        "name": "North Korea",
+        "capital": "Pyongyang",
+        "currency": [
+          "KPW"
+        ],
+        "languages": {
+          "kor": "Korean"
+        },
+        "callingCode": [
+          "850"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.183,
+          38.7
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".pt"
+        ],
+        "area": 92090,
+        "region": "Europe",
+        "name": "Portugal",
+        "capital": "Lisbon",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "por": "Portuguese"
+        },
+        "callingCode": [
+          "351"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          51.533,
+          25.283
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".qa",
+          "قطر."
+        ],
+        "area": 11586,
+        "region": "Asia",
+        "name": "Qatar",
+        "capital": "Doha",
+        "currency": [
+          "QAR"
+        ],
+        "languages": {
+          "ara": "Arabic"
+        },
+        "callingCode": [
+          "974"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          55.45,
+          -20.867
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".re"
+        ],
+        "area": 2511,
+        "region": "Africa",
+        "name": "Réunion",
+        "capital": "Saint-Denis",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "262"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.1,
+          44.433
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ro"
+        ],
+        "area": 238391,
+        "region": "Europe",
+        "name": "Romania",
+        "capital": "Bucharest",
+        "currency": [
+          "RON"
+        ],
+        "languages": {
+          "ron": "Romanian"
+        },
+        "callingCode": [
+          "40"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          37.6,
+          55.75
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ru",
+          ".su",
+          ".рф"
+        ],
+        "area": 17098242,
+        "region": "Europe",
+        "name": "Russia",
+        "capital": "Moscow",
+        "currency": [
+          "RUB"
+        ],
+        "languages": {
+          "rus": "Russian"
+        },
+        "callingCode": [
+          "7"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.05,
+          -1.933
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".rw"
+        ],
+        "area": 26338,
+        "region": "Africa",
+        "name": "Rwanda",
+        "capital": "Kigali",
+        "currency": [
+          "RWF"
+        ],
+        "languages": {
+          "eng": "English",
+          "fra": "French",
+          "kin": "Kinyarwanda"
+        },
+        "callingCode": [
+          "250"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          46.717,
+          24.7
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".sa",
+          ".السعودية"
+        ],
+        "area": 2149690,
+        "region": "Asia",
+        "name": "Saudi Arabia",
+        "capital": "Riyadh",
+        "currency": [
+          "SAR"
+        ],
+        "languages": {
+          "ara": "Arabic"
+        },
+        "callingCode": [
+          "966"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          32.533,
+          15.633
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".sd"
+        ],
+        "area": 1886068,
+        "region": "Africa",
+        "name": "Sudan",
+        "capital": "Khartoum",
+        "currency": [
+          "SDG"
+        ],
+        "languages": {
+          "ara": "Arabic",
+          "eng": "English"
+        },
+        "callingCode": [
+          "249"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -17.433,
+          14.683
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".sn"
+        ],
+        "area": 196722,
+        "region": "Africa",
+        "name": "Senegal",
+        "capital": "Dakar",
+        "currency": [
+          "XOF"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "221"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8,
+          1.367
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".sg",
+          ".新加坡",
+          ".சிங்கப்பூர்"
+        ],
+        "area": 710,
+        "region": "Asia",
+        "name": "Singapore",
+        "capital": "Singapore",
+        "currency": [
+          "SGD"
+        ],
+        "languages": {
+          "zho": "Chinese",
+          "eng": "English",
+          "msa": "Malay",
+          "tam": "Tamil"
+        },
+        "callingCode": [
+          "65"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.55,
+          78.217
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".sj"
+        ],
+        "area": -1,
+        "region": "Europe",
+        "name": "Svalbard and Jan Mayen",
+        "capital": "Longyearbyen",
+        "currency": [
+          "NOK"
+        ],
+        "languages": {
+          "nor": "Norwegian"
+        },
+        "callingCode": [
+          "4779"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          159.95,
+          -9.433
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".sb"
+        ],
+        "area": 28896,
+        "region": "Oceania",
+        "name": "Solomon Islands",
+        "capital": "Honiara",
+        "currency": [
+          "SBD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "677"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -13.267,
+          8.467
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".sl"
+        ],
+        "area": 71740,
+        "region": "Africa",
+        "name": "Sierra Leone",
+        "capital": "Freetown",
+        "currency": [
+          "SLL"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "232"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.183,
+          13.683
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".sv"
+        ],
+        "area": 21041,
+        "region": "Americas",
+        "name": "El Salvador",
+        "capital": "San Salvador",
+        "currency": [
+          "SVC",
+          "USD"
+        ],
+        "languages": {
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "503"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.433,
+          43.933
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".sm"
+        ],
+        "area": 61,
+        "region": "Europe",
+        "name": "San Marino",
+        "capital": "City of San Marino",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "ita": "Italian"
+        },
+        "callingCode": [
+          "378"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          45.35,
+          2.033
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".so"
+        ],
+        "area": 637657,
+        "region": "Africa",
+        "name": "Somalia",
+        "capital": "Mogadishu",
+        "currency": [
+          "SOS"
+        ],
+        "languages": {
+          "ara": "Arabic",
+          "som": "Somali"
+        },
+        "callingCode": [
+          "252"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -56.167,
+          46.767
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".pm"
+        ],
+        "area": 242,
+        "region": "Americas",
+        "name": "Saint Pierre and Miquelon",
+        "capital": "Saint-Pierre",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "508"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.45,
+          44.817
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".rs",
+          ".срб"
+        ],
+        "area": 88361,
+        "region": "Europe",
+        "name": "Serbia",
+        "capital": "Belgrade",
+        "currency": [
+          "RSD"
+        ],
+        "languages": {
+          "srp": "Serbian"
+        },
+        "callingCode": [
+          "381"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -55.167,
+          5.867
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".sr"
+        ],
+        "area": 163820,
+        "region": "Americas",
+        "name": "Suriname",
+        "capital": "Paramaribo",
+        "currency": [
+          "SRD"
+        ],
+        "languages": {
+          "nld": "Dutch"
+        },
+        "callingCode": [
+          "597"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.1,
+          48.133
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".sk"
+        ],
+        "area": 49037,
+        "region": "Europe",
+        "name": "Slovakia",
+        "capital": "Bratislava",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "slk": "Slovak"
+        },
+        "callingCode": [
+          "421"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.5,
+          46.067
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".si"
+        ],
+        "area": 20273,
+        "region": "Europe",
+        "name": "Slovenia",
+        "capital": "Ljubljana",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "slv": "Slovene"
+        },
+        "callingCode": [
+          "386"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.067,
+          59.35
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".se"
+        ],
+        "area": 450295,
+        "region": "Europe",
+        "name": "Sweden",
+        "capital": "Stockholm",
+        "currency": [
+          "SEK"
+        ],
+        "languages": {
+          "swe": "Swedish"
+        },
+        "callingCode": [
+          "46"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.2,
+          -26.467
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".sz"
+        ],
+        "area": 17364,
+        "region": "Africa",
+        "name": "Swaziland",
+        "capital": "Lobamba",
+        "currency": [
+          "SZL"
+        ],
+        "languages": {
+          "eng": "English",
+          "ssw": "Swazi"
+        },
+        "callingCode": [
+          "268"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          55.45,
+          -4.617
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".sc"
+        ],
+        "area": 452,
+        "region": "Africa",
+        "name": "Seychelles",
+        "capital": "Victoria",
+        "currency": [
+          "SCR"
+        ],
+        "languages": {
+          "crs": "Seychellois Creole",
+          "eng": "English",
+          "fra": "French"
+        },
+        "callingCode": [
+          "248"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          36.283,
+          33.5
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".sy",
+          "سوريا."
+        ],
+        "area": 185180,
+        "region": "Asia",
+        "name": "Syria",
+        "capital": "Damascus",
+        "currency": [
+          "SYP"
+        ],
+        "languages": {
+          "ara": "Arabic"
+        },
+        "callingCode": [
+          "963"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.133,
+          21.45
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".tc"
+        ],
+        "area": 948,
+        "region": "Americas",
+        "name": "Turks and Caicos Islands",
+        "capital": "Cockburn Town",
+        "currency": [
+          "USD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "1649"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.05,
+          12.1
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".td"
+        ],
+        "area": 1284000,
+        "region": "Africa",
+        "name": "Chad",
+        "capital": "N'Djamena",
+        "currency": [
+          "XAF"
+        ],
+        "languages": {
+          "ara": "Arabic",
+          "fra": "French"
+        },
+        "callingCode": [
+          "235"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.483,
+          13.75
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".th",
+          ".ไทย"
+        ],
+        "area": 513120,
+        "region": "Asia",
+        "name": "Thailand",
+        "capital": "Bangkok",
+        "currency": [
+          "THB"
+        ],
+        "languages": {
+          "tha": "Thai"
+        },
+        "callingCode": [
+          "66"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          68.767,
+          38.533
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".tj"
+        ],
+        "area": 143100,
+        "region": "Asia",
+        "name": "Tajikistan",
+        "capital": "Dushanbe",
+        "currency": [
+          "TJS"
+        ],
+        "languages": {
+          "rus": "Russian",
+          "tgk": "Tajik"
+        },
+        "callingCode": [
+          "992"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          58.333,
+          37.967
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".tm"
+        ],
+        "area": 488100,
+        "region": "Asia",
+        "name": "Turkmenistan",
+        "capital": "Ashgabat",
+        "currency": [
+          "TMT"
+        ],
+        "languages": {
+          "rus": "Russian",
+          "tuk": "Turkmen"
+        },
+        "callingCode": [
+          "993"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          125.583,
+          -8.55
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".tl"
+        ],
+        "area": 14874,
+        "region": "Asia",
+        "name": "Timor-Leste",
+        "capital": "Dili",
+        "currency": [
+          "USD"
+        ],
+        "languages": {
+          "por": "Portuguese",
+          "tet": "Tetum"
+        },
+        "callingCode": [
+          "670"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -61.517,
+          10.667
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".tt"
+        ],
+        "area": 5130,
+        "region": "Americas",
+        "name": "Trinidad and Tobago",
+        "capital": "Port of Spain",
+        "currency": [
+          "TTD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "1868"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.167,
+          36.8
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".tn"
+        ],
+        "area": 163610,
+        "region": "Africa",
+        "name": "Tunisia",
+        "capital": "Tunis",
+        "currency": [
+          "TND"
+        ],
+        "languages": {
+          "ara": "Arabic"
+        },
+        "callingCode": [
+          "216"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          32.833,
+          39.867
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".tr"
+        ],
+        "area": 783562,
+        "region": "Asia",
+        "name": "Turkey",
+        "capital": "Ankara",
+        "currency": [
+          "TRY"
+        ],
+        "languages": {
+          "tur": "Turkish"
+        },
+        "callingCode": [
+          "90"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          179.217,
+          -8.517
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".tv"
+        ],
+        "area": 26,
+        "region": "Oceania",
+        "name": "Tuvalu",
+        "capital": "Funafuti",
+        "currency": [
+          "AUD"
+        ],
+        "languages": {
+          "eng": "English",
+          "tvl": "Tuvaluan"
+        },
+        "callingCode": [
+          "688"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.633,
+          25.033
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".tw",
+          ".台湾",
+          ".台灣"
+        ],
+        "area": 36193,
+        "region": "Asia",
+        "name": "Taiwan",
+        "capital": "Taipei",
+        "currency": [
+          "TWD"
+        ],
+        "languages": {
+          "zho": "Chinese"
+        },
+        "callingCode": [
+          "886"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.733,
+          -6.167
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".tz"
+        ],
+        "area": 945087,
+        "region": "Africa",
+        "name": "Tanzania",
+        "capital": "Dodoma",
+        "currency": [
+          "TZS"
+        ],
+        "languages": {
+          "eng": "English",
+          "swa": "Swahili"
+        },
+        "callingCode": [
+          "255"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.517,
+          50.45
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ua",
+          ".укр"
+        ],
+        "area": 603500,
+        "region": "Europe",
+        "name": "Ukraine",
+        "capital": "Kiev",
+        "currency": [
+          "UAH"
+        ],
+        "languages": {
+          "rus": "Russian",
+          "ukr": "Ukrainian"
+        },
+        "callingCode": [
+          "380"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -56.167,
+          -34.917
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".uy"
+        ],
+        "area": 181034,
+        "region": "Americas",
+        "name": "Uruguay",
+        "capital": "Montevideo",
+        "currency": [
+          "UYI",
+          "UYU"
+        ],
+        "languages": {
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "598"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+            -77.009003,
+            38.889931
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".us"
+        ],
+        "area": 9372610,
+        "region": "Americas",
+        "name": "United States",
+        "capital": "Washington D.C.",
+        "currency": [
+          "USD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "1"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          69.217,
+          41.267
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".uz"
+        ],
+        "area": 447400,
+        "region": "Asia",
+        "name": "Uzbekistan",
+        "capital": "Tashkent",
+        "currency": [
+          "UZS"
+        ],
+        "languages": {
+          "rus": "Russian",
+          "uzb": "Uzbek"
+        },
+        "callingCode": [
+          "998"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.45,
+          41.9
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".va"
+        ],
+        "area": 0.44,
+        "region": "Europe",
+        "name": "Vatican City",
+        "capital": "Vatican City",
+        "currency": [
+          "EUR"
+        ],
+        "languages": {
+          "ita": "Italian",
+          "lat": "Latin"
+        },
+        "callingCode": [
+          "3906698",
+          "379"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -61.233,
+          13.167
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".vc"
+        ],
+        "area": 389,
+        "region": "Americas",
+        "name": "Saint Vincent and the Grenadines",
+        "capital": "Kingstown",
+        "currency": [
+          "XCD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "1784"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.917,
+          10.5
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ve"
+        ],
+        "area": 916445,
+        "region": "Americas",
+        "name": "Venezuela",
+        "capital": "Caracas",
+        "currency": [
+          "VEF"
+        ],
+        "languages": {
+          "spa": "Spanish"
+        },
+        "callingCode": [
+          "58"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -64.617,
+          18.433
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".vg"
+        ],
+        "area": 151,
+        "region": "Americas",
+        "name": "British Virgin Islands",
+        "capital": "Road Town",
+        "currency": [
+          "USD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "1284"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -64.95,
+          -18.35
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".vi"
+        ],
+        "area": 347,
+        "region": "Americas",
+        "name": "United States Virgin Islands",
+        "capital": "Charlotte Amalie",
+        "currency": [
+          "USD"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "1340"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.85,
+          21.033
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".vn"
+        ],
+        "area": 331212,
+        "region": "Asia",
+        "name": "Vietnam",
+        "capital": "Hanoi",
+        "currency": [
+          "VND"
+        ],
+        "languages": {
+          "vie": "Vietnamese"
+        },
+        "callingCode": [
+          "84"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          168.3,
+          -17.75
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".vu"
+        ],
+        "area": 12189,
+        "region": "Oceania",
+        "name": "Vanuatu",
+        "capital": "Port Vila",
+        "currency": [
+          "VUV"
+        ],
+        "languages": {
+          "bis": "Bislama",
+          "eng": "English",
+          "fra": "French"
+        },
+        "callingCode": [
+          "678"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          176.183,
+          -13.283
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".wf"
+        ],
+        "area": 142,
+        "region": "Oceania",
+        "name": "Wallis and Futuna",
+        "capital": "Mata-Utu",
+        "currency": [
+          "XPF"
+        ],
+        "languages": {
+          "fra": "French"
+        },
+        "callingCode": [
+          "681"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -171.833,
+          -13.833
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".ws"
+        ],
+        "area": 2842,
+        "region": "Oceania",
+        "name": "Samoa",
+        "capital": "Apia",
+        "currency": [
+          "WST"
+        ],
+        "languages": {
+          "eng": "English",
+          "smo": "Samoan"
+        },
+        "callingCode": [
+          "685"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.183,
+          -25.733
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".za"
+        ],
+        "area": 1221037,
+        "region": "Africa",
+        "name": "South Africa",
+        "capital": "Pretoria",
+        "currency": [
+          "ZAR"
+        ],
+        "languages": {
+          "afr": "Afrikaans",
+          "eng": "English",
+          "nbl": "Southern Ndebele",
+          "nso": "Northern Sotho",
+          "sot": "Southern Sotho",
+          "ssw": "Swazi",
+          "tsn": "Tswana",
+          "tso": "Tsonga",
+          "ven": "Venda",
+          "xho": "Xhosa",
+          "zul": "Zulu"
+        },
+        "callingCode": [
+          "27"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.283,
+          -15.417
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".zm"
+        ],
+        "area": 752612,
+        "region": "Africa",
+        "name": "Zambia",
+        "capital": "Lusaka",
+        "currency": [
+          "ZMW"
+        ],
+        "languages": {
+          "eng": "English"
+        },
+        "callingCode": [
+          "260"
+        ]
+      }
+    },
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.05,
+          -17.817
+        ]
+      },
+      "type": "Feature",
+      "properties": {
+        "tld": [
+          ".zw"
+        ],
+        "area": 390757,
+        "region": "Africa",
+        "name": "Zimbabwe",
+        "capital": "Harare",
+        "currency": [
+          "ZWL"
+        ],
+        "languages": {
+          "bwg": "Chibarwe",
+          "eng": "English",
+          "kck": "Kalanga",
+          "khi": "Khoisan",
+          "ndc": "Ndau",
+          "nde": "Northern Ndebele",
+          "nya": "Chewa",
+          "sna": "Shona",
+          "sot": "Sotho",
+          "toi": "Tonga",
+          "tsn": "Tswana",
+          "tso": "Tsonga",
+          "ven": "Venda",
+          "xho": "Xhosa",
+          "zib": "Zimbabwean Sign Language"
+        },
+        "callingCode": [
+          "263"
+        ]
+      }
+    }
+  ]
+}

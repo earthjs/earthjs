@@ -1,35 +1,53 @@
 export default urlDots => {
-    const _ = {dataDots: null};
+    /*eslint no-console: 0 */
+    const _ = {dataDots: null, radiusPath: null};
     const $ = {};
 
     function svgAddDots() {
         const __ = this._;
-        if (_.dataDots && __.options.showDots && !__.drag) {
-            __.svg.selectAll('.dot').remove();
-            if (_.dataDots && __.options.showDots) {
-                const circles = [];
-                _.circles.forEach(function(d) {
-                    circles.push(d.circle);
-                });
-                $.dots = __.svg.append('g').attr('class','dot').selectAll('path')
-                .data(circles).enter().append('path');
-                if (_.dataDots.geometry) {
-                    const _g = _.dataDots.geometry;
-                    _g.lineWidth   && $.dots.style('stroke-width', _g.lineWidth);
-                    _g.fillStyle   && $.dots.style('fill',         _g.fillStyle);
-                    _g.strokeStyle && $.dots.style('stroke',       _g.strokeStyle);
-                }
-                refresh.call(this);
+        _.svg.selectAll('.dot').remove();
+        if (_.dataDots && __.options.showDots) {
+            const circles = [];
+            _.circles.forEach(function(d) {
+                circles.push(d.circle);
+            });
+            $.dots = _.svg.append('g').attr('class','dot').selectAll('path')
+            .data(circles).enter().append('path');
+            if (_.dataDots.geometry) {
+                const _g = _.dataDots.geometry || {};
+                $.dots
+                .style('stroke-width', _g.lineWidth   || 0.2)
+                .style('fill',         _g.fillStyle   || 'rgba(100,0,0,.4)')
+                .style('stroke',       _g.strokeStyle || 'rgba(119,119,119,.4)');
             }
+            refresh.call(this);
         }
     }
 
     function refresh() {
         const __ = this._;
+        let coordinate, gdistance;
         if ($.dots && __.options.showDots) {
-            $.dots.attr('d', __.path).style('display', function(d) {
-                return d3.geoDistance(d.coordinates, __.proj.invert(__.center)) > 1.57 ? 'none' : 'inline';
-            });
+            const _g = _.dataDots.geometry || {};
+            if (__.options.transparent || __.options.transparentDots) {
+                __.proj.clipAngle(180);
+                $.dots.style('display', 'inline');
+                $.dots.style('fill', function(d, i) {
+                    coordinate = d.coordinates[0][i];
+                    gdistance = d3.geoDistance(coordinate, __.proj.invert(__.center));
+                    return  gdistance > 1.57 ? 'none' : (_g.fillStyle || 'rgba(100,0,0,.4)');
+                });
+                $.dots.attr('d', __.path);
+                __.proj.clipAngle(90);
+            } else {
+                $.dots.style('display', function(d, i) {
+                    coordinate = d.coordinates[0][i];
+                    gdistance = d3.geoDistance(coordinate, __.proj.invert(__.center));
+                    return  gdistance > 1.57 ? 'none' : 'inline';
+                });
+                $.dots.style('fill', _g.fillStyle   || 'rgba(100,0,0,.4)')
+                $.dots.attr('d', __.path);
+            }
         }
     }
 
@@ -52,20 +70,50 @@ export default urlDots => {
             this.dotsPlugin.data(dots);
         },
         onInit() {
-            this.$fn.svgAddDots = svgAddDots;
+            // this.$fn.svgAddDots = svgAddDots;
             this._.options.showDots = true;
+            _.svg = this._.svg;
+        },
+        onCreate() {
+            svgAddDots.call(this);
         },
         onRefresh() {
             refresh.call(this);
         },
+        radiusPath(path) {
+            _.radiusPath = path;
+        },
         data(data) {
             if (data) {
+                if (_.radiusPath) {
+                    const p = _.radiusPath.split('.');
+                    const x = data.features.map(d => {
+                        let v = d;
+                        p.forEach(o => v = v[o]);
+                        return v;
+                    }).sort();
+                    const scale = d3.scaleLinear()
+                        .domain([x[0], x.pop()])
+                        .range([0.5, 2]);
+                    data.features.forEach(d => {
+                        let v = d;
+                        p.forEach(o => v = v[o]);
+                        d.geometry.radius = scale(v);
+                    });
+                }
                 _.dataDots = data;
                 initData();
                 setTimeout(() => refresh.call(this),1);
             } else {
                 return _.dataDots;
             }
+        },
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
+            return _.svg;
         },
     }
 }

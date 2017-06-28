@@ -54,9 +54,13 @@ export default function() {
             const {options} = this._;
             options.showGlobeShading = true;
             options.showGlobeHilight = true;
-            this.$fn.svgAddGlobeHilight = svgAddGlobeHilight;
-            this.$fn.svgAddGlobeShading = svgAddGlobeShading;
+            // this.$fn.svgAddGlobeShading = svgAddGlobeShading;
+            // this.$fn.svgAddGlobeHilight = svgAddGlobeHilight;
             _.svg = this._.svg;
+        },
+        onCreate() {
+            svgAddGlobeShading.call(this);
+            svgAddGlobeHilight.call(this);
         },
         onResize() {
             const __ = this._;

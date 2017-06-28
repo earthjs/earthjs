@@ -25,22 +25,31 @@ export default () => {
             .attr("y", 0)
             .attr("width", __.options.width)
             .attr("height", __.options.height);
-            return _.canvas;
         }
+        if (_.canvas) {
+            refresh.call(this);
+        }
+    }
+
+    function refresh() {
+        const {width, height} = this._.options;
+        _.canvas.each(function() {
+            this.getContext("2d").clearRect(0, 0, width, height);
+        });
     }
 
     return {
         name: 'canvasPlugin',
         onInit() {
             this._.options.showCanvas = true;
-            this.$fn.svgAddCanvas = svgAddCanvas;
+            // this.$fn.svgAddCanvas = svgAddCanvas;
             _.path = d3.geoPath().projection(this._.proj);
         },
+        onCreate() {
+            svgAddCanvas.call(this);
+        },
         onRefresh() {
-            const {width, height} = this._.options;
-            _.canvas.each(function() {
-                this.getContext("2d").clearRect(0, 0, width, height);
-            });
+            refresh.call(this);
         },
         selectAll(q) {
             if (q) {

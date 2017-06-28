@@ -8,18 +8,14 @@
     <script type='text/javascript' src='../dist/earthjs.js'></script>
 </head>
 <body>
-    <svg id="earth"></svg>
+    <div class="set-options"></div>
+    <svg id="earth" class="ea-layer ea-1"></svg>
+    <canvas  class="canvas ea-layer ea-2"></canvas>
+    <canvas  class="canvas ea-layer ea-3"></canvas>
     <script>
         const g = earthjs();
-        g.register(earthjs.plugins.configPlugin());
-        g.register(earthjs.plugins.versorDragPlugin());
-        g.register(earthjs.plugins.oceanPlugin());
-        g.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
-        g.register(earthjs.plugins.countryTooltipPlugin());
-
-        g.ready(function(){
-            g.svgDraw();
-        })
+        g.register(earthjs.plugins.commonPlugins('./d/world-110m.json'));
+        g.ready(() => g.svgDraw());
     </script>
 </body>
 </html>

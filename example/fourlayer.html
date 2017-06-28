@@ -16,11 +16,12 @@
 </head>
 <body>
     <div class="input-area">
+        <input id="pan" type="range" min="0" max="400" step="1" value="0"/><br/>
         <input id="ocn" type="range" min="0" max="20" step="1" value="0"/><br/>
-        <input id="pan" type="range" min="0" max="50" step="1" value="0"/><br/>
-        <input id="tog" type="range" min="0" max="1"  step="1" value="0"/>
+        <input id="tg1" type="checkbox"/><label for="tg1">Swap Canvas</label><br/>
+        <input id="tg2" type="checkbox"/><label for="tg2">Swap SVG</label>
     </div>
-    <svg id="earth"></svg>
+    <svg id="earth" class="x0"></svg>
     <canvas class="canvas x1"></canvas>
     <canvas class="canvas x2"></canvas>
     <svg class="noclicks earth x3" width="700" height="500"></svg>
@@ -67,14 +68,27 @@
         d3.select('#ocn').on('input', function() {
             g.oceanPlugin.scale(-this.value);
         })
-        d3.select('#tog').on('input', function() {
-            if (this.value=='0') {
+        d3.select('#tg1').on('click', function() {
+            if (this.checked) {
                 g.graticuleCanvas.drawTo([0]);
                 g.worldCanvas.drawTo([1]);
             } else {
                 g.graticuleCanvas.drawTo([1]);
                 g.worldCanvas.drawTo([0]);
             }
+        })
+        d3.select('#tg2').on('click', function() {
+            if (this.checked) {
+                g.oceanPlugin.selectAll('.x3');
+                g.fauxGlobePlugin.selectAll('.x0');
+                g.barPlugin.selectAll('.x0');
+            } else {
+                g.oceanPlugin.selectAll('.x0');
+                g.fauxGlobePlugin.selectAll('.x3');
+                g.barPlugin.selectAll('.x3');
+            }
+            d3.selectAll('svg g').remove();
+            g.svgDraw();
         })
     </script>
 </body>

@@ -1,7 +1,7 @@
 body {
     margin: 0;
 }
-#earth, #three-js, .earth, .canvas, .top {
+#earth, .earth, #three-js, .earth, .canvas, .top {
     position: absolute;
     left: 0;
     top: 0;
@@ -12,7 +12,7 @@ body {
 #earth {
     z-index: 2;
 }
-.canvas, .top {
+.earth, .canvas, .top {
     /*position: relative;*/
     z-index: 3;
 }
@@ -59,7 +59,7 @@ body {
     fill: black;
     opacity: .5;
 }
-.noclicks {
+.earth, .noclicks {
     pointer-events:none;
 }
 .point{
@@ -67,7 +67,8 @@ body {
     fill: #A80;
 }
 .countryTooltip,
-.barTooltip {
+.barTooltip,
+.dotTooltip {
     background: #fff;
     border: solid #ccc 1px;
     color: #666;
@@ -80,8 +81,12 @@ body {
     text-align: left;
     z-index: 3;
 }
-.set-options {
+.set-options, .set-options2 {
+    display: inline-block;
     position: absolute;
     z-index: 999;
     /*top: 25px;*/
+}
+.set-options2 {
+    z-index: 998;
 }

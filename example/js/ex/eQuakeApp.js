@@ -26,23 +26,25 @@ const eQuakeApp = () => {
                     strokeStyle: 'rgba(100,0,0,.6)'
                 }
             }
+            this._.options.showLakes = false;
+            this._.options.showCountries = false;
             this.worldCanvas.data({world, countryNames});
-            this.countrySelectCanvas.world(world);
+            this.hoverCanvas.world(world);
             this.barPlugin.data(dataMssg);
             this.dotsCanvas.data(dataMssg);
             this.pingsCanvas.data(dataMssg);
         },
         onInit() {
             this.register(earthjs.plugins.commonPlugins());
+            this.register(earthjs.plugins.hoverCanvas());
             this.register(earthjs.plugins.pingsCanvas());
             this.register(earthjs.plugins.dotsCanvas());
             this.register(earthjs.plugins.barPlugin());
             this.register(earthjs.plugins.barTooltipPlugin());
-            this.register(earthjs.plugins.countrySelectCanvas());
             this.register(earthjs.plugins.countryTooltipCanvas());
-            this.commonPlugins.addChecker('showPings:Pings:showPings'.split(':'));
-            this.commonPlugins.addChecker('showBars:Bars:showBars'.split(':'));
-            this.commonPlugins.addChecker('showDots:Dots:showDots'.split(':'));
+            this.commonPlugins.addChecker(':Pings:showPings'.split(':'));
+            this.commonPlugins.addChecker(':Bars:showBars'.split(':'));
+            this.commonPlugins.addChecker(':Dots:showDots'.split(':'));
             const tt = this.barTooltipPlugin;
             this.barTooltipPlugin.onShow = function(d) {
                 const {mag, tsunami, eventtime, place, detail} = d.properties;
