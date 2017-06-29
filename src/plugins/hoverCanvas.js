@@ -46,10 +46,12 @@ export default function() {
             _.dot = null;
             _.mouse = mouse;
             _.country = null;
-            _.addSelectCircleEventKeys.forEach(k => {
-                _.dot = _.addSelectCircleEvent[k].call(this, _.mouse, pos);
-            });
-            if (_.countries && !_.dot) {
+            if (__.options.showDots) {
+                _.addSelectCircleEventKeys.forEach(k => {
+                    _.dot = _.addSelectCircleEvent[k].call(this, _.mouse, pos);
+                });
+            }
+            if (__options.showLand && _.countries && !_.dot) {
                 _.country = _.countries.features.find(function(f) {
                     return f.geometry.coordinates.find(function(c1) {
                         return polygonContains(c1, pos) || c1.find(function(c2) {
