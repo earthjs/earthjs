@@ -2,12 +2,12 @@
 export default (urlWorld, urlCountryNames) => {
     /*eslint no-console: 0 */
     const color = {
-        0:'rgba(117, 87, 57, 0.4)',
-        1:'rgba(138, 96, 56, 0.4)',
-        2:'rgba(140,104, 63, 0.4)',
-        3:'rgba(149,114, 74, 0.4)',
-        4:'rgba(153,126, 87, 0.4)',
-        5:'rgba(155,141,115, 0.4)'}
+        0:'rgba(117, 87, 57, 0.6)',
+        1:'rgba(138, 96, 56, 0.6)',
+        2:'rgba(140,104, 63, 0.6)',
+        3:'rgba(149,114, 74, 0.6)',
+        4:'rgba(153,126, 87, 0.6)',
+        5:'rgba(155,141,115, 0.6)'}
     const _ = {world: null, countryNames: null, style: {}, drawTo: null, options: {}, landColor: 0};
 
     function canvasAddWorldOrCountries() {
