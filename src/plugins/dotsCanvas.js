@@ -83,7 +83,6 @@ export default urlJson => {
             this.dotsCanvas.data(json);
         },
         onInit() {
-            // this.$fn.canvasAddDots = canvasAddDots;
             initCircleHandler.call(this);
             this._.options.transparentDots = false;
             this._.options.showDots = true;

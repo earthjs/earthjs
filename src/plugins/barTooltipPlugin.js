@@ -1,6 +1,5 @@
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 export default function() {
-    /*eslint no-debugger: 0 */
     /*eslint no-console: 0 */
     const _ = { mouseXY: [0,0], visible: false }
     const barTooltip = d3.select("body").append("div").attr("class", "barTooltip");
@@ -45,7 +44,6 @@ export default function() {
     return {
         name: 'barTooltipPlugin',
         onInit() {
-            // this.$fn.addBarTooltip = addBarTooltip;
             this._.options.showBarTooltip = true;
         },
         onCreate() {

@@ -70,7 +70,6 @@ export default urlDots => {
             this.dotsPlugin.data(dots);
         },
         onInit() {
-            // this.$fn.svgAddDots = svgAddDots;
             this._.options.showDots = true;
             _.svg = this._.svg;
         },

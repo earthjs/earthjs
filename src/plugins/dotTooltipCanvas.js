@@ -5,7 +5,6 @@ export default () => {
     return {
         name: 'dotTooltipCanvas',
         onInit() {
-            // this.$fn.canvasAddDots = canvasAddDots;
             const dotHandler = (mouse, d) => {
                 if (d) {
                     if (this.dotTooltipCanvas.onShow) {

@@ -82,7 +82,6 @@ export default function(urlWorld, urlCountryNames) {
             options.showLakes = true;
             options.showCountries = true;
             options.transparentLand = false;
-            // this.$fn.svgAddWorldOrCountries = svgAddWorldOrCountries;
             _.svgAddCountries = svgAddCountries;
             _.svgAddWorldBg = svgAddWorldBg;
             _.svgAddLakes = svgAddLakes;

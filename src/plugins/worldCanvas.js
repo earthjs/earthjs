@@ -1,6 +1,5 @@
 // John J Czaplewski’s Block http://bl.ocks.org/jczaplew/6798471
 export default (urlWorld, urlCountryNames) => {
-    /*eslint no-debugger: 0 */
     /*eslint no-console: 0 */
     const color = {
         0:'rgba(117, 87, 57, 0.4)',
@@ -98,7 +97,6 @@ export default (urlWorld, urlCountryNames) => {
             options.transparentLand = false;
             options.showCountrySelected = true;
             options.landColor = 0;
-            // this.$fn.canvasAddWorldOrCountries = canvasAddWorldOrCountries;
         },
         onCreate() {
             canvasAddWorldOrCountries.call(this);

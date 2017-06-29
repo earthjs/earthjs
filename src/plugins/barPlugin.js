@@ -75,7 +75,6 @@ export default urlBars => {
         },
         onInit() {
             const __ = this._;
-            // this.$fn.svgAddBar = svgAddBar;
             __.options.showBars = true;
             _.barProjection = __.orthoGraphic();
             _.svg = __.svg;

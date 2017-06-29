@@ -39,7 +39,6 @@ export default function() {
         onInit() {
             const {options} = this._;
             options.showDropShadow  = true;
-            // this.$fn.svgAddDropShadow = svgAddDropShadow;
             _.svg = this._.svg;
         },
         onCreate() {

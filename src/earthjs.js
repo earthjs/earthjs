@@ -22,26 +22,6 @@ const earthjs = (options={}) => {
         onInterval: {},
         onIntervalKeys: [],
 
-        // renderOrder: [
-        //     'renderThree',
-        //     'svgAddDropShadow',
-        //     'svgAddCanvas',
-        //     'canvasAddGraticule',
-        //     'canvasAddWorldOrCountries',
-        //     'canvasAddDots',
-        //     'svgAddOcean',
-        //     'svgAddGlobeShading',
-        //     'svgAddGraticule',
-        //     'svgAddWorldOrCountries',
-        //     'svgAddGlobeHilight',
-        //     'svgAddPlaces',
-        //     'svgAddPings',
-        //     'svgAddDots',
-        //     'svgAddBar',
-        //     'addBarTooltip',
-        //     'addCountryTooltip',
-        //     'addCountryCenteroid',
-        // ],
         ready: null,
         promeses: [],
         loadingData: null,
@@ -84,7 +64,6 @@ const earthjs = (options={}) => {
             center,
             options,
         },
-        // $fn: {},
         $slc: {},
         ready(fn) {
             if (fn && _.promeses.length>0) {
@@ -165,11 +144,7 @@ const earthjs = (options={}) => {
     const __ = globe._;
 
     globe.svgDraw = function(twinEarth) {
-        // const $fn = globe.$fn;
         earths = twinEarth || [];
-        // _.renderOrder.forEach(function(renderer) {
-        //     $fn[renderer] && $fn[renderer].call(globe);
-        // });
         _.recreateSvgOrCanvas();
         earths.forEach(function(p) {
             p.svgDraw(null);
@@ -239,12 +214,6 @@ const earthjs = (options={}) => {
             .precision(0.1)
             .clipAngle(90);
     }
-
-    // __.addRenderer = function(name) {
-    //     if (_.renderOrder.indexOf(name)<0) {
-    //         _.renderOrder.push(name);
-    //     }
-    // }
 
     __.proj = __.orthoGraphic();
     __.path = d3.geoPath().projection(__.proj);

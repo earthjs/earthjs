@@ -41,7 +41,6 @@ export default function() {
     return {
         name: 'countryTooltipPlugin',
         onInit() {
-            // this.$fn.addCountryTooltip = addCountryTooltip;
             this._.options.showCountryTooltip = true;
         },
         onCreate() {

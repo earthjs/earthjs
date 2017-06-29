@@ -1,6 +1,5 @@
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 export default function() {
-    /*eslint no-debugger: 0 */
     /*eslint no-console: 0 */
     const _ = {countries: null, country: null, mouse: null, onHover: {}, onHoverKeys: []};
 

@@ -42,7 +42,6 @@ export default () => {
         name: 'canvasPlugin',
         onInit() {
             this._.options.showCanvas = true;
-            // this.$fn.svgAddCanvas = svgAddCanvas;
             _.path = d3.geoPath().projection(this._.proj);
         },
         onCreate() {

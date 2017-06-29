@@ -41,7 +41,6 @@ export default () => {
     return {
         name: 'centerPlugin',
         onInit() {
-            // this.$fn.addCountryCenteroid = addCountryCenteroid;
             this._.options.enableCenter = true;
         },
         onCreate() {

@@ -33,7 +33,9 @@
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-eslint": "^3.0.0",
     "tape": "^4.6.3",
-    "uglify-js": "github:mishoo/UglifyJS2#harmony"
+    "uglify-es": "github:mishoo/UglifyJS2#harmony",
+    "uglify-js": "github:mishoo/UglifyJS2#harmony",
+    "uglifyjs": "^2.4.11"
   },
   "dependencies": {
     "d3": "^4.8.0",
