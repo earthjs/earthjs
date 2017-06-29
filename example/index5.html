@@ -34,8 +34,8 @@
             g.barPlugin.data(data);
             g.dotsPlugin.data(data);
         }
-        g.barPlugin.selectAll('.ea-1');
-        g.dotsPlugin.selectAll('.ea-4');
+        g.barPlugin.selectAll('.ea-4');
+        g.dotsPlugin.selectAll('.ea-1');
         g.commonPlugins.addChecker(':Bars:showBars'.split(':'))
         g.commonPlugins.addChecker(':Dots:showDots'.split(':'))
         g.register(earthjs.plugins.dotsCanvas('./d/cities.geojson'));
