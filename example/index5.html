@@ -39,7 +39,7 @@
         g.commonPlugins.addChecker(':Bars:showBars'.split(':'))
         g.commonPlugins.addChecker(':Dots:showDots'.split(':'))
         g.register(earthjs.plugins.dotsCanvas('./d/cities.geojson'));
-        g.dotsCanvas.drawTo([0]);
+        g.dotsCanvas.drawTo([1]);
         g.dotsCanvas.ready = function(err, data) {
             // const features = data.features.filter(d => d.properties.population>=3500000);
             const features = data.features;
