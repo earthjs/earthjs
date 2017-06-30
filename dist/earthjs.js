@@ -2331,8 +2331,8 @@ var commonPlugins = (function (urlWorld, urlCountryNames) {
         this._.options.oceanColor = 2;
         this._.options.transparent = true;
         this.canvasPlugin.selectAll('.canvas');
-        this.graticuleCanvas.drawTo([0]);
-        this.worldCanvas.drawTo([1]);
+        this.graticuleCanvas.drawTo([1]);
+        this.worldCanvas.drawTo([0]);
 
         _.options = this.configPlugin.set();
         _.buttonClick = function (str) {
