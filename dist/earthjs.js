@@ -1754,6 +1754,7 @@ var barPlugin = (function (urlBars) {
 
     function create() {
         var __ = this._;
+        svgClipPath.call(this);
         _.svg.selectAll('.bar').remove();
         if (_.bars && __.options.showBars) {
             var gBar = _.svg.append("g").attr("class", "bar");
@@ -1810,7 +1811,6 @@ var barPlugin = (function (urlBars) {
             __.options.showBars = true;
             _.barProjection = __.orthoGraphic();
             _.svg = __.svg;
-            svgClipPath.call(this);
         },
         onCreate: function onCreate() {
             create.call(this);
@@ -1820,7 +1820,6 @@ var barPlugin = (function (urlBars) {
             refresh.call(this);
         },
         onResize: function onResize() {
-            svgClipPath.call(this);
             create.call(this);
         },
         selectAll: function selectAll(q) {

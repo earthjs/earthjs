@@ -5,6 +5,7 @@ export default urlBars => {
 
     function create() {
         const __ = this._;
+        svgClipPath.call(this);
         _.svg.selectAll('.bar').remove();
         if (_.bars && __.options.showBars) {
             const gBar = _.svg.append("g").attr("class","bar");
@@ -78,7 +79,6 @@ export default urlBars => {
             __.options.showBars = true;
             _.barProjection = __.orthoGraphic();
             _.svg = __.svg;
-            svgClipPath.call(this);
         },
         onCreate() {
             create.call(this);
@@ -88,7 +88,6 @@ export default urlBars => {
             refresh.call(this);
         },
         onResize() {
-            svgClipPath.call(this);
             create.call(this);
         },
         selectAll(q) {
