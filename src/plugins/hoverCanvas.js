@@ -11,22 +11,6 @@ export default function() {
         addSelectCountryEventKeys: []
     }
 
-    // https://github.com/d3/d3-polygon
-    function polygonContains(polygon, point) {
-        var n = polygon.length
-        var p = polygon[n - 1]
-        var x = point[0], y = point[1]
-        var x0 = p[0], y0 = p[1]
-        var x1, y1
-        var inside = false
-        for (var i = 0; i < n; ++i) {
-            p = polygon[i], x1 = p[0], y1 = p[1]
-            if (((y1 > y) !== (y0 > y)) && (x < (x0 - x1) * (y - y1) / (y0 - y1) + x1)) inside = !inside
-            x0 = x1, y0 = y1
-        }
-        return inside
-    }
-
     function initMouseMoveHandler() {
         if (this.worldCanvas) {
             const {world} = this.worldCanvas.data();
@@ -54,8 +38,8 @@ export default function() {
             if (__.options.showLand && _.countries && !_.dot) {
                 _.country = _.countries.features.find(function(f) {
                     return f.geometry.coordinates.find(function(c1) {
-                        return polygonContains(c1, pos) || c1.find(function(c2) {
-                            return polygonContains(c2, pos)
+                        return d3.polygonContains(c1, pos) || c1.find(function(c2) {
+                            return d3.polygonContains(c2, pos)
                         })
                     })
                 });
