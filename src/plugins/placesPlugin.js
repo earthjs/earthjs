@@ -2,7 +2,7 @@ export default function(urlPlaces) {
     const _ = {svg:null, q: null, places: null};
     const $ = {};
 
-    function svgAddPlaces() {
+    function create() {
         _.svg.selectAll('.points,.labels').remove();
         if (_.places) {
             if (this._.options.showPlaces) {
@@ -63,12 +63,11 @@ export default function(urlPlaces) {
             _.places = places;
         },
         onInit() {
-            // this.$fn.svgAddPlaces = svgAddPlaces;
             this._.options.showPlaces = true;
             _.svg = this._.svg;
         },
         onCreate() {
-            svgAddPlaces.call(this);
+            create.call(this);
         },
         onRefresh() {
             refresh.call(this);

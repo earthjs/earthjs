@@ -21,7 +21,7 @@ export default () => {
         })
     }
 
-    function addCountryCenteroid() {
+    function create() {
         const _this = this;
         this.worldPlugin.$countries()
         .on("click", function() {
@@ -44,7 +44,7 @@ export default () => {
             this._.options.enableCenter = true;
         },
         onCreate() {
-            addCountryCenteroid.call(this);
+            create.call(this);
         },
         go(id) {
             const c = this.worldPlugin.countries();

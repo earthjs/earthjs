@@ -10,7 +10,7 @@ export default (urlWorld, urlCountryNames) => {
         5:'rgba(155,141,115, 0.6)'}
     const _ = {world: null, countryNames: null, style: {}, drawTo: null, options: {}, landColor: 0};
 
-    function canvasAddWorldOrCountries() {
+    function create() {
         const __ = this._;
         if (_.world && __.options.showLand) {
             if (__.options.transparent || __.options.transparentLand) {
@@ -99,7 +99,7 @@ export default (urlWorld, urlCountryNames) => {
             options.landColor = 0;
         },
         onCreate() {
-            canvasAddWorldOrCountries.call(this);
+            create.call(this);
             if (this.hoverCanvas) {
                 const worldCanvas = () => {
                     if (!this._.options.spin) {
@@ -110,7 +110,7 @@ export default (urlWorld, urlCountryNames) => {
             }
         },
         onRefresh() {
-            canvasAddWorldOrCountries.call(this);
+            create.call(this);
         },
         data(data) {
             if (data) {

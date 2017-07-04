@@ -3,7 +3,7 @@ export default function(urlWorld, urlCountryNames) {
     const _ = {svg:null, q: null, world: null, countryNames: null};
     const $ = {};
 
-    function svgAddWorldOrCountries() {
+    function create() {
         const __ = this._;
         _.svg.selectAll('.landbg,.land,.lakes,.countries').remove();
         if (__.options.showLand) {
@@ -89,7 +89,7 @@ export default function(urlWorld, urlCountryNames) {
             _.svg = __.svg;
         },
         onCreate() {
-            svgAddWorldOrCountries.call(this);
+            create.call(this);
         },
         onRefresh() {
             refresh.call(this);

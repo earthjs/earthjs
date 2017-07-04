@@ -3,7 +3,7 @@ export default urlDots => {
     const _ = {dataDots: null, radiusPath: null};
     const $ = {};
 
-    function svgAddDots() {
+    function create() {
         const __ = this._;
         _.svg.selectAll('.dot').remove();
         if (_.dataDots && __.options.showDots) {
@@ -74,7 +74,7 @@ export default urlDots => {
             _.svg = this._.svg;
         },
         onCreate() {
-            svgAddDots.call(this);
+            create.call(this);
         },
         onRefresh() {
             refresh.call(this);

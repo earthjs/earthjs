@@ -4,7 +4,7 @@ export default function() {
     const _ = {svg:null, q: null};
     const $ = {};
 
-    function svgAddDropShadow() {
+    function create() {
         const __ = this._;
         _.svg.selectAll('#drop_shadow,.drop_shadow').remove();
         if (__.options.showDropShadow) {
@@ -42,7 +42,7 @@ export default function() {
             _.svg = this._.svg;
         },
         onCreate() {
-            svgAddDropShadow.call(this);
+            create.call(this);
         },
         onResize() {
             if ($.dropShadow && this._.options.showDropShadow) {

@@ -3,7 +3,7 @@ export default function() {
     const _ = {svg:null, dataPings: null};
     const $ = {};
 
-    function svgAddPings() {
+    function create() {
         _.svg.selectAll('.pings').remove();
         if (_.dataPings && this._.options.showPings) {
             const g = _.svg.append("g").attr("class","pings");
@@ -57,7 +57,7 @@ export default function() {
             _.svg = this._.svg;
         },
         onCreate() {
-            svgAddPings.call(this);
+            create.call(this);
         },
         onRefresh() {
             refresh.call(this);

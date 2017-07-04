@@ -2,7 +2,7 @@ export default function() {
     const datumGraticule = d3.geoGraticule()();
     const _ = {style: {}, drawTo: null};
 
-    function canvasAddGraticule() {
+    function create() {
         const __ = this._;
         if (__.options.showGraticule) {
             if (__.options.transparent || __.options.transparentGraticule) {
@@ -28,10 +28,10 @@ export default function() {
             this._.options.showGraticule = true;
         },
         onCreate() {
-            canvasAddGraticule.call(this);
+            create.call(this);
         },
         onRefresh() {
-            canvasAddGraticule.call(this);
+            create.call(this);
         },
         style(s) {
             if (s) {

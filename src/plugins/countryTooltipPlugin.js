@@ -4,7 +4,7 @@ export default function() {
     const _ = {show: false};
     const countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
 
-    function addCountryTooltip() {
+    function create() {
         const _this = this;
         this.worldPlugin.$countries()
         .on("mouseover", function(d) {
@@ -44,7 +44,7 @@ export default function() {
             this._.options.showCountryTooltip = true;
         },
         onCreate() {
-            addCountryTooltip.call(this);
+            create.call(this);
         },
         onRefresh() {
             if (this._.drag && _.show) {

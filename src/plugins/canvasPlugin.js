@@ -3,7 +3,7 @@ export default () => {
     /*eslint no-console: 0 */
     const _ = {canvas: null, path: null, q: null}
 
-    function svgAddCanvas() {
+    function create() {
         const __ = this._;
         if (__.options.showCanvas) {
             if (!_.canvas) {
@@ -45,7 +45,7 @@ export default () => {
             _.path = d3.geoPath().projection(this._.proj);
         },
         onCreate() {
-            svgAddCanvas.call(this);
+            create.call(this);
         },
         onRefresh() {
             refresh.call(this);

@@ -4,7 +4,7 @@ export default function() {
     const _ = { mouseXY: [0,0], visible: false }
     const barTooltip = d3.select("body").append("div").attr("class", "barTooltip");
 
-    function addBarTooltip() {
+    function create() {
         const _this = this;
         this.barPlugin.$bar()
         .on("mouseover", function() {
@@ -47,10 +47,10 @@ export default function() {
             this._.options.showBarTooltip = true;
         },
         onCreate() {
-            addBarTooltip.call(this);
+            create.call(this);
         },
         onResize() {
-            addBarTooltip.call(this);
+            create.call(this);
             barTooltip.style("opacity", 0)
             .style("display", "none");
         },

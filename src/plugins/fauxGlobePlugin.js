@@ -4,6 +4,11 @@ export default function() {
     const _ = {svg:null, q: null};
     const $ = {};
 
+    function create() {
+        svgAddGlobeShading.call(this);
+        svgAddGlobeHilight.call(this);
+    }
+
     function svgAddGlobeShading() {
         const __ = this._;
         _.svg.selectAll('#shading,.shading').remove();
@@ -57,8 +62,7 @@ export default function() {
             _.svg = this._.svg;
         },
         onCreate() {
-            svgAddGlobeShading.call(this);
-            svgAddGlobeHilight.call(this);
+            create.call(this);
         },
         onResize() {
             const __ = this._;

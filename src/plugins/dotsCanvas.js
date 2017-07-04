@@ -2,7 +2,7 @@ export default urlJson => {
     /*eslint no-console: 0 */
     const _ = {dataDots: null, circles: [], radiusPath: null, onDot: {}, onDotKeys: []};
 
-    function canvasAddDots() {
+    function create() {
         if (_.dataDots && this._.options.showDots) {
             const __ = this._;
             const proj = this._.proj;
@@ -88,10 +88,10 @@ export default urlJson => {
             this._.options.showDots = true;
         },
         onCreate() {
-            canvasAddDots.call(this);
+            create.call(this);
         },
         onRefresh() {
-            canvasAddDots.call(this);
+            create.call(this);
         },
         radiusPath(path) {
             _.radiusPath = path;
@@ -116,7 +116,7 @@ export default urlJson => {
                 }
                 _.dataDots = data;
                 initData();
-                setTimeout(() => canvasAddDots.call(this),1);
+                setTimeout(() => create.call(this),1);
             } else {
                 return _.dataDots;
             }

@@ -3,7 +3,7 @@ export default urlBars => {
     const _ = {svg:null, barProjection: null, q: null, bars: null, valuePath: null};
     const $ = {};
 
-    function svgAddBar() {
+    function create() {
         const __ = this._;
         _.svg.selectAll('.bar').remove();
         if (_.bars && __.options.showBars) {
@@ -81,7 +81,7 @@ export default urlBars => {
             svgClipPath.call(this);
         },
         onCreate() {
-            svgAddBar.call(this);
+            create.call(this);
         },
         onRefresh() {
             _.barProjection.rotate(this._.proj.rotate());
@@ -89,7 +89,7 @@ export default urlBars => {
         },
         onResize() {
             svgClipPath.call(this);
-            svgAddBar.call(this);
+            create.call(this);
         },
         selectAll(q) {
             if (q) {

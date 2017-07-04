@@ -463,7 +463,7 @@ var canvasPlugin = (function () {
     /*eslint no-console: 0 */
     var _ = { canvas: null, path: null, q: null };
 
-    function svgAddCanvas() {
+    function create() {
         var __ = this._;
         if (__.options.showCanvas) {
             if (!_.canvas) {
@@ -495,7 +495,7 @@ var canvasPlugin = (function () {
             _.path = d3.geoPath().projection(this._.proj);
         },
         onCreate: function onCreate() {
-            svgAddCanvas.call(this);
+            create.call(this);
         },
         onRefresh: function onRefresh() {
             refresh.call(this);
@@ -655,7 +655,7 @@ var oceanPlugin = function () {
         5: ['rgba( 87, 102, 131, 0.6)', 'rgba(  8,  52, 140,0.8)'] };
     var _ = { svg: null, q: null, scale: 0, oceanColor: 0 };
 
-    function svgAddOcean() {
+    function create() {
         _.svg.selectAll('#ocean,.ocean').remove();
         if (this._.options.showOcean) {
             var c = _.oceanColor;
@@ -681,7 +681,6 @@ var oceanPlugin = function () {
     return {
         name: 'oceanPlugin',
         onInit: function onInit() {
-            // this.$fn.svgAddOcean = svgAddOcean;
             this._.options.showOcean = true;
             Object.defineProperty(this._.options, 'oceanColor', {
                 get: function get() {
@@ -694,7 +693,7 @@ var oceanPlugin = function () {
             _.svg = this._.svg;
         },
         onCreate: function onCreate() {
-            svgAddOcean.call(this);
+            create.call(this);
         },
         onResize: function onResize() {
             resize.call(this);
@@ -715,7 +714,7 @@ var oceanPlugin = function () {
             }
         },
         recreate: function recreate() {
-            svgAddOcean.call(this);
+            create.call(this);
         }
     };
 };
@@ -741,7 +740,7 @@ var graticuleCanvas = function () {
     var datumGraticule = d3.geoGraticule()();
     var _ = { style: {}, drawTo: null };
 
-    function canvasAddGraticule() {
+    function create() {
         var __ = this._;
         if (__.options.showGraticule) {
             if (__.options.transparent || __.options.transparentGraticule) {
@@ -767,10 +766,10 @@ var graticuleCanvas = function () {
             this._.options.showGraticule = true;
         },
         onCreate: function onCreate() {
-            canvasAddGraticule.call(this);
+            create.call(this);
         },
         onRefresh: function onRefresh() {
-            canvasAddGraticule.call(this);
+            create.call(this);
         },
         style: function style(s) {
             if (s) {
@@ -788,7 +787,7 @@ var graticulePlugin = function () {
     var _ = { svg: null, q: null, graticule: d3.geoGraticule() };
     var $ = {};
 
-    function svgAddGraticule() {
+    function create() {
         _.svg.selectAll('.graticule').remove();
         if (this._.options.showGraticule) {
             $.graticule = _.svg.append("g").attr("class", "graticule").append("path").datum(_.graticule).attr("class", "noclicks");
@@ -816,7 +815,7 @@ var graticulePlugin = function () {
             _.svg = this._.svg;
         },
         onCreate: function onCreate() {
-            svgAddGraticule.call(this);
+            create.call(this);
         },
         onRefresh: function onRefresh() {
             refresh.call(this);
@@ -837,7 +836,7 @@ var dropShadowPlugin = function () {
     var _ = { svg: null, q: null };
     var $ = {};
 
-    function svgAddDropShadow() {
+    function create() {
         var __ = this._;
         _.svg.selectAll('#drop_shadow,.drop_shadow').remove();
         if (__.options.showDropShadow) {
@@ -863,7 +862,7 @@ var dropShadowPlugin = function () {
             _.svg = this._.svg;
         },
         onCreate: function onCreate() {
-            svgAddDropShadow.call(this);
+            create.call(this);
         },
         onResize: function onResize() {
             if ($.dropShadow && this._.options.showDropShadow) {
@@ -885,6 +884,11 @@ var fauxGlobePlugin = function () {
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null };
     var $ = {};
+
+    function create() {
+        svgAddGlobeShading.call(this);
+        svgAddGlobeHilight.call(this);
+    }
 
     function svgAddGlobeShading() {
         var __ = this._;
@@ -918,8 +922,7 @@ var fauxGlobePlugin = function () {
             _.svg = this._.svg;
         },
         onCreate: function onCreate() {
-            svgAddGlobeShading.call(this);
-            svgAddGlobeHilight.call(this);
+            create.call(this);
         },
         onResize: function onResize() {
             var __ = this._;
@@ -1078,7 +1081,7 @@ var countryTooltipPlugin = function () {
     var _ = { show: false };
     var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
 
-    function addCountryTooltip() {
+    function create() {
         var _this = this;
         this.worldPlugin.$countries().on("mouseover", function (d) {
             if (_this._.options.showCountryTooltip) {
@@ -1109,7 +1112,7 @@ var countryTooltipPlugin = function () {
             this._.options.showCountryTooltip = true;
         },
         onCreate: function onCreate() {
-            addCountryTooltip.call(this);
+            create.call(this);
         },
         onRefresh: function onRefresh() {
             if (this._.drag && _.show) {
@@ -1125,7 +1128,7 @@ var barTooltipPlugin = function () {
     var _ = { mouseXY: [0, 0], visible: false };
     var barTooltip = d3.select("body").append("div").attr("class", "barTooltip");
 
-    function addBarTooltip() {
+    function create() {
         var _this = this;
         this.barPlugin.$bar().on("mouseover", function () {
             if (_this._.options.showBarTooltip) {
@@ -1160,10 +1163,10 @@ var barTooltipPlugin = function () {
             this._.options.showBarTooltip = true;
         },
         onCreate: function onCreate() {
-            addBarTooltip.call(this);
+            create.call(this);
         },
         onResize: function onResize() {
-            addBarTooltip.call(this);
+            create.call(this);
             barTooltip.style("opacity", 0).style("display", "none");
         },
         onRefresh: function onRefresh() {
@@ -1186,7 +1189,7 @@ var placesPlugin = function (urlPlaces) {
     var _ = { svg: null, q: null, places: null };
     var $ = {};
 
-    function svgAddPlaces() {
+    function create() {
         _.svg.selectAll('.points,.labels').remove();
         if (_.places) {
             if (this._.options.showPlaces) {
@@ -1239,12 +1242,11 @@ var placesPlugin = function (urlPlaces) {
             _.places = places;
         },
         onInit: function onInit() {
-            // this.$fn.svgAddPlaces = svgAddPlaces;
             this._.options.showPlaces = true;
             _.svg = this._.svg;
         },
         onCreate: function onCreate() {
-            svgAddPlaces.call(this);
+            create.call(this);
         },
         onRefresh: function onRefresh() {
             refresh.call(this);
@@ -1279,7 +1281,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
         5: 'rgba(155,141,115, 0.6)' };
     var _ = { world: null, countryNames: null, style: {}, drawTo: null, options: {}, landColor: 0 };
 
-    function canvasAddWorldOrCountries() {
+    function create() {
         var __ = this._;
         if (_.world && __.options.showLand) {
             if (__.options.transparent || __.options.transparentLand) {
@@ -1374,7 +1376,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
         onCreate: function onCreate() {
             var _this = this;
 
-            canvasAddWorldOrCountries.call(this);
+            create.call(this);
             if (this.hoverCanvas) {
                 var worldCanvas = function worldCanvas() {
                     if (!_this._.options.spin) {
@@ -1385,7 +1387,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
             }
         },
         onRefresh: function onRefresh() {
-            canvasAddWorldOrCountries.call(this);
+            create.call(this);
         },
         data: function data(_data) {
             if (_data) {
@@ -1429,7 +1431,7 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
     var _ = { svg: null, q: null, world: null, countryNames: null };
     var $ = {};
 
-    function svgAddWorldOrCountries() {
+    function create() {
         var __ = this._;
         _.svg.selectAll('.landbg,.land,.lakes,.countries').remove();
         if (__.options.showLand) {
@@ -1514,7 +1516,7 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
             _.svg = __.svg;
         },
         onCreate: function onCreate() {
-            svgAddWorldOrCountries.call(this);
+            create.call(this);
         },
         onRefresh: function onRefresh() {
             refresh.call(this);
@@ -1622,7 +1624,7 @@ var centerPlugin = (function () {
         });
     }
 
-    function addCountryCenteroid() {
+    function create() {
         var _this = this;
         this.worldPlugin.$countries().on("click", function () {
             if (_this._.options.enableCenter) {
@@ -1644,7 +1646,7 @@ var centerPlugin = (function () {
             this._.options.enableCenter = true;
         },
         onCreate: function onCreate() {
-            addCountryCenteroid.call(this);
+            create.call(this);
         },
         go: function go(id) {
             var c = this.worldPlugin.countries();
@@ -1750,7 +1752,7 @@ var barPlugin = (function (urlBars) {
     var _ = { svg: null, barProjection: null, q: null, bars: null, valuePath: null };
     var $ = {};
 
-    function svgAddBar() {
+    function create() {
         var __ = this._;
         _.svg.selectAll('.bar').remove();
         if (_.bars && __.options.showBars) {
@@ -1811,7 +1813,7 @@ var barPlugin = (function (urlBars) {
             svgClipPath.call(this);
         },
         onCreate: function onCreate() {
-            svgAddBar.call(this);
+            create.call(this);
         },
         onRefresh: function onRefresh() {
             _.barProjection.rotate(this._.proj.rotate());
@@ -1819,7 +1821,7 @@ var barPlugin = (function (urlBars) {
         },
         onResize: function onResize() {
             svgClipPath.call(this);
-            svgAddBar.call(this);
+            create.call(this);
         },
         selectAll: function selectAll(q) {
             if (q) {
@@ -1864,7 +1866,7 @@ var dotsPlugin = (function (urlDots) {
     var _ = { dataDots: null, radiusPath: null };
     var $ = {};
 
-    function svgAddDots() {
+    function create() {
         var __ = this._;
         _.svg.selectAll('.dot').remove();
         if (_.dataDots && __.options.showDots) {
@@ -1932,7 +1934,7 @@ var dotsPlugin = (function (urlDots) {
             _.svg = this._.svg;
         },
         onCreate: function onCreate() {
-            svgAddDots.call(this);
+            create.call(this);
         },
         onRefresh: function onRefresh() {
             refresh.call(this);
@@ -1985,7 +1987,7 @@ var dotsCanvas = (function (urlJson) {
     /*eslint no-console: 0 */
     var _ = { dataDots: null, circles: [], radiusPath: null, onDot: {}, onDotKeys: [] };
 
-    function canvasAddDots() {
+    function create() {
         if (_.dataDots && this._.options.showDots) {
             var __ = this._;
             var proj = this._.proj;
@@ -2073,10 +2075,10 @@ var dotsCanvas = (function (urlJson) {
             this._.options.showDots = true;
         },
         onCreate: function onCreate() {
-            canvasAddDots.call(this);
+            create.call(this);
         },
         onRefresh: function onRefresh() {
-            canvasAddDots.call(this);
+            create.call(this);
         },
         radiusPath: function radiusPath(path) {
             _.radiusPath = path;
@@ -2106,7 +2108,7 @@ var dotsCanvas = (function (urlJson) {
                 _.dataDots = _data;
                 initData();
                 setTimeout(function () {
-                    return canvasAddDots.call(_this2);
+                    return create.call(_this2);
                 }, 1);
             } else {
                 return _.dataDots;
@@ -2180,7 +2182,7 @@ var pingsPlugin = function () {
     var _ = { svg: null, dataPings: null };
     var $ = {};
 
-    function svgAddPings() {
+    function create() {
         _.svg.selectAll('.pings').remove();
         if (_.dataPings && this._.options.showPings) {
             var g = _.svg.append("g").attr("class", "pings");
@@ -2231,7 +2233,7 @@ var pingsPlugin = function () {
             _.svg = this._.svg;
         },
         onCreate: function onCreate() {
-            svgAddPings.call(this);
+            create.call(this);
         },
         onRefresh: function onRefresh() {
             refresh.call(this);

@@ -8,7 +8,7 @@ export default function() {
         5:['rgba( 87, 102, 131, 0.6)', 'rgba(  8,  52, 140,0.8)']};
     const _ = {svg:null, q: null, scale: 0, oceanColor: 0};
 
-    function svgAddOcean() {
+    function create() {
         _.svg.selectAll('#ocean,.ocean').remove();
         if (this._.options.showOcean) {
             let c = _.oceanColor;
@@ -43,7 +43,6 @@ export default function() {
     return {
         name: 'oceanPlugin',
         onInit() {
-            // this.$fn.svgAddOcean = svgAddOcean;
             this._.options.showOcean = true;
             Object.defineProperty(this._.options, 'oceanColor', {
                 get: () => _.oceanColor,
@@ -54,7 +53,7 @@ export default function() {
             _.svg = this._.svg;
         },
         onCreate() {
-            svgAddOcean.call(this);
+            create.call(this);
         },
         onResize() {
             resize.call(this);
@@ -75,7 +74,7 @@ export default function() {
             }
         },
         recreate() {
-            svgAddOcean.call(this);
+            create.call(this);
         }
     }
 }

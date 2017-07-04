@@ -2,7 +2,7 @@ export default function() {
     const _ = {svg:null, q: null, graticule: d3.geoGraticule()}
     const $ = {};
 
-    function svgAddGraticule() {
+    function create() {
         _.svg.selectAll('.graticule').remove();
         if (this._.options.showGraticule) {
             $.graticule = _.svg.append("g").attr("class","graticule").append("path")
@@ -31,7 +31,7 @@ export default function() {
             _.svg = this._.svg;
         },
         onCreate() {
-            svgAddGraticule.call(this);
+            create.call(this);
         },
         onRefresh() {
             refresh.call(this);
