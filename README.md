@@ -90,55 +90,31 @@ This sample need to run on the webserver, you can use [nodejs web-server](https:
 </html>
 ```
 ## Writing Plugins
-Sample skeleton of plugin, five(5) event handler and you can add any function that will be live on the plugin namespace, you can check folder plugins for each functionality.
+Plugins is a function created in "earthjs.plugins" namespace, return with javascript object. Some of javascript object keys have a special meaning, "name" property will be define the namespace in "earthjs", "urls" property is an ajax url and six(6) functions start with "on" are event handler. Other functions that define in the plugin will be live on the plugin namespace. All function define in the plugin will become proxy function in which have a context earthjs instance object.
 ```javascript
-export default function(url='/some/path.json') {
-    // Internal functions definitions
-    // var _ = {svg:null, q: null}; // (**)
-    //
+export default (url) => {
+    //....
     return {
-        // namespace for the plugins
-        name: 'samplePlugin',
-        // async ajax call and when finish, it will call onReady()
-        urls: [url],
-        // event handler ajax
-        onReady(err, places) {
-            // code...(*)
-        },
-        // register event handler
-        onInit() {
-            // code...(*)
-            // _.svg = this._.svg; // (**)
-        },
-        // zoom event handler
-        onResize() {
-            // code...(*)
-            // see fauxGlobeSvg, oceanSvg
-        },
-        // refresh svg graphics components
-        onRefresh() {
-            // code...(*)
-            // see graticuleSvg, placesSvg, worldSvg
-        },
-        // timer event handler
-        onInterval() {
-            // code...(*)
-        }
-        /* (**)
-        selectAll(q) {
-            if (q) {
-                _.q = q;
-                _.svg = d3.selectAll(q);
-            }
-            return _.svg;
-        }
-        // see fauxGlobeSvg, graticuleSvg, oceanSvg,
-        //     placesSvg, worldSvg.
-        */
+        name: 'samplePlugin',  // plugin name:
+        urls: [url],           // url ajax call
+        onReady(err, data) {}, // will be executed after ajax call
+        onInit    () {},       // immediately executed
+        onCreate  () {},
+        onResize  () {},
+        onRefresh () {},
+        onInterval() {}
     }
 }
-(*) context refer to earthjs instance.
-(**) pattern need to follow if plugins operate with .._.svg.append().
+```
+**If necessary** _onReady()_ can be superseded by _ready()_ and the defintion of _ready()_ should not be in the plugin it self.
+
+```javascript
+// example:
+g.register(earthjs.plugins.worldSvg('./d/world-110m.json'));
+g.worldSvg.ready = function(err, world) {
+    //+++collpased code
+    g.worldSvg.data({world}); // should check data() params requirements
+}
 ```
 
 ## Building
