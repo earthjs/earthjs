@@ -83,7 +83,7 @@ This sample need to run on the webserver, you can use [nodejs web-server](https:
     g.register(earthjs.plugins.autorotatePlugin(10));
     g.register(earthjs.plugins.worldSvg('./d/world-110m.json'));
     g.ready(function(){
-        g.svgDraw();
+        g.create();
     })
   </script>
 </body>

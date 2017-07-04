@@ -8,7 +8,7 @@ export default function() {
                     const rotate = this.autorotatePlugin;
                     newOpt.spin ? rotate.start() :rotate.stop();
                 }
-                this.svgDraw();
+                this.create();
             }
             return Object.assign({}, this._.options);
         }

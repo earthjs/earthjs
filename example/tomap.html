@@ -26,7 +26,7 @@
         g.register(earthjs.plugins.flattenPlugin());
         g.register(earthjs.plugins.centerPlugin());
         g.ready(function(){
-            g.svgDraw();
+            g.create();
         })
 
         function toMap() {g.flattenPlugin.toMap();}

@@ -143,11 +143,11 @@ const earthjs = (options={}) => {
     let ticker = null;
     const __ = globe._;
 
-    globe.svgDraw = function(twinEarth) {
+    globe.create = function(twinEarth) {
         earths = twinEarth || [];
         _.recreateSvgOrCanvas();
         earths.forEach(function(p) {
-            p.svgDraw(null);
+            p.create(null);
         });
         if (ticker===null && earths!==[]) {
             __.ticker();

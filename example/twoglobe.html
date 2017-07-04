@@ -43,10 +43,10 @@
         g1.ready(function(){
             const d = g1.worldCanvas.data();
             g2.worldCanvas.data(d);
-            g1.svgDraw([g2]);
+            g1.create([g2]);
         });
         g2.ready(function(){
-            g2.svgDraw();
+            g2.create();
         })
     </script>
 </body>

@@ -213,11 +213,11 @@ var earthjs$1 = function earthjs() {
     var ticker = null;
     var __ = globe._;
 
-    globe.svgDraw = function (twinEarth) {
+    globe.create = function (twinEarth) {
         earths = twinEarth || [];
         _.recreateSvgOrCanvas();
         earths.forEach(function (p) {
-            p.svgDraw(null);
+            p.create(null);
         });
         if (ticker === null && earths !== []) {
             __.ticker();
@@ -730,7 +730,7 @@ var configPlugin = function () {
                     var rotate = this.autorotatePlugin;
                     newOpt.spin ? rotate.start() : rotate.stop();
                 }
-                this.svgDraw();
+                this.create();
             }
             return Object.assign({}, this._.options);
         }
