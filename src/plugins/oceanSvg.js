@@ -41,7 +41,7 @@ export default function() {
     }
 
     return {
-        name: 'oceanPlugin',
+        name: 'oceanSvg',
         onInit() {
             this._.options.showOcean = true;
             Object.defineProperty(this._.options, 'oceanColor', {

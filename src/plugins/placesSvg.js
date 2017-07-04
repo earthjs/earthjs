@@ -57,7 +57,7 @@ export default function(urlPlaces) {
     }
 
     return {
-        name: 'placesPlugin',
+        name: 'placesSvg',
         urls: urlPlaces && [urlPlaces],
         onReady(err, places) {
             _.places = places;
@@ -81,7 +81,7 @@ export default function(urlPlaces) {
         },
         data(p) {
             if (p) {
-                const data = p.placesPlugin.data()
+                const data = p.placesSvg.data()
                 _.places = data.places;
             } else {
                 return {places: _.places}

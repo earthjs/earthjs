@@ -70,10 +70,10 @@ export default function(urlWorld, urlCountryNames) {
         }
     }
     return {
-        name: 'worldPlugin',
+        name: 'worldSvg',
         urls: urls,
         onReady(err, world, countryNames) {
-            this.worldPlugin.data({world, countryNames});
+            this.worldSvg.data({world, countryNames});
         },
         onInit() {
             const __ = this._;

@@ -6,17 +6,17 @@ export default function() {
 
     function create() {
         const _this = this;
-        this.barPlugin.$bar()
+        this.barSvg.$bar()
         .on("mouseover", function() {
             if (_this._.options.showBarTooltip) {
                 _.visible = true;
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
                 const i = +this.dataset.index;
-                var d = _this.barPlugin.data().features[i];
-                if (_this.barTooltipPlugin.onShow) {
-                    d = _this.barTooltipPlugin.onShow.call(this, d, barTooltip);
+                var d = _this.barSvg.data().features[i];
+                if (_this.barTooltipSvg.onShow) {
+                    d = _this.barTooltipSvg.onShow.call(this, d, barTooltip);
                 }
-                _this.barTooltipPlugin.show(d)
+                _this.barTooltipSvg.show(d)
                 .style("display", "block")
                 .style("opacity", 1);
                 refresh();
@@ -42,7 +42,7 @@ export default function() {
     }
 
     return {
-        name: 'barTooltipPlugin',
+        name: 'barTooltipSvg',
         onInit() {
             this._.options.showBarTooltip = true;
         },

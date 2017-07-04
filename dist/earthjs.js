@@ -550,9 +550,10 @@ var hoverCanvas = function () {
         addSelectCircleEventKeys: [],
         addSelectCountryEvent: {},
         addSelectCountryEventKeys: []
+    };
 
-        // https://github.com/d3/d3-polygon
-    };function polygonContains(polygon, point) {
+    // https://github.com/d3/d3-polygon
+    function polygonContains(polygon, point) {
         var n = polygon.length;
         var p = polygon[n - 1];
         var x = point[0],
@@ -645,7 +646,7 @@ var hoverCanvas = function () {
     };
 };
 
-var oceanPlugin = function () {
+var oceanSvg = function () {
     var color = {
         0: ['rgba(221, 221, 255, 0.6)', 'rgba(153, 170, 187,0.8)'],
         1: ['rgba(159, 240, 232, 0.6)', 'rgba(  5, 242, 219,0.8)'],
@@ -679,7 +680,7 @@ var oceanPlugin = function () {
     }
 
     return {
-        name: 'oceanPlugin',
+        name: 'oceanSvg',
         onInit: function onInit() {
             this._.options.showOcean = true;
             Object.defineProperty(this._.options, 'oceanColor', {
@@ -783,7 +784,7 @@ var graticuleCanvas = function () {
     };
 };
 
-var graticulePlugin = function () {
+var graticuleSvg = function () {
     var _ = { svg: null, q: null, graticule: d3.geoGraticule() };
     var $ = {};
 
@@ -809,7 +810,7 @@ var graticulePlugin = function () {
     }
 
     return {
-        name: 'graticulePlugin',
+        name: 'graticuleSvg',
         onInit: function onInit() {
             this._.options.showGraticule = true;
             _.svg = this._.svg;
@@ -831,7 +832,7 @@ var graticulePlugin = function () {
 };
 
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
-var dropShadowPlugin = function () {
+var dropShadowSvg = function () {
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null };
     var $ = {};
@@ -854,7 +855,7 @@ var dropShadowPlugin = function () {
     }
 
     return {
-        name: 'dropShadowPlugin',
+        name: 'dropShadowSvg',
         onInit: function onInit() {
             var options = this._.options;
 
@@ -880,7 +881,7 @@ var dropShadowPlugin = function () {
 };
 
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
-var fauxGlobePlugin = function () {
+var fauxGlobeSvg = function () {
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null };
     var $ = {};
@@ -913,7 +914,7 @@ var fauxGlobePlugin = function () {
     }
 
     return {
-        name: 'fauxGlobePlugin',
+        name: 'fauxGlobeSvg',
         onInit: function onInit() {
             var options = this._.options;
 
@@ -1048,7 +1049,7 @@ var countryTooltipCanvas = function () {
 
                 if (country && _this._.options.showCountryTooltip) {
                     var countryName = _this.worldCanvas.countryName(country);
-                    if (countryName && !(_this.barTooltipPlugin && _this.barTooltipPlugin.visible())) {
+                    if (countryName && !(_this.barTooltipSvg && _this.barTooltipSvg.visible())) {
                         refresh(mouse).style("display", "block").style("opacity", 1).text(countryName.name);
                     } else {
                         hideTooltip();
@@ -1076,17 +1077,17 @@ var countryTooltipCanvas = function () {
 };
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-var countryTooltipPlugin = function () {
+var countryTooltipSvg = function () {
     /*eslint no-console: 0 */
     var _ = { show: false };
     var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
 
     function create() {
         var _this = this;
-        this.worldPlugin.$countries().on("mouseover", function (d) {
+        this.worldSvg.$countries().on("mouseover", function (d) {
             if (_this._.options.showCountryTooltip) {
                 _.show = true;
-                var country = _this.worldPlugin.countryName.call(_this, d);
+                var country = _this.worldSvg.countryName.call(_this, d);
                 refresh().style("display", "block").style("opacity", 1).text(country.name);
             }
         }).on("mouseout", function () {
@@ -1107,7 +1108,7 @@ var countryTooltipPlugin = function () {
     }
 
     return {
-        name: 'countryTooltipPlugin',
+        name: 'countryTooltipSvg',
         onInit: function onInit() {
             this._.options.showCountryTooltip = true;
         },
@@ -1123,23 +1124,23 @@ var countryTooltipPlugin = function () {
 };
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-var barTooltipPlugin = function () {
+var barTooltipSvg = function () {
     /*eslint no-console: 0 */
     var _ = { mouseXY: [0, 0], visible: false };
     var barTooltip = d3.select("body").append("div").attr("class", "barTooltip");
 
     function create() {
         var _this = this;
-        this.barPlugin.$bar().on("mouseover", function () {
+        this.barSvg.$bar().on("mouseover", function () {
             if (_this._.options.showBarTooltip) {
                 _.visible = true;
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
                 var i = +this.dataset.index;
-                var d = _this.barPlugin.data().features[i];
-                if (_this.barTooltipPlugin.onShow) {
-                    d = _this.barTooltipPlugin.onShow.call(this, d, barTooltip);
+                var d = _this.barSvg.data().features[i];
+                if (_this.barTooltipSvg.onShow) {
+                    d = _this.barTooltipSvg.onShow.call(this, d, barTooltip);
                 }
-                _this.barTooltipPlugin.show(d).style("display", "block").style("opacity", 1);
+                _this.barTooltipSvg.show(d).style("display", "block").style("opacity", 1);
                 refresh();
             }
         }).on("mouseout", function () {
@@ -1158,7 +1159,7 @@ var barTooltipPlugin = function () {
     }
 
     return {
-        name: 'barTooltipPlugin',
+        name: 'barTooltipSvg',
         onInit: function onInit() {
             this._.options.showBarTooltip = true;
         },
@@ -1185,7 +1186,7 @@ var barTooltipPlugin = function () {
     };
 };
 
-var placesPlugin = function (urlPlaces) {
+var placesSvg = function (urlPlaces) {
     var _ = { svg: null, q: null, places: null };
     var $ = {};
 
@@ -1236,7 +1237,7 @@ var placesPlugin = function (urlPlaces) {
     }
 
     return {
-        name: 'placesPlugin',
+        name: 'placesSvg',
         urls: urlPlaces && [urlPlaces],
         onReady: function onReady(err, places) {
             _.places = places;
@@ -1260,7 +1261,7 @@ var placesPlugin = function (urlPlaces) {
         },
         data: function data(p) {
             if (p) {
-                var data = p.placesPlugin.data();
+                var data = p.placesSvg.data();
                 _.places = data.places;
             } else {
                 return { places: _.places };
@@ -1426,7 +1427,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
     };
 });
 
-var worldPlugin = function (urlWorld, urlCountryNames) {
+var worldSvg = function (urlWorld, urlCountryNames) {
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null, world: null, countryNames: null };
     var $ = {};
@@ -1497,10 +1498,10 @@ var worldPlugin = function (urlWorld, urlCountryNames) {
         }
     }
     return {
-        name: 'worldPlugin',
+        name: 'worldSvg',
         urls: urls,
         onReady: function onReady(err, world, countryNames) {
-            this.worldPlugin.data({ world: world, countryNames: countryNames });
+            this.worldSvg.data({ world: world, countryNames: countryNames });
         },
         onInit: function onInit() {
             var __ = this._;
@@ -1626,10 +1627,10 @@ var centerPlugin = (function () {
 
     function create() {
         var _this = this;
-        this.worldPlugin.$countries().on("click", function () {
+        this.worldSvg.$countries().on("click", function () {
             if (_this._.options.enableCenter) {
                 var id = this.id.replace('x', '');
-                var c = _this.worldPlugin.countries();
+                var c = _this.worldSvg.countries();
                 var focusedCountry = country(c, id);
                 var p = d3.geoCentroid(focusedCountry);
                 transition.call(_this, p);
@@ -1649,7 +1650,7 @@ var centerPlugin = (function () {
             create.call(this);
         },
         go: function go(id) {
-            var c = this.worldPlugin.countries();
+            var c = this.worldSvg.countries();
             var focusedCountry = country(c, id),
                 p = d3.geoCentroid(focusedCountry);
             transition.call(this, p);
@@ -1747,7 +1748,7 @@ var flattenPlugin = function () {
     };
 };
 
-var barPlugin = (function (urlBars) {
+var barSvg = (function (urlBars) {
     /*eslint no-console: 0 */
     var _ = { svg: null, barProjection: null, q: null, bars: null, valuePath: null };
     var $ = {};
@@ -1801,10 +1802,10 @@ var barPlugin = (function (urlBars) {
     }
 
     return {
-        name: 'barPlugin',
+        name: 'barSvg',
         urls: urlBars && [urlBars],
         onReady: function onReady(err, bars) {
-            this.barPlugin.data(bars);
+            this.barSvg.data(bars);
         },
         onInit: function onInit() {
             var __ = this._;
@@ -1860,7 +1861,7 @@ var barPlugin = (function (urlBars) {
     };
 });
 
-var dotsPlugin = (function (urlDots) {
+var dotsSvg = (function (urlDots) {
     /*eslint no-console: 0 */
     var _ = { dataDots: null, radiusPath: null };
     var $ = {};
@@ -1923,10 +1924,10 @@ var dotsPlugin = (function (urlDots) {
     }
 
     return {
-        name: 'dotsPlugin',
+        name: 'dotsSvg',
         urls: urlDots && [urlDots],
         onReady: function onReady(err, dots) {
-            this.dotsPlugin.data(dots);
+            this.dotsSvg.data(dots);
         },
         onInit: function onInit() {
             this._.options.showDots = true;
@@ -2176,7 +2177,7 @@ var pingsCanvas = function () {
     };
 };
 
-var pingsPlugin = function () {
+var pingsSvg = function () {
     /*eslint no-console: 0 */
     var _ = { svg: null, dataPings: null };
     var $ = {};
@@ -2221,7 +2222,7 @@ var pingsPlugin = function () {
     }
 
     return {
-        name: 'pingsPlugin',
+        name: 'pingsSvg',
         onInit: function onInit() {
             var _this = this;
 
@@ -2324,8 +2325,8 @@ var commonPlugins = (function (urlWorld, urlCountryNames) {
         r(p.versorDragPlugin());
         r(p.wheelZoomPlugin());
         r(p.configPlugin());
-        r(p.dropShadowPlugin());
-        r(p.oceanPlugin());
+        r(p.dropShadowSvg());
+        r(p.oceanSvg());
         r(p.canvasPlugin());
         r(p.graticuleCanvas());
         r(p.worldCanvas(urlWorld, urlCountryNames));
@@ -2389,7 +2390,7 @@ var commonPlugins = (function (urlWorld, urlCountryNames) {
                 }
             });
             rangeInput(opt2, 'ocn', 0, 20, 1, _.ocn, function () {
-                _.ocn = this.value;_this.oceanPlugin.scale(-_.ocn);
+                _.ocn = this.value;_this.oceanSvg.scale(-_.ocn);
             });
             rangeInput(opt2, 'spd', 10, 200, 10, _.spd, function () {
                 _.spd = this.value;_this.autorotatePlugin.speed(_.spd);
@@ -2398,7 +2399,7 @@ var commonPlugins = (function (urlWorld, urlCountryNames) {
             window.nodes = nodes;
             rangeInput(opt2, 'clr', 0, 5, 1, _this._.options.oceanColor, function () {
                 _this._.options.oceanColor = +this.value;
-                _this.oceanPlugin.recreate();
+                _this.oceanSvg.recreate();
             });
         }
     }
@@ -2426,28 +2427,28 @@ earthjs$1.plugins = {
     threejsPlugin: threejsPlugin,
     canvasPlugin: canvasPlugin,
     hoverCanvas: hoverCanvas,
-    oceanPlugin: oceanPlugin,
+    oceanSvg: oceanSvg,
     configPlugin: configPlugin,
     graticuleCanvas: graticuleCanvas,
-    graticulePlugin: graticulePlugin,
-    dropShadowPlugin: dropShadowPlugin,
-    fauxGlobePlugin: fauxGlobePlugin,
+    graticuleSvg: graticuleSvg,
+    dropShadowSvg: dropShadowSvg,
+    fauxGlobeSvg: fauxGlobeSvg,
     autorotatePlugin: autorotatePlugin,
     dotTooltipCanvas: dotTooltipCanvas,
     countryTooltipCanvas: countryTooltipCanvas,
-    countryTooltipPlugin: countryTooltipPlugin,
-    barTooltipPlugin: barTooltipPlugin,
-    placesPlugin: placesPlugin,
+    countryTooltipSvg: countryTooltipSvg,
+    barTooltipSvg: barTooltipSvg,
+    placesSvg: placesSvg,
     worldCanvas: worldCanvas,
-    worldPlugin: worldPlugin,
+    worldSvg: worldSvg,
     worldThreejs: worldThreejs,
     centerPlugin: centerPlugin,
     flattenPlugin: flattenPlugin,
-    barPlugin: barPlugin,
-    dotsPlugin: dotsPlugin,
+    barSvg: barSvg,
+    dotsSvg: dotsSvg,
     dotsCanvas: dotsCanvas,
     pingsCanvas: pingsCanvas,
-    pingsPlugin: pingsPlugin,
+    pingsSvg: pingsSvg,
     debugThreejs: debugThreejs,
     commonPlugins: commonPlugins
 };

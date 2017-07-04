@@ -50,7 +50,7 @@ export default function() {
     }
 
     return {
-        name: 'pingsPlugin',
+        name: 'pingsSvg',
         onInit() {
             this._.options.showPings = true;
             setInterval(() => animate.call(this), 3000);

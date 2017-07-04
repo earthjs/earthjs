@@ -13,8 +13,8 @@
         g.register(earthjs.plugins.wheelZoomPlugin());
         g.register(earthjs.plugins.versorDragPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
-        g.register(earthjs.plugins.oceanPlugin());
-        g.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
+        g.register(earthjs.plugins.oceanSvg());
+        g.register(earthjs.plugins.worldSvg('./d/world-110m.json'));
         g.ready(function(){
             g.svgDraw();
         })

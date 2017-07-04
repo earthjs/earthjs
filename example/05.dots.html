@@ -13,19 +13,19 @@
         g.register(earthjs.plugins.wheelZoomPlugin());
         g.register(earthjs.plugins.versorDragPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
-        g.register(earthjs.plugins.dropShadowPlugin());
-        g.register(earthjs.plugins.oceanPlugin());
-        g.register(earthjs.plugins.graticulePlugin());
-        g.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
-        g.register(earthjs.plugins.fauxGlobePlugin());
+        g.register(earthjs.plugins.dropShadowSvg());
+        g.register(earthjs.plugins.oceanSvg());
+        g.register(earthjs.plugins.graticuleSvg());
+        g.register(earthjs.plugins.worldSvg('./d/world-110m.json'));
+        g.register(earthjs.plugins.fauxGlobeSvg());
         g.configPlugin.set({
             transparent: true,
             showCountries: false,
             showLakes: false
         });
-        g.register(earthjs.plugins.barPlugin());
-        g.register(earthjs.plugins.dotsPlugin('./d/bars.json'));
-        g.dotsPlugin.ready = function(err, json) {
+        g.register(earthjs.plugins.barSvg());
+        g.register(earthjs.plugins.dotsSvg('./d/bars.json'));
+        g.dotsSvg.ready = function(err, json) {
             const features = json.features;
             const maxMag = features.map(d => d.properties.mag).sort(d3.descending)[0];
             const scale = d3.scaleLinear().domain([3, maxMag]).range([0.5, 2]);
@@ -39,8 +39,8 @@
                 fillStyle: 'rgba(100,0,0,.4)',
                 strokeStyle: 'rgba(100,0,0,.6)'
             }
-            g.barPlugin.data(json);
-            g.dotsPlugin.data(json);
+            g.barSvg.data(json);
+            g.dotsSvg.data(json);
         };
         g.ready(function(){
             g.svgDraw();

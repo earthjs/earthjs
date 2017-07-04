@@ -25,7 +25,7 @@
         g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.versorDragPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
-        g.register(earthjs.plugins.oceanPlugin());
+        g.register(earthjs.plugins.oceanSvg());
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
         g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
@@ -48,7 +48,7 @@
             canvas[1].style.left = this.value*2;
         })
         d3.select('#ocn').on('input', function() {
-            g.oceanPlugin.scale(-this.value);
+            g.oceanSvg.scale(-this.value);
         })
         d3.select('#tg1').on('click', function() {
             if (this.checked) {

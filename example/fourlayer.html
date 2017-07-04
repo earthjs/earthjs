@@ -31,12 +31,12 @@
         g.register(earthjs.plugins.wheelZoomPlugin());
         g.register(earthjs.plugins.versorDragPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
-        g.register(earthjs.plugins.dropShadowPlugin());
-        g.register(earthjs.plugins.oceanPlugin());
+        g.register(earthjs.plugins.dropShadowSvg());
+        g.register(earthjs.plugins.oceanSvg());
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
-        g.register(earthjs.plugins.fauxGlobePlugin());
-        g.register(earthjs.plugins.barPlugin('./d/bars.json'));
+        g.register(earthjs.plugins.fauxGlobeSvg());
+        g.register(earthjs.plugins.barSvg('./d/bars.json'));
         g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
 
         g.graticuleCanvas.style({line: 'rgba(119,119,119, 1)'});
@@ -45,11 +45,11 @@
         g.canvasPlugin.selectAll('canvas');
         g.graticuleCanvas.drawTo([1]);
         g.worldCanvas.drawTo([0]);
-        g.fauxGlobePlugin.selectAll('.x3');
-        g.barPlugin.selectAll('.x3');
-        g.barPlugin.ready = function(err, json) {
+        g.fauxGlobeSvg.selectAll('.x3');
+        g.barSvg.selectAll('.x3');
+        g.barSvg.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
-            g.barPlugin.data(json);
+            g.barSvg.data(json);
         };
 
         g.ready(function(){
@@ -66,7 +66,7 @@
             svg2[0].style.left   = this.value*3;
         })
         d3.select('#ocn').on('input', function() {
-            g.oceanPlugin.scale(-this.value);
+            g.oceanSvg.scale(-this.value);
         })
         d3.select('#tg1').on('click', function() {
             if (this.checked) {
@@ -79,13 +79,13 @@
         })
         d3.select('#tg2').on('click', function() {
             if (this.checked) {
-                g.oceanPlugin.selectAll('.x3');
-                g.fauxGlobePlugin.selectAll('.x0');
-                g.barPlugin.selectAll('.x0');
+                g.oceanSvg.selectAll('.x3');
+                g.fauxGlobeSvg.selectAll('.x0');
+                g.barSvg.selectAll('.x0');
             } else {
-                g.oceanPlugin.selectAll('.x0');
-                g.fauxGlobePlugin.selectAll('.x3');
-                g.barPlugin.selectAll('.x3');
+                g.oceanSvg.selectAll('.x0');
+                g.fauxGlobeSvg.selectAll('.x3');
+                g.barSvg.selectAll('.x3');
             }
             d3.selectAll('svg g').remove();
             g.svgDraw();

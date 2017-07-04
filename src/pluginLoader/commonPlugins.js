@@ -23,8 +23,8 @@ export default (urlWorld, urlCountryNames) => {
         r(p.versorDragPlugin());
         r(p.wheelZoomPlugin());
         r(p.configPlugin());
-        r(p.dropShadowPlugin());
-        r(p.oceanPlugin());
+        r(p.dropShadowSvg());
+        r(p.oceanSvg());
         r(p.canvasPlugin());
         r(p.graticuleCanvas());
         r(p.worldCanvas(urlWorld,urlCountryNames));
@@ -91,7 +91,7 @@ export default (urlWorld, urlCountryNames) => {
                 }
             })
             rangeInput(opt2, 'ocn', 0, 20, 1, _.ocn, function() {
-                _.ocn = this.value;_this.oceanPlugin.scale(-_.ocn);
+                _.ocn = this.value;_this.oceanSvg.scale(-_.ocn);
             })
             rangeInput(opt2, 'spd', 10, 200, 10, _.spd, function() {
                 _.spd = this.value;_this.autorotatePlugin.speed(_.spd);
@@ -100,7 +100,7 @@ export default (urlWorld, urlCountryNames) => {
             window.nodes = nodes;
             rangeInput(opt2, 'clr', 0, 5, 1, _this._.options.oceanColor, function() {
                 _this._.options.oceanColor = +this.value;
-                _this.oceanPlugin.recreate();
+                _this.oceanSvg.recreate();
             })
         }
     }

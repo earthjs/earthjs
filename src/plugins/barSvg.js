@@ -69,10 +69,10 @@ export default urlBars => {
     }
 
     return {
-        name: 'barPlugin',
+        name: 'barSvg',
         urls: urlBars && [urlBars],
         onReady(err, bars) {
-            this.barPlugin.data(bars);
+            this.barSvg.data(bars);
         },
         onInit() {
             const __ = this._;

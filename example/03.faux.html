@@ -13,11 +13,11 @@
         g.register(earthjs.plugins.wheelZoomPlugin());
         g.register(earthjs.plugins.versorDragPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
-        g.register(earthjs.plugins.dropShadowPlugin());
-        g.register(earthjs.plugins.oceanPlugin());
-        g.register(earthjs.plugins.graticulePlugin());
-        g.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
-        g.register(earthjs.plugins.fauxGlobePlugin());
+        g.register(earthjs.plugins.dropShadowSvg());
+        g.register(earthjs.plugins.oceanSvg());
+        g.register(earthjs.plugins.graticuleSvg());
+        g.register(earthjs.plugins.worldSvg('./d/world-110m.json'));
+        g.register(earthjs.plugins.fauxGlobeSvg());
         g.configPlugin.set({
             transparent: true,
             showCountries: false,

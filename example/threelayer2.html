@@ -37,29 +37,29 @@
         g.register(earthjs.plugins.autorotatePlugin(10));
         g.versorDragPlugin.selectAll('#earth2');
 
-        g.register(earthjs.plugins.dropShadowPlugin());
-        g.register(earthjs.plugins.oceanPlugin());
+        g.register(earthjs.plugins.dropShadowSvg());
+        g.register(earthjs.plugins.oceanSvg());
 
         g.register(earthjs.plugins.canvasPlugin());
         g.canvasPlugin.selectAll('.canvas');
 
         g.register(earthjs.plugins.graticuleCanvas());
 
-        g.register(earthjs.plugins.fauxGlobePlugin());
-        g.fauxGlobePlugin.selectAll('#earth2');
+        g.register(earthjs.plugins.fauxGlobeSvg());
+        g.fauxGlobeSvg.selectAll('#earth2');
 
-        // g.register(earthjs.plugins.placesPlugin('./d/places.json'));
+        // g.register(earthjs.plugins.placesSvg('./d/places.json'));
         g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
         g.worldCanvas.style({land: 'green'});
 
-        g.register(earthjs.plugins.barPlugin('./d/bars.json'));
-        g.barPlugin.selectAll('#earth2');
-        g.barPlugin.ready = function(err, json) {
+        g.register(earthjs.plugins.barSvg('./d/bars.json'));
+        g.barSvg.selectAll('#earth2');
+        g.barSvg.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
-            g.barPlugin.data(json);
+            g.barSvg.data(json);
         };
 
-        // g.placesPlugin.selectAll('#earth2');
+        // g.placesSvg.selectAll('#earth2');
         g.configPlugin.set({showCountries: false, showLakes: false});
         g.ready(function(){
             g.svgDraw();

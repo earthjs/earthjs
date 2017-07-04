@@ -22,7 +22,7 @@ export default function() {
                 const {country, mouse} = this.hoverCanvas.data();
                 if (country && this._.options.showCountryTooltip) {
                     const countryName = this.worldCanvas.countryName(country);
-                    if (countryName && !(this.barTooltipPlugin && this.barTooltipPlugin.visible())) {
+                    if (countryName && !(this.barTooltipSvg && this.barTooltipSvg.visible())) {
                         refresh(mouse)
                         .style("display", "block")
                         .style("opacity", 1)

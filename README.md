@@ -10,7 +10,7 @@ Earthjs is a javascript library for easy building orthographic globe. Originally
 
 Earthjs created using D3.v4, design as pluggable modules.
 
-Awesome interactive globe can be created, dragging to rotate any direction, zooming using scroll mouse or tap, multiple layer of globe with oceanPlugin & fauxGlobePlugin, area of land can be plain one svg path or switch with bordered countries for optimized rendering, auto rotate with adjustable speed and ticker to balance between smooth and cpu utilization, point of places is included and lastly sample tool tips of the country. All of this can configure on the fly switching to activate, deactivate or adjust speed and ticker.
+Awesome interactive globe can be created, dragging to rotate any direction, zooming using scroll mouse or tap, multiple layer of globe with oceanSvg & fauxGlobeSvg, area of land can be plain one svg path or switch with bordered countries for optimized rendering, auto rotate with adjustable speed and ticker to balance between smooth and cpu utilization, point of places is included and lastly sample tool tips of the country. All of this can configure on the fly switching to activate, deactivate or adjust speed and ticker.
 
 Support Canvas in or outside SVG!
 
@@ -22,28 +22,28 @@ Selected plugins bundled into library:
 * threejsPlugin,
 * canvasPlugin,
 * hoverCanvas,
-* oceanPlugin,
+* oceanSvg,
 * configPlugin,
 * graticuleCanvas,
-* graticulePlugin,
-* dropShadowPlugin,
-* fauxGlobePlugin,
+* graticuleSvg,
+* dropShadowSvg,
+* fauxGlobeSvg,
 * autorotatePlugin,
 * dotTooltipCanvas,
 * countryTooltipCanvas,
-* countryTooltipPlugin,
-* barTooltipPlugin,
-* placesPlugin,
+* countryTooltipSvg,
+* barTooltipSvg,
+* placesSvg,
 * worldCanvas,
-* worldPlugin,
+* worldSvg,
 * worldThreejs,
 * centerPlugin,
 * flattenPlugin,
-* barPlugin,
-* dotsPlugin,
+* barSvg,
+* dotsSvg,
 * dotsCanvas,
 * pingsCanvas,
-* pingsPlugin,
+* pingsSvg,
 * debugThreejs,
 * commonPlugins,
 
@@ -79,9 +79,9 @@ This sample need to run on the webserver, you can use [nodejs web-server](https:
   <svg id="earth"></svg>
   <script>
     const g = earthjs();
-    g.register(earthjs.plugins.graticulePlugin());
+    g.register(earthjs.plugins.graticuleSvg());
     g.register(earthjs.plugins.autorotatePlugin(10));
-    g.register(earthjs.plugins.worldPlugin('./d/world-110m.json'));
+    g.register(earthjs.plugins.worldSvg('./d/world-110m.json'));
     g.ready(function(){
         g.svgDraw();
     })
@@ -113,12 +113,12 @@ export default function(url='/some/path.json') {
         // zoom event handler
         onResize() {
             // code...(*)
-            // see fauxGlobePlugin, oceanPlugin
+            // see fauxGlobeSvg, oceanSvg
         },
         // refresh svg graphics components
         onRefresh() {
             // code...(*)
-            // see graticulePlugin, placesPlugin, worldPlugin
+            // see graticuleSvg, placesSvg, worldSvg
         },
         // timer event handler
         onInterval() {
@@ -132,8 +132,8 @@ export default function(url='/some/path.json') {
             }
             return _.svg;
         }
-        // see fauxGlobePlugin, graticulePlugin, oceanPlugin,
-        //     placesPlugin, worldPlugin.
+        // see fauxGlobeSvg, graticuleSvg, oceanSvg,
+        //     placesSvg, worldSvg.
         */
     }
 }

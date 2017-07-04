@@ -23,11 +23,11 @@ export default () => {
 
     function create() {
         const _this = this;
-        this.worldPlugin.$countries()
+        this.worldSvg.$countries()
         .on("click", function() {
             if (_this._.options.enableCenter) {
                 const id = this.id.replace('x', '');
-                const c = _this.worldPlugin.countries();
+                const c = _this.worldSvg.countries();
                 const focusedCountry = country(c, id);
                 const p = d3.geoCentroid(focusedCountry);
                 transition.call(_this, p);
@@ -47,7 +47,7 @@ export default () => {
             create.call(this);
         },
         go(id) {
-            const c = this.worldPlugin.countries();
+            const c = this.worldSvg.countries();
             const focusedCountry = country(c, id),
                 p = d3.geoCentroid(focusedCountry);
             transition.call(this, p);

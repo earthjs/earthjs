@@ -35,7 +35,7 @@ export default function() {
     }
 
     return {
-        name: 'dropShadowPlugin',
+        name: 'dropShadowSvg',
         onInit() {
             const {options} = this._;
             options.showDropShadow  = true;

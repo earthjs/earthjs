@@ -54,7 +54,7 @@ export default function() {
     }
 
     return {
-        name: 'fauxGlobePlugin',
+        name: 'fauxGlobeSvg',
         onInit() {
             const {options} = this._;
             options.showGlobeShading = true;

@@ -6,11 +6,11 @@ export default function() {
 
     function create() {
         const _this = this;
-        this.worldPlugin.$countries()
+        this.worldSvg.$countries()
         .on("mouseover", function(d) {
             if (_this._.options.showCountryTooltip) {
                 _.show = true;
-                const country = _this.worldPlugin.countryName.call(_this, d);
+                const country = _this.worldSvg.countryName.call(_this, d);
                 refresh()
                 .style("display", "block")
                 .style("opacity", 1)
@@ -39,7 +39,7 @@ export default function() {
     }
 
     return {
-        name: 'countryTooltipPlugin',
+        name: 'countryTooltipSvg',
         onInit() {
             this._.options.showCountryTooltip = true;
         },

@@ -64,10 +64,10 @@ export default urlDots => {
     }
 
     return {
-        name: 'dotsPlugin',
+        name: 'dotsSvg',
         urls: urlDots && [urlDots],
         onReady(err, dots) {
-            this.dotsPlugin.data(dots);
+            this.dotsSvg.data(dots);
         },
         onInit() {
             this._.options.showDots = true;

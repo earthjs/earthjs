@@ -18,22 +18,22 @@
         const g = earthjs();
         g.register(earthjs.plugins.commonPlugins('./d/world-110m.json'));
 
-        g.register(earthjs.plugins.fauxGlobePlugin());
+        g.register(earthjs.plugins.fauxGlobeSvg());
         g._.options.showGlobeHilight = false;
-        g.fauxGlobePlugin.selectAll('.ea-4');
+        g.fauxGlobeSvg.selectAll('.ea-4');
         g.commonPlugins.addChecker(':Shading:showGlobeShading'.split(':'))
         g.commonPlugins.addChecker(':Hilight:showGlobeHilight'.split(':'))
 
-        g.register(earthjs.plugins.barPlugin('./d/bars.json'));
-        g.register(earthjs.plugins.dotsPlugin());
-        g.barPlugin.valuePath('properties.mag');
-        g.dotsPlugin.radiusPath('properties.mag');
-        g.barPlugin.ready = function(err, data) {
-            g.barPlugin.data(data);
-            g.dotsPlugin.data(data);
+        g.register(earthjs.plugins.barSvg('./d/bars.json'));
+        g.register(earthjs.plugins.dotsSvg());
+        g.barSvg.valuePath('properties.mag');
+        g.dotsSvg.radiusPath('properties.mag');
+        g.barSvg.ready = function(err, data) {
+            g.barSvg.data(data);
+            g.dotsSvg.data(data);
         }
-        g.barPlugin.selectAll('.ea-1');
-        g.dotsPlugin.selectAll('.ea-4');
+        g.barSvg.selectAll('.ea-1');
+        g.dotsSvg.selectAll('.ea-4');
         g.commonPlugins.addChecker(':Bars:showBars'.split(':'))
         g.commonPlugins.addChecker(':Dots:showDots'.split(':'))
 

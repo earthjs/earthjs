@@ -13,15 +13,15 @@
         g.register(earthjs.plugins.wheelZoomPlugin());
         g.register(earthjs.plugins.versorDragPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
-        g.register(earthjs.plugins.dropShadowPlugin());
-        g.register(earthjs.plugins.oceanPlugin());
+        g.register(earthjs.plugins.dropShadowSvg());
+        g.register(earthjs.plugins.oceanSvg());
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
         g.register(earthjs.plugins.worldCanvas('./d/world-110m.json', './d/world-110m-country-names.tsv'));
         g.register(earthjs.plugins.hoverCanvas());
-        g.register(earthjs.plugins.fauxGlobePlugin());
-        g.register(earthjs.plugins.barPlugin());
-        g.register(earthjs.plugins.barTooltipPlugin());
+        g.register(earthjs.plugins.fauxGlobeSvg());
+        g.register(earthjs.plugins.barSvg());
+        g.register(earthjs.plugins.barTooltipSvg());
         g.register(earthjs.plugins.dotsCanvas('./d/bars.json'));
         g.dotsCanvas.ready = function(err, json) {
             const features = json.features;
@@ -37,7 +37,7 @@
                 fillStyle: 'rgba(100,0,0,.4)',
                 strokeStyle: 'rgba(100,0,0,.6)'
             }
-            g.barPlugin.data(json);
+            g.barSvg.data(json);
             g.dotsCanvas.data(json);
         };
         g.register(earthjs.plugins.hoverCanvas());

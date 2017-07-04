@@ -20,9 +20,9 @@
     <script>
         const g = earthjs({width:1200, height:750});
         g.register(earthjs.plugins.versorDragPlugin());
-        g.register(earthjs.plugins.graticulePlugin());
-        g.register(earthjs.plugins.worldPlugin('./d/world-110m.json', './d/world-110m-country-names.tsv'));
-        g.register(earthjs.plugins.countryTooltipPlugin());
+        g.register(earthjs.plugins.graticuleSvg());
+        g.register(earthjs.plugins.worldSvg('./d/world-110m.json', './d/world-110m-country-names.tsv'));
+        g.register(earthjs.plugins.countryTooltipSvg());
         g.register(earthjs.plugins.flattenPlugin());
         g.register(earthjs.plugins.centerPlugin());
         g.ready(function(){

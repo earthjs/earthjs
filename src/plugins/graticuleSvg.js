@@ -25,7 +25,7 @@ export default function() {
     }
 
     return {
-        name: 'graticulePlugin',
+        name: 'graticuleSvg',
         onInit() {
             this._.options.showGraticule = true;
             _.svg = this._.svg;
