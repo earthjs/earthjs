@@ -19,10 +19,10 @@ export default (urlWorld, urlCountryNames) => {
     function addPlugins() {
         const r = this.register;
         const p = earthjs.plugins;
-        r(p.autorotatePlugin(10));
-        r(p.versorDragPlugin());
-        r(p.wheelZoomPlugin());
         r(p.configPlugin());
+        r(p.wheelZoomPlugin());
+        r(p.versorDragPlugin());
+        r(p.autorotatePlugin(10));
         r(p.dropShadowSvg());
         r(p.oceanSvg());
         r(p.canvasPlugin());

@@ -12,15 +12,14 @@
     <svg id="earth"></svg>
     <script>
         const g = earthjs();
-        g.register(earthjs.plugins.autorotatePlugin(10));
+        g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.versorDragPlugin());
+        g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.threejsPlugin());
         g.register(earthjs.plugins.debugThreejs());
         g.register(earthjs.plugins.canvasPlugin());
-        g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
         g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
-
         g.ready(function(){
             d3.select('#three-js').attr('style', 'opacity: 0.6');
             g.create();

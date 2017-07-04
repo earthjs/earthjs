@@ -18,9 +18,7 @@
         const g = earthjs();
         g.register(earthjs.plugins.commonPlugins('./d/world-110m.json','./d/world-110m-country-names.tsv'));
         g.register(earthjs.plugins.hoverCanvas());
-
         g.register(earthjs.plugins.fauxGlobeSvg());
-        g._.options.showGlobeHilight = false;
         g.fauxGlobeSvg.selectAll('.ea-4');
         g.commonPlugins.addChecker(':Shading:showGlobeShading'.split(':'))
         g.commonPlugins.addChecker(':Hilight:showGlobeHilight'.split(':'))
@@ -53,6 +51,7 @@
             }
             g.dotsCanvas.data(dataMssg);
         }
+        g._.options.showGlobeHilight = false;
         g.ready(() => g.create());
     </script>
 </body>
