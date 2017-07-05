@@ -6,6 +6,8 @@ D3 Earth JS
 * [Complete Globe](http://blockbuilder.org/earthjs/562bbae9b4a22f826e40b9ee10445e23)
 * [Earthquake](https://earthjs.github.io/)
 
+![Earthquake](https://earthjs.github.io/images/earthquake.png)
+
 Earthjs is a javascript library for easy building orthographic globe. Originally inspired by [planetary.js](https://github.com/BinaryMuse/planetary.js) (canvas) and [Faux-3d Shaded Globe](http://bl.ocks.org/dwtkns/4686432) (svg) and both was created using D3.v3.
 
 Earthjs created using D3.v4, design as pluggable modules.
