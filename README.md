@@ -1,10 +1,9 @@
 # Earthjs
-D3 Earth JS
 
 #### Live Example
+* [Earthquake](https://earthjs.github.io/)
 * [Quick Start](http://blockbuilder.org/earthjs/df9abf84c90586cb9e27d5f4b3d21d14)
 * [Complete Globe](http://blockbuilder.org/earthjs/562bbae9b4a22f826e40b9ee10445e23)
-* [Earthquake](https://earthjs.github.io/)
 
 ![Earthquake](https://earthjs.github.io/images/earthquake.png)
 
@@ -19,33 +18,34 @@ Support Canvas in or outside SVG!
 ## Internal Plugins
 Selected plugins bundled into library:
 
-* versorDragPlugin,
-* wheelZoomPlugin,
-* threejsPlugin,
-* canvasPlugin,
-* hoverCanvas,
-* oceanSvg,
 * configPlugin,
-* graticuleCanvas,
-* graticuleSvg,
-* dropShadowSvg,
-* fauxGlobeSvg,
-* autorotatePlugin,
-* dotTooltipCanvas,
-* countryTooltipCanvas,
-* countryTooltipSvg,
-* barTooltipSvg,
-* placesSvg,
-* worldCanvas,
-* worldSvg,
-* worldThreejs,
 * centerPlugin,
 * flattenPlugin,
+* wheelZoomPlugin,
+* versorDragPlugin,
+* autorotatePlugin,
+* canvasPlugin,
+* threejsPlugin,
+* dropShadowSvg,
+* oceanSvg,
+* hoverCanvas,
+* graticuleSvg,
+* fauxGlobeSvg,
+* graticuleCanvas,
+* countrySelectCanvas,
+* barTooltipSvg,
+* worldSvg,
+* placesSvg,
+* worldCanvas,
+* worldThreejs,
 * barSvg,
 * dotsSvg,
-* dotsCanvas,
-* pingsCanvas,
 * pingsSvg,
+* dotsCanvas,
+* dotTooltipCanvas,
+* countryTooltipSvg,
+* countryTooltipCanvas,
+* pingsCanvas,
 * debugThreejs,
 * commonPlugins,
 
@@ -92,15 +92,16 @@ This sample need to run on the webserver, you can use [nodejs web-server](https:
 </html>
 ```
 ## Writing Plugins
-Plugins is a function created in "earthjs.plugins" namespace, return with javascript object. Some of javascript object keys have a special meaning, "name" property will be define the namespace in "earthjs", "urls" property is an ajax url and six(6) functions start with "on" are event handler. Other functions that define in the plugin will be live on the plugin namespace. All function define in the plugin will become proxy function in which have a context earthjs instance object.
+Plugins is a function created in "earthjs.plugins" namespace, return with javascript object. Some of the keys have a special meaning, "name" property will be define **plugin namespace** in "earthjs", "urls" property is an ajax url and six(6) functions start with "on" are event handler. Other functions that define in the plugin will be live on the **plugin namespace**. Function defined in the plugin will become **proxy function** in which they have a **context of earthjs instance**.
 ```javascript
 export default (url) => {
     //....
     return {
-        name: 'samplePlugin',  // plugin name:
-        urls: [url],           // url ajax call
-        onReady(err, data) {}, // will be executed after ajax call
-        onInit    () {},       // immediately executed
+        name: 'samplePlugin',
+        urls: [url], // ajax url
+        // executed after ajax call
+        onReady(err, data) {},
+        onInit    () {},
         onCreate  () {},
         onResize  () {},
         onRefresh () {},
@@ -115,7 +116,7 @@ export default (url) => {
 g.register(earthjs.plugins.worldSvg('./d/world-110m.json'));
 g.worldSvg.ready = function(err, world) {
     //+++collpased code
-    g.worldSvg.data({world}); // should check data() params requirements
+    g.worldSvg.data({world});
 }
 ```
 
@@ -123,4 +124,4 @@ g.worldSvg.ready = function(err, world) {
 Building the project requires [Node.js](https://nodejs.org/en/). Once you've installed the project's dependencies with npm install, you can build the JavaScript to the dist directory with npm run build.
 
 ## License
-earthjs.js is licensed under the MIT license. See the LICENSE file for more information.
+earthjs.js is licensed under the **MIT license**. See the LICENSE file for more information.
