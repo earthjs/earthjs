@@ -23,18 +23,17 @@ export default (urlWorld, urlCountryNames) => {
                 }, _.drawTo, _.options);
                 __.proj.clipAngle(90);
             }
-            canvasAddWorld.call(this);
+            __.options.showCountries ? canvasAddCountries.call(this) : canvasAddWorld.call(this);
             if (!__.drag) {
-                __.options.showCountries && canvasAddCountries.call(this);
                 __.options.showLakes && canvasAddLakes.call(this);
-            }
-            if (this.hoverCanvas && __.options.showCountrySelected) {
-                this.canvasPlugin.render(function(context, path) {
-                    context.beginPath();
-                    path(this.hoverCanvas.data().country);
-                    context.fillStyle = 'rgba(117, 0, 0, 0.4)';
-                    context.fill();
-                }, _.drawTo, _.options);
+                if (this.hoverCanvas && __.options.showSelectedCountry) {
+                    this.canvasPlugin.render(function(context, path) {
+                        context.beginPath();
+                        path(this.hoverCanvas.data().country);
+                        context.fillStyle = 'rgba(117, 0, 0, 0.4)';
+                        context.fill();
+                    }, _.drawTo, _.options);
+                }
             }
         }
     }
@@ -51,8 +50,11 @@ export default (urlWorld, urlCountryNames) => {
 
     function canvasAddCountries() {
         this.canvasPlugin.render(function(context, path) {
+            const c = _.landColor;
             context.beginPath();
             path(_.countries);
+            context.fillStyle = _.style.land || typeof(c)==='number' ? color[c] : c;
+            context.fill();
             context.lineWidth = 0.1;
             context.strokeStyle = _.style.countries || 'rgb(239, 237, 234)';
             context.stroke();
@@ -94,7 +96,7 @@ export default (urlWorld, urlCountryNames) => {
             options.showLakes = true;
             options.showCountries = true;
             options.transparentLand = false;
-            options.showCountrySelected = true;
+            options.showSelectedCountry = false;
             options.landColor = 0;
         },
         onCreate() {
@@ -105,7 +107,7 @@ export default (urlWorld, urlCountryNames) => {
                         this._.refresh()
                     }
                 };
-                this.hoverCanvas.addSelectCountryEvent({worldCanvas});
+                this.hoverCanvas.onCountry({worldCanvas});
             }
         },
         onRefresh() {

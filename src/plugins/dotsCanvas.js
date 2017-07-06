@@ -3,8 +3,8 @@ export default urlJson => {
     const _ = {dataDots: null, circles: [], radiusPath: null, onDot: {}, onDotKeys: []};
 
     function create() {
-        if (_.dataDots && this._.options.showDots) {
-            const __ = this._;
+        const __ = this._;
+        if (!__.drag && _.dataDots && this._.options.showDots) {
             const proj = this._.proj;
             const _g = _.dataDots.geometry || {};
             const center = proj.invert(this._.center);
@@ -71,7 +71,7 @@ export default urlJson => {
             });
             return detected;
         }
-        this.hoverCanvas.addSelectCircleEvent({
+        this.hoverCanvas.onCircle({
             dotsCanvas: circleHandler
         });
     }

@@ -36,13 +36,15 @@ export default function() {
                 });
             }
             if (__.options.showLand && _.countries && !_.dot) {
-                _.country = _.countries.features.find(function(f) {
-                    return f.geometry.coordinates.find(function(c1) {
-                        return d3.polygonContains(c1, pos) || c1.find(function(c2) {
-                            return d3.polygonContains(c2, pos)
+                if (!__.drag) {
+                    _.country = _.countries.features.find(function(f) {
+                        return f.geometry.coordinates.find(function(c1) {
+                            return d3.polygonContains(c1, pos) || c1.find(function(c2) {
+                                return d3.polygonContains(c2, pos)
+                            })
                         })
-                    })
-                });
+                    });                    
+                }
                 _.onCountryKeys.forEach(k => {
                     _.onCountry[k].call(this, _.mouse, _.country);
                 });
@@ -61,11 +63,11 @@ export default function() {
         onInit() {
             initMouseMoveHandler.call(this);
         },
-        addSelectCircleEvent(obj) {
+        onCircle(obj) {
             Object.assign(_.onCircle, obj);
             _.onCircleKeys = Object.keys(_.onCircle);
         },
-        addSelectCountryEvent(obj) {
+        onCountry(obj) {
             Object.assign(_.onCountry, obj);
             _.onCountryKeys = Object.keys(_.onCountry);
         },

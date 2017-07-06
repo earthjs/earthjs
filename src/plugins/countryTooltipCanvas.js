@@ -20,7 +20,7 @@ export default function() {
         onInit() {
             const toolTipsHandler = () => {
                 const {country, mouse} = this.hoverCanvas.data();
-                if (country && this._.options.showCountryTooltip) {
+                if (!this._.drag && country && this._.options.showCountryTooltip) {
                     const countryName = this.worldCanvas.countryName(country);
                     if (countryName && !(this.barTooltipSvg && this.barTooltipSvg.visible())) {
                         refresh(mouse)
@@ -34,7 +34,7 @@ export default function() {
                     hideTooltip()
                 }
             }
-            this.hoverCanvas.addSelectCountryEvent({
+            this.hoverCanvas.onCountry({
                 countryTooltipCanvas: toolTipsHandler
             });
             if (this.versorDragPlugin) {

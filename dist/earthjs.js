@@ -580,13 +580,15 @@ var hoverCanvas = function () {
                 });
             }
             if (__.options.showLand && _.countries && !_.dot) {
-                _.country = _.countries.features.find(function (f) {
-                    return f.geometry.coordinates.find(function (c1) {
-                        return d3.polygonContains(c1, pos) || c1.find(function (c2) {
-                            return d3.polygonContains(c2, pos);
+                if (!__.drag) {
+                    _.country = _.countries.features.find(function (f) {
+                        return f.geometry.coordinates.find(function (c1) {
+                            return d3.polygonContains(c1, pos) || c1.find(function (c2) {
+                                return d3.polygonContains(c2, pos);
+                            });
                         });
                     });
-                });
+                }
                 _.onCountryKeys.forEach(function (k) {
                     _.onCountry[k].call(_this, _.mouse, _.country);
                 });
@@ -605,11 +607,11 @@ var hoverCanvas = function () {
         onInit: function onInit() {
             initMouseMoveHandler.call(this);
         },
-        addSelectCircleEvent: function addSelectCircleEvent(obj) {
+        onCircle: function onCircle(obj) {
             Object.assign(_.onCircle, obj);
             _.onCircleKeys = Object.keys(_.onCircle);
         },
-        addSelectCountryEvent: function addSelectCountryEvent(obj) {
+        onCountry: function onCountry(obj) {
             Object.assign(_.onCountry, obj);
             _.onCountryKeys = Object.keys(_.onCountry);
         },
@@ -1028,7 +1030,7 @@ var countryTooltipCanvas = function () {
                     country = _hoverCanvas$data.country,
                     mouse = _hoverCanvas$data.mouse;
 
-                if (country && _this._.options.showCountryTooltip) {
+                if (!_this._.drag && country && _this._.options.showCountryTooltip) {
                     var countryName = _this.worldCanvas.countryName(country);
                     if (countryName && !(_this.barTooltipSvg && _this.barTooltipSvg.visible())) {
                         refresh(mouse).style("display", "block").style("opacity", 1).text(countryName.name);
@@ -1039,7 +1041,7 @@ var countryTooltipCanvas = function () {
                     hideTooltip();
                 }
             };
-            this.hoverCanvas.addSelectCountryEvent({
+            this.hoverCanvas.onCountry({
                 countryTooltipCanvas: toolTipsHandler
             });
             if (this.versorDragPlugin) {
@@ -1276,18 +1278,17 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
                 }, _.drawTo, _.options);
                 __.proj.clipAngle(90);
             }
-            canvasAddWorld.call(this);
+            __.options.showCountries ? canvasAddCountries.call(this) : canvasAddWorld.call(this);
             if (!__.drag) {
-                __.options.showCountries && canvasAddCountries.call(this);
                 __.options.showLakes && canvasAddLakes.call(this);
-            }
-            if (this.hoverCanvas && __.options.showCountrySelected) {
-                this.canvasPlugin.render(function (context, path) {
-                    context.beginPath();
-                    path(this.hoverCanvas.data().country);
-                    context.fillStyle = 'rgba(117, 0, 0, 0.4)';
-                    context.fill();
-                }, _.drawTo, _.options);
+                if (this.hoverCanvas && __.options.showSelectedCountry) {
+                    this.canvasPlugin.render(function (context, path) {
+                        context.beginPath();
+                        path(this.hoverCanvas.data().country);
+                        context.fillStyle = 'rgba(117, 0, 0, 0.4)';
+                        context.fill();
+                    }, _.drawTo, _.options);
+                }
             }
         }
     }
@@ -1304,8 +1305,11 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
 
     function canvasAddCountries() {
         this.canvasPlugin.render(function (context, path) {
+            var c = _.landColor;
             context.beginPath();
             path(_.countries);
+            context.fillStyle = _.style.land || typeof c === 'number' ? color[c] : c;
+            context.fill();
             context.lineWidth = 0.1;
             context.strokeStyle = _.style.countries || 'rgb(239, 237, 234)';
             context.stroke();
@@ -1349,7 +1353,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
             options.showLakes = true;
             options.showCountries = true;
             options.transparentLand = false;
-            options.showCountrySelected = true;
+            options.showSelectedCountry = false;
             options.landColor = 0;
         },
         onCreate: function onCreate() {
@@ -1362,7 +1366,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
                         _this._.refresh();
                     }
                 };
-                this.hoverCanvas.addSelectCountryEvent({ worldCanvas: worldCanvas });
+                this.hoverCanvas.onCountry({ worldCanvas: worldCanvas });
             }
         },
         onRefresh: function onRefresh() {
@@ -1966,8 +1970,8 @@ var dotsCanvas = (function (urlJson) {
     var _ = { dataDots: null, circles: [], radiusPath: null, onDot: {}, onDotKeys: [] };
 
     function create() {
-        if (_.dataDots && this._.options.showDots) {
-            var __ = this._;
+        var __ = this._;
+        if (!__.drag && _.dataDots && this._.options.showDots) {
             var proj = this._.proj;
             var _g = _.dataDots.geometry || {};
             var center = proj.invert(this._.center);
@@ -2036,7 +2040,7 @@ var dotsCanvas = (function (urlJson) {
             });
             return detected;
         };
-        this.hoverCanvas.addSelectCircleEvent({
+        this.hoverCanvas.onCircle({
             dotsCanvas: circleHandler
         });
     }
