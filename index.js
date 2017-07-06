@@ -4,6 +4,7 @@ import wheelZoomPlugin from './src/plugins/wheelZoomPlugin.js';
 import threejsPlugin from './src/plugins/threejsPlugin.js';
 import canvasPlugin from './src/plugins/canvasPlugin.js';
 import hoverCanvas from './src/plugins/hoverCanvas';
+import clickCanvas from './src/plugins/clickCanvas';
 import oceanSvg from './src/plugins/oceanSvg.js';
 import configPlugin from './src/plugins/configPlugin.js';
 import graticuleCanvas from './src/plugins/graticuleCanvas.js';
@@ -34,6 +35,7 @@ app.plugins= {
     threejsPlugin,
     canvasPlugin,
     hoverCanvas,
+    clickCanvas,
     oceanSvg,
     configPlugin,
     graticuleCanvas,

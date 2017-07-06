@@ -1,7 +1,12 @@
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 export default function() {
     /*eslint no-console: 0 */
-    const _ = {svg:null, q: null, sync: [], mouse: null, onDrag: {}, onDragKeys: []};
+    const _ = {svg:null, q: null, sync: [], mouse: null,
+        onDrag: {},
+        onDragKeys: [],
+        onClick: {},
+        onClickKeys: []
+    };
 
     function dragSetup() {
         const __ = this._;
@@ -25,12 +30,14 @@ export default function() {
         }
 
         function dragstarted() {
+            const mouse = d3.mouse(this);
             v0 = versor.cartesian(__.proj.invert(d3.mouse(this)));
             r0 = __.proj.rotate();
             q0 = versor(r0);
             __.drag = null;
             __.refresh();
-            _.mouse = null;
+            _.mouse = mouse;
+            _._this = this;
         }
 
         function dragged() {
@@ -45,14 +52,21 @@ export default function() {
         }
 
         function dragsended() {
-            __.drag = false;
-            __.rotate( _.r);
-            _.onDragKeys.forEach(k => {
-                _.onDrag[k].call(_._this, _.mouse);
-            });
-            _.sync.forEach(function(g) {
-                rotate.call(g, _.r);
-            })
+            if (__.drag===null) {
+                console.log('clicked!!!');
+                _.onClickKeys.forEach(k => {
+                    _.onClick[k].call(_._this, _.mouse);
+                });
+            } else {
+                __.drag = false;
+                __.rotate( _.r);
+                _.onDragKeys.forEach(k => {
+                    _.onDrag[k].call(_._this, _.mouse);
+                });
+                _.sync.forEach(function(g) {
+                    rotate.call(g, _.r);
+                })
+            }
             _.mouse = null;
             _.r = null;
         }
@@ -94,6 +108,10 @@ export default function() {
         onDrag(obj) {
             Object.assign(_.onDrag, obj);
             _.onDragKeys = Object.keys(_.onDrag);
+        },
+        onClick(obj) {
+            Object.assign(_.onClick, obj);
+            _.onClickKeys = Object.keys(_.onClick);
         }
     }
 }

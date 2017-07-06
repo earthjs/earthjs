@@ -57,16 +57,15 @@ export default function() {
                 });
             }
         }
-        __.svg.on("mousemove", mouseMoveHandler);
         if (this.versorDragPlugin) {
-            this.versorDragPlugin.onDrag({
-                hoverCanvas: mouseMoveHandler
+            this.versorDragPlugin.onClick({
+                clickCanvas: mouseMoveHandler
             });
         }
     }
 
     return {
-        name: 'hoverCanvas',
+        name: 'clickCanvas',
         onInit() {
             initMouseMoveHandler.call(this);
         },
