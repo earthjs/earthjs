@@ -24,7 +24,7 @@
         g.register(earthjs.plugins.worldSvg('./d/world-110m.json', './d/world-110m-country-names.tsv'));
         g.register(earthjs.plugins.countryTooltipSvg());
         g.register(earthjs.plugins.flattenPlugin());
-        g.register(earthjs.plugins.centerPlugin());
+        g.register(earthjs.plugins.centerSvg());
         g.ready(function(){
             g.create();
         })

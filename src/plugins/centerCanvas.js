@@ -1,7 +1,7 @@
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 export default () => {
     /*eslint no-console: 0 */
-    const _ = {focused: null, svgAddCountriesOld: null}
+    const _ = {focused: null}
 
     function country(cnt, id) {
         id = id.replace('x', '');
@@ -23,31 +23,31 @@ export default () => {
 
     function create() {
         const _this = this;
-        this.worldSvg.$countries()
-        .on("click", function() {
-            if (_this._.options.enableCenter) {
-                const id = this.id.replace('x', '');
-                const c = _this.worldSvg.countries();
-                const focusedCountry = country(c, id);
-                const p = d3.geoCentroid(focusedCountry);
-                transition.call(_this, p);
-                if (typeof(_.focused)==='function') {
-                    _.focused.call(_this);
+        if (this.clickCanvas) {
+            this.clickCanvas.onCountry({
+                centerCanvas: function(mouse, focusedCountry) {
+                    const p = d3.geoCentroid(focusedCountry);
+                    transition.call(_this, p);
+                    if (typeof(_.focused)==='function') {
+                        _.focused.call(_this);
+                    }
                 }
-            }
-        });
+            })
+        }
     }
 
     return {
-        name: 'centerPlugin',
+        name: 'centerCanvas',
         onInit() {
-            this._.options.enableCenter = true;
+            const options = this._.options;
+            options.enableCenter = true;
+            options.showSelectedCountry = true;
         },
         onCreate() {
             create.call(this);
         },
         go(id) {
-            const c = this.worldSvg.countries();
+            const c = this.worldCanvas.countries();
             const focusedCountry = country(c, id),
                 p = d3.geoCentroid(focusedCountry);
             transition.call(this, p);

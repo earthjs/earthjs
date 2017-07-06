@@ -31,8 +31,8 @@
             g.barSvg.data(json);
         };
         g.ready(function(){
-            g.register(earthjs.plugins.centerPlugin());
-            g.centerPlugin.focused(function() {
+            g.register(earthjs.plugins.centerSvg());
+            g.centerSvg.focused(function() {
                 g.autorotatePlugin.stop();
                 options.spin = false;
             })

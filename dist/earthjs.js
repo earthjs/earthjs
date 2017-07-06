@@ -700,7 +700,7 @@ var clickCanvas = function () {
         });
     }
 
-    function initMouseMoveHandler() {
+    function initmouseClickHandler() {
         if (this.worldCanvas) {
             var _worldCanvas$data = this.worldCanvas.data(),
                 world = _worldCanvas$data.world;
@@ -710,7 +710,7 @@ var clickCanvas = function () {
             }
         }
         var __ = this._;
-        var mouseMoveHandler = function mouseMoveHandler() {
+        var mouseClickHandler = function mouseClickHandler() {
             var _this = this;
 
             var event = d3.event;
@@ -731,7 +731,7 @@ var clickCanvas = function () {
                     _.dot = _.onCircle[k].call(_this, _.mouse, pos);
                 });
             }
-            if (__.options.showLand && _.countries && !_.dot) {
+            if (__.options.showLand && !_.dot) {
                 if (!__.drag) {
                     _.country = findCountry(pos);
                 }
@@ -742,7 +742,7 @@ var clickCanvas = function () {
         };
         if (this.versorDragPlugin) {
             this.versorDragPlugin.onClick({
-                clickCanvas: mouseMoveHandler
+                clickCanvas: mouseClickHandler
             });
         }
     }
@@ -750,7 +750,7 @@ var clickCanvas = function () {
     return {
         name: 'clickCanvas',
         onInit: function onInit() {
-            initMouseMoveHandler.call(this);
+            initmouseClickHandler.call(this);
         },
         onCircle: function onCircle(obj) {
             Object.assign(_.onCircle, obj);
@@ -1517,6 +1517,9 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
         onRefresh: function onRefresh() {
             create.call(this);
         },
+        countries: function countries() {
+            return _.countries.features;
+        },
         data: function data(_data) {
             if (_data) {
                 _.world = _data.world;
@@ -1728,7 +1731,69 @@ var worldThreejs = function () {
 };
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-var centerPlugin = (function () {
+var centerCanvas = (function () {
+    /*eslint no-console: 0 */
+    var _ = { focused: null };
+
+    function country(cnt, id) {
+        id = id.replace('x', '');
+        for (var i = 0, l = cnt.length; i < l; i++) {
+            if (cnt[i].id == id) {
+                return cnt[i];
+            }
+        }
+    }
+
+    function transition(p) {
+        var _this2 = this;
+
+        d3.transition().duration(2500).tween("rotate", function () {
+            var r = d3.interpolate(_this2._.proj.rotate(), [-p[0], -p[1], 0]);
+            return function (t) {
+                _this2._.rotate(r(t));
+            };
+        });
+    }
+
+    function create() {
+        var _this = this;
+        if (this.clickCanvas) {
+            this.clickCanvas.onCountry({
+                centerCanvas: function centerCanvas(mouse, focusedCountry) {
+                    var p = d3.geoCentroid(focusedCountry);
+                    transition.call(_this, p);
+                    if (typeof _.focused === 'function') {
+                        _.focused.call(_this);
+                    }
+                }
+            });
+        }
+    }
+
+    return {
+        name: 'centerCanvas',
+        onInit: function onInit() {
+            var options = this._.options;
+            options.enableCenter = true;
+            options.showSelectedCountry = true;
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        go: function go(id) {
+            var c = this.worldCanvas.countries();
+            var focusedCountry = country(c, id),
+                p = d3.geoCentroid(focusedCountry);
+            transition.call(this, p);
+        },
+        focused: function focused(fn) {
+            _.focused = fn;
+        }
+    };
+});
+
+// KoGor’s Block http://bl.ocks.org/KoGor/5994804
+var centerSvg = (function () {
     /*eslint no-console: 0 */
     var _ = { focused: null, svgAddCountriesOld: null };
 
@@ -1769,7 +1834,7 @@ var centerPlugin = (function () {
     }
 
     return {
-        name: 'centerPlugin',
+        name: 'centerSvg',
         onInit: function onInit() {
             this._.options.enableCenter = true;
         },
@@ -2570,7 +2635,8 @@ earthjs$1.plugins = {
     worldCanvas: worldCanvas,
     worldSvg: worldSvg,
     worldThreejs: worldThreejs,
-    centerPlugin: centerPlugin,
+    centerCanvas: centerCanvas,
+    centerSvg: centerSvg,
     flattenPlugin: flattenPlugin,
     barSvg: barSvg,
     dotsSvg: dotsSvg,

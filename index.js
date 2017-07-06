@@ -20,7 +20,8 @@ import placesSvg from './src/plugins/placesSvg.js';
 import worldCanvas from './src/plugins/worldCanvas.js';
 import worldSvg from './src/plugins/worldSvg.js';
 import worldThreejs from './src/plugins/worldThreejs.js';
-import centerPlugin from './src/plugins/centerPlugin.js';
+import centerCanvas from './src/plugins/centerCanvas.js';
+import centerSvg from './src/plugins/centerSvg.js';
 import flattenPlugin from './src/plugins/flattenPlugin.js';
 import barSvg from './src/plugins/barSvg.js';
 import dotsSvg from './src/plugins/dotsSvg.js';
@@ -51,7 +52,8 @@ app.plugins= {
     worldCanvas,
     worldSvg,
     worldThreejs,
-    centerPlugin,
+    centerCanvas,
+    centerSvg,
     flattenPlugin,
     barSvg,
     dotsSvg,

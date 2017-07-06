@@ -21,12 +21,26 @@
         g.register(earthjs.plugins.fauxGlobeSvg());
         g.register(earthjs.plugins.worldCanvas('./d/world-110m.json', './d/world-110m-country-names.tsv'));
         g.register(earthjs.plugins.hoverCanvas());
+        g.register(earthjs.plugins.clickCanvas());
+        g.register(earthjs.plugins.centerCanvas());
         g.register(earthjs.plugins.countryTooltipCanvas());
+
+        // g.clickCanvas.onCountry({
+        //     dodol: function(mouse, country) {
+        //         console.log(mouse, country);
+        //     }
+        // })
+
+        g.centerCanvas.focused(function() {
+            g.autorotatePlugin.stop();
+        })
 
         g.canvasPlugin.selectAll('.canvas');
         g.configPlugin.set({transparent: true, showCountries: false, showLakes: false});
         g.ready(function(){
-            g.hoverCanvas.world(g.worldCanvas.data().world);
+            const world = g.worldCanvas.data().world;
+            g.hoverCanvas.world(world);
+            g.clickCanvas.world(world);
             g.create();
         })
     </script>

@@ -19,7 +19,8 @@ Support Canvas in or outside SVG!
 Selected plugins bundled into library:
 
 * configPlugin,
-* centerPlugin,
+* centerCanvas,
+* centerSvg,
 * flattenPlugin,
 * wheelZoomPlugin,
 * versorDragPlugin,
@@ -28,6 +29,7 @@ Selected plugins bundled into library:
 * threejsPlugin,
 * dropShadowSvg,
 * oceanSvg,
+* clickCanvas,
 * hoverCanvas,
 * graticuleSvg,
 * fauxGlobeSvg,

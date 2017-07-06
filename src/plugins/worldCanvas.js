@@ -113,6 +113,9 @@ export default (urlWorld, urlCountryNames) => {
         onRefresh() {
             create.call(this);
         },
+        countries() {
+            return _.countries.features;
+        },
         data(data) {
             if (data) {
                 _.world = data.world;

@@ -21,7 +21,7 @@ export default function() {
         });
     }
 
-    function initMouseMoveHandler() {
+    function initmouseClickHandler() {
         if (this.worldCanvas) {
             const {world} = this.worldCanvas.data();
             if (world) {
@@ -29,7 +29,7 @@ export default function() {
             }
         }
         const __ = this._;
-        const mouseMoveHandler = function() {
+        const mouseClickHandler = function() {
             let event = d3.event;
             if (!event) {
                 return;
@@ -48,7 +48,7 @@ export default function() {
                     _.dot = _.onCircle[k].call(this, _.mouse, pos);
                 });
             }
-            if (__.options.showLand && _.countries && !_.dot) {
+            if (__.options.showLand && !_.dot) {
                 if (!__.drag) {
                     _.country = findCountry(pos);
                 }
@@ -59,7 +59,7 @@ export default function() {
         }
         if (this.versorDragPlugin) {
             this.versorDragPlugin.onClick({
-                clickCanvas: mouseMoveHandler
+                clickCanvas: mouseClickHandler
             });
         }
     }
@@ -67,7 +67,7 @@ export default function() {
     return {
         name: 'clickCanvas',
         onInit() {
-            initMouseMoveHandler.call(this);
+            initmouseClickHandler.call(this);
         },
         onCircle(obj) {
             Object.assign(_.onCircle, obj);
