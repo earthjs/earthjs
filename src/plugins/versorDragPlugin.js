@@ -5,6 +5,7 @@ export default function() {
 
     function dragSetup() {
         const __ = this._;
+        // const _this = this;
         const versor = __.versor;
         _.svg.call(d3.drag()
             .on('start',dragstarted)
@@ -33,25 +34,27 @@ export default function() {
         }
 
         function dragged() {
+            // DOM update must be onInterval!
             const mouse = d3.mouse(this);
             const v1 = versor.cartesian(__.proj.rotate(r0).invert(mouse)),
                   q1 = versor.multiply(q0, versor.delta(v0, v1));
-            __.rotate( versor.rotation(q1) );
-            __.drag = true;
+            _.r = versor.rotation(q1);
             _.mouse = mouse;
-            _.onDragKeys.forEach(k => {
-                _.onDrag[k].call(this, mouse);
-            });
+            _._this = this;
+            __.drag = true;
         }
 
         function dragsended() {
-            const r = __.proj.rotate();
-            _.sync.forEach(function(g) {
-                rotate.call(g, r);
-            })
             __.drag = false;
-            __.refresh();
+            __.rotate( _.r);
+            _.onDragKeys.forEach(k => {
+                _.onDrag[k].call(_._this, _.mouse);
+            });
+            _.sync.forEach(function(g) {
+                rotate.call(g, _.r);
+            })
             _.mouse = null;
+            _.r = null;
         }
     }
 
@@ -60,6 +63,15 @@ export default function() {
         onInit() {
             _.svg = this._.svg;
             dragSetup.call(this);
+        },
+        onInterval() {
+            const __ = this._;
+            if (__.drag && _.r) {
+                __.rotate( _.r);
+                _.onDragKeys.forEach(k => {
+                    _.onDrag[k].call(this, _.mouse);
+                });
+            }
         },
         selectAll(q) {
             if (q) {

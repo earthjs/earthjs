@@ -12,22 +12,26 @@ const earthjs = (options={}) => {
     const _ = {
         onCreate: {},
         onCreateKeys: [],
+        onCreateVals: [],
 
         onRefresh: {},
         onRefreshKeys: [],
+        onRefreshVals: [],
 
         onResize: {},
         onResizeKeys: [],
+        onResizeVals: [],
 
         onInterval: {},
         onIntervalKeys: [],
+        onIntervalVals: [],
 
         ready: null,
         promeses: [],
         loadingData: null,
         recreateSvgOrCanvas: function() {
-            _.onCreateKeys.forEach(function(fn) {
-                _.onCreate[fn].call(globe);
+            _.onCreateVals.forEach(function(fn) {
+                fn.call(globe);
             });
             return globe;
         }
@@ -185,23 +189,29 @@ const earthjs = (options={}) => {
     }
 
     __.interval = function() {
-        _.onIntervalKeys.forEach(function(fn) {
-            _.onInterval[fn].call(globe);
+        _.onIntervalVals.forEach(function(fn) {
+            fn.call(globe);
         });
         return globe;
     }
 
     __.refresh = function(filter) {
-        const keys = filter ? _.onRefreshKeys.filter(d => filter.test(d)) : _.onRefreshKeys;
-        keys.forEach(function(fn) {
-            _.onRefresh[fn].call(globe);
-        });
+        if (filter) {
+            const keys = filter ? _.onRefreshKeys.filter(d => filter.test(d)) : _.onRefreshKeys;
+            keys.forEach(function(fn) {
+                _.onRefresh[fn].call(globe);
+            });
+        } else {
+            _.onRefreshVals.forEach(function(fn) {
+                fn.call(globe);
+            });
+        }
         return globe;
     }
 
     __.resize = function() {
-        _.onResizeKeys.forEach(function(fn) {
-            _.onResize[fn].call(globe);
+        _.onResizeVals.forEach(function(fn) {
+            fn.call(globe);
         });
         return globe;
     }
@@ -223,6 +233,7 @@ const earthjs = (options={}) => {
         if (obj[qname]) {
             _[qname][obj.name] = obj[qname];
             _[qname+'Keys'] = Object.keys(_[qname]);
+            _[qname+'Vals'] = Object.values(_[qname]);
         }
     }
 }

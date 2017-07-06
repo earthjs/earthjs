@@ -21,6 +21,9 @@ export default function() {
         const __ = this._;
         const mouseMoveHandler = function() {
             let event = d3.event;
+            if (!event) {
+                return;
+            }
             if (event.sourceEvent) {
                 event = event.sourceEvent;
             }
@@ -43,7 +46,7 @@ export default function() {
                                 return d3.polygonContains(c2, pos)
                             })
                         })
-                    });                    
+                    });
                 }
                 _.onCountryKeys.forEach(k => {
                     _.onCountry[k].call(this, _.mouse, _.country);

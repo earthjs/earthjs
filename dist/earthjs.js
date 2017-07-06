@@ -84,22 +84,26 @@ var earthjs$1 = function earthjs() {
     var _ = {
         onCreate: {},
         onCreateKeys: [],
+        onCreateVals: [],
 
         onRefresh: {},
         onRefreshKeys: [],
+        onRefreshVals: [],
 
         onResize: {},
         onResizeKeys: [],
+        onResizeVals: [],
 
         onInterval: {},
         onIntervalKeys: [],
+        onIntervalVals: [],
 
         ready: null,
         promeses: [],
         loadingData: null,
         recreateSvgOrCanvas: function recreateSvgOrCanvas() {
-            _.onCreateKeys.forEach(function (fn) {
-                _.onCreate[fn].call(globe);
+            _.onCreateVals.forEach(function (fn) {
+                fn.call(globe);
             });
             return globe;
         }
@@ -256,25 +260,31 @@ var earthjs$1 = function earthjs() {
     };
 
     __.interval = function () {
-        _.onIntervalKeys.forEach(function (fn) {
-            _.onInterval[fn].call(globe);
+        _.onIntervalVals.forEach(function (fn) {
+            fn.call(globe);
         });
         return globe;
     };
 
     __.refresh = function (filter) {
-        var keys = filter ? _.onRefreshKeys.filter(function (d) {
-            return filter.test(d);
-        }) : _.onRefreshKeys;
-        keys.forEach(function (fn) {
-            _.onRefresh[fn].call(globe);
-        });
+        if (filter) {
+            var keys = filter ? _.onRefreshKeys.filter(function (d) {
+                return filter.test(d);
+            }) : _.onRefreshKeys;
+            keys.forEach(function (fn) {
+                _.onRefresh[fn].call(globe);
+            });
+        } else {
+            _.onRefreshVals.forEach(function (fn) {
+                fn.call(globe);
+            });
+        }
         return globe;
     };
 
     __.resize = function () {
-        _.onResizeKeys.forEach(function (fn) {
-            _.onResize[fn].call(globe);
+        _.onResizeVals.forEach(function (fn) {
+            fn.call(globe);
         });
         return globe;
     };
@@ -291,6 +301,7 @@ var earthjs$1 = function earthjs() {
         if (obj[qname]) {
             _[qname][obj.name] = obj[qname];
             _[qname + 'Keys'] = Object.keys(_[qname]);
+            _[qname + 'Vals'] = Object.values(_[qname]);
         }
     }
 };
@@ -302,6 +313,7 @@ var versorDragPlugin = function () {
 
     function dragSetup() {
         var __ = this._;
+        // const _this = this;
         var versor = __.versor;
         _.svg.call(d3.drag().on('start', dragstarted).on('end', dragsended).on('drag', dragged));
 
@@ -328,27 +340,27 @@ var versorDragPlugin = function () {
         }
 
         function dragged() {
-            var _this = this;
-
+            // DOM update must be onInterval!
             var mouse = d3.mouse(this);
             var v1 = versor.cartesian(__.proj.rotate(r0).invert(mouse)),
                 q1 = versor.multiply(q0, versor.delta(v0, v1));
-            __.rotate(versor.rotation(q1));
-            __.drag = true;
+            _.r = versor.rotation(q1);
             _.mouse = mouse;
-            _.onDragKeys.forEach(function (k) {
-                _.onDrag[k].call(_this, mouse);
-            });
+            _._this = this;
+            __.drag = true;
         }
 
         function dragsended() {
-            var r = __.proj.rotate();
-            _.sync.forEach(function (g) {
-                rotate.call(g, r);
-            });
             __.drag = false;
-            __.refresh();
+            __.rotate(_.r);
+            _.onDragKeys.forEach(function (k) {
+                _.onDrag[k].call(_._this, _.mouse);
+            });
+            _.sync.forEach(function (g) {
+                rotate.call(g, _.r);
+            });
             _.mouse = null;
+            _.r = null;
         }
     }
 
@@ -357,6 +369,17 @@ var versorDragPlugin = function () {
         onInit: function onInit() {
             _.svg = this._.svg;
             dragSetup.call(this);
+        },
+        onInterval: function onInterval() {
+            var _this = this;
+
+            var __ = this._;
+            if (__.drag && _.r) {
+                __.rotate(_.r);
+                _.onDragKeys.forEach(function (k) {
+                    _.onDrag[k].call(_this, _.mouse);
+                });
+            }
         },
         selectAll: function selectAll(q) {
             if (q) {
@@ -565,6 +588,9 @@ var hoverCanvas = function () {
             var _this = this;
 
             var event = d3.event;
+            if (!event) {
+                return;
+            }
             if (event.sourceEvent) {
                 event = event.sourceEvent;
             }
