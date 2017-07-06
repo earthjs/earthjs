@@ -35,9 +35,8 @@ export default function() {
         function dragged() {
             const mouse = d3.mouse(this);
             const v1 = versor.cartesian(__.proj.rotate(r0).invert(mouse)),
-                q1 = versor.multiply(q0, versor.delta(v0, v1)),
-                r1 = versor.rotation(q1);
-            __.rotate(r1);
+                  q1 = versor.multiply(q0, versor.delta(v0, v1));
+            __.rotate( versor.rotation(q1) );
             __.drag = true;
             _.mouse = mouse;
             _.onDragKeys.forEach(k => {

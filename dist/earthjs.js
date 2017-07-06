@@ -332,9 +332,8 @@ var versorDragPlugin = function () {
 
             var mouse = d3.mouse(this);
             var v1 = versor.cartesian(__.proj.rotate(r0).invert(mouse)),
-                q1 = versor.multiply(q0, versor.delta(v0, v1)),
-                r1 = versor.rotation(q1);
-            __.rotate(r1);
+                q1 = versor.multiply(q0, versor.delta(v0, v1));
+            __.rotate(versor.rotation(q1));
             __.drag = true;
             _.mouse = mouse;
             _.onDragKeys.forEach(function (k) {
@@ -546,10 +545,10 @@ var hoverCanvas = function () {
         mouse: null,
         country: null,
         countries: null,
-        addSelectCircleEvent: {},
-        addSelectCircleEventKeys: [],
-        addSelectCountryEvent: {},
-        addSelectCountryEventKeys: []
+        onCircle: {},
+        onCircleKeys: [],
+        onCountry: {},
+        onCountryKeys: []
     };
 
     function initMouseMoveHandler() {
@@ -576,8 +575,8 @@ var hoverCanvas = function () {
             _.mouse = mouse;
             _.country = null;
             if (__.options.showDots) {
-                _.addSelectCircleEventKeys.forEach(function (k) {
-                    _.dot = _.addSelectCircleEvent[k].call(_this, _.mouse, pos);
+                _.onCircleKeys.forEach(function (k) {
+                    _.dot = _.onCircle[k].call(_this, _.mouse, pos);
                 });
             }
             if (__.options.showLand && _.countries && !_.dot) {
@@ -588,8 +587,8 @@ var hoverCanvas = function () {
                         });
                     });
                 });
-                _.addSelectCountryEventKeys.forEach(function (k) {
-                    _.addSelectCountryEvent[k].call(_this, _.mouse, _.country);
+                _.onCountryKeys.forEach(function (k) {
+                    _.onCountry[k].call(_this, _.mouse, _.country);
                 });
             }
         };
@@ -607,12 +606,12 @@ var hoverCanvas = function () {
             initMouseMoveHandler.call(this);
         },
         addSelectCircleEvent: function addSelectCircleEvent(obj) {
-            Object.assign(_.addSelectCircleEvent, obj);
-            _.addSelectCircleEventKeys = Object.keys(_.addSelectCircleEvent);
+            Object.assign(_.onCircle, obj);
+            _.onCircleKeys = Object.keys(_.onCircle);
         },
         addSelectCountryEvent: function addSelectCountryEvent(obj) {
-            Object.assign(_.addSelectCountryEvent, obj);
-            _.addSelectCountryEventKeys = Object.keys(_.addSelectCountryEvent);
+            Object.assign(_.onCountry, obj);
+            _.onCountryKeys = Object.keys(_.onCountry);
         },
         world: function world(w) {
             _.countries = topojson.feature(w, w.objects.countries);
@@ -1283,12 +1282,9 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
                 __.options.showLakes && canvasAddLakes.call(this);
             }
             if (this.hoverCanvas && __.options.showCountrySelected) {
-                var _hoverCanvas$data = this.hoverCanvas.data(),
-                    country = _hoverCanvas$data.country;
-
                 this.canvasPlugin.render(function (context, path) {
                     context.beginPath();
-                    path(country);
+                    path(this.hoverCanvas.data().country);
                     context.fillStyle = 'rgba(117, 0, 0, 0.4)';
                     context.fill();
                 }, _.drawTo, _.options);

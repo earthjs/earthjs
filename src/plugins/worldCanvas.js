@@ -29,10 +29,9 @@ export default (urlWorld, urlCountryNames) => {
                 __.options.showLakes && canvasAddLakes.call(this);
             }
             if (this.hoverCanvas && __.options.showCountrySelected) {
-                const {country} = this.hoverCanvas.data();
                 this.canvasPlugin.render(function(context, path) {
                     context.beginPath();
-                    path(country);
+                    path(this.hoverCanvas.data().country);
                     context.fillStyle = 'rgba(117, 0, 0, 0.4)';
                     context.fill();
                 }, _.drawTo, _.options);

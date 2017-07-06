@@ -5,10 +5,10 @@ export default function() {
         mouse: null,
         country: null,
         countries: null,
-        addSelectCircleEvent: {},
-        addSelectCircleEventKeys: [],
-        addSelectCountryEvent: {},
-        addSelectCountryEventKeys: []
+        onCircle: {},
+        onCircleKeys: [],
+        onCountry: {},
+        onCountryKeys: []
     }
 
     function initMouseMoveHandler() {
@@ -31,8 +31,8 @@ export default function() {
             _.mouse = mouse;
             _.country = null;
             if (__.options.showDots) {
-                _.addSelectCircleEventKeys.forEach(k => {
-                    _.dot = _.addSelectCircleEvent[k].call(this, _.mouse, pos);
+                _.onCircleKeys.forEach(k => {
+                    _.dot = _.onCircle[k].call(this, _.mouse, pos);
                 });
             }
             if (__.options.showLand && _.countries && !_.dot) {
@@ -43,8 +43,8 @@ export default function() {
                         })
                     })
                 });
-                _.addSelectCountryEventKeys.forEach(k => {
-                    _.addSelectCountryEvent[k].call(this, _.mouse, _.country);
+                _.onCountryKeys.forEach(k => {
+                    _.onCountry[k].call(this, _.mouse, _.country);
                 });
             }
         }
@@ -62,12 +62,12 @@ export default function() {
             initMouseMoveHandler.call(this);
         },
         addSelectCircleEvent(obj) {
-            Object.assign(_.addSelectCircleEvent, obj);
-            _.addSelectCircleEventKeys = Object.keys(_.addSelectCircleEvent);
+            Object.assign(_.onCircle, obj);
+            _.onCircleKeys = Object.keys(_.onCircle);
         },
         addSelectCountryEvent(obj) {
-            Object.assign(_.addSelectCountryEvent, obj);
-            _.addSelectCountryEventKeys = Object.keys(_.addSelectCountryEvent);
+            Object.assign(_.onCountry, obj);
+            _.onCountryKeys = Object.keys(_.onCountry);
         },
         world(w) {
             _.countries = topojson.feature(w, w.objects.countries);
