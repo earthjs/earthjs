@@ -1,5 +1,5 @@
 import app from './src/earthjs';
-import versorDragPlugin from './src/plugins/versorDragPlugin.js';
+import versorMousePlugin from './src/plugins/versorMousePlugin.js';
 import wheelZoomPlugin from './src/plugins/wheelZoomPlugin.js';
 import threejsPlugin from './src/plugins/threejsPlugin.js';
 import canvasPlugin from './src/plugins/canvasPlugin.js';
@@ -31,7 +31,7 @@ import pingsSvg from './src/plugins/pingsSvg.js';
 import debugThreejs from './src/plugins/debugThreejs.js';
 import commonPlugins from './src/pluginLoader/commonPlugins';
 app.plugins= {
-    versorDragPlugin,
+    versorMousePlugin,
     wheelZoomPlugin,
     threejsPlugin,
     canvasPlugin,

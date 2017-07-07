@@ -49,8 +49,8 @@ export default function() {
 
             }
             __.svg.on("mousemove", mouseMoveHandler);
-            if (this.versorDragPlugin) {
-                this.versorDragPlugin.onDrag({
+            if (this.versorMousePlugin) {
+                this.versorMousePlugin.onDrag({
                     countrySelectCanvas: mouseMoveHandler
                 });
             }

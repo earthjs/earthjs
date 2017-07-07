@@ -21,7 +21,7 @@ export default (urlWorld, urlCountryNames) => {
         const p = earthjs.plugins;
         r(p.configPlugin());
         r(p.wheelZoomPlugin());
-        r(p.versorDragPlugin());
+        r(p.versorMousePlugin());
         r(p.autorotatePlugin(10));
         r(p.dropShadowSvg());
         r(p.oceanSvg());

@@ -37,8 +37,8 @@ export default function() {
             this.hoverCanvas.onCountry({
                 countryTooltipCanvas: toolTipsHandler
             });
-            if (this.versorDragPlugin) {
-                this.versorDragPlugin.onDrag({
+            if (this.versorMousePlugin) {
+                this.versorMousePlugin.onDrag({
                     countryTooltipCanvas: toolTipsHandler
                 });
             }
@@ -46,7 +46,7 @@ export default function() {
         },
         onRefresh() {
             if (this._.drag) {
-                refresh(this.versorDragPlugin.mouse());
+                refresh(this.versorMousePlugin.mouse());
             }
         },
     }

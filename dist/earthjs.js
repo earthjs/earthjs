@@ -307,7 +307,7 @@ var earthjs$1 = function earthjs() {
 };
 
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
-var versorDragPlugin = function () {
+var versorMousePlugin = function () {
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null, sync: [], mouse: null,
         onDrag: {},
@@ -378,7 +378,7 @@ var versorDragPlugin = function () {
     }
 
     return {
-        name: 'versorDragPlugin',
+        name: 'versorMousePlugin',
         onInit: function onInit() {
             _.svg = this._.svg;
             dragSetup.call(this);
@@ -642,8 +642,8 @@ var hoverCanvas = function () {
             }
         };
         __.svg.on("mousemove", mouseMoveHandler);
-        if (this.versorDragPlugin) {
-            this.versorDragPlugin.onDrag({
+        if (this.versorMousePlugin) {
+            this.versorMousePlugin.onDrag({
                 hoverCanvas: mouseMoveHandler
             });
         }
@@ -739,8 +739,8 @@ var clickCanvas = function () {
                 });
             }
         };
-        if (this.versorDragPlugin) {
-            this.versorDragPlugin.onClick({
+        if (this.versorMousePlugin) {
+            this.versorMousePlugin.onClick({
                 clickCanvas: mouseClickHandler
             });
         }
@@ -1188,8 +1188,8 @@ var countryTooltipCanvas = function () {
             this.hoverCanvas.onCountry({
                 countryTooltipCanvas: toolTipsHandler
             });
-            if (this.versorDragPlugin) {
-                this.versorDragPlugin.onDrag({
+            if (this.versorMousePlugin) {
+                this.versorMousePlugin.onDrag({
                     countryTooltipCanvas: toolTipsHandler
                 });
             }
@@ -1197,7 +1197,7 @@ var countryTooltipCanvas = function () {
         },
         onRefresh: function onRefresh() {
             if (this._.drag) {
-                refresh(this.versorDragPlugin.mouse());
+                refresh(this.versorMousePlugin.mouse());
             }
         }
     };
@@ -1244,7 +1244,7 @@ var countryTooltipSvg = function () {
         },
         onRefresh: function onRefresh() {
             if (this._.drag && _.show) {
-                refresh(this.versorDragPlugin.mouse());
+                refresh(this.versorMousePlugin.mouse());
             }
         }
     };
@@ -2513,7 +2513,7 @@ var commonPlugins = (function (urlWorld, urlCountryNames) {
         var p = earthjs.plugins;
         r(p.configPlugin());
         r(p.wheelZoomPlugin());
-        r(p.versorDragPlugin());
+        r(p.versorMousePlugin());
         r(p.autorotatePlugin(10));
         r(p.dropShadowSvg());
         r(p.oceanSvg());
@@ -2612,7 +2612,7 @@ var commonPlugins = (function (urlWorld, urlCountryNames) {
 });
 
 earthjs$1.plugins = {
-    versorDragPlugin: versorDragPlugin,
+    versorMousePlugin: versorMousePlugin,
     wheelZoomPlugin: wheelZoomPlugin,
     threejsPlugin: threejsPlugin,
     canvasPlugin: canvasPlugin,

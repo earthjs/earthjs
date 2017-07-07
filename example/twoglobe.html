@@ -11,7 +11,7 @@
     <script>
         const g1 = earthjs({select:'#earth1', rotate: 0});
         g1.register(earthjs.plugins.autorotatePlugin(10));
-        g1.register(earthjs.plugins.versorDragPlugin());
+        g1.register(earthjs.plugins.versorMousePlugin());
         g1.register(earthjs.plugins.wheelZoomPlugin());
         g1.register(earthjs.plugins.configPlugin());
 
@@ -39,7 +39,7 @@
         g2.register(earthjs.plugins.worldCanvas());
 
         g1.autorotatePlugin.sync([g2]);
-        g1.versorDragPlugin.sync([g2]);
+        g1.versorMousePlugin.sync([g2]);
         g1.ready(function(){
             const d = g1.worldCanvas.data();
             g2.worldCanvas.data(d);

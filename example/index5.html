@@ -19,6 +19,8 @@
         const g = earthjs();
         g.register(earthjs.plugins.commonPlugins('./d/world-110m.json','./d/world-110m-country-names.tsv'));
         g.register(earthjs.plugins.hoverCanvas());
+        g.register(earthjs.plugins.clickCanvas());
+        g.register(earthjs.plugins.centerCanvas());
         g.register(earthjs.plugins.fauxGlobeSvg());
         g.fauxGlobeSvg.selectAll('.ea-4');
         g.commonPlugins.addChecker(':Shading:showGlobeShading'.split(':'))
@@ -72,8 +74,13 @@
                 coordinates: d.coordinates.join(', ')}};
         }
         g._.options.showGlobeHilight = false;
+        g.centerCanvas.focused(function() {
+            g.autorotatePlugin.stop();
+        })
         g.ready(() => {
-            g.hoverCanvas.world(g.worldCanvas.data().world);
+            const world = g.worldCanvas.data().world;
+            g.hoverCanvas.world(world);
+            g.clickCanvas.world(world);
             g.create()
         });
     </script>

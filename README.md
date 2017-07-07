@@ -23,7 +23,7 @@ Selected plugins bundled into library:
 * centerSvg,
 * flattenPlugin,
 * wheelZoomPlugin,
-* versorDragPlugin,
+* versorMousePlugin,
 * autorotatePlugin,
 * canvasPlugin,
 * threejsPlugin,

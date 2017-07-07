@@ -48,7 +48,7 @@ export default function() {
         },
         onRefresh() {
             if (this._.drag && _.show) {
-                refresh(this.versorDragPlugin.mouse());
+                refresh(this.versorMousePlugin.mouse());
             }
         },
     }
