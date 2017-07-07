@@ -359,7 +359,6 @@ var versorDragPlugin = function () {
 
         function dragsended() {
             if (__.drag === null) {
-                console.log('clicked!!!');
                 _.onClickKeys.forEach(function (k) {
                     _.onClick[k].call(_._this, _.mouse);
                 });
@@ -1745,13 +1744,13 @@ var centerCanvas = (function () {
     }
 
     function transition(p) {
-        var _this2 = this;
-
+        var __ = this._;
+        var r = d3.interpolate(__.proj.rotate(), [-p[0], -p[1], 0]);
+        var x = function x(t) {
+            return __.rotate(r(t));
+        }; // __.proj.rotate()
         d3.transition().duration(2500).tween("rotate", function () {
-            var r = d3.interpolate(_this2._.proj.rotate(), [-p[0], -p[1], 0]);
-            return function (t) {
-                _this2._.rotate(r(t));
-            };
+            return x;
         });
     }
 
@@ -1759,11 +1758,12 @@ var centerCanvas = (function () {
         var _this = this;
         if (this.clickCanvas) {
             this.clickCanvas.onCountry({
-                centerCanvas: function centerCanvas(mouse, focusedCountry) {
-                    var p = d3.geoCentroid(focusedCountry);
-                    transition.call(_this, p);
-                    if (typeof _.focused === 'function') {
-                        _.focused.call(_this);
+                centerCanvas: function centerCanvas(mouse, country) {
+                    if (country) {
+                        transition.call(_this, d3.geoCentroid(country));
+                        if (typeof _.focused === 'function') {
+                            _.focused.call(_this);
+                        }
                     }
                 }
             });
@@ -1807,13 +1807,13 @@ var centerSvg = (function () {
     }
 
     function transition(p) {
-        var _this2 = this;
-
+        var __ = this._;
+        var r = d3.interpolate(__.proj.rotate(), [-p[0], -p[1], 0]);
+        var x = function x(t) {
+            return __.rotate(r(t));
+        }; // __.proj.rotate()
         d3.transition().duration(2500).tween("rotate", function () {
-            var r = d3.interpolate(_this2._.proj.rotate(), [-p[0], -p[1], 0]);
-            return function (t) {
-                _this2._.rotate(r(t));
-            };
+            return x;
         });
     }
 
@@ -1822,10 +1822,8 @@ var centerSvg = (function () {
         this.worldSvg.$countries().on("click", function () {
             if (_this._.options.enableCenter) {
                 var id = this.id.replace('x', '');
-                var c = _this.worldSvg.countries();
-                var focusedCountry = country(c, id);
-                var p = d3.geoCentroid(focusedCountry);
-                transition.call(_this, p);
+                var focusedCountry = country(_this.worldSvg.countries(), id);
+                transition.call(_this, d3.geoCentroid(focusedCountry));
                 if (typeof _.focused === 'function') {
                     _.focused.call(_this);
                 }

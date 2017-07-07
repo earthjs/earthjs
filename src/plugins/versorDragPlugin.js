@@ -53,7 +53,6 @@ export default function() {
 
         function dragsended() {
             if (__.drag===null) {
-                console.log('clicked!!!');
                 _.onClickKeys.forEach(k => {
                     _.onClick[k].call(_._this, _.mouse);
                 });
