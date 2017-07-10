@@ -1,8 +1,8 @@
 export default urlJson => {
     /*eslint no-console: 0 */
     const _ = {dataDots: null, circles: [], radiusPath: null,
-        onDot: {},
-        onDotKeys: []
+        onHover: {},
+        onHoverKeys: []
     };
 
     function create() {
@@ -59,7 +59,7 @@ export default urlJson => {
     }
 
     function initCircleHandler() {
-        const circleHandler = (mouse, pos) => {
+        const hoverHandler = (mouse, pos) => {
             let detected = null;
             _.circles.forEach(function(d) {
                 if (mouse && !detected) {
@@ -69,13 +69,13 @@ export default urlJson => {
                     }
                 }
             });
-            _.onDotKeys.forEach(k => {
-                _.onDot[k].call(this, mouse, detected);
+            _.onHoverKeys.forEach(k => {
+                _.onHover[k].call(this, mouse, detected);
             });
             return detected;
         }
         this.hoverCanvas.onCircle({
-            dotsCanvas: circleHandler
+            dotsCanvas: hoverHandler
         });
     }
 
@@ -127,9 +127,9 @@ export default urlJson => {
         drawTo(arr) {
             _.drawTo = arr;
         },
-        addSelectDotEvent(obj) {
-            Object.assign(_.onDot, obj);
-            _.onDotKeys = Object.keys(_.onDot);
+        onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverKeys = Object.keys(_.onHover);
         },
     }
 }

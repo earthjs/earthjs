@@ -1258,7 +1258,7 @@ var dotTooltipCanvas = (function () {
         onInit: function onInit() {
             var _this = this;
 
-            var dotHandler = function dotHandler(mouse, d) {
+            var hoverHandler = function hoverHandler(mouse, d) {
                 if (d) {
                     if (_this.dotTooltipCanvas.onShow) {
                         d = _this.dotTooltipCanvas.onShow.call(_this, d, dotTooltip);
@@ -1268,8 +1268,8 @@ var dotTooltipCanvas = (function () {
                     dotTooltip.style("opacity", 0).style("display", "none");
                 }
             };
-            this.dotsCanvas.addSelectDotEvent({
-                dotTooltipCanvas: dotHandler
+            this.dotsCanvas.onHover({
+                dotTooltipCanvas: hoverHandler
             });
         },
         show: function show(props) {
@@ -2306,8 +2306,8 @@ var dotsSvg = (function (urlDots) {
 var dotsCanvas = (function (urlJson) {
     /*eslint no-console: 0 */
     var _ = { dataDots: null, circles: [], radiusPath: null,
-        onDot: {},
-        onDotKeys: []
+        onHover: {},
+        onHoverKeys: []
     };
 
     function create() {
@@ -2366,7 +2366,7 @@ var dotsCanvas = (function (urlJson) {
     function initCircleHandler() {
         var _this = this;
 
-        var circleHandler = function circleHandler(mouse, pos) {
+        var hoverHandler = function hoverHandler(mouse, pos) {
             var detected = null;
             _.circles.forEach(function (d) {
                 if (mouse && !detected) {
@@ -2376,13 +2376,13 @@ var dotsCanvas = (function (urlJson) {
                     }
                 }
             });
-            _.onDotKeys.forEach(function (k) {
-                _.onDot[k].call(_this, mouse, detected);
+            _.onHoverKeys.forEach(function (k) {
+                _.onHover[k].call(_this, mouse, detected);
             });
             return detected;
         };
         this.hoverCanvas.onCircle({
-            dotsCanvas: circleHandler
+            dotsCanvas: hoverHandler
         });
     }
 
@@ -2440,9 +2440,9 @@ var dotsCanvas = (function (urlJson) {
         drawTo: function drawTo(arr) {
             _.drawTo = arr;
         },
-        addSelectDotEvent: function addSelectDotEvent(obj) {
-            Object.assign(_.onDot, obj);
-            _.onDotKeys = Object.keys(_.onDot);
+        onHover: function onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverKeys = Object.keys(_.onHover);
         }
     };
 });

@@ -5,7 +5,7 @@ export default () => {
     return {
         name: 'dotTooltipCanvas',
         onInit() {
-            const dotHandler = (mouse, d) => {
+            const hoverHandler = (mouse, d) => {
                 if (d) {
                     if (this.dotTooltipCanvas.onShow) {
                         d = this.dotTooltipCanvas.onShow.call(this, d, dotTooltip);
@@ -20,8 +20,8 @@ export default () => {
                     .style("display", "none");
                 }
             }
-            this.dotsCanvas.addSelectDotEvent({
-                dotTooltipCanvas: dotHandler
+            this.dotsCanvas.onHover({
+                dotTooltipCanvas: hoverHandler
             });
         },
         show(props) {
