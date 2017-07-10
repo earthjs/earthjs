@@ -29,7 +29,7 @@ export default function() {
             }
         }
         const __ = this._;
-        const mouseClickHandler = function(event, mouse) {
+        const mouseDblClickHandler = function(event, mouse) {
             if (!event) {
                 return;
             }
@@ -57,14 +57,14 @@ export default function() {
             }
         }
         if (this.versorMousePlugin) {
-            this.versorMousePlugin.onClick({
-                clickCanvas: mouseClickHandler
+            this.versorMousePlugin.onDblClick({
+                dblClickCanvas: mouseDblClickHandler
             });
         }
     }
 
     return {
-        name: 'clickCanvas',
+        name: 'dblClickCanvas',
         onInit() {
             initmouseClickHandler.call(this);
         },

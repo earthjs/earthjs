@@ -309,16 +309,31 @@ var earthjs$1 = function earthjs() {
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 var versorMousePlugin = function () {
     /*eslint no-console: 0 */
-    var _ = { svg: null, q: null, sync: [], mouse: null,
+    var _ = { svg: null, q: null, sync: [], mouse: null, wait: null,
         onDrag: {},
         onDragKeys: [],
         onClick: {},
-        onClickKeys: []
+        onClickKeys: [],
+        onDblClick: {},
+        onDblClickKeys: []
     };
+
+    function onclick() {
+        _.onClickKeys.forEach(function (k) {
+            _.onClick[k].call(_._this, _.event, _.mouse);
+        });
+        // console.log('click');
+    }
+
+    function ondblclick() {
+        _.onDblClickKeys.forEach(function (k) {
+            _.onDblClick[k].call(_._this, _.event, _.mouse);
+        });
+        // console.log('dblclick');
+    }
 
     function dragSetup() {
         var __ = this._;
-        // const _this = this;
         var versor = __.versor;
         _.svg.call(d3.drag().on('start', dragstarted).on('end', dragsended).on('drag', dragged));
 
@@ -359,9 +374,20 @@ var versorMousePlugin = function () {
 
         function dragsended() {
             if (__.drag === null) {
-                _.onClickKeys.forEach(function (k) {
-                    _.onClick[k].call(_._this, _.mouse);
-                });
+                _.event = d3.event;
+                if (__.options.spin) {
+                    // console.log('lol');
+                    onclick();
+                } else if (_.wait) {
+                    _.wait = null;
+                    ondblclick();
+                } else if (_.wait === null) {
+                    _.wait = window.setTimeout(function () {
+                        if (_.wait) {
+                            _.wait = false;
+                        }
+                    }, 250);
+                }
             } else {
                 __.drag = false;
                 __.rotate(_.r);
@@ -372,8 +398,8 @@ var versorMousePlugin = function () {
                     rotate.call(g, _.r);
                 });
             }
-            _.mouse = null;
-            _.r = null;
+            // _.mouse = null;
+            // _.r = null;
         }
     }
 
@@ -387,11 +413,16 @@ var versorMousePlugin = function () {
             var _this = this;
 
             var __ = this._;
-            if (__.drag && _.r) {
-                __.rotate(_.r);
-                _.onDragKeys.forEach(function (k) {
-                    _.onDrag[k].call(_this, _.mouse);
-                });
+            if (__.drag) {
+                if (_.r) {
+                    __.rotate(_.r);
+                    _.onDragKeys.forEach(function (k) {
+                        _.onDrag[k].call(_this, _.mouse);
+                    });
+                }
+            } else if (_.wait === false) {
+                _.wait = null;
+                onclick();
             }
         },
         selectAll: function selectAll(q) {
@@ -416,6 +447,10 @@ var versorMousePlugin = function () {
         onClick: function onClick(obj) {
             Object.assign(_.onClick, obj);
             _.onClickKeys = Object.keys(_.onClick);
+        },
+        onDblClick: function onDblClick(obj) {
+            Object.assign(_.onDblClick, obj);
+            _.onDblClickKeys = Object.keys(_.onDblClick);
         }
     };
 };
@@ -709,21 +744,20 @@ var clickCanvas = function () {
             }
         }
         var __ = this._;
-        var mouseClickHandler = function mouseClickHandler() {
+        var mouseClickHandler = function mouseClickHandler(event, mouse) {
             var _this = this;
 
-            var event = d3.event;
             if (!event) {
                 return;
             }
             if (event.sourceEvent) {
                 event = event.sourceEvent;
             }
-            var mouse = [event.clientX, event.clientY]; //d3.mouse(this);
-            var pos = __.proj.invert(d3.mouse(this));
+            var xmouse = [event.clientX, event.clientY];
+            var pos = __.proj.invert(mouse);
             _.pos = pos;
             _.dot = null;
-            _.mouse = mouse;
+            _.mouse = xmouse;
             _.country = null;
             if (__.options.showDots) {
                 _.onCircleKeys.forEach(function (k) {
@@ -748,6 +782,102 @@ var clickCanvas = function () {
 
     return {
         name: 'clickCanvas',
+        onInit: function onInit() {
+            initmouseClickHandler.call(this);
+        },
+        onCircle: function onCircle(obj) {
+            Object.assign(_.onCircle, obj);
+            _.onCircleKeys = Object.keys(_.onCircle);
+        },
+        onCountry: function onCountry(obj) {
+            Object.assign(_.onCountry, obj);
+            _.onCountryKeys = Object.keys(_.onCountry);
+        },
+        world: function world(w) {
+            _.countries = topojson.feature(w, w.objects.countries);
+        },
+        data: function data() {
+            return {
+                pos: _.pos,
+                dot: _.dot,
+                mouse: _.mouse,
+                country: _.country
+            };
+        }
+    };
+};
+
+// KoGor’s Block http://bl.ocks.org/KoGor/5994804
+var dblClickCanvas = function () {
+    /*eslint no-console: 0 */
+    var _ = {
+        mouse: null,
+        country: null,
+        countries: null,
+        onCircle: {},
+        onCircleKeys: [],
+        onCountry: {},
+        onCountryKeys: []
+    };
+
+    function findCountry(pos) {
+        return _.countries.features.find(function (f) {
+            return f.geometry.coordinates.find(function (c1) {
+                return d3.polygonContains(c1, pos) || c1.find(function (c2) {
+                    return d3.polygonContains(c2, pos);
+                });
+            });
+        });
+    }
+
+    function initmouseClickHandler() {
+        if (this.worldCanvas) {
+            var _worldCanvas$data = this.worldCanvas.data(),
+                world = _worldCanvas$data.world;
+
+            if (world) {
+                _.countries = topojson.feature(world, world.objects.countries);
+            }
+        }
+        var __ = this._;
+        var mouseDblClickHandler = function mouseDblClickHandler(event, mouse) {
+            var _this = this;
+
+            if (!event) {
+                return;
+            }
+            if (event.sourceEvent) {
+                event = event.sourceEvent;
+            }
+            var xmouse = [event.clientX, event.clientY];
+            var pos = __.proj.invert(mouse);
+            _.pos = pos;
+            _.dot = null;
+            _.mouse = xmouse;
+            _.country = null;
+            if (__.options.showDots) {
+                _.onCircleKeys.forEach(function (k) {
+                    _.dot = _.onCircle[k].call(_this, _.mouse, pos);
+                });
+            }
+            if (__.options.showLand && !_.dot) {
+                if (!__.drag) {
+                    _.country = findCountry(pos);
+                }
+                _.onCountryKeys.forEach(function (k) {
+                    _.onCountry[k].call(_this, _.mouse, _.country);
+                });
+            }
+        };
+        if (this.versorMousePlugin) {
+            this.versorMousePlugin.onDblClick({
+                dblClickCanvas: mouseDblClickHandler
+            });
+        }
+    }
+
+    return {
+        name: 'dblClickCanvas',
         onInit: function onInit() {
             initmouseClickHandler.call(this);
         },
@@ -2175,7 +2305,10 @@ var dotsSvg = (function (urlDots) {
 
 var dotsCanvas = (function (urlJson) {
     /*eslint no-console: 0 */
-    var _ = { dataDots: null, circles: [], radiusPath: null, onDot: {}, onDotKeys: [] };
+    var _ = { dataDots: null, circles: [], radiusPath: null,
+        onDot: {},
+        onDotKeys: []
+    };
 
     function create() {
         var __ = this._;
@@ -2618,6 +2751,7 @@ earthjs$1.plugins = {
     canvasPlugin: canvasPlugin,
     hoverCanvas: hoverCanvas,
     clickCanvas: clickCanvas,
+    dblClickCanvas: dblClickCanvas,
     oceanSvg: oceanSvg,
     configPlugin: configPlugin,
     graticuleCanvas: graticuleCanvas,

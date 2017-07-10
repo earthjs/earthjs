@@ -1,16 +1,31 @@
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 export default function() {
     /*eslint no-console: 0 */
-    const _ = {svg:null, q: null, sync: [], mouse: null,
+    const _ = {svg:null, q: null, sync: [], mouse: null, wait: null,
         onDrag: {},
         onDragKeys: [],
         onClick: {},
-        onClickKeys: []
+        onClickKeys: [],
+        onDblClick: {},
+        onDblClickKeys: []
     };
+
+    function onclick() {
+        _.onClickKeys.forEach(k => {
+            _.onClick[k].call(_._this, _.event, _.mouse);
+        });
+        // console.log('click');
+    }
+
+    function ondblclick() {
+        _.onDblClickKeys.forEach(k => {
+            _.onDblClick[k].call(_._this, _.event, _.mouse);
+        });
+        // console.log('dblclick');
+    }
 
     function dragSetup() {
         const __ = this._;
-        // const _this = this;
         const versor = __.versor;
         _.svg.call(d3.drag()
             .on('start',dragstarted)
@@ -53,9 +68,20 @@ export default function() {
 
         function dragsended() {
             if (__.drag===null) {
-                _.onClickKeys.forEach(k => {
-                    _.onClick[k].call(_._this, _.mouse);
-                });
+                _.event = d3.event;
+                if (__.options.spin) {
+                    // console.log('lol');
+                    onclick();
+                } else if (_.wait) {
+                    _.wait = null;
+                    ondblclick();
+                } else if (_.wait===null) {
+                    _.wait = window.setTimeout(function() {
+                        if (_.wait) {
+                            _.wait = false;
+                        }
+                    }, 250);
+                }
             } else {
                 __.drag = false;
                 __.rotate( _.r);
@@ -66,8 +92,8 @@ export default function() {
                     rotate.call(g, _.r);
                 })
             }
-            _.mouse = null;
-            _.r = null;
+            // _.mouse = null;
+            // _.r = null;
         }
     }
 
@@ -79,11 +105,16 @@ export default function() {
         },
         onInterval() {
             const __ = this._;
-            if (__.drag && _.r) {
-                __.rotate( _.r);
-                _.onDragKeys.forEach(k => {
-                    _.onDrag[k].call(this, _.mouse);
-                });
+            if (__.drag) {
+                if (_.r) {
+                    __.rotate( _.r);
+                    _.onDragKeys.forEach(k => {
+                        _.onDrag[k].call(this, _.mouse);
+                    });
+                }
+            } else if (_.wait===false) {
+                _.wait = null;
+                onclick();
             }
         },
         selectAll(q) {
@@ -111,6 +142,10 @@ export default function() {
         onClick(obj) {
             Object.assign(_.onClick, obj);
             _.onClickKeys = Object.keys(_.onClick);
+        },
+        onDblClick(obj) {
+            Object.assign(_.onDblClick, obj);
+            _.onDblClickKeys = Object.keys(_.onDblClick);
         }
     }
 }

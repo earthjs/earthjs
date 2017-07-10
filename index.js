@@ -5,6 +5,7 @@ import threejsPlugin from './src/plugins/threejsPlugin.js';
 import canvasPlugin from './src/plugins/canvasPlugin.js';
 import hoverCanvas from './src/plugins/hoverCanvas';
 import clickCanvas from './src/plugins/clickCanvas';
+import dblClickCanvas from './src/plugins/dblClickCanvas';
 import oceanSvg from './src/plugins/oceanSvg.js';
 import configPlugin from './src/plugins/configPlugin.js';
 import graticuleCanvas from './src/plugins/graticuleCanvas.js';
@@ -37,6 +38,7 @@ app.plugins= {
     canvasPlugin,
     hoverCanvas,
     clickCanvas,
+    dblClickCanvas,
     oceanSvg,
     configPlugin,
     graticuleCanvas,

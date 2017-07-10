@@ -1,6 +1,9 @@
 export default urlJson => {
     /*eslint no-console: 0 */
-    const _ = {dataDots: null, circles: [], radiusPath: null, onDot: {}, onDotKeys: []};
+    const _ = {dataDots: null, circles: [], radiusPath: null,
+        onDot: {},
+        onDotKeys: []
+    };
 
     function create() {
         const __ = this._;
