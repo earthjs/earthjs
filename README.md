@@ -100,12 +100,11 @@ This sample need to run on the webserver, you can use [nodejs web-server](https:
 Plugins is a function created in "earthjs.plugins" namespace, return with javascript object. Some of the keys have a special meaning, "name" property will be define **plugin namespace** in "earthjs", "urls" property is an ajax url and six(6) functions start with "on" are event handler. Other functions that define in the plugin will be live on the **plugin namespace**. Function defined in the plugin will become **proxy function** in which they have a **context of earthjs instance**.
 ```javascript
 export default (url) => {
-    //....
+    //.... private code
     return {
         name: 'samplePlugin',
-        urls: [url], // ajax url
-        // executed after ajax call
-        onReady(err, data) {},
+        urls: [url],     // ajax url
+        onReady   () {}, // ajax handler
         onInit    () {},
         onCreate  () {},
         onResize  () {},
