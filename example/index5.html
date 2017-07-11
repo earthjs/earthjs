@@ -86,13 +86,13 @@
             }
         })
         g.countrySelectCanvas.onClick({
-            index5: function(mouse, dot) {
-                dot && console.log('countrySelectCanvas click', mouse, dot);
+            index5: function(mouse, country) {
+                country && console.log('countrySelectCanvas click', mouse, country);
             }
         })
         g.countrySelectCanvas.onDblClick({
-            index5: function(mouse, dot) {
-                dot && console.log('countrySelectCanvas dblclick', mouse, dot);
+            index5: function(mouse, country) {
+                country && console.log('countrySelectCanvas dblclick', mouse, country);
             }
         })
         g._.options.showGlobeHilight = false;
