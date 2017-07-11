@@ -2,7 +2,11 @@ export default urlJson => {
     /*eslint no-console: 0 */
     const _ = {dataDots: null, circles: [], radiusPath: null,
         onHover: {},
-        onHoverKeys: []
+        onHoverKeys: [],
+        onClick: {},
+        onClickKeys: [],
+        onDblClick: {},
+        onDblClickKeys: [],
     };
 
     function create() {
@@ -58,25 +62,58 @@ export default urlJson => {
         });
     }
 
-    function initCircleHandler() {
-        const hoverHandler = (mouse, pos) => {
-            let detected = null;
-            _.circles.forEach(function(d) {
-                if (mouse && !detected) {
-                    const geoDistance = d3.geoDistance(d.coordinates, pos);
-                    if (geoDistance <= 0.02) {
-                        detected = d;
-                    }
+    function detect(mouse, pos) {
+        let dot = null;
+        _.circles.forEach(function(d) {
+            if (mouse && !dot) {
+                const geoDistance = d3.geoDistance(d.coordinates, pos);
+                if (geoDistance <= 0.02) {
+                    dot = d;
                 }
-            });
-            _.onHoverKeys.forEach(k => {
-                _.onHover[k].call(this, mouse, detected);
-            });
-            return detected;
-        }
-        this.hoverCanvas.onCircle({
-            dotsCanvas: hoverHandler
+            }
         });
+        return dot;
+    }
+
+    function initCircleHandler() {
+        if (this.hoverCanvas) {
+            const hoverHandler = (mouse, pos) => {
+                const dot = detect(mouse, pos);
+                _.onHoverKeys.forEach(k => {
+                    _.onHover[k].call(this, mouse, dot);
+                });
+                return dot;
+            }
+            this.hoverCanvas.onCircle({
+                dotsCanvas: hoverHandler
+            });
+        }
+
+        if (this.clickCanvas) {
+            const clickHandler = (mouse, pos) => {
+                const dot = detect(mouse, pos);
+                _.onClickKeys.forEach(k => {
+                    _.onClick[k].call(this, mouse, dot);
+                });
+                return dot;
+            }
+            this.clickCanvas.onCircle({
+                dotsCanvas: clickHandler
+            });
+        }
+
+        if (this.dblClickCanvas) {
+            const dblClickHandler = (mouse, pos) => {
+                const dot = detect(mouse, pos);
+                _.onDblClickKeys.forEach(k => {
+                    _.onDblClick[k].call(this, mouse, dot);
+                });
+                return dot;
+            }
+            this.dblClickCanvas.onCircle({
+                dotsCanvas: dblClickHandler
+            });
+        }
     }
 
     return {
@@ -130,6 +167,14 @@ export default urlJson => {
         onHover(obj) {
             Object.assign(_.onHover, obj);
             _.onHoverKeys = Object.keys(_.onHover);
+        },
+        onClick(obj) {
+            Object.assign(_.onClick, obj);
+            _.onClickKeys = Object.keys(_.onClick);
+        },
+        onDblClick(obj) {
+            Object.assign(_.onDblClick, obj);
+            _.onDblClickKeys = Object.keys(_.onDblClick);
         },
     }
 }

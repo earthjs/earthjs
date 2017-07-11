@@ -1282,6 +1282,93 @@ var dotTooltipCanvas = (function () {
 });
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
+var countrySelectCanvas = function () {
+    /*eslint no-console: 0 */
+    var _ = { countries: null, country: null, mouse: null,
+        onHover: {},
+        onHoverKeys: [],
+        onClick: {},
+        onClickKeys: [],
+        onDblClick: {},
+        onDblClickKeys: []
+    };
+
+    function initCountrySelectHandler() {
+        var _this = this;
+
+        if (this.hoverCanvas) {
+            var hoverHandler = function hoverHandler(mouse, country) {
+                _.onHoverKeys.forEach(function (k) {
+                    _.onHover[k].call(_this, mouse, country);
+                });
+                return country;
+            };
+            this.hoverCanvas.onCountry({
+                countrySelectCanvas: hoverHandler
+            });
+        }
+
+        if (this.clickCanvas) {
+            var clickHandler = function clickHandler(mouse, country) {
+                _.onClickKeys.forEach(function (k) {
+                    _.onClick[k].call(_this, mouse, country);
+                });
+                return country;
+            };
+            this.clickCanvas.onCountry({
+                countrySelectCanvas: clickHandler
+            });
+        }
+
+        if (this.dblClickCanvas) {
+            var dblClickHandler = function dblClickHandler(mouse, country) {
+                _.onDblClickKeys.forEach(function (k) {
+                    _.onDblClick[k].call(_this, mouse, country);
+                });
+                return country;
+            };
+            this.dblClickCanvas.onCountry({
+                countrySelectCanvas: dblClickHandler
+            });
+        }
+    }
+
+    return {
+        name: 'countrySelectCanvas',
+        onInit: function onInit() {
+            var _worldCanvas$data = this.worldCanvas.data(),
+                world = _worldCanvas$data.world;
+
+            if (world) {
+                _.countries = topojson.feature(world, world.objects.countries);
+            }
+            initCountrySelectHandler.call(this);
+        },
+        data: function data() {
+            return {
+                country: _.country,
+                mouse: _.mouse
+            };
+        },
+        onHover: function onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverKeys = Object.keys(_.onHover);
+        },
+        onClick: function onClick(obj) {
+            Object.assign(_.onClick, obj);
+            _.onClickKeys = Object.keys(_.onClick);
+        },
+        onDblClick: function onDblClick(obj) {
+            Object.assign(_.onDblClick, obj);
+            _.onDblClickKeys = Object.keys(_.onDblClick);
+        },
+        world: function world(w) {
+            _.countries = topojson.feature(w, w.objects.countries);
+        }
+    };
+};
+
+// KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var countryTooltipCanvas = function () {
     /*eslint no-console: 0 */
     var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
@@ -1299,11 +1386,8 @@ var countryTooltipCanvas = function () {
         onInit: function onInit() {
             var _this = this;
 
-            var toolTipsHandler = function toolTipsHandler() {
-                var _hoverCanvas$data = _this.hoverCanvas.data(),
-                    country = _hoverCanvas$data.country,
-                    mouse = _hoverCanvas$data.mouse;
-
+            var toolTipsHandler = function toolTipsHandler(mouse, country) {
+                // fn with  current context 
                 if (!_this._.drag && country && _this._.options.showCountryTooltip) {
                     var countryName = _this.worldCanvas.countryName(country);
                     if (countryName && !(_this.barTooltipSvg && _this.barTooltipSvg.visible())) {
@@ -2307,7 +2391,11 @@ var dotsCanvas = (function (urlJson) {
     /*eslint no-console: 0 */
     var _ = { dataDots: null, circles: [], radiusPath: null,
         onHover: {},
-        onHoverKeys: []
+        onHoverKeys: [],
+        onClick: {},
+        onClickKeys: [],
+        onDblClick: {},
+        onDblClickKeys: []
     };
 
     function create() {
@@ -2363,27 +2451,60 @@ var dotsCanvas = (function (urlJson) {
         });
     }
 
+    function detect(mouse, pos) {
+        var dot = null;
+        _.circles.forEach(function (d) {
+            if (mouse && !dot) {
+                var geoDistance = d3.geoDistance(d.coordinates, pos);
+                if (geoDistance <= 0.02) {
+                    dot = d;
+                }
+            }
+        });
+        return dot;
+    }
+
     function initCircleHandler() {
         var _this = this;
 
-        var hoverHandler = function hoverHandler(mouse, pos) {
-            var detected = null;
-            _.circles.forEach(function (d) {
-                if (mouse && !detected) {
-                    var geoDistance = d3.geoDistance(d.coordinates, pos);
-                    if (geoDistance <= 0.02) {
-                        detected = d;
-                    }
-                }
+        if (this.hoverCanvas) {
+            var hoverHandler = function hoverHandler(mouse, pos) {
+                var dot = detect(mouse, pos);
+                _.onHoverKeys.forEach(function (k) {
+                    _.onHover[k].call(_this, mouse, dot);
+                });
+                return dot;
+            };
+            this.hoverCanvas.onCircle({
+                dotsCanvas: hoverHandler
             });
-            _.onHoverKeys.forEach(function (k) {
-                _.onHover[k].call(_this, mouse, detected);
+        }
+
+        if (this.clickCanvas) {
+            var clickHandler = function clickHandler(mouse, pos) {
+                var dot = detect(mouse, pos);
+                _.onClickKeys.forEach(function (k) {
+                    _.onClick[k].call(_this, mouse, dot);
+                });
+                return dot;
+            };
+            this.clickCanvas.onCircle({
+                dotsCanvas: clickHandler
             });
-            return detected;
-        };
-        this.hoverCanvas.onCircle({
-            dotsCanvas: hoverHandler
-        });
+        }
+
+        if (this.dblClickCanvas) {
+            var dblClickHandler = function dblClickHandler(mouse, pos) {
+                var dot = detect(mouse, pos);
+                _.onDblClickKeys.forEach(function (k) {
+                    _.onDblClick[k].call(_this, mouse, dot);
+                });
+                return dot;
+            };
+            this.dblClickCanvas.onCircle({
+                dotsCanvas: dblClickHandler
+            });
+        }
     }
 
     return {
@@ -2443,6 +2564,14 @@ var dotsCanvas = (function (urlJson) {
         onHover: function onHover(obj) {
             Object.assign(_.onHover, obj);
             _.onHoverKeys = Object.keys(_.onHover);
+        },
+        onClick: function onClick(obj) {
+            Object.assign(_.onClick, obj);
+            _.onClickKeys = Object.keys(_.onClick);
+        },
+        onDblClick: function onDblClick(obj) {
+            Object.assign(_.onDblClick, obj);
+            _.onDblClickKeys = Object.keys(_.onDblClick);
         }
     };
 });
@@ -2760,6 +2889,7 @@ earthjs$1.plugins = {
     fauxGlobeSvg: fauxGlobeSvg,
     autorotatePlugin: autorotatePlugin,
     dotTooltipCanvas: dotTooltipCanvas,
+    countrySelectCanvas: countrySelectCanvas,
     countryTooltipCanvas: countryTooltipCanvas,
     countryTooltipSvg: countryTooltipSvg,
     barTooltipSvg: barTooltipSvg,

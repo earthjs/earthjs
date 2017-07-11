@@ -18,8 +18,7 @@ export default function() {
     return {
         name: 'countryTooltipCanvas',
         onInit() {
-            const toolTipsHandler = () => {
-                const {country, mouse} = this.hoverCanvas.data();
+            const toolTipsHandler = (mouse, country) => { // fn with  current context 
                 if (!this._.drag && country && this._.options.showCountryTooltip) {
                     const countryName = this.worldCanvas.countryName(country);
                     if (countryName && !(this.barTooltipSvg && this.barTooltipSvg.visible())) {

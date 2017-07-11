@@ -20,6 +20,7 @@
         g.register(earthjs.plugins.commonPlugins('./d/world-110m.json','./d/world-110m-country-names.tsv'));
         g.register(earthjs.plugins.hoverCanvas());
         g.register(earthjs.plugins.clickCanvas());
+        g.register(earthjs.plugins.dblClickCanvas());
         g.register(earthjs.plugins.centerCanvas());
         g.register(earthjs.plugins.fauxGlobeSvg());
         g.fauxGlobeSvg.selectAll('.ea-4');
@@ -77,10 +78,33 @@
         g.centerCanvas.focused(function() {
             g.autorotatePlugin.stop();
         })
+        g.dotsCanvas.onClick({
+            index5: function(mouse, dot) {
+                dot && console.log('dotsCanvas click', mouse, dot);
+            }
+        })
+        g.dotsCanvas.onDblClick({
+            index5: function(mouse, dot) {
+                dot && console.log('dotsCanvas dblclick', mouse, dot);
+            }
+        })
+        g.register(earthjs.plugins.countrySelectCanvas());
+        g.countrySelectCanvas.onClick({
+            index5: function(mouse, dot) {
+                dot && console.log('countrySelectCanvas click', mouse, dot);
+            }
+        })
+        g.countrySelectCanvas.onDblClick({
+            index5: function(mouse, dot) {
+                dot && console.log('countrySelectCanvas dblclick', mouse, dot);
+            }
+        })
         g.ready(() => {
             const world = g.worldCanvas.data().world;
             g.hoverCanvas.world(world);
             g.clickCanvas.world(world);
+            g.dblClickCanvas.world(world);
+            g.countrySelectCanvas.world(world);
             g.create()
         });
     </script>

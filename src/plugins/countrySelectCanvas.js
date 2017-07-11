@@ -1,43 +1,61 @@
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 export default function() {
     /*eslint no-console: 0 */
-    const _ = {countries: null, country: null, mouse: null, onHover: {}, onHoverKeys: []};
+    const _ = {countries: null, country: null, mouse: null,
+        onHover: {},
+        onHoverKeys: [],
+        onClick: {},
+        onClickKeys: [],
+        onDblClick: {},
+        onDblClickKeys: [],
+    };
+
+    function initCountrySelectHandler() {
+        if (this.hoverCanvas) {
+            const hoverHandler = (mouse, country) => {
+                _.onHoverKeys.forEach(k => {
+                    _.onHover[k].call(this, mouse, country);
+                });
+                return country;
+            }
+            this.hoverCanvas.onCountry({
+                countrySelectCanvas: hoverHandler
+            });
+        }
+
+        if (this.clickCanvas) {
+            const clickHandler = (mouse, country) => {
+                _.onClickKeys.forEach(k => {
+                    _.onClick[k].call(this, mouse, country);
+                });
+                return country;
+            }
+            this.clickCanvas.onCountry({
+                countrySelectCanvas: clickHandler
+            });
+        }
+
+        if (this.dblClickCanvas) {
+            const dblClickHandler = (mouse, country) => {
+                _.onDblClickKeys.forEach(k => {
+                    _.onDblClick[k].call(this, mouse, country);
+                });
+                return country;
+            }
+            this.dblClickCanvas.onCountry({
+                countrySelectCanvas: dblClickHandler
+            });
+        }
+    }
 
     return {
         name: 'countrySelectCanvas',
         onInit() {
-            const __ = this._;
-            const worldCanvas = this.worldCanvas;
-            const {world} = worldCanvas.data();
+            const {world} = this.worldCanvas.data();
             if (world) {
                 _.countries = topojson.feature(world, world.objects.countries);
             }
-            const mouseMoveHandler = function() {
-                let event = d3.event;
-                if (event.sourceEvent) {
-                    event = event.sourceEvent;
-                }
-                const mouse = [event.clientX, event.clientY]; //d3.mouse(this);
-                const pos = __.proj.invert(d3.mouse(this));
-                _.country = _.countries.features.find(function(f) {
-                    return f.geometry.coordinates.find(function(c1) {
-                        return d3.polygonContains(c1, pos) || c1.find(function(c2) {
-                            return d3.polygonContains(c2, pos)
-                        })
-                    })
-                });
-                _.mouse = mouse;
-                _.onHoverKeys.forEach(k => {
-                    _.onHover[k].call(this, _.mouse, _.country);
-                });
-
-            }
-            __.svg.on("mousemove", mouseMoveHandler);
-            if (this.versorMousePlugin) {
-                this.versorMousePlugin.onDrag({
-                    countrySelectCanvas: mouseMoveHandler
-                });
-            }
+            initCountrySelectHandler.call(this);
         },
         data() {
             return {
@@ -48,6 +66,14 @@ export default function() {
         onHover(obj) {
             Object.assign(_.onHover, obj);
             _.onHoverKeys = Object.keys(_.onHover);
+        },
+        onClick(obj) {
+            Object.assign(_.onClick, obj);
+            _.onClickKeys = Object.keys(_.onClick);
+        },
+        onDblClick(obj) {
+            Object.assign(_.onDblClick, obj);
+            _.onDblClickKeys = Object.keys(_.onDblClick);
         },
         world(w) {
             _.countries = topojson.feature(w, w.objects.countries);

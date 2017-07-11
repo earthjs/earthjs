@@ -14,6 +14,7 @@ import dropShadowSvg from './src/plugins/dropShadowSvg.js';
 import fauxGlobeSvg from './src/plugins/fauxGlobeSvg.js';
 import autorotatePlugin from './src/plugins/autorotatePlugin.js';
 import dotTooltipCanvas from './src/plugins/dotTooltipCanvas.js';
+import countrySelectCanvas from './src/plugins/countrySelectCanvas.js';
 import countryTooltipCanvas from './src/plugins/countryTooltipCanvas.js';
 import countryTooltipSvg from './src/plugins/countryTooltipSvg.js';
 import barTooltipSvg from './src/plugins/barTooltipSvg.js';
@@ -47,6 +48,7 @@ app.plugins= {
     fauxGlobeSvg,
     autorotatePlugin,
     dotTooltipCanvas,
+    countrySelectCanvas,
     countryTooltipCanvas,
     countryTooltipSvg,
     barTooltipSvg,
