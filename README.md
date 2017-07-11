@@ -122,6 +122,43 @@ g.worldSvg.ready = function(err, world) {
     g.worldSvg.data({world});
 }
 ```
+**Plugin example**
+```javascript
+earthjs.plugins.graticuleSimple = () => {
+    const grat = d3.geoGraticule(), $ = {};
+
+    function create() {
+        const __ = this._;
+        __.svg.selectAll('.graticule').remove();
+        $.graticule = __.svg.append("path").datum(grat).attr("class", "graticule");
+        refresh.call(this);
+    }
+
+    function refresh() {
+        const __ = this._;
+        $.graticule.attr("d", __.path);
+    }
+
+    return {
+        name: 'graticuleSimple',
+        onCreate() {
+            create.call(this);
+        },
+        onRefresh() {
+            refresh.call(this);
+        }
+    }
+}
+```
+**convention**
+
+For SVG create function:
+* when removing element, it should be removing same element that created from same plugin.
+* attributes are often get update (ex:"d"), it should be placed in refresh function and at the end of create function, it should call the refresh function.
+
+in general, return value should be a simple object where by body of functions are kept in the private place with same name, and the execution is using **.call(this,...)**
+
+For Canvas, it always recreate the whole canvas, mean that onCreate & onRefresh should be using same logic of drawing.  
 
 ## Building
 Building the project requires [Node.js](https://nodejs.org/en/). Once you've installed the project's dependencies with npm install, you can build the JavaScript to the dist directory with npm run build.
