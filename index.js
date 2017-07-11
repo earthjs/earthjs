@@ -13,6 +13,7 @@ import graticuleSvg from './src/plugins/graticuleSvg.js';
 import dropShadowSvg from './src/plugins/dropShadowSvg.js';
 import fauxGlobeSvg from './src/plugins/fauxGlobeSvg.js';
 import autorotatePlugin from './src/plugins/autorotatePlugin.js';
+import dotSelectCanvas from './src/plugins/dotSelectCanvas.js';
 import dotTooltipCanvas from './src/plugins/dotTooltipCanvas.js';
 import countrySelectCanvas from './src/plugins/countrySelectCanvas.js';
 import countryTooltipCanvas from './src/plugins/countryTooltipCanvas.js';
@@ -47,6 +48,7 @@ app.plugins= {
     dropShadowSvg,
     fauxGlobeSvg,
     autorotatePlugin,
+    dotSelectCanvas,
     dotTooltipCanvas,
     countrySelectCanvas,
     countryTooltipCanvas,

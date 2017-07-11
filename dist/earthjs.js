@@ -1249,6 +1249,98 @@ var autorotatePlugin = (function (degPerSec) {
     };
 });
 
+var dotSelectCanvas = (function () {
+    /*eslint no-console: 0 */
+    var _ = { dataDots: null, dots: [], radiusPath: null,
+        onHover: {},
+        onHoverKeys: [],
+        onClick: {},
+        onClickKeys: [],
+        onDblClick: {},
+        onDblClickKeys: []
+    };
+
+    function detect(mouse, pos) {
+        var dot = null;
+        _.dots.forEach(function (d) {
+            if (mouse && !dot) {
+                var geoDistance = d3.geoDistance(d.coordinates, pos);
+                if (geoDistance <= 0.02) {
+                    dot = d;
+                }
+            }
+        });
+        return dot;
+    }
+
+    function initCircleHandler() {
+        var _this = this;
+
+        if (this.hoverCanvas) {
+            var hoverHandler = function hoverHandler(mouse, pos) {
+                var dot = detect(mouse, pos);
+                _.onHoverKeys.forEach(function (k) {
+                    _.onHover[k].call(_this, mouse, dot);
+                });
+                return dot;
+            };
+            this.hoverCanvas.onCircle({
+                dotsCanvas: hoverHandler
+            });
+        }
+
+        if (this.clickCanvas) {
+            var clickHandler = function clickHandler(mouse, pos) {
+                var dot = detect(mouse, pos);
+                _.onClickKeys.forEach(function (k) {
+                    _.onClick[k].call(_this, mouse, dot);
+                });
+                return dot;
+            };
+            this.clickCanvas.onCircle({
+                dotsCanvas: clickHandler
+            });
+        }
+
+        if (this.dblClickCanvas) {
+            var dblClickHandler = function dblClickHandler(mouse, pos) {
+                var dot = detect(mouse, pos);
+                _.onDblClickKeys.forEach(function (k) {
+                    _.onDblClick[k].call(_this, mouse, dot);
+                });
+                return dot;
+            };
+            this.dblClickCanvas.onCircle({
+                dotsCanvas: dblClickHandler
+            });
+        }
+    }
+
+    return {
+        name: 'dotSelectCanvas',
+        onInit: function onInit() {
+            initCircleHandler.call(this);
+            this._.options.transparentDots = false;
+            this._.options.showDots = true;
+        },
+        onHover: function onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverKeys = Object.keys(_.onHover);
+        },
+        onClick: function onClick(obj) {
+            Object.assign(_.onClick, obj);
+            _.onClickKeys = Object.keys(_.onClick);
+        },
+        onDblClick: function onDblClick(obj) {
+            Object.assign(_.onDblClick, obj);
+            _.onDblClickKeys = Object.keys(_.onDblClick);
+        },
+        dots: function dots(_dots) {
+            _.dots = _dots;
+        }
+    };
+});
+
 var dotTooltipCanvas = (function () {
     /*eslint no-console: 0 */
     var dotTooltip = d3.select("body").append("div").attr("class", "dotTooltip");
@@ -1268,7 +1360,7 @@ var dotTooltipCanvas = (function () {
                     dotTooltip.style("opacity", 0).style("display", "none");
                 }
             };
-            this.dotsCanvas.onHover({
+            this.dotSelectCanvas.onHover({
                 dotTooltipCanvas: hoverHandler
             });
         },
@@ -1282,9 +1374,9 @@ var dotTooltipCanvas = (function () {
 });
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-var countrySelectCanvas = function () {
+var countrySelectCanvas = (function () {
     /*eslint no-console: 0 */
-    var _ = { countries: null, country: null, mouse: null,
+    var _ = { countries: null,
         onHover: {},
         onHoverKeys: [],
         onClick: {},
@@ -1344,12 +1436,6 @@ var countrySelectCanvas = function () {
             }
             initCountrySelectHandler.call(this);
         },
-        data: function data() {
-            return {
-                country: _.country,
-                mouse: _.mouse
-            };
-        },
         onHover: function onHover(obj) {
             Object.assign(_.onHover, obj);
             _.onHoverKeys = Object.keys(_.onHover);
@@ -1366,7 +1452,7 @@ var countrySelectCanvas = function () {
             _.countries = topojson.feature(w, w.objects.countries);
         }
     };
-};
+});
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var countryTooltipCanvas = function () {
@@ -2389,14 +2475,7 @@ var dotsSvg = (function (urlDots) {
 
 var dotsCanvas = (function (urlJson) {
     /*eslint no-console: 0 */
-    var _ = { dataDots: null, circles: [], radiusPath: null,
-        onHover: {},
-        onHoverKeys: [],
-        onClick: {},
-        onClickKeys: [],
-        onDblClick: {},
-        onDblClickKeys: []
-    };
+    var _ = { dataDots: null, dots: [], radiusPath: null };
 
     function create() {
         var __ = this._;
@@ -2404,20 +2483,20 @@ var dotsCanvas = (function (urlJson) {
             var proj = this._.proj;
             var _g = _.dataDots.geometry || {};
             var center = proj.invert(this._.center);
-            var circles1 = [];
-            var circles2 = [];
-            _.circles.forEach(function (d) {
+            var dots1 = [];
+            var dots2 = [];
+            _.dots.forEach(function (d) {
                 if (d3.geoDistance(d.coordinates, center) > 1.57) {
-                    circles1.push(d.circle);
+                    dots1.push(d.circle);
                 } else {
-                    circles2.push(d.circle);
+                    dots2.push(d.circle);
                 }
             });
             if (__.options.transparent || __.options.transparentDots) {
                 __.proj.clipAngle(180);
                 this.canvasPlugin.render(function (context, path) {
                     context.beginPath();
-                    path({ type: 'GeometryCollection', geometries: circles1 });
+                    path({ type: 'GeometryCollection', geometries: dots1 });
                     context.lineWidth = 0.2;
                     context.strokeStyle = 'rgba(119,119,119,.4)';
                     context.stroke();
@@ -2427,7 +2506,7 @@ var dotsCanvas = (function (urlJson) {
             }
             this.canvasPlugin.render(function (context, path) {
                 context.beginPath();
-                path({ type: 'GeometryCollection', geometries: circles2 });
+                path({ type: 'GeometryCollection', geometries: dots2 });
                 context.lineWidth = _g.lineWidth || 0.2;
                 context.fillStyle = _g.fillStyle || 'rgba(100,0,0,.4)';
                 context.strokeStyle = _g.strokeStyle || 'rgba(100,0,0,.6)';
@@ -2442,69 +2521,13 @@ var dotsCanvas = (function (urlJson) {
         var geoCircle = d3.geoCircle();
         var _g = _.dataDots.geometry || {};
         var _r = _g.radius || 0.5;
-        _.circles = _.dataDots.features.map(function (d) {
+        _.dots = _.dataDots.features.map(function (d) {
             var coordinates = d.geometry.coordinates;
             var properties = d.properties;
             var r = d.geometry.radius || _r;
             var circle = geoCircle.center(coordinates).radius(r)();
             return { properties: properties, coordinates: coordinates, circle: circle };
         });
-    }
-
-    function detect(mouse, pos) {
-        var dot = null;
-        _.circles.forEach(function (d) {
-            if (mouse && !dot) {
-                var geoDistance = d3.geoDistance(d.coordinates, pos);
-                if (geoDistance <= 0.02) {
-                    dot = d;
-                }
-            }
-        });
-        return dot;
-    }
-
-    function initCircleHandler() {
-        var _this = this;
-
-        if (this.hoverCanvas) {
-            var hoverHandler = function hoverHandler(mouse, pos) {
-                var dot = detect(mouse, pos);
-                _.onHoverKeys.forEach(function (k) {
-                    _.onHover[k].call(_this, mouse, dot);
-                });
-                return dot;
-            };
-            this.hoverCanvas.onCircle({
-                dotsCanvas: hoverHandler
-            });
-        }
-
-        if (this.clickCanvas) {
-            var clickHandler = function clickHandler(mouse, pos) {
-                var dot = detect(mouse, pos);
-                _.onClickKeys.forEach(function (k) {
-                    _.onClick[k].call(_this, mouse, dot);
-                });
-                return dot;
-            };
-            this.clickCanvas.onCircle({
-                dotsCanvas: clickHandler
-            });
-        }
-
-        if (this.dblClickCanvas) {
-            var dblClickHandler = function dblClickHandler(mouse, pos) {
-                var dot = detect(mouse, pos);
-                _.onDblClickKeys.forEach(function (k) {
-                    _.onDblClick[k].call(_this, mouse, dot);
-                });
-                return dot;
-            };
-            this.dblClickCanvas.onCircle({
-                dotsCanvas: dblClickHandler
-            });
-        }
     }
 
     return {
@@ -2514,7 +2537,6 @@ var dotsCanvas = (function (urlJson) {
             this.dotsCanvas.data(json);
         },
         onInit: function onInit() {
-            initCircleHandler.call(this);
             this._.options.transparentDots = false;
             this._.options.showDots = true;
         },
@@ -2528,7 +2550,7 @@ var dotsCanvas = (function (urlJson) {
             _.radiusPath = path;
         },
         data: function data(_data) {
-            var _this2 = this;
+            var _this = this;
 
             if (_data) {
                 if (_.radiusPath) {
@@ -2552,7 +2574,7 @@ var dotsCanvas = (function (urlJson) {
                 _.dataDots = _data;
                 initData();
                 setTimeout(function () {
-                    return create.call(_this2);
+                    return create.call(_this);
                 }, 1);
             } else {
                 return _.dataDots;
@@ -2561,17 +2583,8 @@ var dotsCanvas = (function (urlJson) {
         drawTo: function drawTo(arr) {
             _.drawTo = arr;
         },
-        onHover: function onHover(obj) {
-            Object.assign(_.onHover, obj);
-            _.onHoverKeys = Object.keys(_.onHover);
-        },
-        onClick: function onClick(obj) {
-            Object.assign(_.onClick, obj);
-            _.onClickKeys = Object.keys(_.onClick);
-        },
-        onDblClick: function onDblClick(obj) {
-            Object.assign(_.onDblClick, obj);
-            _.onDblClickKeys = Object.keys(_.onDblClick);
+        dots: function dots() {
+            return _.dots;
         }
     };
 });
@@ -2888,6 +2901,7 @@ earthjs$1.plugins = {
     dropShadowSvg: dropShadowSvg,
     fauxGlobeSvg: fauxGlobeSvg,
     autorotatePlugin: autorotatePlugin,
+    dotSelectCanvas: dotSelectCanvas,
     dotTooltipCanvas: dotTooltipCanvas,
     countrySelectCanvas: countrySelectCanvas,
     countryTooltipCanvas: countryTooltipCanvas,

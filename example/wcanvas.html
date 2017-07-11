@@ -27,13 +27,13 @@
         g.register(earthjs.plugins.countryTooltipCanvas());
 
         g.clickCanvas.onCountry({
-            dodol: function(mouse, country) {
-                console.log('click', mouse, country);
+            wcanvas: function(mouse, country) {
+                country && console.log('country click', mouse, country);
             }
         })
         g.dblClickCanvas.onCountry({
-            dodol: function(mouse, country) {
-                console.log('dblclick', mouse, country);
+            wcanvas: function(mouse, country) {
+                country && console.log('country dblclick', mouse, country);
             }
         })
 

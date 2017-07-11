@@ -46,6 +46,7 @@ Selected plugins bundled into library:
 * dotsSvg,
 * pingsSvg,
 * dotsCanvas,
+* dotSelectCanvas,
 * dotTooltipCanvas,
 * countryTooltipSvg,
 * countryTooltipCanvas,

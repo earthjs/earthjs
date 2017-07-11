@@ -1,7 +1,7 @@
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-export default function() {
+export default () => {
     /*eslint no-console: 0 */
-    const _ = {countries: null, country: null, mouse: null,
+    const _ = {countries: null,
         onHover: {},
         onHoverKeys: [],
         onClick: {},
@@ -57,12 +57,6 @@ export default function() {
             }
             initCountrySelectHandler.call(this);
         },
-        data() {
-            return {
-                country: _.country,
-                mouse: _.mouse
-            };
-        },
         onHover(obj) {
             Object.assign(_.onHover, obj);
             _.onHoverKeys = Object.keys(_.onHover);
@@ -77,6 +71,6 @@ export default function() {
         },
         world(w) {
             _.countries = topojson.feature(w, w.objects.countries);
-        }
+        },
     }
 }

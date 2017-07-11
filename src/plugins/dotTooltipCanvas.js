@@ -20,7 +20,7 @@ export default () => {
                     .style("display", "none");
                 }
             }
-            this.dotsCanvas.onHover({
+            this.dotSelectCanvas.onHover({
                 dotTooltipCanvas: hoverHandler
             });
         },

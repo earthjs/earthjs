@@ -61,6 +61,7 @@
             const {mag, place} = d.properties;
             return {properties: {mag,place}};
         }
+        g.register(earthjs.plugins.dotSelectCanvas());
         g.register(earthjs.plugins.dotTooltipCanvas());
         g.dotTooltipCanvas.onShow = function(d) {
             const {tld, area, region, name, capital, currency, callingCode} = d.properties;
@@ -78,14 +79,14 @@
         g.centerCanvas.focused(function() {
             g.autorotatePlugin.stop();
         })
-        g.dotsCanvas.onClick({
+        g.dotSelectCanvas.onClick({
             index5: function(mouse, dot) {
-                dot && console.log('dotsCanvas click', mouse, dot);
+                dot && console.log('dotSelectCanvas click', mouse, dot);
             }
         })
-        g.dotsCanvas.onDblClick({
+        g.dotSelectCanvas.onDblClick({
             index5: function(mouse, dot) {
-                dot && console.log('dotsCanvas dblclick', mouse, dot);
+                dot && console.log('dotSelectCanvas dblclick', mouse, dot);
             }
         })
         g.register(earthjs.plugins.countrySelectCanvas());
@@ -105,6 +106,7 @@
             g.clickCanvas.world(world);
             g.dblClickCanvas.world(world);
             g.countrySelectCanvas.world(world);
+            g.dotSelectCanvas.dots(g.dotsCanvas.dots());
             g.create()
         });
     </script>
