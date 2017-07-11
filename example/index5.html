@@ -18,17 +18,21 @@
         // https://github.com/mledoze/countries
         const g = earthjs();
         g.register(earthjs.plugins.commonPlugins('./d/world-110m.json','./d/world-110m-country-names.tsv'));
+        g.register(earthjs.plugins.dotsCanvas('./d/cities.geojson'));
+        g.register(earthjs.plugins.barSvg('./d/bars.json'));
+        g.register(earthjs.plugins.dotsSvg());
         g.register(earthjs.plugins.hoverCanvas());
         g.register(earthjs.plugins.clickCanvas());
         g.register(earthjs.plugins.dblClickCanvas());
         g.register(earthjs.plugins.centerCanvas());
         g.register(earthjs.plugins.fauxGlobeSvg());
+        g.register(earthjs.plugins.barTooltipSvg());
+        g.register(earthjs.plugins.dotSelectCanvas());
+        g.register(earthjs.plugins.dotTooltipCanvas());
+        g.register(earthjs.plugins.countrySelectCanvas());
+        g.register(earthjs.plugins.countryTooltipCanvas());
         g.fauxGlobeSvg.selectAll('.ea-4');
-        g.commonPlugins.addChecker(':Shading:showGlobeShading'.split(':'))
-        g.commonPlugins.addChecker(':Hilight:showGlobeHilight'.split(':'))
 
-        g.register(earthjs.plugins.barSvg('./d/bars.json'));
-        g.register(earthjs.plugins.dotsSvg());
         g.barSvg.valuePath('properties.mag');
         g.dotsSvg.radiusPath('properties.mag');
         g.barSvg.ready = function(err, data) {
@@ -37,9 +41,6 @@
         }
         g.barSvg.selectAll('.ea-4');
         g.dotsSvg.selectAll('.ea-1');
-        g.commonPlugins.addChecker(':Bars:showBars'.split(':'))
-        g.commonPlugins.addChecker(':Dots:showDots'.split(':'))
-        g.register(earthjs.plugins.dotsCanvas('./d/cities.geojson'));
         g.dotsCanvas.drawTo([1]);
         g.dotsCanvas.ready = function(err, data) {
             // const features = data.features.filter(d => d.properties.population>=3500000);
@@ -55,14 +56,10 @@
             }
             g.dotsCanvas.data(dataMssg);
         }
-        g.register(earthjs.plugins.countryTooltipCanvas());
-        g.register(earthjs.plugins.barTooltipSvg());
         g.barTooltipSvg.onShow = function(d) {
             const {mag, place} = d.properties;
             return {properties: {mag,place}};
         }
-        g.register(earthjs.plugins.dotSelectCanvas());
-        g.register(earthjs.plugins.dotTooltipCanvas());
         g.dotTooltipCanvas.onShow = function(d) {
             const {tld, area, region, name, capital, currency, callingCode} = d.properties;
             return {properties: {
@@ -75,7 +72,6 @@
                 tld,
                 coordinates: d.coordinates.join(', ')}};
         }
-        g._.options.showGlobeHilight = false;
         g.centerCanvas.focused(function() {
             g.autorotatePlugin.stop();
         })
@@ -89,7 +85,6 @@
                 dot && console.log('dotSelectCanvas dblclick', mouse, dot);
             }
         })
-        g.register(earthjs.plugins.countrySelectCanvas());
         g.countrySelectCanvas.onClick({
             index5: function(mouse, dot) {
                 dot && console.log('countrySelectCanvas click', mouse, dot);
@@ -100,6 +95,7 @@
                 dot && console.log('countrySelectCanvas dblclick', mouse, dot);
             }
         })
+        g._.options.showGlobeHilight = false;
         g.ready(() => {
             const world = g.worldCanvas.data().world;
             g.hoverCanvas.world(world);
@@ -109,6 +105,10 @@
             g.dotSelectCanvas.dots(g.dotsCanvas.dots());
             g.create()
         });
+        g.commonPlugins.addChecker(':Shading:showGlobeShading'.split(':'))
+        g.commonPlugins.addChecker(':Hilight:showGlobeHilight'.split(':'))
+        g.commonPlugins.addChecker(':Bars:showBars'.split(':'))
+        g.commonPlugins.addChecker(':Dots:showDots'.split(':'))
     </script>
 </body>
 </html>
