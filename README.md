@@ -7,14 +7,13 @@
 
 ![Earthquake](https://earthjs.github.io/images/earthquake.png)
 
-Earthjs is a javascript library for easy building orthographic globe. Originally inspired by [planetary.js](https://github.com/BinaryMuse/planetary.js) (canvas) and [Faux-3d Shaded Globe](http://bl.ocks.org/dwtkns/4686432) (svg) and both was created using D3.v3.
+Earthjs is a javascript library for easy building orthographic globe. Originally inspired by [planetary.js](https://github.com/BinaryMuse/planetary.js) (canvas) and [Faux-3d Shaded Globe](http://bl.ocks.org/dwtkns/4686432) (svg) and both were created using D3-v3.
 
-Earthjs created using D3.v4, design as pluggable modules.
+Earthjs is created using D3-v4, design as pluggable modules.
 
-Awesome interactive globe can be created, dragging to rotate any direction, zooming using scroll mouse or tap, multiple layer of globe with oceanSvg & fauxGlobeSvg, area of land can be plain one svg path or switch with bordered countries for optimized rendering, auto rotate with adjustable speed and ticker to balance between smooth and cpu utilization, point of places is included and lastly sample tool tips of the country. All of this can configure on the fly switching to activate, deactivate or adjust speed and ticker.
+Awesome interactive globe can be created, dragging to rotate globe to any direction, zooming using scroll mouse or tap, multiple layer of globe with ocean (oceanSvg) & skinned globe like [Faux-3d Shaded Globe](http://bl.ocks.org/dwtkns/4686432) (fauxGlobeSvg), area of world can be plain one svg path or using canvas plugin, toggle with hide/show countries border or lakes for optimized rendering, auto rotate with adjustable speed and ticker, balancing between smooth and cpu utilization, point of places, bar chart in globe, country tooltip, point of location (dots) tooltip, bar chart in globe tooltip, graticules, etc (see below list of the plugins). All of this can be configured on the fly, switching to activate / deactivate, adjust speed and ticker.
 
-Support Canvas in or outside SVG! some of the canvas plugin implement mouse detection
-on some area of canvas, hoover, click and double click are supported.
+Support Canvas in or outside SVG! Canvas mouse detection is included with hover, click and doubleclick event are supported.
 
 ## Internal Plugins
 Selected plugins bundled into library:
