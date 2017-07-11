@@ -113,7 +113,7 @@ export default (url) => {
     }
 }
 ```
-**If necessary** _onReady()_ can be superseded by _ready()_ and the defintion of _ready()_ should not be in the plugin it self.
+**If necessary** when the plugin is in use, _onReady()_ can be superseded by _ready()_ function, created in the plugin namespace.
 
 ```javascript
 // example:
