@@ -128,27 +128,26 @@ earthjs.plugins.graticuleSimple = () => {
     const grat = d3.geoGraticule(), $ = {};
 
     function create() {
-        const __ = this._;
-        __.svg.selectAll('.graticule').remove();
-        $.graticule = __.svg.append("path").datum(grat).attr("class", "graticule");
+        this._.svg.selectAll('.graticule').remove();
+        $.grat = this._.svg.append("path").datum(grat).attr("class", "graticule");
         refresh.call(this);
     }
 
     function refresh() {
-        const __ = this._;
-        $.graticule.attr("d", __.path);
+        $.grat.attr("d", this._.path);
     }
 
     return {
         name: 'graticuleSimple',
-        onCreate() {
-            create.call(this);
-        },
-        onRefresh() {
-            refresh.call(this);
-        }
+        onCreate()  {create .call(this);},
+        onRefresh() {refresh.call(this);}
     }
 }
+
+//... plugin in use
+const g = earthjs();
+g.register(earthjs.plugins.graticuleSimple());
+g.create();
 ```
 **convention**
 
