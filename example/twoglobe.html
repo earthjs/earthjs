@@ -10,10 +10,10 @@
     <svg id="earth2"></svg>
     <script>
         const g1 = earthjs({select:'#earth1', rotate: 0});
+        g1.register(earthjs.plugins.configPlugin());
         g1.register(earthjs.plugins.autorotatePlugin(10));
         g1.register(earthjs.plugins.versorMousePlugin());
-        g1.register(earthjs.plugins.wheelZoomPlugin());
-        g1.register(earthjs.plugins.configPlugin());
+        g1.register(earthjs.plugins.zoomPlugin());
 
         g1.register(earthjs.plugins.dropShadowSvg());
         g1.register(earthjs.plugins.oceanSvg());

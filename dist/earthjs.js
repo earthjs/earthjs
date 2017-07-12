@@ -711,6 +711,31 @@ var hoverCanvas = function () {
     };
 };
 
+var zoomPlugin = (function () {
+    function init() {
+        var __ = this._;
+        var s0 = __.proj.scale();
+        var wh = [__.options.width, __.options.height];
+        var zoom = d3.zoom().on("zoom start end", zoomed).scaleExtent([0.1, 5]).translateExtent([[0, 0], wh]);
+
+        __.svg.call(zoom);
+
+        function zoomed() {
+            var t = d3.event.transform;
+            __.proj.scale(s0 * t.k);
+            __.resize();
+            __.refresh();
+        }
+    }
+
+    return {
+        name: 'zoomPlugin',
+        onInit: function onInit() {
+            init.call(this);
+        }
+    };
+});
+
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var clickCanvas = function () {
     /*eslint no-console: 0 */
@@ -2787,9 +2812,9 @@ var commonPlugins = (function (urlWorld, urlCountryNames) {
         var r = this.register;
         var p = earthjs.plugins;
         r(p.configPlugin());
-        r(p.wheelZoomPlugin());
-        r(p.versorMousePlugin());
         r(p.autorotatePlugin(10));
+        r(p.versorMousePlugin());
+        r(p.zoomPlugin());
         r(p.dropShadowSvg());
         r(p.oceanSvg());
         r(p.canvasPlugin());
@@ -2891,6 +2916,7 @@ earthjs$1.plugins = {
     wheelZoomPlugin: wheelZoomPlugin,
     threejsPlugin: threejsPlugin,
     canvasPlugin: canvasPlugin,
+    zoomPlugin: zoomPlugin,
     hoverCanvas: hoverCanvas,
     clickCanvas: clickCanvas,
     dblClickCanvas: dblClickCanvas,

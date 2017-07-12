@@ -22,6 +22,7 @@ Selected plugins bundled into library:
 * configPlugin,
 * centerCanvas,
 * centerSvg,
+* zoomPlugin,
 * flattenPlugin,
 * wheelZoomPlugin,
 * versorMousePlugin,

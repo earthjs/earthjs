@@ -10,10 +10,10 @@
     <canvas class="canvas"></canvas>
     <script>
         const g = earthjs();
+        g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.versorMousePlugin());
-        g.register(earthjs.plugins.wheelZoomPlugin());
-        g.register(earthjs.plugins.configPlugin());
+        g.register(earthjs.plugins.zoomPlugin());
         g.register(earthjs.plugins.dropShadowSvg());
         g.register(earthjs.plugins.oceanSvg());
         g.register(earthjs.plugins.canvasPlugin());

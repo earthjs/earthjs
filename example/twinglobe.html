@@ -17,10 +17,10 @@
     <script>
         const g = earthjs({select:'.earth'});
         g.register(earthjs.plugins.configPlugin());
-        g.register(earthjs.plugins.wheelZoomPlugin());
         g.register(earthjs.plugins.versorMousePlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
-        // g.wheelZoomPlugin.selectAll('.e1');
+        g.register(earthjs.plugins.zoomPlugin());
+        // g.zoomPlugin.selectAll('.e1');
         // g.versorMousePlugin.selectAll('.e1');
 
         g.register(earthjs.plugins.dropShadowSvg());
