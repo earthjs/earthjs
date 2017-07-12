@@ -98,7 +98,7 @@ export default function() {
     }
 
     return {
-        name: 'versorMousePlugin',
+        name: 'mousePlugin',
         onInit() {
             _.svg = this._.svg;
             dragSetup.call(this);

@@ -56,8 +56,8 @@ export default function() {
                 });
             }
         }
-        if (this.versorMousePlugin) {
-            this.versorMousePlugin.onDblClick({
+        if (this.mousePlugin) {
+            this.mousePlugin.onDblClick({
                 dblClickCanvas: mouseDblClickHandler
             });
         }

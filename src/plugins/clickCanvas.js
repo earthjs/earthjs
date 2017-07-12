@@ -56,8 +56,8 @@ export default function() {
                 });
             }
         }
-        if (this.versorMousePlugin) {
-            this.versorMousePlugin.onClick({
+        if (this.mousePlugin) {
+            this.mousePlugin.onClick({
                 clickCanvas: mouseClickHandler
             });
         }

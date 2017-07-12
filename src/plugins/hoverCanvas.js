@@ -58,8 +58,8 @@ export default function() {
             }
         }
         __.svg.on("mousemove", mouseMoveHandler);
-        if (this.versorMousePlugin) {
-            this.versorMousePlugin.onDrag({
+        if (this.mousePlugin) {
+            this.mousePlugin.onDrag({
                 hoverCanvas: mouseMoveHandler
             });
         }

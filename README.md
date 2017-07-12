@@ -24,7 +24,7 @@ Selected plugins bundled into library:
 * zoomPlugin,
 * flattenPlugin,
 * wheelZoomPlugin,
-* versorMousePlugin,
+* mousePlugin,
 * autorotatePlugin,
 * canvasPlugin,
 * threejsPlugin,
