@@ -306,6 +306,68 @@ var earthjs$1 = function earthjs() {
     }
 };
 
+var configPlugin = function () {
+    return {
+        name: 'configPlugin',
+        set: function set(newOpt) {
+            if (newOpt) {
+                Object.assign(this._.options, newOpt);
+                if (newOpt.spin !== undefined) {
+                    var rotate = this.autorotatePlugin;
+                    newOpt.spin ? rotate.start() : rotate.stop();
+                }
+                this.create();
+            }
+            return Object.assign({}, this._.options);
+        }
+    };
+};
+
+var autorotatePlugin = (function (degPerSec) {
+    /*eslint no-console: 0 */
+    var _ = {
+        lastTick: new Date(),
+        degree: degPerSec / 1000,
+        sync: []
+    };
+
+    function rotate(delta) {
+        var r = this._.proj.rotate();
+        r[0] += _.degree * delta;
+        this._.rotate(r);
+    }
+
+    return {
+        name: 'autorotatePlugin',
+        onInit: function onInit() {
+            this._.options.spin = true;
+        },
+        onInterval: function onInterval() {
+            var now = new Date();
+            if (this._.options.spin && !this._.drag) {
+                var delta = now - _.lastTick;
+                rotate.call(this, delta);
+                _.sync.forEach(function (g) {
+                    return rotate.call(g, delta);
+                });
+            }
+            _.lastTick = now;
+        },
+        speed: function speed(degPerSec) {
+            _.degree = degPerSec / 1000;
+        },
+        start: function start() {
+            this._.options.spin = true;
+        },
+        stop: function stop() {
+            this._.options.spin = false;
+        },
+        sync: function sync(arr) {
+            _.sync = arr;
+        }
+    };
+});
+
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 var mousePlugin = function () {
     /*eslint no-console: 0 */
@@ -455,42 +517,30 @@ var mousePlugin = function () {
     };
 };
 
-var wheelZoomPlugin = function () {
-    /*eslint no-console: 0 */
-    var _ = { svg: null, q: null, sync: [] };
-
-    function zoomSetup() {
+var zoomPlugin = (function () {
+    function init() {
         var __ = this._;
-        _.svg.on('wheel', function () {
-            var y = d3.event.deltaY + __.proj.scale();
-            y = y < 20 ? 20 : y > 999 ? 1000 : y;
-            __.scale(y);
-            _.sync.forEach(function (g) {
-                g._.scale.call(g, y);
-            });
-        });
+        var s0 = __.proj.scale();
+        var wh = [__.options.width, __.options.height];
+        var zoom = d3.zoom().on("zoom start end", zoomed).scaleExtent([0.1, 5]).translateExtent([[0, 0], wh]);
+
+        __.svg.call(zoom);
+
+        function zoomed() {
+            var t = d3.event.transform;
+            __.proj.scale(s0 * t.k);
+            __.resize();
+            __.refresh();
+        }
     }
 
     return {
-        name: 'wheelZoomPlugin',
+        name: 'zoomPlugin',
         onInit: function onInit() {
-            _.svg = this._.svg;
-            zoomSetup.call(this);
-        },
-        selectAll: function selectAll(q) {
-            if (q) {
-                _.q = q;
-                _.svg.on('wheel', null);
-                _.svg = d3.selectAll(q);
-                zoomSetup.call(this);
-            }
-            return _.svg;
-        },
-        sync: function sync(arr) {
-            _.sync = arr;
+            init.call(this);
         }
     };
-};
+});
 
 // Philippe Rivière’s https://bl.ocks.org/Fil/9ed0567b68501ee3c3fef6fbe3c81564
 // https://gist.github.com/Fil/ad107bae48e0b88014a0e3575fe1ba64
@@ -710,31 +760,6 @@ var hoverCanvas = function () {
         }
     };
 };
-
-var zoomPlugin = (function () {
-    function init() {
-        var __ = this._;
-        var s0 = __.proj.scale();
-        var wh = [__.options.width, __.options.height];
-        var zoom = d3.zoom().on("zoom start end", zoomed).scaleExtent([0.1, 5]).translateExtent([[0, 0], wh]);
-
-        __.svg.call(zoom);
-
-        function zoomed() {
-            var t = d3.event.transform;
-            __.proj.scale(s0 * t.k);
-            __.resize();
-            __.refresh();
-        }
-    }
-
-    return {
-        name: 'zoomPlugin',
-        onInit: function onInit() {
-            init.call(this);
-        }
-    };
-});
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var clickCanvas = function () {
@@ -1002,23 +1027,6 @@ var oceanSvg = function () {
     };
 };
 
-var configPlugin = function () {
-    return {
-        name: 'configPlugin',
-        set: function set(newOpt) {
-            if (newOpt) {
-                Object.assign(this._.options, newOpt);
-                if (newOpt.spin !== undefined) {
-                    var rotate = this.autorotatePlugin;
-                    newOpt.spin ? rotate.start() : rotate.stop();
-                }
-                this.create();
-            }
-            return Object.assign({}, this._.options);
-        }
-    };
-};
-
 var graticuleCanvas = function () {
     var datumGraticule = d3.geoGraticule()();
     var _ = { style: {}, drawTo: null };
@@ -1228,51 +1236,6 @@ var fauxGlobeSvg = function () {
         }
     };
 };
-
-var autorotatePlugin = (function (degPerSec) {
-    /*eslint no-console: 0 */
-    var _ = {
-        lastTick: new Date(),
-        degree: degPerSec / 1000,
-        sync: []
-    };
-
-    function rotate(delta) {
-        var r = this._.proj.rotate();
-        r[0] += _.degree * delta;
-        this._.rotate(r);
-    }
-
-    return {
-        name: 'autorotatePlugin',
-        onInit: function onInit() {
-            this._.options.spin = true;
-        },
-        onInterval: function onInterval() {
-            var now = new Date();
-            if (this._.options.spin && !this._.drag) {
-                var delta = now - _.lastTick;
-                rotate.call(this, delta);
-                _.sync.forEach(function (g) {
-                    return rotate.call(g, delta);
-                });
-            }
-            _.lastTick = now;
-        },
-        speed: function speed(degPerSec) {
-            _.degree = degPerSec / 1000;
-        },
-        start: function start() {
-            this._.options.spin = true;
-        },
-        stop: function stop() {
-            this._.options.spin = false;
-        },
-        sync: function sync(arr) {
-            _.sync = arr;
-        }
-    };
-});
 
 var dotSelectCanvas = (function () {
     /*eslint no-console: 0 */
@@ -2912,21 +2875,20 @@ var commonPlugins = (function (urlWorld, urlCountryNames) {
 });
 
 earthjs$1.plugins = {
+    configPlugin: configPlugin,
+    autorotatePlugin: autorotatePlugin,
     mousePlugin: mousePlugin,
-    wheelZoomPlugin: wheelZoomPlugin,
+    zoomPlugin: zoomPlugin,
     threejsPlugin: threejsPlugin,
     canvasPlugin: canvasPlugin,
-    zoomPlugin: zoomPlugin,
     hoverCanvas: hoverCanvas,
     clickCanvas: clickCanvas,
     dblClickCanvas: dblClickCanvas,
     oceanSvg: oceanSvg,
-    configPlugin: configPlugin,
     graticuleCanvas: graticuleCanvas,
     graticuleSvg: graticuleSvg,
     dropShadowSvg: dropShadowSvg,
     fauxGlobeSvg: fauxGlobeSvg,
-    autorotatePlugin: autorotatePlugin,
     dotSelectCanvas: dotSelectCanvas,
     dotTooltipCanvas: dotTooltipCanvas,
     countrySelectCanvas: countrySelectCanvas,

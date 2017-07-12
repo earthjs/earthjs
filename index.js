@@ -1,19 +1,18 @@
 import app from './src/earthjs';
+import configPlugin from './src/plugins/configPlugin.js';
+import autorotatePlugin from './src/plugins/autorotatePlugin.js';
 import mousePlugin from './src/plugins/mousePlugin.js';
-import wheelZoomPlugin from './src/plugins/wheelZoomPlugin.js';
+import zoomPlugin from './src/plugins/zoomPlugin.js';
 import threejsPlugin from './src/plugins/threejsPlugin.js';
 import canvasPlugin from './src/plugins/canvasPlugin.js';
 import hoverCanvas from './src/plugins/hoverCanvas';
-import zoomPlugin from './src/plugins/zoomPlugin.js';
 import clickCanvas from './src/plugins/clickCanvas';
 import dblClickCanvas from './src/plugins/dblClickCanvas';
 import oceanSvg from './src/plugins/oceanSvg.js';
-import configPlugin from './src/plugins/configPlugin.js';
 import graticuleCanvas from './src/plugins/graticuleCanvas.js';
 import graticuleSvg from './src/plugins/graticuleSvg.js';
 import dropShadowSvg from './src/plugins/dropShadowSvg.js';
 import fauxGlobeSvg from './src/plugins/fauxGlobeSvg.js';
-import autorotatePlugin from './src/plugins/autorotatePlugin.js';
 import dotSelectCanvas from './src/plugins/dotSelectCanvas.js';
 import dotTooltipCanvas from './src/plugins/dotTooltipCanvas.js';
 import countrySelectCanvas from './src/plugins/countrySelectCanvas.js';
@@ -35,21 +34,20 @@ import pingsSvg from './src/plugins/pingsSvg.js';
 import debugThreejs from './src/plugins/debugThreejs.js';
 import commonPlugins from './src/pluginLoader/commonPlugins';
 app.plugins= {
+    configPlugin,
+    autorotatePlugin,
     mousePlugin,
-    wheelZoomPlugin,
+    zoomPlugin,
     threejsPlugin,
     canvasPlugin,
-    zoomPlugin,
     hoverCanvas,
     clickCanvas,
     dblClickCanvas,
     oceanSvg,
-    configPlugin,
     graticuleCanvas,
     graticuleSvg,
     dropShadowSvg,
     fauxGlobeSvg,
-    autorotatePlugin,
     dotSelectCanvas,
     dotTooltipCanvas,
     countrySelectCanvas,
