@@ -1,26 +1,19 @@
 <html>
 <head>
-    <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
-    <script type='text/javascript' src="./js/d3.min.js"></script>
-    <script type='text/javascript' src="./js/topojson.min.js"></script>
-    <script type='text/javascript' src='../dist/earthjs.js'></script>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../../dist/earthjs.js'></script>
 </head>
 <body>
     <svg id="earth"></svg>
     <script>
         const g = earthjs();
-        g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.dropShadowSvg());
-        g.register(earthjs.plugins.oceanSvg());
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
-        g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
-        g.register(earthjs.plugins.hoverCanvas());
-        g.register(earthjs.plugins.fauxGlobeSvg());
-        g.register(earthjs.plugins.barSvg());
-        g.register(earthjs.plugins.dotsCanvas('./d/bars.json'));
+        g.register(earthjs.plugins.dotsCanvas('../d/bars.json'));
         g.dotsCanvas.ready = function(err, json) {
             const features = json.features;
             const maxMag = features.map(d => d.properties.mag).sort(d3.descending)[0];
@@ -35,15 +28,11 @@
                 fillStyle: 'rgba(100,0,0,.4)',
                 strokeStyle: 'rgba(100,0,0,.6)'
             }
-            g.barSvg.data(json);
             g.dotsCanvas.data(json);
         };
+        g._.options.transparent = true;
         g.ready(function(){
-            g.configPlugin.set({
-                transparent: true,
-                showCountries: false,
-                showLakes: false
-            });
+            g.create();
         })
     </script>
 </body>

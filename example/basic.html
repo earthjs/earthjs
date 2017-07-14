@@ -9,16 +9,15 @@
     <svg id="earth" width="1000" height="800"></svg>
     <script>
         const g = earthjs();
-        g.register(earthjs.plugins.configPlugin());
+        // g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.zoomPlugin());
         g.register(earthjs.plugins.graticuleSvg());
-        g.register(earthjs.plugins.worldSvg('./d/world-110m.json'));
+        // g.register(earthjs.plugins.worldSvg('./d/world-110m.json'));
         // g.register(earthjs.plugins.canvasPlugin());
         // g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
-        g.ready(function(){
+        // g.ready(function(){
             g.create();
-        })
+        // })
     </script>
 </body>
 </html>

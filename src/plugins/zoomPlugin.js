@@ -3,12 +3,13 @@ export default () => {
         const __ = this._;
         const s0 = __.proj.scale();
         const wh = [__.options.width, __.options.height];
-        const zoom = d3.zoom().on("zoom start end", zoomed)
-            .scaleExtent([0.1, 5]).translateExtent([[0,0], wh]);
 
-        __.svg.call(zoom);
+        __.svg.call(d3.zoom()
+            .on("zoom start end", zoom)
+            .scaleExtent([0.1, 5])
+            .translateExtent([[0,0], wh]));
 
-        function zoomed() {
+        function zoom() {
             var t = d3.event.transform;
             __.proj.scale(s0 * t.k);
             __.resize();

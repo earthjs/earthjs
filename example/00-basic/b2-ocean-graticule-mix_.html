@@ -1,0 +1,19 @@
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../../dist/earthjs.js'></script>
+</head>
+<body>
+    <svg id="earth"/>
+    <div>https://bugs.chromium.org/p/chromium/issues/detail?id=510819</div>
+    <script>
+        const g = earthjs();
+        g.register(earthjs.plugins.mousePlugin());
+        g.register(earthjs.plugins.canvasPlugin());
+        g.register(earthjs.plugins.oceanSvg());
+        g.register(earthjs.plugins.graticuleCanvas());
+        g.create();
+    </script>
+</body>
+</html>

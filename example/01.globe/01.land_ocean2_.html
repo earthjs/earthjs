@@ -1,0 +1,23 @@
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../../dist/earthjs.js'></script>
+</head>
+<body>
+    <svg id="earth"></svg>
+    <script>
+        const g = earthjs();
+        g.register(earthjs.plugins.configPlugin());
+        g.register(earthjs.plugins.autorotatePlugin(10));
+        g.register(earthjs.plugins.mousePlugin());
+        g.register(earthjs.plugins.canvasPlugin());
+        g.register(earthjs.plugins.oceanSvg());
+        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
+        g.ready(function(){
+            g.create();
+        })
+    </script>
+</body>
+</html>

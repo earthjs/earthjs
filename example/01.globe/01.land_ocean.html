@@ -1,9 +1,9 @@
 <html>
 <head>
-    <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
-    <script type='text/javascript' src="./js/d3.min.js"></script>
-    <script type='text/javascript' src="./js/topojson.min.js"></script>
-    <script type='text/javascript' src='../dist/earthjs.js'></script>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../../dist/earthjs.js'></script>
 </head>
 <body>
     <svg id="earth"></svg>
@@ -12,9 +12,8 @@
         g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.zoomPlugin());
         g.register(earthjs.plugins.oceanSvg());
-        g.register(earthjs.plugins.worldSvg('./d/world-110m.json'));
+        g.register(earthjs.plugins.worldSvg('../d/world-110m.json'));
         g.ready(function(){
             g.create();
         })

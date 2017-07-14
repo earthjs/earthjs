@@ -31,11 +31,13 @@ export default urlDots => {
             const _g = _.dataDots.geometry || {};
             if (__.options.transparent || __.options.transparentDots) {
                 __.proj.clipAngle(180);
-                $.dots.style('display', 'inline');
                 $.dots.style('fill', function(d, i) {
                     coordinate = d.coordinates[0][i];
                     gdistance = d3.geoDistance(coordinate, __.proj.invert(__.center));
-                    return  gdistance > 1.57 ? 'none' : (_g.fillStyle || 'rgba(100,0,0,.4)');
+                    return gdistance > 1.57 ? 'none' : (_g.fillStyle || 'rgba(100,0,0,.4)');
+                });
+                $.dots.style('display', function() {
+                    return __.drag ? 'none' : 'inline';
                 });
                 $.dots.attr('d', __.path);
                 __.proj.clipAngle(90);
@@ -43,7 +45,7 @@ export default urlDots => {
                 $.dots.style('display', function(d, i) {
                     coordinate = d.coordinates[0][i];
                     gdistance = d3.geoDistance(coordinate, __.proj.invert(__.center));
-                    return  gdistance > 1.57 ? 'none' : 'inline';
+                    return (gdistance > 1.57 || __.drag) ? 'none' : 'inline';
                 });
                 $.dots.style('fill', _g.fillStyle   || 'rgba(100,0,0,.4)')
                 $.dots.attr('d', __.path);

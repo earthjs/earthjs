@@ -24,17 +24,31 @@ export default function() {
         // console.log('dblclick');
     }
 
-    function dragSetup() {
+    function init() {
         const __ = this._;
         const versor = __.versor;
+        let v0, // Mouse position in Cartesian coordinates at start of drag gesture.
+            r0, // Projection rotation as Euler angles at start.
+            q0; // Projection rotation as versor at start.
+        const s0 = __.proj.scale();
+        const wh = [__.options.width, __.options.height];
+
         _.svg.call(d3.drag()
             .on('start',dragstarted)
             .on('end',  dragsended)
             .on('drag', dragged));
 
-        let v0, // Mouse position in Cartesian coordinates at start of drag gesture.
-            r0, // Projection rotation as Euler angles at start.
-            q0; // Projection rotation as versor at start.
+        _.svg.call(d3.zoom()
+            .on("zoom", zoom)
+            .scaleExtent([0.1, 5])
+            .translateExtent([[0,0], wh]));
+
+        function zoom() {
+            var t = d3.event.transform;
+            __.proj.scale(s0 * t.k);
+            __.resize();
+            __.refresh();
+        }
 
         function rotate(r) {
             const d = r[0] - r0[0];
@@ -101,7 +115,7 @@ export default function() {
         name: 'mousePlugin',
         onInit() {
             _.svg = this._.svg;
-            dragSetup.call(this);
+            init.call(this);
         },
         onInterval() {
             const __ = this._;
@@ -120,12 +134,14 @@ export default function() {
         selectAll(q) {
             if (q) {
                 _.q = q;
+                _.svg.call(d3.zoom()
+                    .on("zoom start end", null));
                 _.svg.call(d3.drag()
                     .on('start',null)
                     .on('end',  null)
                     .on('drag', null));
                 _.svg = d3.selectAll(q);
-                dragSetup.call(this);
+                init.call(this);
             }
             return _.svg;
         },
