@@ -8,7 +8,7 @@
 <body>
     <svg id="earth" width="1000" height="800"></svg>
     <script>
-        const g = earthjs();
+        const g = earthjs({transparent:true});
         g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
@@ -16,7 +16,6 @@
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.hoverCanvas());
         g.register(earthjs.plugins.dotsCanvas('./d/bars.json'));
-        g.configPlugin.set({transparent: true});
         g.dotsCanvas.ready = function(err, json) {
             const features = json.features;
             const maxMag = features.map(d => d.properties.mag).sort(d3.descending)[0];

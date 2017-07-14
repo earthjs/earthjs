@@ -78,7 +78,7 @@ var earthjs$1 = function earthjs() {
     clearInterval(earthjs.ticker);
     options = Object.assign({
         transparent: false,
-        select: '#earth',
+        selectAll: '#earth',
         rotate: 130
     }, options);
     var _ = {
@@ -110,7 +110,7 @@ var earthjs$1 = function earthjs() {
     };
     window.__ = _;
     var drag = false;
-    var svg = d3.selectAll(options.select);
+    var svg = d3.selectAll(options.selectAll);
     var width = svg.attr('width'),
         height = svg.attr('height');
     if (!width || !height) {
@@ -290,7 +290,11 @@ var earthjs$1 = function earthjs() {
     };
 
     __.orthoGraphic = function () {
-        return d3.geoOrthographic().rotate([__.options.rotate, 0]).scale(__.options.width / 3.5).translate(__.center).precision(0.1).clipAngle(90);
+        var r = __.options.rotate;
+        if (typeof r === 'number') {
+            __.options.rotate = __.options.transparent ? [r, -33, -11] : [r, 0, 0];
+        }
+        return d3.geoOrthographic().rotate(__.options.rotate).scale(__.options.width / 3.5).translate(__.center).precision(0.1).clipAngle(90);
     };
 
     __.proj = __.orthoGraphic();

@@ -6,7 +6,7 @@ const earthjs = (options={}) => {
     clearInterval(earthjs.ticker);
     options = Object.assign({
         transparent: false,
-        select: '#earth',
+        selectAll: '#earth',
         rotate: 130,
     }, options);
     const _ = {
@@ -38,7 +38,7 @@ const earthjs = (options={}) => {
     }
     window.__ = _;
     const drag = false;
-    const svg = d3.selectAll(options.select);
+    const svg = d3.selectAll(options.selectAll);
     let width = svg.attr('width'), height = svg.attr('height');
     if (!width || !height) {
         width = options.width || 700;
@@ -217,9 +217,13 @@ const earthjs = (options={}) => {
     }
 
     __.orthoGraphic = function() {
+        const r = __.options.rotate;
+        if (typeof(r)==='number') {
+            __.options.rotate = __.options.transparent ? [r,-33,-11] : [r,0,0];
+        }
         return d3.geoOrthographic()
-            .rotate([__.options.rotate, 0])
-            .scale(__.options.width / 3.5)
+            .rotate(__.options.rotate)
+            .scale(__.options.width/3.5)
             .translate(__.center)
             .precision(0.1)
             .clipAngle(90);

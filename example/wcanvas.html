@@ -9,7 +9,7 @@
     <svg id="earth"></svg>
     <canvas class="canvas"></canvas>
     <script>
-        const g = earthjs();
+        const g = earthjs({transparent:true});
         g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.mousePlugin());
@@ -41,7 +41,10 @@
         })
 
         g.canvasPlugin.selectAll('.canvas');
-        g.configPlugin.set({transparent: true, showCountries: false, showLakes: false});
+        g.configPlugin.set({
+            showCountries: false,
+            showLakes: false
+        });
         g.ready(function(){
             const world = g.worldCanvas.data().world;
             g.hoverCanvas.world(world);

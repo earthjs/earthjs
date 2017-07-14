@@ -8,7 +8,7 @@
 <body>
     <svg id="earth"></svg>
     <script>
-        const g = earthjs();
+        const g = earthjs({transparent:true});
         g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.mousePlugin());
@@ -40,7 +40,6 @@
         };
         g.ready(function(){
             g.configPlugin.set({
-                transparent: true,
                 showCountries: false,
                 showLakes: false
             });

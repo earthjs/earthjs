@@ -8,7 +8,7 @@
 <body>
     <svg id="earth"></svg>
     <script>
-        const g = earthjs();
+        const g = earthjs({transparent:true});
         g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.canvasPlugin());
@@ -32,7 +32,6 @@
             g.barSvg.data(json);
             g.dotsSvg.data(json);
         };
-        g._.options.transparent = true;
         g.ready(function(){
             g.create();
         })
