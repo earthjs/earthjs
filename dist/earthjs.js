@@ -674,6 +674,28 @@ var canvasPlugin = (function () {
                     proj.rotate(r);
                 }
             }
+        },
+        flipRender: function flipRender(fn, drawTo) {
+            var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
+            // __.proj.clipAngle(180);
+            // this.canvasPlugin.render(function(context, path) {
+            //     fn.call(this, context, path);
+            // }, _.drawTo, _.options);
+            // __.proj.clipAngle(90);
+            var __ = this._;
+            var w = __.center[0];
+            var r = __.proj.rotate();
+            this.canvasPlugin.render(function (context, path) {
+                context.save();
+                context.translate(w, 0);
+                context.scale(-1, 1);
+                context.translate(-w, 0);
+                __.proj.rotate([r[0] + 180, -r[1], -r[2]]);
+                fn.call(this, context, path);
+                context.restore();
+                __.proj.rotate(r);
+            }, drawTo, options);
         }
     };
 });
@@ -1716,14 +1738,12 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
         var __ = this._;
         if (_.world && __.options.showLand) {
             if (__.options.transparent || __.options.transparentLand) {
-                __.proj.clipAngle(180);
-                this.canvasPlugin.render(function (context, path) {
+                this.canvasPlugin.flipRender(function (context, path) {
                     context.beginPath();
                     path(_.land);
                     context.fillStyle = _.style.backLand || 'rgba(119,119,119,0.2)';
                     context.fill();
                 }, _.drawTo, _.options);
-                __.proj.clipAngle(90);
             }
             __.options.showCountries ? canvasAddCountries.call(this) : canvasAddWorld.call(this);
             if (!__.drag) {
@@ -2498,16 +2518,13 @@ var dotsCanvas = (function (urlJson) {
                 }
             });
             if (__.options.transparent || __.options.transparentDots) {
-                __.proj.clipAngle(180);
-                this.canvasPlugin.render(function (context, path) {
+                this.canvasPlugin.flipRender(function (context, path) {
                     context.beginPath();
                     path({ type: 'GeometryCollection', geometries: dots1 });
                     context.lineWidth = 0.2;
                     context.strokeStyle = 'rgba(119,119,119,.4)';
                     context.stroke();
-                    context.closePath();
                 }, _.drawTo);
-                __.proj.clipAngle(90);
             }
             this.canvasPlugin.render(function (context, path) {
                 context.beginPath();
@@ -2517,7 +2534,6 @@ var dotsCanvas = (function (urlJson) {
                 context.strokeStyle = _g.strokeStyle || 'rgba(100,0,0,.6)';
                 context.fill();
                 context.stroke();
-                context.closePath();
             }, _.drawTo);
         }
     }

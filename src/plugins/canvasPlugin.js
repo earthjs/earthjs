@@ -83,6 +83,26 @@ export default () => {
                     proj.rotate(r);
                 }
             }
+        },
+        flipRender(fn, drawTo, options=[]) {
+            // __.proj.clipAngle(180);
+            // this.canvasPlugin.render(function(context, path) {
+            //     fn.call(this, context, path);
+            // }, _.drawTo, _.options);
+            // __.proj.clipAngle(90);
+            const __ = this._;
+            const w = __.center[0];
+            const r = __.proj.rotate();
+            this.canvasPlugin.render(function(context, path) {
+                context.save();
+                context.translate(w, 0);
+                context.scale(-1, 1);
+                context.translate(-w, 0);
+                __.proj.rotate([r[0]+180,-r[1],-r[2]]);
+                fn.call(this, context, path);
+                context.restore();
+                __.proj.rotate(r);
+            }, drawTo, options);
         }
     }
 }

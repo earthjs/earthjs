@@ -18,16 +18,13 @@ export default urlJson => {
                 }
             });
             if (__.options.transparent || __.options.transparentDots) {
-                __.proj.clipAngle(180);
-                this.canvasPlugin.render(function(context, path) {
+                this.canvasPlugin.flipRender(function(context, path) {
                     context.beginPath();
                     path({type: 'GeometryCollection', geometries: dots1});
                     context.lineWidth = 0.2;
                     context.strokeStyle = 'rgba(119,119,119,.4)';
                     context.stroke();
-                    context.closePath();
                 }, _.drawTo);
-                __.proj.clipAngle(90);
             }
             this.canvasPlugin.render(function(context, path) {
                 context.beginPath();
@@ -37,7 +34,6 @@ export default urlJson => {
                 context.strokeStyle = _g.strokeStyle || 'rgba(100,0,0,.6)';
                 context.fill();
                 context.stroke();
-                context.closePath();
             }, _.drawTo);
         }
     }

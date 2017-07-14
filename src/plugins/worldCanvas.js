@@ -14,14 +14,12 @@ export default (urlWorld, urlCountryNames) => {
         const __ = this._;
         if (_.world && __.options.showLand) {
             if (__.options.transparent || __.options.transparentLand) {
-                __.proj.clipAngle(180);
-                this.canvasPlugin.render(function(context, path) {
+                this.canvasPlugin.flipRender(function(context, path) {
                     context.beginPath();
                     path(_.land);
                     context.fillStyle = _.style.backLand || 'rgba(119,119,119,0.2)';
                     context.fill();
                 }, _.drawTo, _.options);
-                __.proj.clipAngle(90);
             }
             __.options.showCountries ? canvasAddCountries.call(this) : canvasAddWorld.call(this);
             if (!__.drag) {
