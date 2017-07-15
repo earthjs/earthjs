@@ -127,6 +127,9 @@ export default (urlWorld, urlCountryNames) => {
                 countryNames: _.countryNames
             }
         },
+        drawTo(arr) {
+            _.drawTo = arr;
+        },
         countryName(d) {
             let cname = '';
             if (_.countryNames) {
@@ -141,9 +144,6 @@ export default (urlWorld, urlCountryNames) => {
                 _.style = s;
             }
             return _.style;
-        },
-        drawTo(arr) {
-            _.drawTo = arr;
         },
         options(options) {
             _.options = options;

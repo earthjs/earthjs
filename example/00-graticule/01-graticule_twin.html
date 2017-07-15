@@ -14,7 +14,8 @@
     <svg class="earth"></svg>
     <svg class="earth"></svg>
     <script>
-        const g = earthjs({selectAll:'.earth'});
+        const g = earthjs({selectAll:'.earth',transparent:true});
+        g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.graticuleSvg());
         g.create();

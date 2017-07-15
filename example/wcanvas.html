@@ -41,16 +41,16 @@
         })
 
         g.canvasPlugin.selectAll('.canvas');
-        g.configPlugin.set({
-            showCountries: false,
-            showLakes: false
-        });
         g.ready(function(){
             const world = g.worldCanvas.data().world;
             g.hoverCanvas.world(world);
             g.clickCanvas.world(world);
             g.dblClickCanvas.world(world);
-            g.create();
+            // g.create();
+            g.configPlugin.set({
+                showCountries: false,
+                showLakes: false
+            });
         })
     </script>
 </body>

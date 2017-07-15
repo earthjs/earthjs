@@ -2,28 +2,24 @@
 <head>
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
-    <style>
-        svg.earth {
-            position: inherit;
-            pointer-events: inherit;
-        }
-    </style>
 </head>
 <body>
-    <div>https://bugs.chromium.org/p/chromium/issues/detail?id=510819</div>
-    <svg class="earth"></svg>
-    <svg class="earth"></svg>
-    <svg class="earth"></svg>
-    <svg class="earth"></svg>
+    <svg id="earth"></svg>
     <script>
-        const g = earthjs({selectAll:'.earth',transparent:true});
+        const g = earthjs();
+        g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.canvasPlugin());
+        g.register(earthjs.plugins.dropShadowSvg());
         g.register(earthjs.plugins.oceanSvg());
-        g.register(earthjs.plugins.graticuleCanvas());
-        g.create();
+        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
+        g.register(earthjs.plugins.fauxGlobeSvg());
+        g.ready(function(){
+            g.create();
+        })
     </script>
 </body>
 </html>

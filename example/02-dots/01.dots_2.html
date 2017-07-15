@@ -7,6 +7,7 @@
 </head>
 <body>
     <svg id="earth"></svg>
+    <canvas class="canvas"></canvas>
     <script>
         const g = earthjs({transparent:true});
         g.register(earthjs.plugins.autorotatePlugin(10));
@@ -14,20 +15,9 @@
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
         g.register(earthjs.plugins.dotsCanvas('../d/bars.json'));
+        g.canvasPlugin.selectAll('.canvas');
         g.dotsCanvas.ready = function(err, json) {
-            const features = json.features;
-            const maxMag = features.map(d => d.properties.mag).sort(d3.descending)[0];
-            const scale = d3.scaleLinear().domain([3, maxMag]).range([0.5, 2]);
-            json.features.forEach(d => {
-                d.geometry.value = d.properties.mag
-                d.geometry.radius = scale(d.properties.mag);
-            });
-            json.geometry = {
-                radius: 1,
-                lineWidth: 0.5,
-                fillStyle: 'rgba(100,0,0,.4)',
-                strokeStyle: 'rgba(100,0,0,.6)'
-            }
+            json.geometry = {radius: 2}
             g.dotsCanvas.data(json);
         };
         g.ready(function(){

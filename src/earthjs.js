@@ -7,7 +7,7 @@ const earthjs = (options={}) => {
     options = Object.assign({
         transparent: false,
         selectAll: '#earth',
-        rotate: 130,
+        rotate: [130,-33,-11],
     }, options);
     const _ = {
         onCreate: {},
@@ -219,7 +219,7 @@ const earthjs = (options={}) => {
     __.orthoGraphic = function() {
         const r = __.options.rotate;
         if (typeof(r)==='number') {
-            __.options.rotate = __.options.transparent ? [r,-33,-11] : [r,0,0];
+            __.options.rotate = [r,-33,-11];
         }
         return d3.geoOrthographic()
             .rotate(__.options.rotate)

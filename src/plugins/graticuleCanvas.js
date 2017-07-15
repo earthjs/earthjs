@@ -11,8 +11,8 @@ export default function() {
             this.canvasPlugin.render(function(context, path) {
                 context.beginPath();
                 path(datumGraticule);
-                context.lineWidth = 0.3;
-                context.strokeStyle = _.style.line || 'rgba(119,119,119,0.4)';
+                context.lineWidth = 0.4;
+                context.strokeStyle = _.style.line || 'rgba(119,119,119,0.6)';
                 context.stroke();
             }, _.drawTo);
             if (__.options.transparent || __.options.transparentGraticule) {
@@ -33,14 +33,14 @@ export default function() {
         onRefresh() {
             create.call(this);
         },
+        drawTo(arr) {
+            _.drawTo = arr;
+        },
         style(s) {
             if (s) {
                 _.style = s;
             }
             return _.style;
         },
-        drawTo(arr) {
-            _.drawTo = arr;
-        }
     }
 }

@@ -7,13 +7,22 @@
 </head>
 <body>
     <svg id="earth"></svg>
+    <canvas class="canvas"></canvas>
     <script>
         const g = earthjs({transparent:true});
+        g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.graticuleSvg());
-        g.register(earthjs.plugins.dotsSvg('../d/bars.json'));
-        g.dotsSvg.ready = function(err, json) {
+        g.register(earthjs.plugins.canvasPlugin());
+        g.register(earthjs.plugins.dropShadowSvg());
+        g.register(earthjs.plugins.oceanSvg());
+        g.register(earthjs.plugins.graticuleCanvas());
+        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
+        g.register(earthjs.plugins.dotsCanvas());
+        g.register(earthjs.plugins.pinCanvas('../d/bars.json', '../images/pin.png'));
+        g.register(earthjs.plugins.fauxGlobeSvg());
+        g.canvasPlugin.selectAll('.canvas');
+        g.pinCanvas.ready = function(err, json) {
             const features = json.features;
             const maxMag = features.map(d => d.properties.mag).sort(d3.descending)[0];
             const scale = d3.scaleLinear().domain([3, maxMag]).range([0.5, 2]);
@@ -27,10 +36,15 @@
                 fillStyle: 'rgba(100,0,0,.4)',
                 strokeStyle: 'rgba(100,0,0,.6)'
             }
-            g.dotsSvg.data(json);
+            g.dotsCanvas.data(json);
+            g.pinCanvas.data(json);
         };
         g.ready(function(){
-            g.create();
+            // g.create();
+            g.configPlugin.set({
+                showCountries: false,
+                showLakes: false
+            });
         })
     </script>
 </body>

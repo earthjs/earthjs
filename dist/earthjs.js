@@ -79,7 +79,7 @@ var earthjs$1 = function earthjs() {
     options = Object.assign({
         transparent: false,
         selectAll: '#earth',
-        rotate: 130
+        rotate: [130, -33, -11]
     }, options);
     var _ = {
         onCreate: {},
@@ -292,7 +292,7 @@ var earthjs$1 = function earthjs() {
     __.orthoGraphic = function () {
         var r = __.options.rotate;
         if (typeof r === 'number') {
-            __.options.rotate = __.options.transparent ? [r, -33, -11] : [r, 0, 0];
+            __.options.rotate = [r, -33, -11];
         }
         return d3.geoOrthographic().rotate(__.options.rotate).scale(__.options.width / 3.5).translate(__.center).precision(0.1).clipAngle(90);
     };
@@ -1077,8 +1077,8 @@ var graticuleCanvas = function () {
             this.canvasPlugin.render(function (context, path) {
                 context.beginPath();
                 path(datumGraticule);
-                context.lineWidth = 0.3;
-                context.strokeStyle = _.style.line || 'rgba(119,119,119,0.4)';
+                context.lineWidth = 0.4;
+                context.strokeStyle = _.style.line || 'rgba(119,119,119,0.6)';
                 context.stroke();
             }, _.drawTo);
             if (__.options.transparent || __.options.transparentGraticule) {
@@ -2562,6 +2562,9 @@ var pinCanvas = (function (urlJson, urlImage) {
             } else {
                 return _.dataPin;
             }
+        },
+        drawTo: function drawTo(arr) {
+            _.drawTo = arr;
         },
         image: function image() {
             return _.image;

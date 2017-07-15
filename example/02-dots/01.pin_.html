@@ -2,27 +2,23 @@
 <head>
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
-    <style>
-        canvas.earth {
-            position: inherit;
-            pointer-events: inherit;
-        }
-    </style>
 </head>
 <body>
     <svg id="earth"></svg>
-    <canvas class="earth"></canvas>
-    <canvas class="earth"></canvas>
-    <canvas class="earth"></canvas>
-    <canvas class="earth"></canvas>
+    <canvas class="canvas"></canvas>
     <script>
-        const g = earthjs();
+        const g = earthjs({transparent:true});
+        g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
-        g.canvasPlugin.selectAll('.earth');
-        g.create();
+        g.register(earthjs.plugins.pinCanvas('../d/bars.json', '../images/pin.png'));
+        g.canvasPlugin.selectAll('.canvas');
+        g.ready(function(){
+            g.create();
+        })
     </script>
 </body>
 </html>

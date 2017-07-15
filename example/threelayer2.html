@@ -60,9 +60,12 @@
         };
 
         // g.placesSvg.selectAll('#earth2');
-        g.configPlugin.set({showCountries: false, showLakes: false});
         g.ready(function(){
-            g.create();
+            // g.create();
+            g.configPlugin.set({
+                showCountries: false,
+                showLakes: false
+            });
         });
 
         const st = d3.select('#js-controlled');

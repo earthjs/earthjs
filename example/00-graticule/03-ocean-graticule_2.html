@@ -3,14 +3,24 @@
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
+    <style>
+        canvas.earth {
+            position: inherit;
+            pointer-events: inherit;
+        }
+    </style>
 </head>
 <body>
     <svg id="earth"/>
+    <canvas class="earth"></canvas>
     <script>
         const g = earthjs();
+        g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.canvasPlugin());
+        g.register(earthjs.plugins.oceanSvg());
         g.register(earthjs.plugins.graticuleCanvas());
+        g.canvasPlugin.selectAll('.earth');
         g.create();
     </script>
 </body>

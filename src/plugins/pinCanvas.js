@@ -71,6 +71,9 @@ export default (urlJson, urlImage, wh=[15,25]) => {
                 return _.dataPin;
             }
         },
+        drawTo(arr) {
+            _.drawTo = arr;
+        },
         image() {
             return _.image;
         },
