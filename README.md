@@ -44,6 +44,7 @@ Selected plugins bundled into library:
 * barSvg,
 * dotsSvg,
 * pingsSvg,
+* pinCanvas,
 * dotsCanvas,
 * dotSelectCanvas,
 * dotTooltipCanvas,

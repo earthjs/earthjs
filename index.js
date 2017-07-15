@@ -28,6 +28,7 @@ import centerSvg from './src/plugins/centerSvg.js';
 import flattenPlugin from './src/plugins/flattenPlugin.js';
 import barSvg from './src/plugins/barSvg.js';
 import dotsSvg from './src/plugins/dotsSvg.js';
+import pinCanvas from './src/plugins/pinCanvas.js';
 import dotsCanvas from './src/plugins/dotsCanvas.js';
 import pingsCanvas from './src/plugins/pingsCanvas.js';
 import pingsSvg from './src/plugins/pingsSvg.js';
@@ -63,6 +64,7 @@ app.plugins= {
     flattenPlugin,
     barSvg,
     dotsSvg,
+    pinCanvas,
     dotsCanvas,
     pingsCanvas,
     pingsSvg,
