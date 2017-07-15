@@ -94,7 +94,6 @@ export default (urlWorld, urlCountryNames) => {
             options.showLakes = true;
             options.showCountries = true;
             options.transparentLand = false;
-            options.showSelectedCountry = false;
             options.landColor = 0;
         },
         onCreate() {

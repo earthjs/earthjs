@@ -18,7 +18,8 @@ export default urlDots => {
                 $.dots
                 .style('stroke-width', _g.lineWidth   || 0.2)
                 .style('fill',         _g.fillStyle   || 'rgba(100,0,0,.4)')
-                .style('stroke',       _g.strokeStyle || 'rgba(119,119,119,.4)');
+                .style('stroke',       _g.strokeStyle || 'rgba(119,119,119,.4)')
+                .attr("data-index", (d, i) => i);
             }
             refresh.call(this);
         }
@@ -59,9 +60,10 @@ export default urlDots => {
         const _r = _g.radius || 0.5;
         _.circles = _.dataDots.features.map(function(d) {
             const coordinates = d.geometry.coordinates;
+            const properties = d.properties;
             const r = d.geometry.radius || _r;
             const circle = geoCircle.center(coordinates).radius(r)();
-            return {coordinates, circle};
+            return {properties, coordinates, circle};
         });
     }
 
@@ -116,5 +118,8 @@ export default urlDots => {
             }
             return _.svg;
         },
+        $dots() {
+            return $.dots;
+        }
     }
 }

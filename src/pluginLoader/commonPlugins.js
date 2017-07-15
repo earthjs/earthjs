@@ -22,7 +22,6 @@ export default (urlWorld, urlCountryNames) => {
         r(p.configPlugin());
         r(p.autorotatePlugin(10));
         r(p.mousePlugin());
-        // r(p.zoomPlugin());
         r(p.dropShadowSvg());
         r(p.oceanSvg());
         r(p.canvasPlugin());

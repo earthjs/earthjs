@@ -1,0 +1,34 @@
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+</head>
+<body>
+    <svg id="earth"></svg>
+    <canvas class="canvas"></canvas>
+    <script>
+        const g = earthjs({transparent:true});
+        g.register(earthjs.plugins.mousePlugin());
+        g.register(earthjs.plugins.hoverCanvas());
+        g.register(earthjs.plugins.canvasPlugin());
+        g.register(earthjs.plugins.graticuleCanvas());
+        g.register(earthjs.plugins.dotsCanvas('../d/bars.json'));
+        g.register(earthjs.plugins.dotSelectCanvas());
+        g.register(earthjs.plugins.dotTooltipCanvas());
+        g.canvasPlugin.selectAll('.canvas');
+        g.dotsCanvas.ready = function(err, json) {
+            json.geometry = {radius: 2}
+            g.dotsCanvas.data(json);
+        };
+        g.dotTooltipCanvas.onShow = function(d) {
+            const {mag, place} = d.properties;
+            return {properties: {mag, place}};
+        }
+        g.ready(function(){
+            g.create();
+        })
+    </script>
+</body>
+</html>

@@ -40,7 +40,6 @@ export default () => {
         onInit() {
             const options = this._.options;
             options.enableCenter = true;
-            options.showSelectedCountry = true;
         },
         onCreate() {
             create.call(this);

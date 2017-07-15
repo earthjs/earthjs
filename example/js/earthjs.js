@@ -774,6 +774,7 @@ var hoverCanvas = function () {
     return {
         name: 'hoverCanvas',
         onInit: function onInit() {
+            this._.options.showSelectedCountry = false;
             initMouseMoveHandler.call(this);
         },
         onCircle: function onCircle(obj) {
@@ -1064,6 +1065,44 @@ var oceanSvg = function () {
     };
 };
 
+var sphereSvg = function () {
+    var _ = { svg: null, q: null, sphereColor: 0 };
+
+    function create() {
+        _.svg.selectAll('#glow,.sphere').remove();
+        if (this._.options.showSphere) {
+            this.$slc.defs.nodes()[0].append("\n<filter id=\"glow\">\n    <feColorMatrix type=\"matrix\"\n        values=\n        \"0 0 0 0   0\n         0 0 0 0.9 0\n         0 0 0 0.9 0\n         0 0 0 1   0\"/>\n    <feGaussianBlur stdDeviation=\"5.5\" result=\"coloredBlur\"/>\n    <feMerge>\n        <feMergeNode in=\"coloredBlur\"/>\n        <feMergeNode in=\"SourceGraphic\"/>\n    </feMerge>\n</filter>\n");
+            _.sphere = _.svg.append("g").attr("class", "sphere").append("circle").attr("cx", this._.center[0]).attr("cy", this._.center[1]).attr("class", "noclicks").attr("filter", "url(#glow)");
+            resize.call(this);
+        }
+    }
+
+    function resize() {
+        _.sphere.attr("r", this._.proj.scale());
+    }
+
+    return {
+        name: 'sphereSvg',
+        onInit: function onInit() {
+            this._.options.showSphere = true;
+            _.svg = this._.svg;
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onResize: function onResize() {
+            resize.call(this);
+        },
+        selectAll: function selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
+            return _.svg;
+        }
+    };
+};
+
 var graticuleCanvas = function () {
     var datumGraticule = d3.geoGraticule()();
     var _ = { style: {}, drawTo: null };
@@ -1099,14 +1138,14 @@ var graticuleCanvas = function () {
         onRefresh: function onRefresh() {
             create.call(this);
         },
+        drawTo: function drawTo(arr) {
+            _.drawTo = arr;
+        },
         style: function style(s) {
             if (s) {
                 _.style = s;
             }
             return _.style;
-        },
-        drawTo: function drawTo(arr) {
-            _.drawTo = arr;
         }
     };
 };
@@ -1274,9 +1313,71 @@ var fauxGlobeSvg = function () {
     };
 };
 
+// KoGor’s Block http://bl.ocks.org/KoGor/5994804
+var dotTooltipSvg = function () {
+    /*eslint no-console: 0 */
+    var _ = { mouseXY: [0, 0], visible: false };
+    var dotTooltip = d3.select("body").append("div").attr("class", "dotTooltip");
+
+    function create() {
+        var _this = this;
+        this.dotsSvg.$dots().on("mouseover", function () {
+            if (_this._.options.showBarTooltip) {
+                _.visible = true;
+                _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
+                var i = +this.dataset.index;
+                var d = _this.dotsSvg.data().features[i];
+                if (_this.dotTooltipSvg.onShow) {
+                    d = _this.dotTooltipSvg.onShow.call(this, d, dotTooltip);
+                }
+                _this.dotTooltipSvg.show(d.properties).style("display", "block").style("opacity", 1);
+                refresh();
+            }
+        }).on("mouseout", function () {
+            _.visible = false;
+            dotTooltip.style("opacity", 0).style("display", "none");
+        }).on("mousemove", function () {
+            if (_this._.options.showBarTooltip) {
+                _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
+                refresh();
+            }
+        });
+    }
+
+    function refresh() {
+        dotTooltip.style("left", _.mouseXY[0] + 7 + "px").style("top", _.mouseXY[1] - 15 + "px");
+    }
+
+    return {
+        name: 'dotTooltipSvg',
+        onInit: function onInit() {
+            this._.options.showBarTooltip = true;
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onResize: function onResize() {
+            create.call(this);
+            dotTooltip.style("opacity", 0).style("display", "none");
+        },
+        onRefresh: function onRefresh() {
+            refresh.call(this);
+        },
+        show: function show(props) {
+            var title = Object.keys(props).map(function (k) {
+                return k + ': ' + props[k];
+            }).join("<br/>");
+            return dotTooltip.html(title);
+        },
+        visible: function visible() {
+            return _.visible;
+        }
+    };
+};
+
 var dotSelectCanvas = (function () {
     /*eslint no-console: 0 */
-    var _ = { dataDots: null, dots: [], radiusPath: null,
+    var _ = { dataDots: null, dots: null, radiusPath: null,
         onHover: {},
         onHoverKeys: [],
         onClick: {},
@@ -1345,8 +1446,11 @@ var dotSelectCanvas = (function () {
         name: 'dotSelectCanvas',
         onInit: function onInit() {
             initCircleHandler.call(this);
-            this._.options.transparentDots = false;
-            this._.options.showDots = true;
+        },
+        onCreate: function onCreate() {
+            if (this.dotsCanvas && !_.dots) {
+                this.dotSelectCanvas.dots(this.dotsCanvas.dots());
+            }
         },
         onHover: function onHover(obj) {
             Object.assign(_.onHover, obj);
@@ -1453,13 +1557,17 @@ var countrySelectCanvas = (function () {
     return {
         name: 'countrySelectCanvas',
         onInit: function onInit() {
-            var _worldCanvas$data = this.worldCanvas.data(),
-                world = _worldCanvas$data.world;
-
-            if (world) {
-                _.countries = topojson.feature(world, world.objects.countries);
-            }
             initCountrySelectHandler.call(this);
+        },
+        onCreate: function onCreate() {
+            if (this.worldCanvas && !_.countries) {
+                var _worldCanvas$data = this.worldCanvas.data(),
+                    world = _worldCanvas$data.world;
+
+                if (world) {
+                    _.countries = topojson.feature(world, world.objects.countries);
+                }
+            }
         },
         onHover: function onHover(obj) {
             Object.assign(_.onHover, obj);
@@ -1820,7 +1928,6 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
             options.showLakes = true;
             options.showCountries = true;
             options.transparentLand = false;
-            options.showSelectedCountry = false;
             options.landColor = 0;
         },
         onCreate: function onCreate() {
@@ -1855,6 +1962,9 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
                 countryNames: _.countryNames
             };
         },
+        drawTo: function drawTo(arr) {
+            _.drawTo = arr;
+        },
         countryName: function countryName(d) {
             var cname = '';
             if (_.countryNames) {
@@ -1869,9 +1979,6 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
                 _.style = s;
             }
             return _.style;
-        },
-        drawTo: function drawTo(arr) {
-            _.drawTo = arr;
         },
         options: function options(_options) {
             _.options = _options;
@@ -2098,7 +2205,6 @@ var centerCanvas = (function () {
         onInit: function onInit() {
             var options = this._.options;
             options.enableCenter = true;
-            options.showSelectedCountry = true;
         },
         onCreate: function onCreate() {
             create.call(this);
@@ -2390,7 +2496,9 @@ var dotsSvg = (function (urlDots) {
             $.dots = _.svg.append('g').attr('class', 'dot').selectAll('path').data(circles).enter().append('path');
             if (_.dataDots.geometry) {
                 var _g = _.dataDots.geometry || {};
-                $.dots.style('stroke-width', _g.lineWidth || 0.2).style('fill', _g.fillStyle || 'rgba(100,0,0,.4)').style('stroke', _g.strokeStyle || 'rgba(119,119,119,.4)');
+                $.dots.style('stroke-width', _g.lineWidth || 0.2).style('fill', _g.fillStyle || 'rgba(100,0,0,.4)').style('stroke', _g.strokeStyle || 'rgba(119,119,119,.4)').attr("data-index", function (d, i) {
+                    return i;
+                });
             }
             refresh.call(this);
         }
@@ -2432,9 +2540,10 @@ var dotsSvg = (function (urlDots) {
         var _r = _g.radius || 0.5;
         _.circles = _.dataDots.features.map(function (d) {
             var coordinates = d.geometry.coordinates;
+            var properties = d.properties;
             var r = d.geometry.radius || _r;
             var circle = geoCircle.center(coordinates).radius(r)();
-            return { coordinates: coordinates, circle: circle };
+            return { properties: properties, coordinates: coordinates, circle: circle };
         });
     }
 
@@ -2494,6 +2603,9 @@ var dotsSvg = (function (urlDots) {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
+        },
+        $dots: function $dots() {
+            return $.dots;
         }
     };
 });
@@ -2892,7 +3004,6 @@ var commonPlugins = (function (urlWorld, urlCountryNames) {
         r(p.configPlugin());
         r(p.autorotatePlugin(10));
         r(p.mousePlugin());
-        // r(p.zoomPlugin());
         r(p.dropShadowSvg());
         r(p.oceanSvg());
         r(p.canvasPlugin());
@@ -3000,10 +3111,12 @@ earthjs$1.plugins = {
     clickCanvas: clickCanvas,
     dblClickCanvas: dblClickCanvas,
     oceanSvg: oceanSvg,
+    sphereSvg: sphereSvg,
     graticuleCanvas: graticuleCanvas,
     graticuleSvg: graticuleSvg,
     dropShadowSvg: dropShadowSvg,
     fauxGlobeSvg: fauxGlobeSvg,
+    dotTooltipSvg: dotTooltipSvg,
     dotSelectCanvas: dotSelectCanvas,
     dotTooltipCanvas: dotTooltipCanvas,
     countrySelectCanvas: countrySelectCanvas,

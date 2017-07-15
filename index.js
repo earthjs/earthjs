@@ -9,10 +9,12 @@ import hoverCanvas from './src/plugins/hoverCanvas';
 import clickCanvas from './src/plugins/clickCanvas';
 import dblClickCanvas from './src/plugins/dblClickCanvas';
 import oceanSvg from './src/plugins/oceanSvg.js';
+import sphereSvg from './src/plugins/sphereSvg.js';
 import graticuleCanvas from './src/plugins/graticuleCanvas.js';
 import graticuleSvg from './src/plugins/graticuleSvg.js';
 import dropShadowSvg from './src/plugins/dropShadowSvg.js';
 import fauxGlobeSvg from './src/plugins/fauxGlobeSvg.js';
+import dotTooltipSvg from './src/plugins/dotTooltipSvg.js';
 import dotSelectCanvas from './src/plugins/dotSelectCanvas.js';
 import dotTooltipCanvas from './src/plugins/dotTooltipCanvas.js';
 import countrySelectCanvas from './src/plugins/countrySelectCanvas.js';
@@ -45,10 +47,12 @@ app.plugins= {
     clickCanvas,
     dblClickCanvas,
     oceanSvg,
+    sphereSvg,
     graticuleCanvas,
     graticuleSvg,
     dropShadowSvg,
     fauxGlobeSvg,
+    dotTooltipSvg,
     dotSelectCanvas,
     dotTooltipCanvas,
     countrySelectCanvas,

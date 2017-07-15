@@ -68,6 +68,7 @@ export default function() {
     return {
         name: 'hoverCanvas',
         onInit() {
+            this._.options.showSelectedCountry = false;
             initMouseMoveHandler.call(this);
         },
         onCircle(obj) {

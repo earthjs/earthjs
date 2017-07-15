@@ -51,11 +51,15 @@ export default () => {
     return {
         name: 'countrySelectCanvas',
         onInit() {
-            const {world} = this.worldCanvas.data();
-            if (world) {
-                _.countries = topojson.feature(world, world.objects.countries);
-            }
             initCountrySelectHandler.call(this);
+        },
+        onCreate() {
+            if (this.worldCanvas && !_.countries) {
+                const {world} = this.worldCanvas.data();
+                if (world) {
+                    _.countries = topojson.feature(world, world.objects.countries);
+                }
+            }
         },
         onHover(obj) {
             Object.assign(_.onHover, obj);

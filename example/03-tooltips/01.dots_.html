@@ -1,0 +1,29 @@
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+</head>
+<body>
+    <svg id="earth"></svg>
+    <script>
+        const g = earthjs({transparent:true});
+        g.register(earthjs.plugins.mousePlugin());
+        g.register(earthjs.plugins.graticuleSvg());
+        g.register(earthjs.plugins.dotsSvg('../d/bars.json'));
+        g.register(earthjs.plugins.dotTooltipSvg());
+        g.dotsSvg.ready = function(err, json) {
+            json.geometry = {radius: 2}
+            g.dotsSvg.data(json);
+        };
+        g.dotTooltipSvg.onShow = function(d) {
+            const {mag, place} = d.properties;
+            return {properties: {mag, place}};
+        }
+        g.ready(function(){
+            g.create();
+        })
+    </script>
+</body>
+</html>

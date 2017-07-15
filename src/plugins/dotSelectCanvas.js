@@ -1,6 +1,6 @@
 export default () => {
     /*eslint no-console: 0 */
-    const _ = {dataDots: null, dots: [], radiusPath: null,
+    const _ = {dataDots: null, dots: null, radiusPath: null,
         onHover: {},
         onHoverKeys: [],
         onClick: {},
@@ -67,8 +67,11 @@ export default () => {
         name: 'dotSelectCanvas',
         onInit() {
             initCircleHandler.call(this);
-            this._.options.transparentDots = false;
-            this._.options.showDots = true;
+        },
+        onCreate() {
+            if (this.dotsCanvas && !_.dots) {
+                this.dotSelectCanvas.dots(this.dotsCanvas.dots());
+            }
         },
         onHover(obj) {
             Object.assign(_.onHover, obj);
