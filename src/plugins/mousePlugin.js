@@ -26,8 +26,7 @@ export default function() {
         r0, // Projection rotation as Euler angles at start.
         q0; // Projection rotation as versor at start.
 
-    function r() {
-        const __ = this._;
+    function r(__) {
         const versor = __.versor;
         const v1 = versor.cartesian(__.proj.rotate(r0).invert(_.mouse)),
               q1 = versor.multiply(q0, versor.delta(v0, v1));
@@ -100,7 +99,8 @@ export default function() {
                     }, 250);
                 }
             } else if (__.drag) {
-                __.rotate( _.r);
+                r(__);
+                __.rotate(_.r);
                 _.onDragKeys.forEach(k => {
                     _.onDrag[k].call(_._this, _.mouse);
                 });
@@ -125,7 +125,7 @@ export default function() {
                 if (_.oMouse[0]!==_.mouse[0] &&
                     _.oMouse[1]!==_.mouse[1]) {
                     _.oMouse = _.mouse;
-                    r.call(this);
+                    r(__);
                     __.rotate(_.r);
                     _.onDragKeys.forEach(k => {
                         _.onDrag[k].call(this, _.mouse);

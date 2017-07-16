@@ -402,8 +402,7 @@ var mousePlugin = function () {
         // Projection rotation as Euler angles at start.
     q0 = void 0; // Projection rotation as versor at start.
 
-    function r() {
-        var __ = this._;
+    function r(__) {
         var versor = __.versor;
         var v1 = versor.cartesian(__.proj.rotate(r0).invert(_.mouse)),
             q1 = versor.multiply(q0, versor.delta(v0, v1));
@@ -472,6 +471,7 @@ var mousePlugin = function () {
                     }, 250);
                 }
             } else if (__.drag) {
+                r(__);
                 __.rotate(_.r);
                 _.onDragKeys.forEach(function (k) {
                     _.onDrag[k].call(_._this, _.mouse);
@@ -500,7 +500,7 @@ var mousePlugin = function () {
             if (__.drag) {
                 if (_.oMouse[0] !== _.mouse[0] && _.oMouse[1] !== _.mouse[1]) {
                     _.oMouse = _.mouse;
-                    r.call(this);
+                    r(__);
                     __.rotate(_.r);
                     _.onDragKeys.forEach(function (k) {
                         _.onDrag[k].call(_this, _.mouse);
