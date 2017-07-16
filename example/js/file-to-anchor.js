@@ -15,7 +15,7 @@ var walkSync = function(dir, filelist) {
         }
         else {
             if (file.indexOf('.html')>0) {
-                filelist.push(`<a href="${path.replace('..','')}">${file}</a>`);
+                filelist.push(`<a href="${path.replace('..','')}">[${file.replace('.html','')}]</a> - `);
             }
         }
     });
@@ -25,7 +25,6 @@ var walkSync = function(dir, filelist) {
 walkSync(dir).forEach(file => {
     console.log(file);
 })
-
 
 // var files = fs.readdirSync(dir);
 // files.sort(function(a, b) {

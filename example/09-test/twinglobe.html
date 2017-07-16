@@ -1,9 +1,9 @@
 <html>
 <head>
-    <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
-    <script type='text/javascript' src="./js/d3.min.js"></script>
-    <script type='text/javascript' src="./js/topojson.min.js"></script>
-    <script type='text/javascript' src='../dist/earthjs.js'></script>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
     <style>
         svg.earth {
             position: inherit;
@@ -28,9 +28,9 @@
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
         // g.register(earthjs.plugins.graticuleSvg());
-        g.register(earthjs.plugins.placesSvg('./d/places.json'));
-        g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
-        // g.register(earthjs.plugins.worldSvg('./d/world-110m.json'));
+        g.register(earthjs.plugins.placesSvg('../d/places.json'));
+        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
+        // g.register(earthjs.plugins.worldSvg('../d/world-110m.json'));
         g.placesSvg.selectAll('.e1');
         g.ready(function(){
             g.create();

@@ -6,10 +6,10 @@
             z-index: 5;
         }
     </style>
-    <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
-    <script type='text/javascript' src="./js/d3.min.js"></script>
-    <script type='text/javascript' src="./js/topojson.min.js"></script>
-    <script type='text/javascript' src='../dist/earthjs.js'></script>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
     <div class="input-area">
@@ -27,7 +27,7 @@
         g.register(earthjs.plugins.graticuleSvg());
 
         g.register(earthjs.plugins.canvasPlugin());
-        g.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
+        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
         g.canvasPlugin.selectAll('canvas');
 
         g.ready(function(){

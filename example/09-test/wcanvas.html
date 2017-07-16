@@ -1,9 +1,9 @@
 <html>
 <head>
-    <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
-    <script type='text/javascript' src="./js/d3.min.js"></script>
-    <script type='text/javascript' src="./js/topojson.min.js"></script>
-    <script type='text/javascript' src='../dist/earthjs.js'></script>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
     <svg id="earth"></svg>
@@ -18,7 +18,7 @@
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
         g.register(earthjs.plugins.fauxGlobeSvg());
-        g.register(earthjs.plugins.worldCanvas('./d/world-110m.json', './d/world-110m-country-names.tsv'));
+        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json', '../d/world-110m-country-names.tsv'));
         g.register(earthjs.plugins.hoverCanvas());
         g.register(earthjs.plugins.clickCanvas());
         g.register(earthjs.plugins.dblClickCanvas());

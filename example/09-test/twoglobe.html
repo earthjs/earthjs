@@ -1,9 +1,9 @@
 <html>
 <head>
-    <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
-    <script type='text/javascript' src="./js/d3.min.js"></script>
-    <script type='text/javascript' src="./js/topojson.min.js"></script>
-    <script type='text/javascript' src='../dist/earthjs.js'></script>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
     <svg id="earth1"></svg>
@@ -20,14 +20,14 @@
 
         g1.register(earthjs.plugins.canvasPlugin());
         g1.register(earthjs.plugins.graticuleCanvas());
-        g1.register(earthjs.plugins.worldCanvas('./d/world-110m.json'));
+        g1.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
 
         const g2 = earthjs({selectAll:'#earth2', rotate: 180});
         g2.register(earthjs.plugins.configPlugin());
         g2.register(earthjs.plugins.dropShadowSvg());
         g2.register(earthjs.plugins.oceanSvg());
         g2.register(earthjs.plugins.fauxGlobeSvg());
-        g2.register(earthjs.plugins.barSvg('./d/bars.json'));
+        g2.register(earthjs.plugins.barSvg('../d/bars.json'));
         g2.barSvg.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
             g2.barSvg.data(json);

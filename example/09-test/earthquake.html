@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link type="text/css" rel="stylesheet" href="./css/earthjs.css">
-    <script type='text/javascript' src="./js/d3.min.js"></script>
-    <script type='text/javascript' src="./js/topojson.min.js"></script>
-    <script type='text/javascript' src='../dist/earthjs.js'></script>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
     <div class="set-options"></div>
@@ -12,7 +12,7 @@
     <svg id="earth" class="ea-layer ea-1"></svg>
     <canvas  class="canvas ea-layer ea-2"></canvas>
     <canvas  class="canvas ea-layer ea-3"></canvas>
-    <script type='text/javascript' src='./js/ex/eQuakeApp.js'></script>
+    <script type='text/javascript' src='../js/ex/eQuakeApp.js'></script>
     <script>
         const g = earthjs({width: 1200, height: 900});
         g.register(earthjs.plugins.eQuakeApp());
