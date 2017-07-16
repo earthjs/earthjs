@@ -31,7 +31,7 @@ export default function() {
         const __ = this._;
         const mouseMoveHandler = function() {
             let event = d3.event;
-            if (!event) {
+            if (__.drag || !event) {
                 return;
             }
             if (event.sourceEvent) {

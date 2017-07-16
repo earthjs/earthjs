@@ -14,22 +14,29 @@ export default function() {
         _.onClickKeys.forEach(k => {
             _.onClick[k].call(_._this, _.event, _.mouse);
         });
-        // console.log('click');
     }
 
     function ondblclick() {
         _.onDblClickKeys.forEach(k => {
             _.onDblClick[k].call(_._this, _.event, _.mouse);
         });
-        // console.log('dblclick');
+    }
+
+    let v0, // Mouse position in Cartesian coordinates at start of drag gesture.
+        r0, // Projection rotation as Euler angles at start.
+        q0; // Projection rotation as versor at start.
+
+    function r() {
+        const __ = this._;
+        const versor = __.versor;
+        const v1 = versor.cartesian(__.proj.rotate(r0).invert(_.mouse)),
+              q1 = versor.multiply(q0, versor.delta(v0, v1));
+        _.r = versor.rotation(q1);
     }
 
     function init() {
         const __ = this._;
         const versor = __.versor;
-        let v0, // Mouse position in Cartesian coordinates at start of drag gesture.
-            r0, // Projection rotation as Euler angles at start.
-            q0; // Projection rotation as versor at start.
         const s0 = __.proj.scale();
         const wh = [__.options.width, __.options.height];
 
@@ -59,31 +66,28 @@ export default function() {
 
         function dragstarted() {
             const mouse = d3.mouse(this);
-            v0 = versor.cartesian(__.proj.invert(d3.mouse(this)));
+            v0 = versor.cartesian(__.proj.invert(mouse));
             r0 = __.proj.rotate();
             q0 = versor(r0);
             __.drag = null;
             __.refresh();
             _.mouse = mouse;
             _._this = this;
+            _.t1 = 0;
+            _.t2 = 0;
         }
 
-        function dragged() {
-            // DOM update must be onInterval!
-            const mouse = d3.mouse(this);
-            const v1 = versor.cartesian(__.proj.rotate(r0).invert(mouse)),
-                  q1 = versor.multiply(q0, versor.delta(v0, v1));
-            _.r = versor.rotation(q1);
-            _.mouse = mouse;
+        function dragged() { // DOM update must be onInterval!
+            _.mouse = d3.mouse(this);
             _._this = this;
             __.drag = true;
+            // _.t1+=1; // twice call compare to onInterval
         }
 
         function dragsended() {
             if (__.drag===null) {
                 _.event = d3.event;
                 if (__.options.spin) {
-                    // console.log('lol');
                     onclick();
                 } else if (_.wait) {
                     _.wait = null;
@@ -95,16 +99,16 @@ export default function() {
                         }
                     }, 250);
                 }
-            } else {
-                __.drag = false;
+            } else if (__.drag) {
                 __.rotate( _.r);
                 _.onDragKeys.forEach(k => {
                     _.onDrag[k].call(_._this, _.mouse);
                 });
                 _.sync.forEach(g=>rotate.call(g, _.r));
             }
-            // _.mouse = null;
-            // _.r = null;
+            __.drag = false;
+            __.refresh();
+            // console.log('ttl:',_.t1,_.t2);
         }
     }
 
@@ -112,16 +116,21 @@ export default function() {
         name: 'mousePlugin',
         onInit() {
             _.svg = this._.svg;
+            _.oMouse = [];
             init.call(this);
         },
         onInterval() {
             const __ = this._;
             if (__.drag) {
-                if (_.r) {
-                    __.rotate( _.r);
+                if (_.oMouse[0]!==_.mouse[0] &&
+                    _.oMouse[1]!==_.mouse[1]) {
+                    _.oMouse = _.mouse;
+                    r.call(this);
+                    __.rotate(_.r);
                     _.onDragKeys.forEach(k => {
                         _.onDrag[k].call(this, _.mouse);
                     });
+                    // _.t2+=1;
                 }
             } else if (_.wait===false) {
                 _.wait = null;

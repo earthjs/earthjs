@@ -48,7 +48,8 @@
             g.register(earthjs.plugins.canvasPlugin());
             g.register(earthjs.plugins.dropShadowSvg());
             g.register(earthjs.plugins.oceanSvg());
-            g.register(earthjs.plugins.worldCanvas('../d/world-110m.json', '../d/world-110m-country-names.tsv'));
+            // g.register(earthjs.plugins.graticuleCanvas());
+            g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
             g.register(earthjs.plugins.dotsCanvas());
             g.register(earthjs.plugins.dotSelectCanvas());
             g.register(earthjs.plugins.dotTooltipCanvas());
@@ -84,7 +85,9 @@
                 coordinates: d.coordinates.join(', ')}};
         }
         g1.register(earthjs.plugins.mousePlugin());
-        g1.mousePlugin.sync([g1,g2]);
+        // g1.register(earthjs.plugins.autorotatePlugin(10));
+        // g1.autorotatePlugin.sync([g2]);
+        g1.mousePlugin.sync([g2]);
     </script>
 </body>
 </html>
