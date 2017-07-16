@@ -1883,7 +1883,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
             var c = _.landColor;
             context.beginPath();
             path(_.land);
-            context.fillStyle = _.style.land || typeof c === 'number' ? color[c] : c;
+            context.fillStyle = _.style.land || (typeof c === 'number' ? color[c] : c);
             context.fill();
         }, _.drawTo, _.options);
     }
@@ -1893,7 +1893,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
             var c = _.landColor;
             context.beginPath();
             path(_.countries);
-            context.fillStyle = _.style.land || typeof c === 'number' ? color[c] : c;
+            context.fillStyle = _.style.land || (typeof c === 'number' ? color[c] : c);
             context.fill();
             context.lineWidth = 0.1;
             context.strokeStyle = _.style.countries || 'rgb(239, 237, 234)';
