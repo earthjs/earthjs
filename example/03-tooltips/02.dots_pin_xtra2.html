@@ -11,9 +11,6 @@
             width: 700px;
             height: 500px;
         }
-        .canvas {
-            pointer-events: inherit;
-        }
     </style>
 </head>
 <body>
@@ -69,8 +66,8 @@
             });
             return g;
         }
-        const g1 = factory('.s1,.c1', '.c1','../d/cities.geojson');
-        const g2 = factory('.s2,.c2', '.c2');
+        const g1 = factory('.s1', '.c1','../d/cities.geojson');
+        const g2 = factory('.s2', '.c2');
         g1._.options.showPin = false;
         g1.dotTooltipCanvas.onShow = function(d) {
             const {tld, area, region, name, capital, currency, callingCode} = d.properties;

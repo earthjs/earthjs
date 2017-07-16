@@ -1,13 +1,10 @@
 body {
     margin: 0;
 }
-#earth, .earth, #three-js, .earth, .canvas, .top {
+#earth, #three-js, .earth, .canvas, .top {
     position: absolute;
     left: 0;
     top: 0;
-}
-#three-js, .canvas {
-    pointer-events: none;
 }
 #earth {
     z-index: 2;
@@ -59,7 +56,7 @@ body {
     fill: black;
     opacity: .5;
 }
-.earth, .noclicks {
+#three-js, .canvas, .noclicks {
     pointer-events:none;
 }
 .point{

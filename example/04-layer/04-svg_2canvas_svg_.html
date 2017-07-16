@@ -1,0 +1,90 @@
+<html>
+<head>
+    <style media="screen">
+        .input-area {
+            position: absolute;
+            z-index: 5;
+        }
+    </style>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+    <style>
+        #earth, #earth2 {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+        #earth2 {
+            z-index: 4;
+        }
+    </style>
+</head>
+<body>
+    <div class="input-area">
+        <input id="pan" type="range" min="0" max="400" step="1" value="0"/><br/>
+        <input id="tg1" type="checkbox"/><label for="tg1">Swap Canvas</label><br/>
+    </div>
+    <svg id="earth"></svg>
+    <canvas class="canvas"></canvas>
+    <canvas class="canvas"></canvas>
+    <svg id="earth2" width="700" height="500"></svg>
+    <script>
+        const g = earthjs({rotate: -40});
+        g.register(earthjs.plugins.configPlugin());
+        g.register(earthjs.plugins.mousePlugin());
+        g.register(earthjs.plugins.autorotatePlugin(10));
+        g.mousePlugin.selectAll('#earth2');
+
+        g.register(earthjs.plugins.dropShadowSvg());
+        g.register(earthjs.plugins.oceanSvg());
+
+        g.register(earthjs.plugins.canvasPlugin());
+        g.register(earthjs.plugins.graticuleCanvas());
+
+        // g.register(earthjs.plugins.placesSvg('../d/places.json'));
+        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
+        g.worldCanvas.style({land: 'green'});
+        g.canvasPlugin.selectAll('.canvas');
+        g.graticuleCanvas.drawTo([0]);
+        g.worldCanvas.drawTo([1]);
+
+        g.register(earthjs.plugins.fauxGlobeSvg());
+        g.fauxGlobeSvg.selectAll('#earth2');
+
+        g.register(earthjs.plugins.barSvg('../d/bars.json'));
+        g.barSvg.selectAll('#earth2');
+        g.barSvg.ready = function(err, json) {
+            json.features.forEach(d => d.geometry.value = d.properties.mag);
+            g.barSvg.data(json);
+        };
+
+        // g.placesSvg.selectAll('#earth2');
+        g.ready(function(){
+            // g.create();
+            g.configPlugin.set({
+                showCountries: false,
+                showLakes: false
+            });
+        });
+
+        const canvas = d3.selectAll('canvas').nodes();
+        const svg = d3.selectAll('#earth2').nodes();
+        d3.select('#pan').on('input', function() {
+            canvas[0].style.left = this.value;
+            canvas[1].style.left = this.value*2;
+               svg[0].style.left = this.value*3;
+        })
+        d3.select('#tg1').on('click', function() {
+            if (!this.checked) {
+                g.graticuleCanvas.drawTo([0]);
+                g.worldCanvas.drawTo([1]);
+            } else {
+                g.graticuleCanvas.drawTo([1]);
+                g.worldCanvas.drawTo([0]);
+            }
+        })
+    </script>
+</body>
+</html>
