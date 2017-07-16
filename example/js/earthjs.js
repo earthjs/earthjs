@@ -2,7 +2,7 @@ var earthjs = (function () {
 'use strict';
 
 // Version 0.0.0. Copyright 2017 Mike Bostock.
-var versorFn = function () {
+var versorFn = (function () {
   var acos = Math.acos,
       asin = Math.asin,
       atan2 = Math.atan2,
@@ -68,7 +68,7 @@ var versorFn = function () {
   }
 
   return versor;
-};
+});
 
 var versor = versorFn();
 var earthjs$1 = function earthjs() {
@@ -310,7 +310,7 @@ var earthjs$1 = function earthjs() {
     }
 };
 
-var configPlugin = function () {
+var configPlugin = (function () {
     return {
         name: 'configPlugin',
         set: function set(newOpt) {
@@ -325,7 +325,7 @@ var configPlugin = function () {
             return Object.assign({}, this._.options);
         }
     };
-};
+});
 
 var autorotatePlugin = (function (degPerSec) {
     /*eslint no-console: 0 */
@@ -373,7 +373,7 @@ var autorotatePlugin = (function (degPerSec) {
 });
 
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
-var mousePlugin = function () {
+var mousePlugin = (function () {
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null, sync: [], mouse: null, wait: null,
         onDrag: {},
@@ -541,7 +541,7 @@ var mousePlugin = function () {
             _.onDblClickKeys = Object.keys(_.onDblClick);
         }
     };
-};
+});
 
 var zoomPlugin = (function () {
     function init() {
@@ -569,7 +569,7 @@ var zoomPlugin = (function () {
 
 // Philippe Rivière’s https://bl.ocks.org/Fil/9ed0567b68501ee3c3fef6fbe3c81564
 // https://gist.github.com/Fil/ad107bae48e0b88014a0e3575fe1ba64
-var threejsPlugin = function () {
+var threejsPlugin = (function () {
     var _ = { renderer: null, scene: null, camera: null, scale: null };
 
     function renderThree() {
@@ -605,7 +605,7 @@ var threejsPlugin = function () {
             _.scene.add(obj);
         }
     };
-};
+});
 
 // Bo Ericsson’s Block http://bl.ocks.org/boeric/aa80b0048b7e39dd71c8fbe958d1b1d4
 var canvasPlugin = (function () {
@@ -711,7 +711,7 @@ var canvasPlugin = (function () {
 });
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-var hoverCanvas = function () {
+var hoverCanvas = (function () {
     /*eslint no-console: 0 */
     var _ = {
         mouse: null,
@@ -807,10 +807,10 @@ var hoverCanvas = function () {
             };
         }
     };
-};
+});
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-var clickCanvas = function () {
+var clickCanvas = (function () {
     /*eslint no-console: 0 */
     var _ = {
         mouse: null,
@@ -903,10 +903,10 @@ var clickCanvas = function () {
             };
         }
     };
-};
+});
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-var dblClickCanvas = function () {
+var dblClickCanvas = (function () {
     /*eslint no-console: 0 */
     var _ = {
         mouse: null,
@@ -999,9 +999,9 @@ var dblClickCanvas = function () {
             };
         }
     };
-};
+});
 
-var oceanSvg = function () {
+var oceanSvg = (function () {
     var color = {
         0: ['rgba(221, 221, 255, 0.6)', 'rgba(153, 170, 187,0.8)'],
         1: ['rgba(159, 240, 232, 0.6)', 'rgba(  5, 242, 219,0.8)'],
@@ -1073,9 +1073,9 @@ var oceanSvg = function () {
             create.call(this);
         }
     };
-};
+});
 
-var sphereSvg = function () {
+var sphereSvg = (function () {
     var _ = { svg: null, q: null, sphereColor: 0 };
 
     function create() {
@@ -1111,9 +1111,9 @@ var sphereSvg = function () {
             return _.svg;
         }
     };
-};
+});
 
-var graticuleCanvas = function () {
+var graticuleCanvas = (function () {
     var datumGraticule = d3.geoGraticule()();
     var _ = { style: {}, drawTo: null };
 
@@ -1158,9 +1158,9 @@ var graticuleCanvas = function () {
             return _.style;
         }
     };
-};
+});
 
-var graticuleSvg = function () {
+var graticuleSvg = (function () {
     var _ = { svg: null, q: null, graticule: d3.geoGraticule() };
     var $ = {};
 
@@ -1205,10 +1205,10 @@ var graticuleSvg = function () {
             return _.svg;
         }
     };
-};
+});
 
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
-var dropShadowSvg = function () {
+var dropShadowSvg = (function () {
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null };
     var $ = {};
@@ -1254,10 +1254,10 @@ var dropShadowSvg = function () {
             return _.svg;
         }
     };
-};
+});
 
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
-var fauxGlobeSvg = function () {
+var fauxGlobeSvg = (function () {
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null };
     var $ = {};
@@ -1321,10 +1321,10 @@ var fauxGlobeSvg = function () {
             return _.svg;
         }
     };
-};
+});
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-var dotTooltipSvg = function () {
+var dotTooltipSvg = (function () {
     /*eslint no-console: 0 */
     var _ = { mouseXY: [0, 0], visible: false };
     var dotTooltip = d3.select("body").append("div").attr("class", "dotTooltip");
@@ -1383,7 +1383,7 @@ var dotTooltipSvg = function () {
             return _.visible;
         }
     };
-};
+});
 
 var dotSelectCanvas = (function () {
     /*eslint no-console: 0 */
@@ -1598,7 +1598,7 @@ var countrySelectCanvas = (function () {
 });
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-var countryTooltipCanvas = function () {
+var countryTooltipCanvas = (function () {
     /*eslint no-console: 0 */
     var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
 
@@ -1616,7 +1616,7 @@ var countryTooltipCanvas = function () {
             var _this = this;
 
             var toolTipsHandler = function toolTipsHandler(mouse, country) {
-                // fn with  current context 
+                // fn with  current context
                 if (!_this._.drag && country && _this._.options.showCountryTooltip) {
                     var countryName = _this.worldCanvas.countryName(country);
                     if (countryName && !(_this.barTooltipSvg && _this.barTooltipSvg.visible())) {
@@ -1644,10 +1644,10 @@ var countryTooltipCanvas = function () {
             }
         }
     };
-};
+});
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-var countryTooltipSvg = function () {
+var countryTooltipSvg = (function () {
     /*eslint no-console: 0 */
     var _ = { show: false };
     var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
@@ -1691,10 +1691,10 @@ var countryTooltipSvg = function () {
             }
         }
     };
-};
+});
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-var barTooltipSvg = function () {
+var barTooltipSvg = (function () {
     /*eslint no-console: 0 */
     var _ = { mouseXY: [0, 0], visible: false };
     var barTooltip = d3.select("body").append("div").attr("class", "barTooltip");
@@ -1754,9 +1754,9 @@ var barTooltipSvg = function () {
             return _.visible;
         }
     };
-};
+});
 
-var placesSvg = function (urlPlaces) {
+var placesSvg = (function (urlPlaces) {
     var _ = { svg: null, q: null, places: null };
     var $ = {};
 
@@ -1838,7 +1838,7 @@ var placesSvg = function (urlPlaces) {
             }
         }
     };
-};
+});
 
 // John J Czaplewski’s Block http://bl.ocks.org/jczaplew/6798471
 var worldCanvas = (function (urlWorld, urlCountryNames) {
@@ -1996,7 +1996,7 @@ var worldCanvas = (function (urlWorld, urlCountryNames) {
     };
 });
 
-var worldSvg = function (urlWorld, urlCountryNames) {
+var worldSvg = (function (urlWorld, urlCountryNames) {
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null, world: null, countryNames: null };
     var $ = {};
@@ -2127,28 +2127,30 @@ var worldSvg = function (urlWorld, urlCountryNames) {
             return $.countries;
         }
     };
-};
+});
 
-var worldThreejs = function () {
+var worldThreejs = (function () {
+    var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.jpg';
+
     var _ = { sphereObject: null };
 
-    function addWorld() {
+    function init() {
         if (!_.sphereObject) {
             var _this = this;
             var group = new THREE.Group();
             var loader = new THREE.TextureLoader();
-            loader.load("./d/world.jpg", function (texture) {
+            loader.load(imgUrl, function (texture) {
                 var geometry = new THREE.SphereGeometry(200, 20, 20);
                 var material = new THREE.MeshBasicMaterial({ map: texture, overdraw: 0.5 });
                 _.sphereObject = new THREE.Mesh(geometry, material);
                 group.add(_.sphereObject);
-                rotate.call(_this);
+                refresh.call(_this);
             });
             _this.threejsPlugin.addObject(group);
         }
     }
 
-    function rotate() {
+    function refresh() {
         var rt = this._.proj.rotate();
         rt[0] -= 90;
         var q1 = this._.versor(rt);
@@ -2159,15 +2161,15 @@ var worldThreejs = function () {
     return {
         name: 'worldThreejs',
         onInit: function onInit() {
-            addWorld.call(this);
+            init.call(this);
         },
         onRefresh: function onRefresh() {
             if (_.sphereObject) {
-                rotate.call(this);
+                refresh.call(this);
             }
         }
     };
-};
+});
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var centerCanvas = (function () {
@@ -2290,7 +2292,7 @@ var centerSvg = (function () {
     };
 });
 
-var flattenPlugin = function () {
+var flattenPlugin = (function () {
     /*eslint no-console: 0 */
     var _ = {};
 
@@ -2375,7 +2377,7 @@ var flattenPlugin = function () {
             });
         }
     };
-};
+});
 
 var barSvg = (function (urlBars) {
     /*eslint no-console: 0 */
@@ -2819,7 +2821,7 @@ var dotsCanvas = (function (urlJson) {
     };
 });
 
-var pingsCanvas = function () {
+var pingsCanvas = (function () {
     var _ = { dataPings: null, pings: [] };
 
     return {
@@ -2870,9 +2872,9 @@ var pingsCanvas = function () {
             _.drawTo = arr;
         }
     };
-};
+});
 
-var pingsSvg = function () {
+var pingsSvg = (function () {
     /*eslint no-console: 0 */
     var _ = { svg: null, dataPings: null };
     var $ = {};
@@ -2944,9 +2946,9 @@ var pingsSvg = function () {
             return _.svg;
         }
     };
-};
+});
 
-var debugThreejs = function () {
+var debugThreejs = (function () {
     var _ = { sphereObject: null };
 
     function addDebugSphere() {
@@ -2998,7 +3000,7 @@ var debugThreejs = function () {
             }
         }
     };
-};
+});
 
 var commonPlugins = (function (urlWorld, urlCountryNames) {
     /*eslint no-console: 0 */
