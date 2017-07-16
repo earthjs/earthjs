@@ -5,8 +5,8 @@ export default () => {
     function create() {
         _.svg.selectAll('.graticule').remove();
         if (this._.options.showGraticule) {
-            $.graticule = _.svg.append("g").attr("class","graticule").append("path")
-                .datum(_.graticule).attr("class", "noclicks");
+            $.graticule = _.svg.append('g').attr('class','graticule').append('path')
+                .datum(_.graticule).attr('class', 'noclicks');
             refresh.call(this);
         }
     }
@@ -16,10 +16,10 @@ export default () => {
         if ($.graticule && __.options.showGraticule) {
             if (__.options.transparent || __.options.transparentGraticule) {
                 __.proj.clipAngle(180);
-                $.graticule.attr("d", this._.path);
+                $.graticule.attr('d', this._.path);
                 __.proj.clipAngle(90);
             } else {
-                $.graticule.attr("d", this._.path);
+                $.graticule.attr('d', this._.path);
             }
         }
     }

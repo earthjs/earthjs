@@ -1,18 +1,18 @@
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 export default () => {
     /*eslint no-console: 0 */
-    const countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
+    const countryTooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
 
     function refresh(mouse) {
         return countryTooltip
-        .style("left", (mouse[0] + 7) + "px")
-        .style("top", (mouse[1] - 15) + "px")
+        .style('left', (mouse[0] + 7) + 'px')
+        .style('top', (mouse[1] - 15) + 'px')
     }
 
     function hideTooltip() {
         countryTooltip
-        .style("opacity", 0)
-        .style("display", "none");
+        .style('opacity', 0)
+        .style('display', 'none');
     }
 
     return {
@@ -23,8 +23,8 @@ export default () => {
                     const countryName = this.worldCanvas.countryName(country);
                     if (countryName && !(this.barTooltipSvg && this.barTooltipSvg.visible())) {
                         refresh(mouse)
-                        .style("display", "block")
-                        .style("opacity", 1)
+                        .style('display', 'block')
+                        .style('opacity', 1)
                         .text(countryName.name);
                     } else {
                         hideTooltip()

@@ -19,7 +19,7 @@ export default urlDots => {
                 .style('stroke-width', _g.lineWidth   || 0.2)
                 .style('fill',         _g.fillStyle   || 'rgba(100,0,0,.4)')
                 .style('stroke',       _g.strokeStyle || 'rgba(119,119,119,.4)')
-                .attr("data-index", (d, i) => i);
+                .attr('data-index', (d, i) => i);
             }
             refresh.call(this);
         }

@@ -5,17 +5,17 @@
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
     <style>
-        svg.earth {
+        svg.ej-svg {
             position: inherit;
             pointer-events: inherit;
         }
     </style>
 </head>
 <body>
-    <svg class="earth e1"></svg>
-    <svg class="earth e2"></svg>
+    <svg class="ej-svg e1"></svg>
+    <svg class="ej-svg e2"></svg>
     <script>
-        const g = earthjs({selectAll:'.earth'});
+        const g = earthjs({selectAll:'.ej-svg'});
         g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));

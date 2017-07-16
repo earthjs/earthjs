@@ -6,8 +6,8 @@
     <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
-    <svg id="earth"></svg>
-    <canvas class="canvas"></canvas>
+    <svg id="earth-js"></svg>
+    <canvas class="ej-canvas"></canvas>
     <script>
         const g = earthjs({transparent:true});
         g.register(earthjs.plugins.configPlugin());
@@ -40,7 +40,7 @@
             g.autorotatePlugin.stop();
         })
 
-        g.canvasPlugin.selectAll('.canvas');
+        g.canvasPlugin.selectAll('.ej-canvas');
         g.ready(function(){
             const world = g.worldCanvas.data().world;
             g.hoverCanvas.world(world);

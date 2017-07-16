@@ -13,21 +13,21 @@ export default () => {
         const __ = this._;
         _.svg.selectAll('#shading,.shading').remove();
         if (__.options.showGlobeShading) {
-            const globe_shading = this.$slc.defs.append("radialGradient")
-                  .attr("id", "shading")
-                  .attr("cx", "50%")
-                  .attr("cy", "40%");
-                globe_shading.append("stop")
-                  .attr("offset","50%").attr("stop-color", "#9ab")
-                  .attr("stop-opacity","0")
-                globe_shading.append("stop")
-                  .attr("offset","100%").attr("stop-color", "#3e6184")
-                  .attr("stop-opacity","0.3")
-            $.globeShading = _.svg.append("g").attr("class","shading").append("circle")
-                .attr("cx", __.center[0]).attr("cy", __.center[1])
-                .attr("r",  __.proj.scale())
-                .attr("class","noclicks")
-                .style("fill", "url(#shading)");
+            const globe_shading = this.$slc.defs.append('radialGradient')
+                  .attr('id', 'shading')
+                  .attr('cx', '50%')
+                  .attr('cy', '40%');
+                globe_shading.append('stop')
+                  .attr('offset','50%').attr('stop-color', '#9ab')
+                  .attr('stop-opacity','0')
+                globe_shading.append('stop')
+                  .attr('offset','100%').attr('stop-color', '#3e6184')
+                  .attr('stop-opacity','0.3')
+            $.globeShading = _.svg.append('g').attr('class','shading').append('circle')
+                .attr('cx', __.center[0]).attr('cy', __.center[1])
+                .attr('r',  __.proj.scale())
+                .attr('class','noclicks')
+                .style('fill', 'url(#shading)');
         }
     }
 
@@ -35,21 +35,21 @@ export default () => {
         const __ = this._;
         _.svg.selectAll('#hilight,.hilight').remove();
         if (__.options.showGlobeHilight) {
-            const globe_highlight = this.$slc.defs.append("radialGradient")
-                  .attr("id", "hilight")
-                  .attr("cx", "75%")
-                  .attr("cy", "25%");
-                globe_highlight.append("stop")
-                  .attr("offset", "5%").attr("stop-color", "#ffd")
-                  .attr("stop-opacity","0.6");
-                globe_highlight.append("stop")
-                  .attr("offset", "100%").attr("stop-color", "#ba9")
-                  .attr("stop-opacity","0.2");
-            $.globeHilight = _.svg.append("g").attr("class","hilight").append("circle")
-                .attr("cx", __.center[0]).attr("cy", __.center[1])
-                .attr("r",  __.proj.scale())
-                .attr("class","noclicks")
-                .style("fill", "url(#hilight)");
+            const globe_highlight = this.$slc.defs.append('radialGradient')
+                  .attr('id', 'hilight')
+                  .attr('cx', '75%')
+                  .attr('cy', '25%');
+                globe_highlight.append('stop')
+                  .attr('offset', '5%').attr('stop-color', '#ffd')
+                  .attr('stop-opacity','0.6');
+                globe_highlight.append('stop')
+                  .attr('offset', '100%').attr('stop-color', '#ba9')
+                  .attr('stop-opacity','0.2');
+            $.globeHilight = _.svg.append('g').attr('class','hilight').append('circle')
+                .attr('cx', __.center[0]).attr('cy', __.center[1])
+                .attr('r',  __.proj.scale())
+                .attr('class','noclicks')
+                .style('fill', 'url(#hilight)');
         }
     }
 
@@ -69,10 +69,10 @@ export default () => {
             const {options} = __;
             const scale = __.proj.scale();
             if ($.globeShading && options.showGlobeShading) {
-                $.globeShading.attr("r", scale);
+                $.globeShading.attr('r', scale);
             }
             if ($.globeHilight && options.showGlobeHilight) {
-                $.globeHilight.attr("r", scale);
+                $.globeHilight.attr('r', scale);
             }
         },
         selectAll(q) {

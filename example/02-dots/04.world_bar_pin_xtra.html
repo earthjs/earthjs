@@ -15,20 +15,20 @@
 </head>
 <body>
     <div class="e-container">
-        <svg    class="earth s1"/>
-        <canvas class="earth c1 canvas"></canvas>
+        <svg    class="ej-svg s1"/>
+        <canvas class="ej-svg c1 ej-canvas"></canvas>
     </div>
     <div class="e-container">
-        <svg    class="earth s2"/>
-        <canvas class="earth c2 canvas"></canvas>
+        <svg    class="ej-svg s2"/>
+        <canvas class="ej-svg c2 ej-canvas"></canvas>
     </div>
     <div class="e-container">
-        <svg    class="earth s3"/>
-        <canvas class="earth c3 canvas"></canvas>
+        <svg    class="ej-svg s3"/>
+        <canvas class="ej-svg c3 ej-canvas"></canvas>
     </div>
     <div class="e-container">
-        <svg    class="earth s4"/>
-        <canvas class="earth c4 canvas"></canvas>
+        <svg    class="ej-svg s4"/>
+        <canvas class="ej-svg c4 ej-canvas"></canvas>
     </div>
     <script>
         const g = earthjs({selectAll:'.s1,.s2,.s3,.s4',transparent:true});
@@ -44,7 +44,7 @@
         g.register(earthjs.plugins.barSvg());
         g.register(earthjs.plugins.pinCanvas('../d/bars.json', '../images/pin.png'));
         g.register(earthjs.plugins.fauxGlobeSvg());
-        g.canvasPlugin.selectAll('.canvas');
+        g.canvasPlugin.selectAll('.ej-canvas');
         g.pinCanvas.ready = function(err, json) {
             const features = json.features;
             const maxMag = features.map(d => d.properties.mag).sort(d3.descending)[0];

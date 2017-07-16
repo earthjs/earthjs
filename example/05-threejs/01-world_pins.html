@@ -8,26 +8,34 @@
     <script type='text/javascript' src='../js/three.min.js'></script>
 </head>
 <body>
-    <svg id="earth"></svg>
+    <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
-    <canvas class="canvas"></canvas>
+    <canvas class="ej-canvas"></canvas>
     <script>
         const g = earthjs();
         g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.mousePlugin());
+        g.register(earthjs.plugins.hoverCanvas());
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.threejsPlugin());
+        g.register(earthjs.plugins.dropShadowSvg());
         g.register(earthjs.plugins.graticuleCanvas());
         g.register(earthjs.plugins.worldThreejs('../d/world.jpg'));
-        g.register(earthjs.plugins.dotsCanvas('../d/bars.json'));
-        g.register(earthjs.plugins.barSvg());
-        g.canvasPlugin.selectAll('.canvas');
-        g.dotsCanvas.ready = function(err, json) {
+        g.register(earthjs.plugins.pinCanvas('../d/bars.json', '../images/pin.png'));
+        g.register(earthjs.plugins.dotsCanvas());
+        g.register(earthjs.plugins.dotSelectCanvas());
+        g.register(earthjs.plugins.dotTooltipCanvas());
+        g.canvasPlugin.selectAll('.ej-canvas');
+        g.pinCanvas.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
             json.geometry = {radius: 2}
             g.dotsCanvas.data(json);
-            g.barSvg.data(json);
+            g.pinCanvas.data(json);
         };
+        g.dotTooltipCanvas.onShow = function(d) {
+            const {mag, place} = d.properties;
+            return {properties: {mag, place}};
+        }
 
         g.ready(function(){
             g.create();

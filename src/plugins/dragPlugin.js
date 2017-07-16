@@ -32,9 +32,9 @@ export default () => {
             }
 
             const win = d3.select(window);
-            win.on("mouseup",   mouseup);
-            win.on("mousemove", mousemove);
-            this._.svg.on("mousedown", mousedown);
+            win.on('mouseup',   mouseup);
+            win.on('mousemove', mousemove);
+            this._.svg.on('mousedown', mousedown);
         },
     }
 }

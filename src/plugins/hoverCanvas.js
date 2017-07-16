@@ -57,7 +57,7 @@ export default () => {
                 });
             }
         }
-        __.svg.on("mousemove", mouseMoveHandler);
+        __.svg.on('mousemove', mouseMoveHandler);
         if (this.mousePlugin) {
             this.mousePlugin.onDrag({
                 hoverCanvas: mouseMoveHandler

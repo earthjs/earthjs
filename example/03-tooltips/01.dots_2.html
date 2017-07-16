@@ -6,8 +6,8 @@
     <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
-    <svg id="earth"></svg>
-    <canvas class="canvas"></canvas>
+    <svg id="earth-js"></svg>
+    <canvas class="ej-canvas"></canvas>
     <script>
         const g = earthjs({transparent:true});
         g.register(earthjs.plugins.mousePlugin());
@@ -17,7 +17,7 @@
         g.register(earthjs.plugins.dotsCanvas('../d/bars.json'));
         g.register(earthjs.plugins.dotSelectCanvas());
         g.register(earthjs.plugins.dotTooltipCanvas());
-        g.canvasPlugin.selectAll('.canvas');
+        g.canvasPlugin.selectAll('.ej-canvas');
         g.dotsCanvas.ready = function(err, json) {
             json.geometry = {radius: 2}
             g.dotsCanvas.data(json);

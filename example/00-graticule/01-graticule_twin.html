@@ -3,13 +3,13 @@
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
-    <style>.earth {position: inherit;}</style>
+    <style>.ej-svg {position: inherit;}</style>
 </head>
 <body>
-    <svg class="earth"></svg>
-    <svg class="earth"></svg>
+    <svg class="ej-svg"></svg>
+    <svg class="ej-svg"></svg>
     <script>
-        const g = earthjs({selectAll:'.earth',transparent:true});
+        const g = earthjs({selectAll:'.ej-svg',transparent:true});
         g.register(earthjs.plugins.autorotatePlugin(10));
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.graticuleSvg());

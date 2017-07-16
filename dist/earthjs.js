@@ -77,9 +77,9 @@ var earthjs$1 = function earthjs() {
     /*eslint no-console: 0 */
     clearInterval(earthjs.ticker);
     options = Object.assign({
-        transparent: false,
-        selectAll: '#earth',
-        rotate: [130, -33, -11]
+        selectAll: '#earth-js',
+        rotate: [130, -33, -11],
+        transparent: false
     }, options);
     var _ = {
         onCreate: {},
@@ -116,7 +116,7 @@ var earthjs$1 = function earthjs() {
     if (!width || !height) {
         width = options.width || 700;
         height = options.height || 500;
-        svg.attr("width", width).attr("height", height);
+        svg.attr('width', width).attr('height', height);
     }
     var center = [width / 2, height / 2];
     Object.defineProperty(options, 'width', {
@@ -229,7 +229,7 @@ var earthjs$1 = function earthjs() {
         return globe;
     };
 
-    globe.$slc.defs = __.svg.append("defs");
+    globe.$slc.defs = __.svg.append('defs');
     __.ticker = function (intervalTicker) {
         var interval = __.interval;
         intervalTicker = intervalTicker || 50;
@@ -418,7 +418,7 @@ var mousePlugin = (function () {
 
         _.svg.call(d3.drag().on('start', dragstarted).on('end', dragsended).on('drag', dragged));
 
-        _.svg.call(d3.zoom().on("zoom", zoom).scaleExtent([0.1, 5]).translateExtent([[0, 0], wh]));
+        _.svg.call(d3.zoom().on('zoom', zoom).scaleExtent([0.1, 5]).translateExtent([[0, 0], wh]));
 
         function zoom() {
             var r1 = s0 * d3.event.transform.k;
@@ -519,7 +519,7 @@ var mousePlugin = (function () {
         selectAll: function selectAll(q) {
             if (q) {
                 _.q = q;
-                _.svg.call(d3.zoom().on("zoom start end", null));
+                _.svg.call(d3.zoom().on('zoom start end', null));
                 _.svg.call(d3.drag().on('start', null).on('end', null).on('drag', null));
                 _.svg = d3.selectAll(q);
                 init.call(this);
@@ -553,7 +553,7 @@ var zoomPlugin = (function () {
         var s0 = __.proj.scale();
         var wh = [__.options.width, __.options.height];
 
-        __.svg.call(d3.zoom().on("zoom start end", zoom).scaleExtent([0.1, 5]).translateExtent([[0, 0], wh]));
+        __.svg.call(d3.zoom().on('zoom start end', zoom).scaleExtent([0.1, 5]).translateExtent([[0, 0], wh]));
 
         function zoom() {
             var t = d3.event.transform;
@@ -574,9 +574,9 @@ var zoomPlugin = (function () {
 // Philippe Rivière’s https://bl.ocks.org/Fil/9ed0567b68501ee3c3fef6fbe3c81564
 // https://gist.github.com/Fil/ad107bae48e0b88014a0e3575fe1ba64
 var threejsPlugin = (function () {
-    var canvas = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'three-js';
+    var threejs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'three-js';
 
-    canvas = document.getElementById(canvas);
+    /*eslint no-console: 0 */
     var _ = { renderer: null, scene: null, camera: null, scale: null };
 
     function renderThree() {
@@ -599,8 +599,9 @@ var threejsPlugin = (function () {
             // Create renderer object.
             // https://stackoverflow.com/questions/29422118/threejs-canvas-background-black
             // https://stackoverflow.com/questions/16177056/changing-three-js-background-to-transparent-or-other-color
-            _.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, canvas: canvas });
-            _.renderer.domElement.id = 'three-js';
+            var container = document.getElementById(threejs);
+            _.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, canvas: container });
+            // _.renderer.domElement.id = threejs;
             _.renderer.setClearColor(0x000000, 0);
             _.renderer.setSize(width, height);
             this.renderThree = renderThree; // renderer
@@ -623,11 +624,11 @@ var canvasPlugin = (function () {
         var __ = this._;
         if (__.options.showCanvas) {
             if (!_.canvas) {
-                var fObject = __.svg.append("g").attr("class", "canvas").append("foreignObject").attr("x", 0).attr("y", 0).attr("width", __.options.width).attr("height", __.options.height);
-                var fBody = fObject.append("xhtml:body").style("margin", "0px").style("padding", "0px").style("background-color", "none").style("width", __.options.width + "px").style("height", __.options.height + "px");
-                _.canvas = fBody.append("canvas");
+                var fObject = __.svg.append('g').attr('class', 'canvas').append('foreignObject').attr('x', 0).attr('y', 0).attr('width', __.options.width).attr('height', __.options.height);
+                var fBody = fObject.append('xhtml:body').style('margin', '0px').style('padding', '0px').style('background-color', 'none').style('width', __.options.width + 'px').style('height', __.options.height + 'px');
+                _.canvas = fBody.append('canvas');
             }
-            _.canvas.attr("x", 0).attr("y", 0).attr("width", __.options.width).attr("height", __.options.height);
+            _.canvas.attr('x', 0).attr('y', 0).attr('width', __.options.width).attr('height', __.options.height);
         }
         if (_.canvas) {
             refresh.call(this);
@@ -640,7 +641,7 @@ var canvasPlugin = (function () {
             height = _$options.height;
 
         _.canvas.each(function () {
-            this.getContext("2d").clearRect(0, 0, width, height);
+            this.getContext('2d').clearRect(0, 0, width, height);
         });
     }
 
@@ -682,7 +683,7 @@ var canvasPlugin = (function () {
                             rChange = false;
                             proj.rotate(r);
                         }
-                        var context = this.getContext("2d");
+                        var context = this.getContext('2d');
                         fn.call(_this, context, _.path.context(context));
                     }
                 });
@@ -780,7 +781,7 @@ var hoverCanvas = (function () {
                 });
             }
         };
-        __.svg.on("mousemove", mouseMoveHandler);
+        __.svg.on('mousemove', mouseMoveHandler);
         if (this.mousePlugin) {
             this.mousePlugin.onDrag({
                 hoverCanvas: mouseMoveHandler
@@ -1022,22 +1023,22 @@ var oceanSvg = (function () {
         _.svg.selectAll('#ocean,.ocean').remove();
         if (this._.options.showOcean) {
             var c = _.oceanColor;
-            var ocean_fill = this.$slc.defs.append("radialGradient").attr("id", "ocean").attr("cx", "75%").attr("cy", "25%");
+            var ocean_fill = this.$slc.defs.append('radialGradient').attr('id', 'ocean').attr('cx', '75%').attr('cy', '25%');
             if (typeof c === 'number') {
                 c = color[c];
-                ocean_fill.append("stop").attr("offset", "5%").attr("stop-color", c[0]);
+                ocean_fill.append('stop').attr('offset', '5%').attr('stop-color', c[0]);
             } else if (typeof c === 'string') {
                 c = [c, c];
             }
-            ocean_fill.append("stop").attr("offset", "100%").attr("stop-color", c[1]);
-            _.ocean = _.svg.append("g").attr("class", "ocean").append("circle").attr("cx", this._.center[0]).attr("cy", this._.center[1]).attr("class", "noclicks");
+            ocean_fill.append('stop').attr('offset', '100%').attr('stop-color', c[1]);
+            _.ocean = _.svg.append('g').attr('class', 'ocean').append('circle').attr('cx', this._.center[0]).attr('cy', this._.center[1]).attr('class', 'noclicks');
             resize.call(this);
         }
     }
 
     function resize() {
         if (_.ocean && this._.options.showOcean) {
-            _.ocean.attr("r", this._.proj.scale() + _.scale);
+            _.ocean.attr('r', this._.proj.scale() + _.scale);
         }
     }
 
@@ -1088,14 +1089,14 @@ var sphereSvg = (function () {
     function create() {
         _.svg.selectAll('#glow,.sphere').remove();
         if (this._.options.showSphere) {
-            this.$slc.defs.nodes()[0].append("\n<filter id=\"glow\">\n    <feColorMatrix type=\"matrix\"\n        values=\n        \"0 0 0 0   0\n         0 0 0 0.9 0\n         0 0 0 0.9 0\n         0 0 0 1   0\"/>\n    <feGaussianBlur stdDeviation=\"5.5\" result=\"coloredBlur\"/>\n    <feMerge>\n        <feMergeNode in=\"coloredBlur\"/>\n        <feMergeNode in=\"SourceGraphic\"/>\n    </feMerge>\n</filter>\n");
-            _.sphere = _.svg.append("g").attr("class", "sphere").append("circle").attr("cx", this._.center[0]).attr("cy", this._.center[1]).attr("class", "noclicks").attr("filter", "url(#glow)");
+            this.$slc.defs.nodes()[0].append('\n<filter id=\'glow\'>\n    <feColorMatrix type=\'matrix\'\n        values=\n        \'0 0 0 0   0\n         0 0 0 0.9 0\n         0 0 0 0.9 0\n         0 0 0 1   0\'/>\n    <feGaussianBlur stdDeviation=\'5.5\' result=\'coloredBlur\'/>\n    <feMerge>\n        <feMergeNode in=\'coloredBlur\'/>\n        <feMergeNode in=\'SourceGraphic\'/>\n    </feMerge>\n</filter>\n');
+            _.sphere = _.svg.append('g').attr('class', 'sphere').append('circle').attr('cx', this._.center[0]).attr('cy', this._.center[1]).attr('class', 'noclicks').attr('filter', 'url(#glow)');
             resize.call(this);
         }
     }
 
     function resize() {
-        _.sphere.attr("r", this._.proj.scale());
+        _.sphere.attr('r', this._.proj.scale());
     }
 
     return {
@@ -1174,7 +1175,7 @@ var graticuleSvg = (function () {
     function create() {
         _.svg.selectAll('.graticule').remove();
         if (this._.options.showGraticule) {
-            $.graticule = _.svg.append("g").attr("class", "graticule").append("path").datum(_.graticule).attr("class", "noclicks");
+            $.graticule = _.svg.append('g').attr('class', 'graticule').append('path').datum(_.graticule).attr('class', 'noclicks');
             refresh.call(this);
         }
     }
@@ -1184,10 +1185,10 @@ var graticuleSvg = (function () {
         if ($.graticule && __.options.showGraticule) {
             if (__.options.transparent || __.options.transparentGraticule) {
                 __.proj.clipAngle(180);
-                $.graticule.attr("d", this._.path);
+                $.graticule.attr('d', this._.path);
                 __.proj.clipAngle(90);
             } else {
-                $.graticule.attr("d", this._.path);
+                $.graticule.attr('d', this._.path);
             }
         }
     }
@@ -1224,17 +1225,17 @@ var dropShadowSvg = (function () {
         var __ = this._;
         _.svg.selectAll('#drop_shadow,.drop_shadow').remove();
         if (__.options.showDropShadow) {
-            var drop_shadow = this.$slc.defs.append("radialGradient").attr("id", "drop_shadow").attr("cx", "50%").attr("cy", "50%");
-            drop_shadow.append("stop").attr("offset", "20%").attr("stop-color", "#000").attr("stop-opacity", ".5");
-            drop_shadow.append("stop").attr("offset", "100%").attr("stop-color", "#000").attr("stop-opacity", "0");
-            $.dropShadow = _.svg.append("g").attr("class", "drop_shadow").append("ellipse").attr("cx", __.center[0]).attr("class", "noclicks").style("fill", "url(#drop_shadow)");
+            var drop_shadow = this.$slc.defs.append('radialGradient').attr('id', 'drop_shadow').attr('cx', '50%').attr('cy', '50%');
+            drop_shadow.append('stop').attr('offset', '20%').attr('stop-color', '#000').attr('stop-opacity', '.5');
+            drop_shadow.append('stop').attr('offset', '100%').attr('stop-color', '#000').attr('stop-opacity', '0');
+            $.dropShadow = _.svg.append('g').attr('class', 'drop_shadow').append('ellipse').attr('cx', __.center[0]).attr('class', 'noclicks').style('fill', 'url(#drop_shadow)');
             resize.call(this);
         }
     }
 
     function resize() {
         var scale = this._.proj.scale();
-        $.dropShadow.attr("cy", scale + this._.center[1]).attr("rx", scale * 0.90).attr("ry", scale * 0.25);
+        $.dropShadow.attr('cy', scale + this._.center[1]).attr('rx', scale * 0.90).attr('ry', scale * 0.25);
     }
 
     return {
@@ -1278,10 +1279,10 @@ var fauxGlobeSvg = (function () {
         var __ = this._;
         _.svg.selectAll('#shading,.shading').remove();
         if (__.options.showGlobeShading) {
-            var globe_shading = this.$slc.defs.append("radialGradient").attr("id", "shading").attr("cx", "50%").attr("cy", "40%");
-            globe_shading.append("stop").attr("offset", "50%").attr("stop-color", "#9ab").attr("stop-opacity", "0");
-            globe_shading.append("stop").attr("offset", "100%").attr("stop-color", "#3e6184").attr("stop-opacity", "0.3");
-            $.globeShading = _.svg.append("g").attr("class", "shading").append("circle").attr("cx", __.center[0]).attr("cy", __.center[1]).attr("r", __.proj.scale()).attr("class", "noclicks").style("fill", "url(#shading)");
+            var globe_shading = this.$slc.defs.append('radialGradient').attr('id', 'shading').attr('cx', '50%').attr('cy', '40%');
+            globe_shading.append('stop').attr('offset', '50%').attr('stop-color', '#9ab').attr('stop-opacity', '0');
+            globe_shading.append('stop').attr('offset', '100%').attr('stop-color', '#3e6184').attr('stop-opacity', '0.3');
+            $.globeShading = _.svg.append('g').attr('class', 'shading').append('circle').attr('cx', __.center[0]).attr('cy', __.center[1]).attr('r', __.proj.scale()).attr('class', 'noclicks').style('fill', 'url(#shading)');
         }
     }
 
@@ -1289,10 +1290,10 @@ var fauxGlobeSvg = (function () {
         var __ = this._;
         _.svg.selectAll('#hilight,.hilight').remove();
         if (__.options.showGlobeHilight) {
-            var globe_highlight = this.$slc.defs.append("radialGradient").attr("id", "hilight").attr("cx", "75%").attr("cy", "25%");
-            globe_highlight.append("stop").attr("offset", "5%").attr("stop-color", "#ffd").attr("stop-opacity", "0.6");
-            globe_highlight.append("stop").attr("offset", "100%").attr("stop-color", "#ba9").attr("stop-opacity", "0.2");
-            $.globeHilight = _.svg.append("g").attr("class", "hilight").append("circle").attr("cx", __.center[0]).attr("cy", __.center[1]).attr("r", __.proj.scale()).attr("class", "noclicks").style("fill", "url(#hilight)");
+            var globe_highlight = this.$slc.defs.append('radialGradient').attr('id', 'hilight').attr('cx', '75%').attr('cy', '25%');
+            globe_highlight.append('stop').attr('offset', '5%').attr('stop-color', '#ffd').attr('stop-opacity', '0.6');
+            globe_highlight.append('stop').attr('offset', '100%').attr('stop-color', '#ba9').attr('stop-opacity', '0.2');
+            $.globeHilight = _.svg.append('g').attr('class', 'hilight').append('circle').attr('cx', __.center[0]).attr('cy', __.center[1]).attr('r', __.proj.scale()).attr('class', 'noclicks').style('fill', 'url(#hilight)');
         }
     }
 
@@ -1314,10 +1315,10 @@ var fauxGlobeSvg = (function () {
 
             var scale = __.proj.scale();
             if ($.globeShading && options.showGlobeShading) {
-                $.globeShading.attr("r", scale);
+                $.globeShading.attr('r', scale);
             }
             if ($.globeHilight && options.showGlobeHilight) {
-                $.globeHilight.attr("r", scale);
+                $.globeHilight.attr('r', scale);
             }
         },
         selectAll: function selectAll(q) {
@@ -1334,11 +1335,11 @@ var fauxGlobeSvg = (function () {
 var dotTooltipSvg = (function () {
     /*eslint no-console: 0 */
     var _ = { mouseXY: [0, 0], visible: false };
-    var dotTooltip = d3.select("body").append("div").attr("class", "dotTooltip");
+    var dotTooltip = d3.select('body').append('div').attr('class', 'ej-dot-tooltip');
 
     function create() {
         var _this = this;
-        this.dotsSvg.$dots().on("mouseover", function () {
+        this.dotsSvg.$dots().on('mouseover', function () {
             if (_this._.options.showBarTooltip) {
                 _.visible = true;
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
@@ -1347,13 +1348,13 @@ var dotTooltipSvg = (function () {
                 if (_this.dotTooltipSvg.onShow) {
                     d = _this.dotTooltipSvg.onShow.call(this, d, dotTooltip);
                 }
-                _this.dotTooltipSvg.show(d.properties).style("display", "block").style("opacity", 1);
+                _this.dotTooltipSvg.show(d.properties).style('display', 'block').style('opacity', 1);
                 refresh();
             }
-        }).on("mouseout", function () {
+        }).on('mouseout', function () {
             _.visible = false;
-            dotTooltip.style("opacity", 0).style("display", "none");
-        }).on("mousemove", function () {
+            dotTooltip.style('opacity', 0).style('display', 'none');
+        }).on('mousemove', function () {
             if (_this._.options.showBarTooltip) {
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
                 refresh();
@@ -1362,7 +1363,7 @@ var dotTooltipSvg = (function () {
     }
 
     function refresh() {
-        dotTooltip.style("left", _.mouseXY[0] + 7 + "px").style("top", _.mouseXY[1] - 15 + "px");
+        dotTooltip.style('left', _.mouseXY[0] + 7 + 'px').style('top', _.mouseXY[1] - 15 + 'px');
     }
 
     return {
@@ -1375,7 +1376,7 @@ var dotTooltipSvg = (function () {
         },
         onResize: function onResize() {
             create.call(this);
-            dotTooltip.style("opacity", 0).style("display", "none");
+            dotTooltip.style('opacity', 0).style('display', 'none');
         },
         onRefresh: function onRefresh() {
             refresh.call(this);
@@ -1383,7 +1384,7 @@ var dotTooltipSvg = (function () {
         show: function show(props) {
             var title = Object.keys(props).map(function (k) {
                 return k + ': ' + props[k];
-            }).join("<br/>");
+            }).join('<br/>');
             return dotTooltip.html(title);
         },
         visible: function visible() {
@@ -1489,7 +1490,7 @@ var dotSelectCanvas = (function () {
 
 var dotTooltipCanvas = (function () {
     /*eslint no-console: 0 */
-    var dotTooltip = d3.select("body").append("div").attr("class", "dotTooltip");
+    var dotTooltip = d3.select('body').append('div').attr('class', 'ej-dot-tooltip');
 
     return {
         name: 'dotTooltipCanvas',
@@ -1501,9 +1502,9 @@ var dotTooltipCanvas = (function () {
                     if (_this.dotTooltipCanvas.onShow) {
                         d = _this.dotTooltipCanvas.onShow.call(_this, d, dotTooltip);
                     }
-                    _this.dotTooltipCanvas.show(d.properties).style("display", "block").style("opacity", 1).style("left", mouse[0] + 7 + "px").style("top", mouse[1] - 15 + "px");
+                    _this.dotTooltipCanvas.show(d.properties).style('display', 'block').style('opacity', 1).style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
                 } else {
-                    dotTooltip.style("opacity", 0).style("display", "none");
+                    dotTooltip.style('opacity', 0).style('display', 'none');
                 }
             };
             this.dotSelectCanvas.onHover({
@@ -1513,7 +1514,7 @@ var dotTooltipCanvas = (function () {
         show: function show(props) {
             var title = Object.keys(props).map(function (k) {
                 return k + ': ' + props[k];
-            }).join("<br/>");
+            }).join('<br/>');
             return dotTooltip.html(title);
         }
     };
@@ -1607,14 +1608,14 @@ var countrySelectCanvas = (function () {
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var countryTooltipCanvas = (function () {
     /*eslint no-console: 0 */
-    var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
+    var countryTooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
 
     function refresh(mouse) {
-        return countryTooltip.style("left", mouse[0] + 7 + "px").style("top", mouse[1] - 15 + "px");
+        return countryTooltip.style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
     }
 
     function hideTooltip() {
-        countryTooltip.style("opacity", 0).style("display", "none");
+        countryTooltip.style('opacity', 0).style('display', 'none');
     }
 
     return {
@@ -1627,7 +1628,7 @@ var countryTooltipCanvas = (function () {
                 if (!_this._.drag && country && _this._.options.showCountryTooltip) {
                     var countryName = _this.worldCanvas.countryName(country);
                     if (countryName && !(_this.barTooltipSvg && _this.barTooltipSvg.visible())) {
-                        refresh(mouse).style("display", "block").style("opacity", 1).text(countryName.name);
+                        refresh(mouse).style('display', 'block').style('opacity', 1).text(countryName.name);
                     } else {
                         hideTooltip();
                     }
@@ -1657,20 +1658,20 @@ var countryTooltipCanvas = (function () {
 var countryTooltipSvg = (function () {
     /*eslint no-console: 0 */
     var _ = { show: false };
-    var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
+    var countryTooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
 
     function create() {
         var _this = this;
-        this.worldSvg.$countries().on("mouseover", function (d) {
+        this.worldSvg.$countries().on('mouseover', function (d) {
             if (_this._.options.showCountryTooltip) {
                 _.show = true;
                 var country = _this.worldSvg.countryName.call(_this, d);
-                refresh().style("display", "block").style("opacity", 1).text(country.name);
+                refresh().style('display', 'block').style('opacity', 1).text(country.name);
             }
-        }).on("mouseout", function () {
+        }).on('mouseout', function () {
             _.show = false;
-            countryTooltip.style("opacity", 0).style("display", "none");
-        }).on("mousemove", function () {
+            countryTooltip.style('opacity', 0).style('display', 'none');
+        }).on('mousemove', function () {
             if (_this._.options.showCountryTooltip) {
                 refresh();
             }
@@ -1681,7 +1682,7 @@ var countryTooltipSvg = (function () {
         if (!mouse) {
             mouse = [d3.event.pageX, d3.event.pageY];
         }
-        return countryTooltip.style("left", mouse[0] + 7 + "px").style("top", mouse[1] - 15 + "px");
+        return countryTooltip.style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
     }
 
     return {
@@ -1704,11 +1705,11 @@ var countryTooltipSvg = (function () {
 var barTooltipSvg = (function () {
     /*eslint no-console: 0 */
     var _ = { mouseXY: [0, 0], visible: false };
-    var barTooltip = d3.select("body").append("div").attr("class", "barTooltip");
+    var barTooltip = d3.select('body').append('div').attr('class', 'ej-bar-tooltip');
 
     function create() {
         var _this = this;
-        this.barSvg.$bar().on("mouseover", function () {
+        this.barSvg.$bar().on('mouseover', function () {
             if (_this._.options.showBarTooltip) {
                 _.visible = true;
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
@@ -1717,13 +1718,13 @@ var barTooltipSvg = (function () {
                 if (_this.barTooltipSvg.onShow) {
                     d = _this.barTooltipSvg.onShow.call(this, d, barTooltip);
                 }
-                _this.barTooltipSvg.show(d).style("display", "block").style("opacity", 1);
+                _this.barTooltipSvg.show(d).style('display', 'block').style('opacity', 1);
                 refresh();
             }
-        }).on("mouseout", function () {
+        }).on('mouseout', function () {
             _.visible = false;
-            barTooltip.style("opacity", 0).style("display", "none");
-        }).on("mousemove", function () {
+            barTooltip.style('opacity', 0).style('display', 'none');
+        }).on('mousemove', function () {
             if (_this._.options.showBarTooltip) {
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
                 refresh();
@@ -1732,7 +1733,7 @@ var barTooltipSvg = (function () {
     }
 
     function refresh() {
-        barTooltip.style("left", _.mouseXY[0] + 7 + "px").style("top", _.mouseXY[1] - 15 + "px");
+        barTooltip.style('left', _.mouseXY[0] + 7 + 'px').style('top', _.mouseXY[1] - 15 + 'px');
     }
 
     return {
@@ -1745,7 +1746,7 @@ var barTooltipSvg = (function () {
         },
         onResize: function onResize() {
             create.call(this);
-            barTooltip.style("opacity", 0).style("display", "none");
+            barTooltip.style('opacity', 0).style('display', 'none');
         },
         onRefresh: function onRefresh() {
             refresh.call(this);
@@ -1754,7 +1755,7 @@ var barTooltipSvg = (function () {
             var props = d.properties;
             var title = Object.keys(props).map(function (k) {
                 return k + ': ' + props[k];
-            }).join("<br/>");
+            }).join('<br/>');
             return barTooltip.html(title);
         },
         visible: function visible() {
@@ -1780,17 +1781,17 @@ var placesSvg = (function (urlPlaces) {
 
     function refresh() {
         if ($.placePoints) {
-            $.placePoints.attr("d", this._.path);
+            $.placePoints.attr('d', this._.path);
             position_labels.call(this);
         }
     }
 
     function svgAddPlacePoints() {
-        $.placePoints = _.svg.append("g").attr("class", "points").selectAll("path").data(_.places.features).enter().append("path").attr("class", "point");
+        $.placePoints = _.svg.append('g').attr('class', 'points').selectAll('path').data(_.places.features).enter().append('path').attr('class', 'point');
     }
 
     function svgAddPlaceLabels() {
-        $.placeLabels = _.svg.append("g").attr("class", "labels").selectAll("text").data(_.places.features).enter().append("text").attr("class", "label").text(function (d) {
+        $.placeLabels = _.svg.append('g').attr('class', 'labels').selectAll('text').data(_.places.features).enter().append('text').attr('class', 'label').text(function (d) {
             return d.properties.name;
         });
     }
@@ -1799,16 +1800,16 @@ var placesSvg = (function (urlPlaces) {
         var _this = this;
         var centerPos = this._.proj.invert(this._.center);
 
-        $.placeLabels.attr("text-anchor", function (d) {
+        $.placeLabels.attr('text-anchor', function (d) {
             var x = _this._.proj(d.geometry.coordinates)[0];
-            return x < _this._.center[0] - 20 ? "end" : x < _this._.center[0] + 20 ? "middle" : "start";
-        }).attr("transform", function (d) {
+            return x < _this._.center[0] - 20 ? 'end' : x < _this._.center[0] + 20 ? 'middle' : 'start';
+        }).attr('transform', function (d) {
             var loc = _this._.proj(d.geometry.coordinates),
                 x = loc[0],
                 y = loc[1];
             var offset = x < _this._.center[0] ? -5 : 5;
-            return "translate(" + (x + offset) + "," + (y - 2) + ")";
-        }).style("display", function (d) {
+            return 'translate(' + (x + offset) + ',' + (y - 2) + ')';
+        }).style('display', function (d) {
             return d3.geoDistance(d.geometry.coordinates, centerPos) > 1.57 ? 'none' : 'inline';
         });
     }
@@ -2034,36 +2035,36 @@ var worldSvg = (function (urlWorld, urlCountryNames) {
         if (_.world && __.options.showLand) {
             if (__.options.transparent || __.options.transparentLand) {
                 __.proj.clipAngle(180);
-                $.worldBg.attr("d", __.path);
+                $.worldBg.attr('d', __.path);
                 __.proj.clipAngle(90);
             }
             if (__.options.showCountries) {
-                $.countries.attr("d", __.path);
+                $.countries.attr('d', __.path);
             } else {
-                $.world.attr("d", __.path);
+                $.world.attr('d', __.path);
             }
             if (__.options.showLakes) {
-                $.lakes.attr("d", __.path);
+                $.lakes.attr('d', __.path);
             }
         }
     }
 
     function svgAddWorldBg() {
-        $.worldBg = _.svg.append("g").attr("class", "landbg").append("path").datum(_.land).attr('fill', 'rgba(119,119,119,0.2)');
+        $.worldBg = _.svg.append('g').attr('class', 'landbg').append('path').datum(_.land).attr('fill', 'rgba(119,119,119,0.2)');
     }
 
     function svgAddWorld() {
-        $.world = _.svg.append("g").attr("class", "land").append("path").datum(_.land);
+        $.world = _.svg.append('g').attr('class', 'land').append('path').datum(_.land);
     }
 
     function svgAddCountries() {
-        $.countries = _.svg.append("g").attr("class", "countries").selectAll("path").data(_.countries.features).enter().append("path").attr("id", function (d) {
+        $.countries = _.svg.append('g').attr('class', 'countries').selectAll('path').data(_.countries.features).enter().append('path').attr('id', function (d) {
             return 'x' + d.id;
         });
     }
 
     function svgAddLakes() {
-        $.lakes = _.svg.append("g").attr("class", "lakes").append("path").datum(_.lakes);
+        $.lakes = _.svg.append('g').attr('class', 'lakes').append('path').datum(_.lakes);
     }
 
     var urls = null;
@@ -2217,7 +2218,7 @@ var centerCanvas = (function () {
         var x = function x(t) {
             return __.rotate(r(t));
         }; // __.proj.rotate()
-        d3.transition().duration(2500).tween("rotate", function () {
+        d3.transition().duration(2500).tween('rotate', function () {
             return x;
         });
     }
@@ -2279,14 +2280,14 @@ var centerSvg = (function () {
         var x = function x(t) {
             return __.rotate(r(t));
         }; // __.proj.rotate()
-        d3.transition().duration(2500).tween("rotate", function () {
+        d3.transition().duration(2500).tween('rotate', function () {
             return x;
         });
     }
 
     function create() {
         var _this = this;
-        this.worldSvg.$countries().on("click", function () {
+        this.worldSvg.$countries().on('click', function () {
             if (_this._.options.enableCenter) {
                 var id = this.id.replace('x', '');
                 var focusedCountry = country(_this.worldSvg.countries(), id);
@@ -2324,7 +2325,7 @@ var flattenPlugin = (function () {
 
     function animation() {
         var _this = this;
-        return _this._.svg.transition().duration(10500).tween("projection", function () {
+        return _this._.svg.transition().duration(10500).tween('projection', function () {
             return function (_x) {
                 animation.alpha(_x);
                 _this._.refresh();
@@ -2362,7 +2363,7 @@ var flattenPlugin = (function () {
     //Rotate to default before animation
     function defaultRotate() {
         var __ = this._;
-        return d3.transition().duration(1500).tween("rotate", function () {
+        return d3.transition().duration(1500).tween('rotate', function () {
             __.rotate(__.proj.rotate());
             var r = d3.interpolate(__.proj.rotate(), [0, 0, 0]);
             return function (t) {
@@ -2415,10 +2416,10 @@ var barSvg = (function (urlBars) {
         svgClipPath.call(this);
         _.svg.selectAll('.bar').remove();
         if (_.bars && __.options.showBars) {
-            var gBar = _.svg.append("g").attr("class", "bar");
-            var mask = gBar.append("mask").attr("id", "edge");
-            mask.append("rect").attr("x", 0).attr("y", 0).attr("width", "100%").attr("height", "100%").attr("fill", "white");
-            mask.append("use").attr("xlink:href", "#edgeCircle").attr("fill", "black");
+            var gBar = _.svg.append('g').attr('class', 'bar');
+            var mask = gBar.append('mask').attr('id', 'edge');
+            mask.append('rect').attr('x', 0).attr('y', 0).attr('width', '100%').attr('height', '100%').attr('fill', 'white');
+            mask.append('use').attr('xlink:href', '#edgeCircle').attr('fill', 'black');
 
             _.max = d3.max(_.bars.features, function (d) {
                 return parseInt(d.geometry.value);
@@ -2427,7 +2428,7 @@ var barSvg = (function (urlBars) {
             var scale = __.proj.scale();
             _.lengthScale = d3.scaleLinear().domain([0, _.max]).range([scale, scale + 50]);
 
-            $.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line").attr("stroke", "red").attr("stroke-width", "2").attr("data-index", function (d, i) {
+            $.bar = gBar.selectAll('line').data(_.bars.features).enter().append('line').attr('stroke', 'red').attr('stroke-width', '2').attr('data-index', function (d, i) {
                 return i;
             });
             refresh.call(this);
@@ -2455,7 +2456,7 @@ var barSvg = (function (urlBars) {
     function svgClipPath() {
         var __ = this._;
         this.$slc.defs.selectAll('clipPath').remove();
-        this.$slc.defs.append("clipPath").append("circle").attr("id", "edgeCircle").attr("cx", __.center[0]).attr("cy", __.center[1]).attr("r", __.proj.scale());
+        this.$slc.defs.append('clipPath').append('circle').attr('id', 'edgeCircle').attr('cx', __.center[0]).attr('cy', __.center[1]).attr('r', __.proj.scale());
     }
 
     return {
@@ -2534,7 +2535,7 @@ var dotsSvg = (function (urlDots) {
             $.dots = _.svg.append('g').attr('class', 'dot').selectAll('path').data(circles).enter().append('path');
             if (_.dataDots.geometry) {
                 var _g = _.dataDots.geometry || {};
-                $.dots.style('stroke-width', _g.lineWidth || 0.2).style('fill', _g.fillStyle || 'rgba(100,0,0,.4)').style('stroke', _g.strokeStyle || 'rgba(119,119,119,.4)').attr("data-index", function (d, i) {
+                $.dots.style('stroke-width', _g.lineWidth || 0.2).style('fill', _g.fillStyle || 'rgba(100,0,0,.4)').style('stroke', _g.strokeStyle || 'rgba(119,119,119,.4)').attr('data-index', function (d, i) {
                     return i;
                 });
             }
@@ -2908,9 +2909,9 @@ var pingsSvg = (function () {
     function create() {
         _.svg.selectAll('.pings').remove();
         if (_.dataPings && this._.options.showPings) {
-            var g = _.svg.append("g").attr("class", "pings");
+            var g = _.svg.append('g').attr('class', 'pings');
             $.ping2 = g.selectAll('.ping-2').data(_.dataPings.features).enter().append('circle').attr('class', 'ping-2').attr('id', function (d, i) {
-                return "ping-" + i;
+                return 'ping-' + i;
             });
 
             $.pings = g.selectAll('.ping-2');
@@ -2924,13 +2925,13 @@ var pingsSvg = (function () {
             return d.style.display == 'inline';
         });
         if (nodes.length > 0) {
-            d3.select("#" + nodes[Math.floor(Math.random() * (nodes.length - 1))].id).attr('r', 2).attr('stroke', '#F00').attr('stroke-opacity', 1).attr('stroke-width', '10px').transition().duration(1000).attr('r', 30).attr('fill', 'none').attr('stroke-width', '0.1px');
+            d3.select('#' + nodes[Math.floor(Math.random() * (nodes.length - 1))].id).attr('r', 2).attr('stroke', '#F00').attr('stroke-opacity', 1).attr('stroke-width', '10px').transition().duration(1000).attr('r', 30).attr('fill', 'none').attr('stroke-width', '0.1px');
         }
     }
 
     function refresh() {
         if (this._.drag == null) {
-            $.pings.style("display", 'none');
+            $.pings.style('display', 'none');
         } else if (!this._.drag && $.pings && this._.options.showPings) {
             var proj = this._.proj;
             var center = this._.proj.invert(this._.center);
@@ -2938,7 +2939,7 @@ var pingsSvg = (function () {
                 return proj(d.geometry.coordinates)[0];
             }).attr('cy', function (d) {
                 return proj(d.geometry.coordinates)[1];
-            }).style("display", function (d) {
+            }).style('display', function (d) {
                 return d3.geoDistance(d.geometry.coordinates, center) > 1.57 ? 'none' : 'inline';
             });
         }
@@ -3066,7 +3067,7 @@ var commonPlugins = (function (urlWorld, urlCountryNames) {
         r(p.worldCanvas(urlWorld, urlCountryNames));
         this._.options.oceanColor = 2;
         this._.options.transparent = true;
-        this.canvasPlugin.selectAll('.canvas');
+        this.canvasPlugin.selectAll('.ej-canvas');
         this.graticuleCanvas.drawTo([1]);
         this.worldCanvas.drawTo([0]);
 

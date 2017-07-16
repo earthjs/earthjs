@@ -8,28 +8,28 @@ export default urlBars => {
         svgClipPath.call(this);
         _.svg.selectAll('.bar').remove();
         if (_.bars && __.options.showBars) {
-            const gBar = _.svg.append("g").attr("class","bar");
-            const mask = gBar.append("mask")
-                .attr("id", "edge");
-            mask.append("rect")
-                .attr("x", 0)
-                .attr("y", 0)
-                .attr("width", "100%")
-                .attr("height", "100%")
-                .attr("fill", "white");
-            mask.append("use")
-                .attr("xlink:href", "#edgeCircle")
-                .attr("fill", "black");
+            const gBar = _.svg.append('g').attr('class','bar');
+            const mask = gBar.append('mask')
+                .attr('id', 'edge');
+            mask.append('rect')
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('width', '100%')
+                .attr('height', '100%')
+                .attr('fill', 'white');
+            mask.append('use')
+                .attr('xlink:href', '#edgeCircle')
+                .attr('fill', 'black');
 
             _.max = d3.max(_.bars.features, d => parseInt(d.geometry.value))
 
             const scale = __.proj.scale();
             _.lengthScale = d3.scaleLinear().domain([0, _.max]).range([scale, scale+50]);
 
-            $.bar = gBar.selectAll("line").data(_.bars.features).enter().append("line")
-                .attr("stroke", "red")
-                .attr("stroke-width", "2")
-                .attr("data-index", (d, i) => i);
+            $.bar = gBar.selectAll('line').data(_.bars.features).enter().append('line')
+                .attr('stroke', 'red')
+                .attr('stroke-width', '2')
+                .attr('data-index', (d, i) => i);
             refresh.call(this);
         }
     }
@@ -61,11 +61,11 @@ export default urlBars => {
     function svgClipPath() {
         const __ = this._;
         this.$slc.defs.selectAll('clipPath').remove();
-        this.$slc.defs.append("clipPath").append("circle")
-            .attr("id", "edgeCircle")
-            .attr("cx", __.center[0])
-            .attr("cy", __.center[1])
-            .attr("r",  __.proj.scale());
+        this.$slc.defs.append('clipPath').append('circle')
+            .attr('id', 'edgeCircle')
+            .attr('cx', __.center[0])
+            .attr('cy', __.center[1])
+            .attr('r',  __.proj.scale());
     }
 
     return {

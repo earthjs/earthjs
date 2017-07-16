@@ -15,21 +15,21 @@ export default (urlPlaces) => {
 
     function refresh() {
         if ($.placePoints) {
-            $.placePoints.attr("d", this._.path);
+            $.placePoints.attr('d', this._.path);
             position_labels.call(this);
         }
     }
 
     function svgAddPlacePoints() {
-        $.placePoints = _.svg.append("g").attr("class","points").selectAll("path")
-            .data(_.places.features).enter().append("path")
-            .attr("class", "point");
+        $.placePoints = _.svg.append('g').attr('class','points').selectAll('path')
+            .data(_.places.features).enter().append('path')
+            .attr('class', 'point');
     }
 
     function svgAddPlaceLabels() {
-        $.placeLabels = _.svg.append("g").attr("class","labels").selectAll("text")
-            .data(_.places.features).enter().append("text")
-            .attr("class", "label")
+        $.placeLabels = _.svg.append('g').attr('class','labels').selectAll('text')
+            .data(_.places.features).enter().append('text')
+            .attr('class', 'label')
             .text(function(d) { return d.properties.name });
     }
 
@@ -38,20 +38,20 @@ export default (urlPlaces) => {
         const centerPos = this._.proj.invert(this._.center);
 
         $.placeLabels
-            .attr("text-anchor",function(d) {
+            .attr('text-anchor',function(d) {
                 const x = _this._.proj(d.geometry.coordinates)[0];
-                return x < _this._.center[0]-20 ? "end" :
-                       x < _this._.center[0]+20 ? "middle" :
-                       "start"
+                return x < _this._.center[0]-20 ? 'end' :
+                       x < _this._.center[0]+20 ? 'middle' :
+                       'start'
             })
-            .attr("transform", function(d) {
+            .attr('transform', function(d) {
                 const loc = _this._.proj(d.geometry.coordinates),
                     x = loc[0],
                     y = loc[1];
                 const offset = x < _this._.center[0] ? -5 : 5;
-                return "translate(" + (x+offset) + "," + (y-2) + ")"
+                return 'translate(' + (x+offset) + ',' + (y-2) + ')'
             })
-            .style("display", function(d) {
+            .style('display', function(d) {
                 return d3.geoDistance(d.geometry.coordinates, centerPos) > 1.57 ? 'none' : 'inline';
             });
     }

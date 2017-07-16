@@ -15,15 +15,15 @@
 </head>
 <body>
     <div class="e-container">
-        <svg    class="earth s1"/>
-        <canvas class="earth c1 canvas"></canvas>
+        <svg    class="ej-svg s1"/>
+        <canvas class="ej-svg c1 ej-canvas"></canvas>
     </div>
     <div class="e-container">
-        <svg    class="earth s1"/>
-        <canvas class="earth c1 canvas"></canvas>
+        <svg    class="ej-svg s1"/>
+        <canvas class="ej-svg c1 ej-canvas"></canvas>
     </div>
     <script>
-        const g = earthjs({selectAll:'.earth',transparent:true});
+        const g = earthjs({selectAll:'.ej-svg',transparent:true});
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.hoverCanvas());
         g.register(earthjs.plugins.canvasPlugin());
@@ -32,7 +32,7 @@
         g.register(earthjs.plugins.dotSelectCanvas());
         g.register(earthjs.plugins.dotTooltipCanvas());
         g.register(earthjs.plugins.pinCanvas('../d/bars.json', '../images/pin.png'));
-        g.canvasPlugin.selectAll('.canvas');
+        g.canvasPlugin.selectAll('.ej-canvas');
         g.pinCanvas.ready = function(err, json) {
             const features = json.features;
             const maxMag = features.map(d => d.properties.mag).sort(d3.descending)[0];

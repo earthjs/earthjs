@@ -7,24 +7,24 @@ export default () => {
         const __ = this._;
         if (__.options.showCanvas) {
             if (!_.canvas) {
-                const fObject = __.svg.append("g").attr("class","canvas").append("foreignObject")
-                .attr("x", 0)
-                .attr("y", 0)
-                .attr("width", __.options.width)
-                .attr("height", __.options.height);
-                const fBody = fObject.append("xhtml:body")
-                .style("margin", "0px")
-                .style("padding", "0px")
-                .style("background-color", "none")
-                .style("width", __.options.width + "px")
-                .style("height", __.options.height + "px");
-                _.canvas = fBody.append("canvas");
+                const fObject = __.svg.append('g').attr('class','canvas').append('foreignObject')
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('width', __.options.width)
+                .attr('height', __.options.height);
+                const fBody = fObject.append('xhtml:body')
+                .style('margin', '0px')
+                .style('padding', '0px')
+                .style('background-color', 'none')
+                .style('width', __.options.width + 'px')
+                .style('height', __.options.height + 'px');
+                _.canvas = fBody.append('canvas');
             }
             _.canvas
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("width", __.options.width)
-            .attr("height", __.options.height);
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', __.options.width)
+            .attr('height', __.options.height);
         }
         if (_.canvas) {
             refresh.call(this);
@@ -34,7 +34,7 @@ export default () => {
     function refresh() {
         const {width, height} = this._.options;
         _.canvas.each(function() {
-            this.getContext("2d").clearRect(0, 0, width, height);
+            this.getContext('2d').clearRect(0, 0, width, height);
         });
     }
 
@@ -74,7 +74,7 @@ export default () => {
                             rChange = false;
                             proj.rotate(r);
                         }
-                        const context = this.getContext("2d");
+                        const context = this.getContext('2d');
                         fn.call(_this, context, _.path.context(context));
                     }
                 });

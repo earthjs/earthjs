@@ -5,9 +5,9 @@ const earthjs = (options={}) => {
     /*eslint no-console: 0 */
     clearInterval(earthjs.ticker);
     options = Object.assign({
-        transparent: false,
-        selectAll: '#earth',
+        selectAll: '#earth-js',
         rotate: [130,-33,-11],
+        transparent: false,
     }, options);
     const _ = {
         onCreate: {},
@@ -43,7 +43,7 @@ const earthjs = (options={}) => {
     if (!width || !height) {
         width = options.width || 700;
         height = options.height || 500;
-        svg.attr("width", width).attr("height", height);
+        svg.attr('width', width).attr('height', height);
     }
     const center = [width/2, height/2];
     Object.defineProperty(options, 'width', {
@@ -159,7 +159,7 @@ const earthjs = (options={}) => {
         return globe;
     }
 
-    globe.$slc.defs = __.svg.append("defs");
+    globe.$slc.defs = __.svg.append('defs');
     __.ticker = function(intervalTicker) {
         const interval = __.interval;
         intervalTicker = intervalTicker || 50;

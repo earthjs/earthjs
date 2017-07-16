@@ -6,8 +6,8 @@
     <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
-    <svg id="earth"></svg>
-    <canvas class="canvas"></canvas>
+    <svg id="earth-js"></svg>
+    <canvas class="ej-canvas"></canvas>
     <script>
         const g = earthjs({transparent:true});
         g.register(earthjs.plugins.autorotatePlugin(10));
@@ -15,7 +15,7 @@
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
         g.register(earthjs.plugins.pinCanvas('../d/bars.json', '../images/pin.png'));
-        g.canvasPlugin.selectAll('.canvas');
+        g.canvasPlugin.selectAll('.ej-canvas');
         g.ready(function(){
             g.create();
         })

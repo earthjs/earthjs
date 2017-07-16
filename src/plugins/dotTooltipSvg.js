@@ -2,12 +2,12 @@
 export default () => {
     /*eslint no-console: 0 */
     const _ = { mouseXY: [0,0], visible: false }
-    const dotTooltip = d3.select("body").append("div").attr("class", "dotTooltip");
+    const dotTooltip = d3.select('body').append('div').attr('class', 'ej-dot-tooltip');
 
     function create() {
         const _this = this;
         this.dotsSvg.$dots()
-        .on("mouseover", function() {
+        .on('mouseover', function() {
             if (_this._.options.showBarTooltip) {
                 _.visible = true;
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
@@ -17,17 +17,17 @@ export default () => {
                     d = _this.dotTooltipSvg.onShow.call(this, d, dotTooltip);
                 }
                 _this.dotTooltipSvg.show(d.properties)
-                .style("display", "block")
-                .style("opacity", 1);
+                .style('display', 'block')
+                .style('opacity', 1);
                 refresh();
             }
         })
-        .on("mouseout", function() {
+        .on('mouseout', function() {
             _.visible = false;
-            dotTooltip.style("opacity", 0)
-            .style("display", "none");
+            dotTooltip.style('opacity', 0)
+            .style('display', 'none');
         })
-        .on("mousemove", function() {
+        .on('mousemove', function() {
             if (_this._.options.showBarTooltip) {
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
                 refresh();
@@ -37,8 +37,8 @@ export default () => {
 
     function refresh() {
         dotTooltip
-        .style("left", _.mouseXY[0] + 7 + "px")
-        .style("top", _.mouseXY[1] - 15 + "px");
+        .style('left', _.mouseXY[0] + 7 + 'px')
+        .style('top', _.mouseXY[1] - 15 + 'px');
     }
 
     return {
@@ -51,14 +51,14 @@ export default () => {
         },
         onResize() {
             create.call(this);
-            dotTooltip.style("opacity", 0)
-            .style("display", "none");
+            dotTooltip.style('opacity', 0)
+            .style('display', 'none');
         },
         onRefresh() {
             refresh.call(this);
         },
         show(props) {
-            const title = Object.keys(props).map(k => k+': '+props[k]).join("<br/>");
+            const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
             return dotTooltip.html(title)
         },
         visible() {

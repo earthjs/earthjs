@@ -5,7 +5,7 @@ export default () => {
         const wh = [__.options.width, __.options.height];
 
         __.svg.call(d3.zoom()
-            .on("zoom start end", zoom)
+            .on('zoom start end', zoom)
             .scaleExtent([0.1, 5])
             .translateExtent([[0,0], wh]));
 

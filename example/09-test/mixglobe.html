@@ -7,9 +7,9 @@
 </head>
 <body>
     <span class="globe-container">
-        <svg id="earth"></svg>
-        <canvas id="earth1" class="canvas"></canvas>
-        <canvas id="earth2" class="canvas"></canvas>
+        <svg id="earth-js"></svg>
+        <canvas class="ej-canvas c1"></canvas>
+        <canvas class="ej-canvas c2"></canvas>
     </span>
     <script>
         const g1 = earthjs({rotate: 0});
@@ -30,8 +30,8 @@
 
         g1.worldCanvas.style({land: 'rgba(170 ,0, 217, 0.4)'});
         g2.worldCanvas.style({land: 'rgba(7, 117, 207, 0.4)'});
-        g1.canvasPlugin.selectAll('#earth1');
-        g2.canvasPlugin.selectAll('#earth2');
+        g1.canvasPlugin.selectAll('.c1');
+        g2.canvasPlugin.selectAll('.c2');
         g1.mousePlugin.sync([g2]);
         g1.ready(function(){
             const d = g1.worldCanvas.data();

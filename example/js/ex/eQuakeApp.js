@@ -6,8 +6,8 @@ const eQuakeApp = () => {
     return {
         name: 'eQuakeApp',
         urls: [
-            './d/world-110m.json',
-            './d/world-110m-country-names.tsv',
+            '../d/world-110m.json',
+            '../d/world-110m-country-names.tsv',
             'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson',
         ],
         onReady(err, world, countryNames, equake) {

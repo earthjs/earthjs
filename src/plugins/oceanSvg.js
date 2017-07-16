@@ -12,31 +12,31 @@ export default () => {
         _.svg.selectAll('#ocean,.ocean').remove();
         if (this._.options.showOcean) {
             let c = _.oceanColor;
-            const ocean_fill = this.$slc.defs.append("radialGradient")
-            .attr("id", "ocean")
-            .attr("cx", "75%")
-            .attr("cy", "25%");
+            const ocean_fill = this.$slc.defs.append('radialGradient')
+            .attr('id', 'ocean')
+            .attr('cx', '75%')
+            .attr('cy', '25%');
             if (typeof(c)==='number') {
                 c = color[c];
-                ocean_fill.append("stop")
-                .attr("offset", "5%")
-                .attr("stop-color", c[0]);
+                ocean_fill.append('stop')
+                .attr('offset', '5%')
+                .attr('stop-color', c[0]);
             } else if (typeof(c)==='string') {
                 c = [c, c];
             }
-            ocean_fill.append("stop")
-            .attr("offset", "100%")
-            .attr("stop-color", c[1]);
-            _.ocean = _.svg.append("g").attr("class","ocean").append("circle")
-            .attr("cx",this._.center[0]).attr("cy", this._.center[1])
-            .attr("class", "noclicks");
+            ocean_fill.append('stop')
+            .attr('offset', '100%')
+            .attr('stop-color', c[1]);
+            _.ocean = _.svg.append('g').attr('class','ocean').append('circle')
+            .attr('cx',this._.center[0]).attr('cy', this._.center[1])
+            .attr('class', 'noclicks');
             resize.call(this);
         }
     }
 
     function resize() {
         if (_.ocean && this._.options.showOcean) {
-            _.ocean.attr("r", this._.proj.scale()+_.scale);
+            _.ocean.attr('r', this._.proj.scale()+_.scale);
         }
     }
 

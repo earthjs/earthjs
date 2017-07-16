@@ -6,7 +6,8 @@
     <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
-    <svg id="earth"></svg>
+    <svg id="earth-js"></svg>
+    <svg class="ej-svg" width="700" height="500"></svg>
     <script>
         const g = earthjs({transparent:true});
         g.register(earthjs.plugins.configPlugin());
@@ -23,6 +24,8 @@
         g.register(earthjs.plugins.barTooltipSvg());
         g.register(earthjs.plugins.dotsCanvas('../d/bars.json'));
         g.register(earthjs.plugins.countryTooltipCanvas());
+        g.barSvg.selectAll('.ej-svg');
+        g.mousePlugin.selectAll('.ej-svg');
         g.dotsCanvas.ready = function(err, json) {
             const features = json.features;
             const maxMag = features.map(d => d.properties.mag).sort(d3.descending)[0];

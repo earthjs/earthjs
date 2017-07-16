@@ -16,13 +16,13 @@ export default () => {
         const x = t => __.rotate(r(t)); // __.proj.rotate()
         d3.transition()
         .duration(2500)
-        .tween("rotate",() => x)
+        .tween('rotate',() => x)
     }
 
     function create() {
         const _this = this;
         this.worldSvg.$countries()
-        .on("click", function() {
+        .on('click', function() {
             if (_this._.options.enableCenter) {
                 const id = this.id.replace('x', '');
                 const focusedCountry = country(_this.worldSvg.countries(), id);

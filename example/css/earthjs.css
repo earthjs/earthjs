@@ -1,15 +1,15 @@
 body {
     margin: 0;
 }
-#earth, #three-js, .earth, .canvas, .top {
+#earth-js, #three-js, .ej-svg, .ej-canvas, .top {
     position: absolute;
     left: 0;
     top: 0;
 }
-#earth {
+#earth-js {
     z-index: 2;
 }
-.earth, .canvas, .top {
+.ej-svg, .ej-canvas, .top {
     /*position: relative;*/
     z-index: 3;
 }
@@ -56,16 +56,16 @@ body {
     fill: black;
     opacity: .5;
 }
-#three-js, .canvas, .noclicks {
+#three-js, .ej-canvas, .noclicks {
     pointer-events:none;
 }
 .point{
     opacity:.6;
     fill: #A80;
 }
-.countryTooltip,
-.barTooltip,
-.dotTooltip {
+.ej-country-tooltip,
+.ej-bar-tooltip,
+.ej-dot-tooltip {
     background: #fff;
     border: solid #ccc 1px;
     color: #666;

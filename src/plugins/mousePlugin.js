@@ -46,7 +46,7 @@ export default () => {
             .on('drag', dragged));
 
         _.svg.call(d3.zoom()
-            .on("zoom", zoom)
+            .on('zoom', zoom)
             .scaleExtent([0.1, 5])
             .translateExtent([[0,0], wh]));
 
@@ -144,7 +144,7 @@ export default () => {
             if (q) {
                 _.q = q;
                 _.svg.call(d3.zoom()
-                    .on("zoom start end", null));
+                    .on('zoom start end', null));
                 _.svg.call(d3.drag()
                     .on('start',null)
                     .on('end',  null)

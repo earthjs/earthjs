@@ -6,7 +6,7 @@ export default () => {
         const _this = this;
         return _this._.svg.transition()
             .duration(10500)
-            .tween("projection", function() {
+            .tween('projection', function() {
                 return function(_x) {
                     animation.alpha(_x);
                     _this._.refresh();
@@ -50,7 +50,7 @@ export default () => {
         const __ = this._;
         return d3.transition()
         .duration(1500)
-        .tween("rotate", function() {
+        .tween('rotate', function() {
             __.rotate(__.proj.rotate());
             var r = d3.interpolate(__.proj.rotate(), [0, 0, 0]);
             return function(t) {

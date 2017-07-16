@@ -29,37 +29,37 @@ export default (urlWorld, urlCountryNames) => {
         if (_.world && __.options.showLand) {
             if (__.options.transparent || __.options.transparentLand) {
                 __.proj.clipAngle(180);
-                $.worldBg.attr("d", __.path);
+                $.worldBg.attr('d', __.path);
                 __.proj.clipAngle(90);
             }
             if (__.options.showCountries) {
-                $.countries.attr("d", __.path);
+                $.countries.attr('d', __.path);
             } else {
-                $.world.attr("d", __.path);
+                $.world.attr('d', __.path);
             }
             if (__.options.showLakes) {
-                $.lakes.attr("d", __.path);
+                $.lakes.attr('d', __.path);
             }
         }
     }
 
     function svgAddWorldBg() {
-        $.worldBg = _.svg.append("g").attr("class","landbg").append("path").datum(_.land)
+        $.worldBg = _.svg.append('g').attr('class','landbg').append('path').datum(_.land)
         .attr('fill', 'rgba(119,119,119,0.2)');
     }
 
     function svgAddWorld() {
-        $.world = _.svg.append("g").attr("class","land").append("path").datum(_.land);
+        $.world = _.svg.append('g').attr('class','land').append('path').datum(_.land);
     }
 
     function svgAddCountries() {
-        $.countries = _.svg.append("g").attr("class","countries").selectAll("path")
-            .data(_.countries.features).enter().append("path")
-            .attr("id",function(d) {return 'x'+d.id});
+        $.countries = _.svg.append('g').attr('class','countries').selectAll('path')
+            .data(_.countries.features).enter().append('path')
+            .attr('id',function(d) {return 'x'+d.id});
     }
 
     function svgAddLakes() {
-        $.lakes = _.svg.append("g").attr("class","lakes").append("path").datum(_.lakes);
+        $.lakes = _.svg.append('g').attr('class','lakes').append('path').datum(_.lakes);
     }
 
     let urls = null;

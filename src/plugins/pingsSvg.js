@@ -6,7 +6,7 @@ export default () => {
     function create() {
         _.svg.selectAll('.pings').remove();
         if (_.dataPings && this._.options.showPings) {
-            const g = _.svg.append("g").attr("class","pings");
+            const g = _.svg.append('g').attr('class','pings');
             $.ping2 = g.selectAll('.ping-2')
                 .data(_.dataPings.features).enter().append('circle')
                 .attr('class', 'ping-2')
@@ -36,14 +36,14 @@ export default () => {
 
     function refresh() {
         if (this._.drag==null) {
-            $.pings.style("display", 'none');
+            $.pings.style('display', 'none');
         } else if (!this._.drag && $.pings && this._.options.showPings) {
             const proj = this._.proj;
             const center = this._.proj.invert(this._.center);
             $.pings
             .attr('cx', d => proj(d.geometry.coordinates)[0])
             .attr('cy', d => proj(d.geometry.coordinates)[1])
-            .style("display", function(d) {
+            .style('display', function(d) {
                 return d3.geoDistance(d.geometry.coordinates, center) > 1.57 ? 'none' : 'inline';
             });
         }

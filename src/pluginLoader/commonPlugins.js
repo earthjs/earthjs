@@ -29,7 +29,7 @@ export default (urlWorld, urlCountryNames) => {
         r(p.worldCanvas(urlWorld,urlCountryNames));
         this._.options.oceanColor = 2;
         this._.options.transparent = true;
-        this.canvasPlugin.selectAll('.canvas');
+        this.canvasPlugin.selectAll('.ej-canvas');
         this.graticuleCanvas.drawTo([1]);
         this.worldCanvas.drawTo([0]);
 

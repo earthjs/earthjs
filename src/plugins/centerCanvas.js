@@ -16,7 +16,7 @@ export default () => {
         const x = t => __.rotate(r(t)); // __.proj.rotate()
         d3.transition()
         .duration(2500)
-        .tween("rotate",() => x)
+        .tween('rotate',() => x)
     }
 
     function create() {
