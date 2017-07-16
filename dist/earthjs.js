@@ -594,9 +594,11 @@ var threejsPlugin = (function () {
             this._.camera = _.camera;
 
             // Create renderer object.
-            _.renderer = new THREE.WebGLRenderer({ antialias: true });
+            // https://stackoverflow.com/questions/29422118/threejs-canvas-background-black
+            // https://stackoverflow.com/questions/16177056/changing-three-js-background-to-transparent-or-other-color
+            _.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             _.renderer.domElement.id = 'three-js';
-            _.renderer.setClearColor('white', 1);
+            _.renderer.setClearColor(0x000000, 0);
             _.renderer.setSize(width, height);
             document.body.appendChild(_.renderer.domElement);
 
@@ -2147,10 +2149,16 @@ var worldThreejs = (function () {
             var loader = new THREE.TextureLoader();
             loader.load(imgUrl, function (texture) {
                 var geometry = new THREE.SphereGeometry(200, 30, 30);
-                var material = new THREE.MeshBasicMaterial({ map: texture, overdraw: 0.5 });
+                var material = new THREE.MeshBasicMaterial({
+                    map: texture,
+                    overdraw: 0.5,
+                    opacity: 0
+                });
+                material.opacity = 1;
                 _.sphereObject = new THREE.Mesh(geometry, material);
                 group.add(_.sphereObject);
                 refresh.call(_this);
+                // setTimeout(()=>d3.select('#three-js').attr('style', 'opacity: 1'),200);
             });
             _this.threejsPlugin.addObject(group);
         }

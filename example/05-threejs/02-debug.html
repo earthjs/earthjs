@@ -6,7 +6,6 @@
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
     <script type='text/javascript' src='../js/three.min.js'></script>
-    <style>#three-js{opacity: 0;}</style>
 </head>
 <body>
     <svg id="earth"></svg>
@@ -21,7 +20,6 @@
         g.register(earthjs.plugins.graticuleCanvas());
         g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
         g.ready(function(){
-            d3.select('#three-js').attr('style', 'opacity: 0.6');
             g.create();
         })
     </script>

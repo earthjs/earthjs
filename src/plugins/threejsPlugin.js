@@ -22,9 +22,11 @@ export default () => {
             this._.camera = _.camera;
 
             // Create renderer object.
-            _.renderer = new THREE.WebGLRenderer({antialias: true});
+            // https://stackoverflow.com/questions/29422118/threejs-canvas-background-black
+            // https://stackoverflow.com/questions/16177056/changing-three-js-background-to-transparent-or-other-color
+            _.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
             _.renderer.domElement.id = 'three-js';
-            _.renderer.setClearColor('white', 1);
+            _.renderer.setClearColor(0x000000, 0);
             _.renderer.setSize(width, height);
             document.body.appendChild(_.renderer.domElement)
 

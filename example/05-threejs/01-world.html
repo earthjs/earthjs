@@ -6,7 +6,6 @@
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
     <script type='text/javascript' src='../js/three.min.js'></script>
-    <style>#three-js{opacity: 0;}</style>
 </head>
 <body>
     <svg id="earth"></svg>
@@ -16,7 +15,7 @@
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.threejsPlugin());
-        // g.register(earthjs.plugins.graticuleCanvas());
+        g.register(earthjs.plugins.graticuleCanvas());
         g.register(earthjs.plugins.worldThreejs('../d/world.jpg'));
         g.register(earthjs.plugins.dotsCanvas('../d/bars.json'));
         g.register(earthjs.plugins.barSvg());
@@ -28,7 +27,6 @@
         };
 
         g.ready(function(){
-            d3.select('#three-js').attr('style', 'opacity: 0.6');
             g.create();
         })
     </script>

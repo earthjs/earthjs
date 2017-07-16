@@ -10,10 +10,16 @@ export default (imgUrl='../d/world.jpg') => {
             const loader = new THREE.TextureLoader();
             loader.load(imgUrl, function(texture) {
                 const geometry = new THREE.SphereGeometry( 200, 30, 30 );
-                const material = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
+                const material = new THREE.MeshBasicMaterial( {
+                    map: texture,
+                    overdraw: 0.5,
+                    opacity: 0
+                } );
+                material.opacity = 1;
                 _.sphereObject = new THREE.Mesh( geometry, material );
                 group.add(_.sphereObject);
                 refresh.call(_this);
+                // setTimeout(()=>d3.select('#three-js').attr('style', 'opacity: 1'),200);
             });
             _this.threejsPlugin.addObject(group);
         }
