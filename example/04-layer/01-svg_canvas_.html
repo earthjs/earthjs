@@ -13,15 +13,15 @@
 </head>
 <body>
     <div class="input-area">
-        <input id="pan" type="range" min="0" max="50" step="1" value="0"/>
+        <input id="pan" type="range" min="0" max="400" step="1" value="0"/>
     </div>
     <svg id="earth"></svg>
     <canvas class="canvas"></canvas>
     <script>
         const g = earthjs();
+        g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
-        g.register(earthjs.plugins.configPlugin());
 
         g.register(earthjs.plugins.oceanSvg());
         g.register(earthjs.plugins.graticuleSvg());
@@ -32,10 +32,10 @@
 
         g.ready(function(){
             g.create();
-        })
+        });
+
         const canvas = d3.selectAll('canvas').nodes();
         d3.select('#pan').on('input', function() {
-            canvas[0].style.top = this.value;
             canvas[0].style.left = this.value;
         })
     </script>
