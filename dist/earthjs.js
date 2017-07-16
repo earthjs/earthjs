@@ -2145,7 +2145,6 @@ var worldThreejs = (function () {
                 var geometry = new THREE.SphereGeometry(200, 20, 20);
                 var material = new THREE.MeshBasicMaterial({ map: texture, overdraw: 0.5 });
                 _.sphereObject = new THREE.Mesh(geometry, material);
-                window.se = _.sphereObject;
                 group.add(_.sphereObject);
                 refresh.call(_this);
             });
@@ -2963,9 +2962,10 @@ var pingsSvg = (function () {
 });
 
 var debugThreejs = (function () {
-    var _ = { sphereObject: null };
+    var _ = { sphereObject: null, scale: null };
+    _.scale = d3.scaleLinear().domain([0, 200]).range([0, 1]);
 
-    function addDebugSphere() {
+    function init() {
         if (!_.sphereObject) {
             var SCALE = this._.proj.scale();
             var sphere = new THREE.SphereGeometry(SCALE, 100, 100);
@@ -2989,12 +2989,20 @@ var debugThreejs = (function () {
             _.sphereObject = new THREE.Object3D();
             _.sphereObject.add(sphereMesh, dot1Mesh, dot2Mesh, dot3Mesh);
 
-            rotate.call(this);
+            refresh.call(this);
             this.threejsPlugin.addObject(_.sphereObject);
         }
     }
 
-    function rotate() {
+    function resize() {
+        var sc = _.scale(this._.proj.scale());
+        var se = _.sphereObject;
+        se.scale.x = sc;
+        se.scale.y = sc;
+        se.scale.z = sc;
+    }
+
+    function refresh() {
         var rt = this._.proj.rotate();
         rt[0] -= 90;
         var q1 = this._.versor(rt);
@@ -3006,11 +3014,14 @@ var debugThreejs = (function () {
         name: 'debugThreejs',
         onInit: function onInit() {
             this._.options.showDebugSpahre = true;
-            addDebugSphere.call(this);
+            init.call(this);
+        },
+        onResize: function onResize() {
+            resize.call(this);
         },
         onRefresh: function onRefresh() {
             if (_.sphereObject) {
-                rotate.call(this);
+                refresh.call(this);
             }
         }
     };

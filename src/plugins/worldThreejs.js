@@ -12,7 +12,6 @@ export default (imgUrl='../d/world.jpg') => {
                 const geometry = new THREE.SphereGeometry( 200, 20, 20 );
                 const material = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
                 _.sphereObject = new THREE.Mesh( geometry, material );
-                window.se = _.sphereObject;
                 group.add(_.sphereObject);
                 refresh.call(_this);
             });

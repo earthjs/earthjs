@@ -1,7 +1,8 @@
 export default () => {
-    const _ = {sphereObject: null};
+    const _ = {sphereObject: null, scale: null};
+    _.scale = d3.scaleLinear().domain([0,200]).range([0,1]);
 
-    function addDebugSphere() {
+    function init() {
         if (!_.sphereObject) {
             const SCALE = this._.proj.scale();
             const sphere         = new THREE.SphereGeometry(SCALE, 100, 100);
@@ -25,12 +26,20 @@ export default () => {
             _.sphereObject = new THREE.Object3D();
             _.sphereObject.add(sphereMesh, dot1Mesh, dot2Mesh, dot3Mesh);
 
-            rotate.call(this);
+            refresh.call(this);
             this.threejsPlugin.addObject(_.sphereObject);
         }
     }
 
-    function rotate() {
+    function resize() {
+        const sc = _.scale(this._.proj.scale());
+        const se = _.sphereObject;
+        se.scale.x = sc;
+        se.scale.y = sc;
+        se.scale.z = sc;
+    }
+
+    function refresh() {
         const rt = this._.proj.rotate();
         rt[0] -= 90;
         const q1 = this._.versor(rt);
@@ -42,11 +51,14 @@ export default () => {
         name: 'debugThreejs',
         onInit() {
             this._.options.showDebugSpahre = true;
-            addDebugSphere.call(this);
+            init.call(this);
+        },
+        onResize() {
+            resize.call(this);
         },
         onRefresh() {
             if (_.sphereObject) {
-                rotate.call(this);
+                refresh.call(this);
             }
         }
     }
