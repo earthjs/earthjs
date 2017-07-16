@@ -414,10 +414,11 @@ var mousePlugin = function () {
         _.svg.call(d3.zoom().on("zoom", zoom).scaleExtent([0.1, 5]).translateExtent([[0, 0], wh]));
 
         function zoom() {
-            var t = d3.event.transform;
-            __.proj.scale(s0 * t.k);
-            __.resize();
-            __.refresh();
+            var r1 = s0 * d3.event.transform.k;
+            __.scale(r1);
+            _.sync.forEach(function (g) {
+                return g._.scale(r1);
+            });
         }
 
         function rotate(r) {
@@ -472,7 +473,7 @@ var mousePlugin = function () {
                     _.onDrag[k].call(_._this, _.mouse);
                 });
                 _.sync.forEach(function (g) {
-                    rotate.call(g, _.r);
+                    return rotate.call(g, _.r);
                 });
             }
             // _.mouse = null;
@@ -2613,6 +2614,7 @@ var dotsSvg = (function (urlDots) {
 var pinCanvas = (function (urlJson, urlImage) {
     var wh = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [15, 25];
 
+    /*eslint no-console: 0 */
     var _ = { dataPin: null, image: null, w: null, h: null };
     d3.select('body').append('img').attr('src', urlImage).attr('id', 'pin').attr('width', '0').attr('height', '0');
     _.image = document.getElementById('pin');
@@ -2660,7 +2662,11 @@ var pinCanvas = (function (urlJson, urlImage) {
             init.call(this, wh);
         },
         onCreate: function onCreate() {
-            create.call(this);
+            var _this = this;
+
+            setTimeout(function () {
+                return create.call(_this);
+            }, 1);
         },
         onResize: function onResize() {
             resize.call(this);

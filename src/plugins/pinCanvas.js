@@ -1,11 +1,12 @@
 export default (urlJson, urlImage, wh=[15,25]) => {
+    /*eslint no-console: 0 */
     const _ = {dataPin: null, image: null, w: null, h: null};
     d3.select('body').append('img')
         .attr('src',urlImage)
         .attr('id',    'pin')
         .attr('width',   '0')
         .attr('height',  '0');
-    _.image = document.getElementById('pin');
+        _.image = document.getElementById('pin');
 
     function init(wh) {
         const sc = this._.proj.scale();
@@ -56,7 +57,7 @@ export default (urlJson, urlImage, wh=[15,25]) => {
             init.call(this, wh);
         },
         onCreate() {
-            create.call(this);
+            setTimeout(()=>create.call(this),1);
         },
         onResize() {
             resize.call(this);

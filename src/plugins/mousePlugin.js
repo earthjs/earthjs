@@ -44,10 +44,9 @@ export default function() {
             .translateExtent([[0,0], wh]));
 
         function zoom() {
-            var t = d3.event.transform;
-            __.proj.scale(s0 * t.k);
-            __.resize();
-            __.refresh();
+            const r1 = s0 * d3.event.transform.k;
+            __.scale(r1);
+            _.sync.forEach(g=>g._.scale(r1));
         }
 
         function rotate(r) {
@@ -102,9 +101,7 @@ export default function() {
                 _.onDragKeys.forEach(k => {
                     _.onDrag[k].call(_._this, _.mouse);
                 });
-                _.sync.forEach(function(g) {
-                    rotate.call(g, _.r);
-                })
+                _.sync.forEach(g=>rotate.call(g, _.r));
             }
             // _.mouse = null;
             // _.r = null;
