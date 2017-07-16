@@ -1,4 +1,4 @@
-export default function() {
+export default () => {
     return {
         name: 'configPlugin',
         set(newOpt) {

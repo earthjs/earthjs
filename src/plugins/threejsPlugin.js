@@ -1,6 +1,6 @@
 // Philippe Rivière’s https://bl.ocks.org/Fil/9ed0567b68501ee3c3fef6fbe3c81564
 // https://gist.github.com/Fil/ad107bae48e0b88014a0e3575fe1ba64
-export default function() {
+export default () => {
     const _ = {renderer: null, scene: null, camera: null, scale: null};
 
     function renderThree() {

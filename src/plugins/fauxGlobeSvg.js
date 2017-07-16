@@ -1,5 +1,5 @@
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
-export default function() {
+export default () => {
     /*eslint no-console: 0 */
     const _ = {svg:null, q: null};
     const $ = {};

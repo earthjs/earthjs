@@ -1,5 +1,5 @@
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-export default function() {
+export default () => {
     /*eslint no-console: 0 */
     const countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");
 
@@ -18,7 +18,7 @@ export default function() {
     return {
         name: 'countryTooltipCanvas',
         onInit() {
-            const toolTipsHandler = (mouse, country) => { // fn with  current context 
+            const toolTipsHandler = (mouse, country) => { // fn with  current context
                 if (!this._.drag && country && this._.options.showCountryTooltip) {
                     const countryName = this.worldCanvas.countryName(country);
                     if (countryName && !(this.barTooltipSvg && this.barTooltipSvg.visible())) {

@@ -1,4 +1,4 @@
-export default function(urlWorld, urlCountryNames) {
+export default (urlWorld, urlCountryNames) => {
     /*eslint no-console: 0 */
     const _ = {svg:null, q: null, world: null, countryNames: null};
     const $ = {};

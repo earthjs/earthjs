@@ -1,4 +1,4 @@
-export default function() {
+export default () => {
     /*eslint no-console: 0 */
     const _ = {svg:null, dataPings: null};
     const $ = {};

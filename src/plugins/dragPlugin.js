@@ -1,4 +1,4 @@
-export default function() {
+export default () => {
     return {
         name: 'dragPlugin',
         onInit() {

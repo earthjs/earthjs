@@ -1,4 +1,4 @@
-export default function() {
+export default () => {
     const datumGraticule = d3.geoGraticule()();
     const _ = {style: {}, drawTo: null};
 

@@ -1,5 +1,5 @@
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-export default function() {
+export default () => {
     /*eslint no-console: 0 */
     const _ = {show: false};
     const countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip");

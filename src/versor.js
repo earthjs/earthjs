@@ -1,5 +1,5 @@
 // Version 0.0.0. Copyright 2017 Mike Bostock.
-export default function() {
+export default () => {
     var acos = Math.acos,
         asin = Math.asin,
         atan2 = Math.atan2,

@@ -1,4 +1,4 @@
-export default function() {
+export default () => {
     const _ = {svg:null, q: null, sphereColor: 0};
 
     function create() {

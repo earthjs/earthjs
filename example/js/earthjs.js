@@ -2132,7 +2132,9 @@ var worldSvg = (function (urlWorld, urlCountryNames) {
 var worldThreejs = (function () {
     var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.jpg';
 
-    var _ = { sphereObject: null };
+    /*eslint no-console: 0 */
+    var _ = { sphereObject: null, scale: null };
+    _.scale = d3.scaleLinear().domain([0, 200]).range([0, 1]);
 
     function init() {
         if (!_.sphereObject) {
@@ -2143,11 +2145,20 @@ var worldThreejs = (function () {
                 var geometry = new THREE.SphereGeometry(200, 20, 20);
                 var material = new THREE.MeshBasicMaterial({ map: texture, overdraw: 0.5 });
                 _.sphereObject = new THREE.Mesh(geometry, material);
+                window.se = _.sphereObject;
                 group.add(_.sphereObject);
                 refresh.call(_this);
             });
             _this.threejsPlugin.addObject(group);
         }
+    }
+
+    function resize() {
+        var sc = _.scale(this._.proj.scale());
+        var se = _.sphereObject;
+        se.scale.x = sc;
+        se.scale.y = sc;
+        se.scale.z = sc;
     }
 
     function refresh() {
@@ -2162,6 +2173,9 @@ var worldThreejs = (function () {
         name: 'worldThreejs',
         onInit: function onInit() {
             init.call(this);
+        },
+        onResize: function onResize() {
+            resize.call(this);
         },
         onRefresh: function onRefresh() {
             if (_.sphereObject) {

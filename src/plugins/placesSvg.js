@@ -1,4 +1,4 @@
-export default function(urlPlaces) {
+export default (urlPlaces) => {
     const _ = {svg:null, q: null, places: null};
     const $ = {};
 

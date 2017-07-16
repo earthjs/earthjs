@@ -1,4 +1,4 @@
-export default function() {
+export default () => {
     const color = {
         0:['rgba(221, 221, 255, 0.6)', 'rgba(153, 170, 187,0.8)'],
         1:['rgba(159, 240, 232, 0.6)', 'rgba(  5, 242, 219,0.8)'],
