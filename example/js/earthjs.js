@@ -411,6 +411,7 @@ var mousePlugin = (function () {
 
     function init() {
         var __ = this._;
+        var _this = this;
         var versor = __.versor;
         var s0 = __.proj.scale();
         var wh = [__.options.width, __.options.height];
@@ -421,10 +422,13 @@ var mousePlugin = (function () {
 
         function zoom() {
             var r1 = s0 * d3.event.transform.k;
-            __.scale(r1);
-            _.sync.forEach(function (g) {
-                return g._.scale(r1);
-            });
+            if (!_this.worldThreejs || r1 < 500) {
+                // below 500 for Threejs
+                __.scale(r1);
+                _.sync.forEach(function (g) {
+                    return g._.scale(r1);
+                });
+            }
         }
 
         function rotate(r) {
@@ -494,7 +498,7 @@ var mousePlugin = (function () {
             init.call(this);
         },
         onInterval: function onInterval() {
-            var _this = this;
+            var _this2 = this;
 
             var __ = this._;
             if (__.drag) {
@@ -503,7 +507,7 @@ var mousePlugin = (function () {
                     r(__);
                     __.rotate(_.r);
                     _.onDragKeys.forEach(function (k) {
-                        _.onDrag[k].call(_this, _.mouse);
+                        _.onDrag[k].call(_this2, _.mouse);
                     });
                     // _.t2+=1;
                 }
@@ -2142,7 +2146,7 @@ var worldThreejs = (function () {
             var group = new THREE.Group();
             var loader = new THREE.TextureLoader();
             loader.load(imgUrl, function (texture) {
-                var geometry = new THREE.SphereGeometry(200, 20, 20);
+                var geometry = new THREE.SphereGeometry(200, 30, 30);
                 var material = new THREE.MeshBasicMaterial({ map: texture, overdraw: 0.5 });
                 _.sphereObject = new THREE.Mesh(geometry, material);
                 group.add(_.sphereObject);

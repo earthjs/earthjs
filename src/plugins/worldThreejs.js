@@ -9,7 +9,7 @@ export default (imgUrl='../d/world.jpg') => {
             const group  = new THREE.Group();
             const loader = new THREE.TextureLoader();
             loader.load(imgUrl, function(texture) {
-                const geometry = new THREE.SphereGeometry( 200, 20, 20 );
+                const geometry = new THREE.SphereGeometry( 200, 30, 30 );
                 const material = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
                 _.sphereObject = new THREE.Mesh( geometry, material );
                 group.add(_.sphereObject);

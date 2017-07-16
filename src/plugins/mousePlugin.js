@@ -35,6 +35,7 @@ export default () => {
 
     function init() {
         const __ = this._;
+        const _this = this;
         const versor = __.versor;
         const s0 = __.proj.scale();
         const wh = [__.options.width, __.options.height];
@@ -51,8 +52,10 @@ export default () => {
 
         function zoom() {
             const r1 = s0 * d3.event.transform.k;
-            __.scale(r1);
-            _.sync.forEach(g=>g._.scale(r1));
+            if (!_this.worldThreejs || r1<500) { // below 500 for Threejs
+                __.scale(r1);
+                _.sync.forEach(g=>g._.scale(r1));
+            }
         }
 
         function rotate(r) {

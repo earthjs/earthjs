@@ -16,11 +16,14 @@
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.threejsPlugin());
-        g.register(earthjs.plugins.graticuleCanvas());
+        // g.register(earthjs.plugins.graticuleCanvas());
         g.register(earthjs.plugins.worldThreejs('../d/world.jpg'));
-        g.register(earthjs.plugins.barSvg('../d/bars.json'));
-        g.barSvg.ready = function(err, json) {
+        g.register(earthjs.plugins.dotsCanvas('../d/bars.json'));
+        g.register(earthjs.plugins.barSvg());
+        g.dotsCanvas.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
+            json.geometry = {radius: 2}
+            g.dotsCanvas.data(json);
             g.barSvg.data(json);
         };
 
