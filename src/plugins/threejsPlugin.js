@@ -1,6 +1,7 @@
 // Philippe Rivière’s https://bl.ocks.org/Fil/9ed0567b68501ee3c3fef6fbe3c81564
 // https://gist.github.com/Fil/ad107bae48e0b88014a0e3575fe1ba64
-export default () => {
+export default (canvas='three-js') => {
+    canvas = document.getElementById(canvas);
     const _ = {renderer: null, scene: null, camera: null, scale: null};
 
     function renderThree() {
@@ -24,12 +25,10 @@ export default () => {
             // Create renderer object.
             // https://stackoverflow.com/questions/29422118/threejs-canvas-background-black
             // https://stackoverflow.com/questions/16177056/changing-three-js-background-to-transparent-or-other-color
-            _.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
+            _.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true, canvas: canvas});
             _.renderer.domElement.id = 'three-js';
             _.renderer.setClearColor(0x000000, 0);
             _.renderer.setSize(width, height);
-            document.body.appendChild(_.renderer.domElement)
-
             this.renderThree = renderThree; // renderer
         },
         onRefresh() {

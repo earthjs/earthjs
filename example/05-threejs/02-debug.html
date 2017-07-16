@@ -9,6 +9,8 @@
 </head>
 <body>
     <svg id="earth"></svg>
+    <canvas id="three-js"></canvas>
+    <canvas class="canvas"></canvas>
     <script>
         const g = earthjs();
         g.register(earthjs.plugins.configPlugin());
@@ -19,6 +21,7 @@
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
         g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
+        g.canvasPlugin.selectAll('.canvas');
         g.ready(function(){
             g.create();
         })

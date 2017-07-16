@@ -9,6 +9,8 @@
 </head>
 <body>
     <svg id="earth"></svg>
+    <canvas id="three-js"></canvas>
+    <canvas class="canvas"></canvas>
     <script>
         const g = earthjs();
         g.register(earthjs.plugins.autorotatePlugin(10));
@@ -19,6 +21,7 @@
         g.register(earthjs.plugins.worldThreejs('../d/world.jpg'));
         g.register(earthjs.plugins.dotsCanvas('../d/bars.json'));
         g.register(earthjs.plugins.barSvg());
+        g.canvasPlugin.selectAll('.canvas');
         g.dotsCanvas.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
             json.geometry = {radius: 2}
