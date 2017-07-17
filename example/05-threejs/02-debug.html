@@ -12,16 +12,14 @@
     <canvas id="three-js"></canvas>
     <canvas class="ej-canvas"></canvas>
     <script>
-        const g = earthjs();
-        g.register(earthjs.plugins.configPlugin());
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.autorotatePlugin(10));
-        g.register(earthjs.plugins.threejsPlugin());
-        g.register(earthjs.plugins.debugThreejs());
-        g.register(earthjs.plugins.canvasPlugin());
-        g.register(earthjs.plugins.graticuleCanvas());
-        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
-        g.canvasPlugin.selectAll('.ej-canvas');
+        const g = earthjs()
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.autorotatePlugin(10))
+        .register(earthjs.plugins.canvasPlugin('.ej-canvas'))
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.debugThreejs())
+        .register(earthjs.plugins.graticuleCanvas())
+        .register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
         g.ready(function(){
             g.create();
         })

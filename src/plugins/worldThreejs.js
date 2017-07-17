@@ -1,4 +1,4 @@
-export default (imgUrl='../d/world.jpg') => {
+export default (imgUrl='../d/world.png') => {
     /*eslint no-console: 0 */
     const _ = {sphereObject: null, scale: null};
     _.scale = d3.scaleLinear().domain([0,200]).range([0,1]);

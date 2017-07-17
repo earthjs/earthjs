@@ -1,7 +1,12 @@
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
-export default () => {
+export default (selector, options={}) => {
     /*eslint no-console: 0 */
+    options = Object.assign({
+        intervalDrag:false,
+        zoom: [0,1000],
+    }, options);
     const _ = {svg:null, q: null, sync: [], mouse: null, wait: null,
+        options,
         onDrag: {},
         onDragKeys: [],
         onClick: {},
@@ -14,12 +19,14 @@ export default () => {
         _.onClickKeys.forEach(k => {
             _.onClick[k].call(_._this, _.event, _.mouse);
         });
+        console.log('onClick');
     }
 
     function ondblclick() {
         _.onDblClickKeys.forEach(k => {
             _.onDblClick[k].call(_._this, _.event, _.mouse);
         });
+        console.log('onDblClick');
     }
 
     let v0, // Mouse position in Cartesian coordinates at start of drag gesture.
@@ -33,9 +40,16 @@ export default () => {
         _.r = versor.rotation(q1);
     }
 
+    function drag(__) {
+        r(__);
+        __.rotate(_.r);
+        _.onDragKeys.forEach(k => {
+            _.onDrag[k].call(this, _.mouse);
+        });
+    }
+
     function init() {
         const __ = this._;
-        const _this = this;
         const versor = __.versor;
         const s0 = __.proj.scale();
         const wh = [__.options.width, __.options.height];
@@ -51,8 +65,9 @@ export default () => {
             .translateExtent([[0,0], wh]));
 
         function zoom() {
+            const z = _.options.zoom;
             const r1 = s0 * d3.event.transform.k;
-            if (!_this.worldThreejs || r1<500) { // below 500 for Threejs
+            if (r1>=z[0] && r1<=z[1]) {
                 __.scale(r1);
                 _.sync.forEach(g=>g._.scale(r1));
             }
@@ -80,9 +95,10 @@ export default () => {
         }
 
         function dragged() { // DOM update must be onInterval!
-            _.mouse = d3.mouse(this);
-            _._this = this;
             __.drag = true;
+            _._this = this;
+            _.mouse = d3.mouse(this);
+            !_.options.intervalDrag && drag(__);
             // _.t1+=1; // twice call compare to onInterval
         }
 
@@ -118,21 +134,18 @@ export default () => {
     return {
         name: 'mousePlugin',
         onInit() {
-            _.svg = this._.svg;
             _.oMouse = [];
+            const __ = this._;
+            _.svg = selector ? d3.selectAll(selector) : __.svg;
             init.call(this);
         },
         onInterval() {
             const __ = this._;
-            if (__.drag) {
+            if (__.drag && _.options.intervalDrag) {
                 if (_.oMouse[0]!==_.mouse[0] &&
                     _.oMouse[1]!==_.mouse[1]) {
                     _.oMouse = _.mouse;
-                    r(__);
-                    __.rotate(_.r);
-                    _.onDragKeys.forEach(k => {
-                        _.onDrag[k].call(this, _.mouse);
-                    });
+                    drag(__);
                     // _.t2+=1;
                 }
             } else if (_.wait===false) {

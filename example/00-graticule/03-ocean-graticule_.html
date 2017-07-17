@@ -7,12 +7,12 @@
 <body>
     <svg id="earth-js"/>
     <script>
-        const g = earthjs();
-        g.register(earthjs.plugins.autorotatePlugin(10));
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.oceanSvg());
-        g.register(earthjs.plugins.graticuleSvg());
-        g.create();
+        const g = earthjs({transparent:true})
+        .register(earthjs.plugins.autorotatePlugin(10))
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.oceanSvg())
+        .register(earthjs.plugins.graticuleSvg())
+        .create();
     </script>
 </body>
 </html>

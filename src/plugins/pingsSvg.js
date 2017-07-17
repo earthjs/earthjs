@@ -1,4 +1,4 @@
-export default () => {
+export default selector => {
     /*eslint no-console: 0 */
     const _ = {svg:null, dataPings: null};
     const $ = {};
@@ -52,9 +52,10 @@ export default () => {
     return {
         name: 'pingsSvg',
         onInit() {
-            this._.options.showPings = true;
+            const __ = this._;
+            __.options.showPings = true;
             setInterval(() => animate.call(this), 3000);
-            _.svg = this._.svg;
+            _.svg = selector ? d3.selectAll(selector) : __.svg;
         },
         onCreate() {
             create.call(this);

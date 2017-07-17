@@ -1,4 +1,4 @@
-export default urlDots => {
+export default (urlDots, selector) => {
     /*eslint no-console: 0 */
     const _ = {dataDots: null, radiusPath: null};
     const $ = {};
@@ -74,8 +74,9 @@ export default urlDots => {
             this.dotsSvg.data(dots);
         },
         onInit() {
-            this._.options.showDots = true;
-            _.svg = this._.svg;
+            const __ = this._;
+            __.options.showDots = true;
+            _.svg = selector ? d3.selectAll(selector) : __.svg;
         },
         onCreate() {
             create.call(this);

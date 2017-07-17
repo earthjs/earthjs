@@ -1,4 +1,4 @@
-export default () => {
+export default selector => {
     const color = {
         0:['rgba(221, 221, 255, 0.6)', 'rgba(153, 170, 187,0.8)'],
         1:['rgba(159, 240, 232, 0.6)', 'rgba(  5, 242, 219,0.8)'],
@@ -43,14 +43,15 @@ export default () => {
     return {
         name: 'oceanSvg',
         onInit() {
+            const __ = this._;
             this._.options.showOcean = true;
-            Object.defineProperty(this._.options, 'oceanColor', {
+            Object.defineProperty(__.options, 'oceanColor', {
                 get: () => _.oceanColor,
                 set: (x) => {
                     _.oceanColor = x;
                 }
             });
-            _.svg = this._.svg;
+            _.svg = selector ? d3.selectAll(selector) : __.svg;
         },
         onCreate() {
             create.call(this);

@@ -9,13 +9,12 @@
     <svg id="earth-js"/>
     <canvas class="ej-canvas"></canvas>
     <script>
-        const g = earthjs({transparent:true});
-        g.register(earthjs.plugins.autorotatePlugin(10));
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.canvasPlugin());
-        g.register(earthjs.plugins.graticuleCanvas());
-        g.canvasPlugin.selectAll('.ej-canvas');
-        g.create();
+        const g = earthjs({transparent:true})
+        .register(earthjs.plugins.canvasPlugin('.ej-canvas'))
+        .register(earthjs.plugins.autorotatePlugin(10))
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.graticuleCanvas())
+        .create();
     </script>
 </body>
 </html>

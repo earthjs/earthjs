@@ -1,5 +1,5 @@
 // Bo Ericsson’s Block http://bl.ocks.org/boeric/aa80b0048b7e39dd71c8fbe958d1b1d4
-export default () => {
+export default (selector) => {
     /*eslint no-console: 0 */
     const _ = {canvas: null, path: null, q: null}
 
@@ -43,6 +43,9 @@ export default () => {
         onInit() {
             this._.options.showCanvas = true;
             _.path = d3.geoPath().projection(this._.proj);
+            if (selector) {
+                _.canvas = d3.selectAll(selector);
+            }
         },
         onCreate() {
             create.call(this);

@@ -1,4 +1,4 @@
-export default () => {
+export default selector => {
     const _ = {svg:null, q: null, sphereColor: 0};
 
     function create() {
@@ -33,8 +33,9 @@ export default () => {
     return {
         name: 'sphereSvg',
         onInit() {
-            this._.options.showSphere = true;
-            _.svg = this._.svg;
+            const __ = this._;
+            __.options.showSphere = true;
+            _.svg = selector ? d3.selectAll(selector) : __.svg;
         },
         onCreate() {
             create.call(this);

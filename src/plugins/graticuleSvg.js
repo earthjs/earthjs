@@ -1,4 +1,4 @@
-export default () => {
+export default selector => {
     const _ = {svg:null, q: null, graticule: d3.geoGraticule()}
     const $ = {};
 
@@ -27,8 +27,9 @@ export default () => {
     return {
         name: 'graticuleSvg',
         onInit() {
-            this._.options.showGraticule = true;
-            _.svg = this._.svg;
+            const __ = this._;
+            __.options.showGraticule = true;
+            _.svg = selector ? d3.selectAll(selector) : __.svg;
         },
         onCreate() {
             create.call(this);

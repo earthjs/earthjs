@@ -30,14 +30,14 @@
         <canvas class="ej-canvas"></canvas>
     </div>
     <script>
-        const g = earthjs({selectAll:'.ej-svg',transparent:true});
-        g.register(earthjs.plugins.autorotatePlugin(10));
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.canvasPlugin());
-        g.register(earthjs.plugins.oceanSvg());
-        g.register(earthjs.plugins.graticuleCanvas());
-        g.canvasPlugin.selectAll('.ej-canvas');
-        g.create();
+        const g = earthjs({selectAll:'.ej-svg'})
+        .register(earthjs.plugins.canvasPlugin('.ej-canvas'))
+        .register(earthjs.plugins.autorotatePlugin(10))
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.oceanSvg())
+        .register(earthjs.plugins.graticuleCanvas())
+        .create();
     </script>
 </body>
 </html>

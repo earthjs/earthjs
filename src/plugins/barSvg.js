@@ -1,4 +1,4 @@
-export default urlBars => {
+export default (urlBars, selector) => {
     /*eslint no-console: 0 */
     const _ = {svg:null, barProjection: null, q: null, bars: null, valuePath: null};
     const $ = {};
@@ -78,7 +78,7 @@ export default urlBars => {
             const __ = this._;
             __.options.showBars = true;
             _.barProjection = __.orthoGraphic();
-            _.svg = __.svg;
+            _.svg = selector ? d3.selectAll(selector) : __.svg;
         },
         onCreate() {
             create.call(this);

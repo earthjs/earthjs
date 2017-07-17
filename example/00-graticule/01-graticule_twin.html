@@ -9,11 +9,11 @@
     <svg class="ej-svg"></svg>
     <svg class="ej-svg"></svg>
     <script>
-        const g = earthjs({selectAll:'.ej-svg',transparent:true});
-        g.register(earthjs.plugins.autorotatePlugin(10));
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.graticuleSvg());
-        g.create();
+        const g = earthjs({selectAll:'.ej-svg'})
+        .register(earthjs.plugins.autorotatePlugin(10))
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.graticuleSvg())
+        .create();
     </script>
 </body>
 </html>

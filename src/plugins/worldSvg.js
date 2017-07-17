@@ -1,4 +1,4 @@
-export default (urlWorld, urlCountryNames) => {
+export default (urlWorld, urlCountryNames, selector) => {
     /*eslint no-console: 0 */
     const _ = {svg:null, q: null, world: null, countryNames: null};
     const $ = {};
@@ -86,7 +86,7 @@ export default (urlWorld, urlCountryNames) => {
             _.svgAddWorldBg = svgAddWorldBg;
             _.svgAddLakes = svgAddLakes;
             _.svgAddWorld = svgAddWorld;
-            _.svg = __.svg;
+            _.svg = selector ? d3.selectAll(selector) : __.svg;
         },
         onCreate() {
             create.call(this);

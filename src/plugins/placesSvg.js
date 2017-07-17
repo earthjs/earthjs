@@ -1,4 +1,4 @@
-export default (urlPlaces) => {
+export default (urlPlaces, selector) => {
     const _ = {svg:null, q: null, places: null};
     const $ = {};
 
@@ -63,8 +63,9 @@ export default (urlPlaces) => {
             _.places = places;
         },
         onInit() {
-            this._.options.showPlaces = true;
-            _.svg = this._.svg;
+            const __ = this._;
+            __.options.showPlaces = true;
+            _.svg = selector ? d3.selectAll(selector) : __.svg;
         },
         onCreate() {
             create.call(this);

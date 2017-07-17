@@ -7,10 +7,10 @@
 <body>
     <svg id="earth-js"/>
     <script>
-        const g = earthjs();
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.graticuleSvg());
-        g.create();
+        const g = earthjs()
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.graticuleSvg())
+        .create();
     </script>
 </body>
 </html>

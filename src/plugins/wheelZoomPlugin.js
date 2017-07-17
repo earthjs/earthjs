@@ -1,4 +1,4 @@
-export default () => {
+export default selector => {
     /*eslint no-console: 0 */
     const _ = {svg:null, q: null, sync: []};
 
@@ -17,8 +17,8 @@ export default () => {
     return {
         name: 'wheelZoomPlugin',
         onInit() {
-            _.svg = this._.svg;
-            zoomSetup.call(this);
+            const __ = this._;
+            _.svg = selector ? d3.selectAll(selector) : __.svg;
         },
         selectAll(q) {
             if (q) {

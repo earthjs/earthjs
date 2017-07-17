@@ -1,5 +1,5 @@
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
-export default () => {
+export default selector => {
     /*eslint no-console: 0 */
     const _ = {svg:null, q: null};
     const $ = {};
@@ -37,9 +37,9 @@ export default () => {
     return {
         name: 'dropShadowSvg',
         onInit() {
-            const {options} = this._;
-            options.showDropShadow  = true;
-            _.svg = this._.svg;
+            const __ = this._;
+            __.options.showDropShadow = true;
+            _.svg = selector ? d3.selectAll(selector) : __.svg;
         },
         onCreate() {
             create.call(this);

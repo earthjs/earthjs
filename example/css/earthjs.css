@@ -9,7 +9,7 @@ body {
 #earth-js {
     z-index: 2;
 }
-.ej-svg, .ej-canvas, .top {
+#three-js, .ej-svg, .ej-canvas, .top {
     /*position: relative;*/
     z-index: 3;
 }

@@ -11,21 +11,22 @@
     <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
     <canvas class="ej-canvas"></canvas>
+    <svg class="ej-svg noclicks" width="700" height="500"></svg>
     <script>
-        const g = earthjs();
-        g.register(earthjs.plugins.autorotatePlugin(10));
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.hoverCanvas());
-        g.register(earthjs.plugins.canvasPlugin());
-        g.register(earthjs.plugins.threejsPlugin());
-        g.register(earthjs.plugins.dropShadowSvg());
-        g.register(earthjs.plugins.graticuleCanvas());
-        g.register(earthjs.plugins.worldThreejs('../d/world.jpg'));
-        g.register(earthjs.plugins.dotsCanvas('../d/bars.json'));
-        g.register(earthjs.plugins.barSvg());
-        g.register(earthjs.plugins.dotSelectCanvas());
-        g.register(earthjs.plugins.dotTooltipCanvas());
-        g.canvasPlugin.selectAll('.ej-canvas');
+        const g = earthjs()
+        .register(earthjs.plugins.autorotatePlugin(10))
+        .register(earthjs.plugins.canvasPlugin('.ej-canvas'))
+        .register(earthjs.plugins.mousePlugin(null,{zoom:[0,502]}))
+        .register(earthjs.plugins.hoverCanvas())
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.dropShadowSvg())
+        // .register(earthjs.plugins.graticuleCanvas())
+        .register(earthjs.plugins.worldThreejs('../d/world.png'))
+        .register(earthjs.plugins.dotsCanvas('../d/bars.json'))
+        .register(earthjs.plugins.oceanSvg())
+        .register(earthjs.plugins.barSvg(null,'.ej-svg'))
+        .register(earthjs.plugins.dotSelectCanvas())
+        .register(earthjs.plugins.dotTooltipCanvas());
         g.dotsCanvas.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
             json.geometry = {radius: 2}
