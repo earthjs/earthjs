@@ -43,6 +43,7 @@ export default selector => {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
-        }
+        },
+        $graticule() {return $.graticule;},
     }
 }

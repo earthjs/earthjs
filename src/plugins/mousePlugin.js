@@ -2,7 +2,7 @@
 export default (selector, options={}) => {
     /*eslint no-console: 0 */
     options = Object.assign({
-        intervalDrag:false,
+        iDrag:false,
         zoom: [0,1000],
     }, options);
     const _ = {svg:null, q: null, sync: [], mouse: null, wait: null,
@@ -98,7 +98,7 @@ export default (selector, options={}) => {
             __.drag = true;
             _._this = this;
             _.mouse = d3.mouse(this);
-            !_.options.intervalDrag && drag(__);
+            !_.options.iDrag && drag(__);
             // _.t1+=1; // twice call compare to onInterval
         }
 
@@ -141,7 +141,7 @@ export default (selector, options={}) => {
         },
         onInterval() {
             const __ = this._;
-            if (__.drag && _.options.intervalDrag) {
+            if (__.drag && _.options.iDrag) {
                 if (_.oMouse[0]!==_.mouse[0] &&
                     _.oMouse[1]!==_.mouse[1]) {
                     _.oMouse = _.mouse;

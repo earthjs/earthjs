@@ -7,6 +7,7 @@ export default selector => {
         4:['rgba( 96, 123, 148, 0.6)', 'rgba( 10,  93, 166,0.8)'],
         5:['rgba( 87, 102, 131, 0.6)', 'rgba(  8,  52, 140,0.8)']};
     const _ = {svg:null, q: null, scale: 0, oceanColor: 0};
+    const $ = {};
 
     function create() {
         _.svg.selectAll('#ocean,.ocean').remove();
@@ -27,7 +28,7 @@ export default selector => {
             ocean_fill.append('stop')
             .attr('offset', '100%')
             .attr('stop-color', c[1]);
-            _.ocean = _.svg.append('g').attr('class','ocean').append('circle')
+            $.ocean = _.svg.append('g').attr('class','ocean').append('circle')
             .attr('cx',this._.center[0]).attr('cy', this._.center[1])
             .attr('class', 'noclicks');
             resize.call(this);
@@ -35,8 +36,8 @@ export default selector => {
     }
 
     function resize() {
-        if (_.ocean && this._.options.showOcean) {
-            _.ocean.attr('r', this._.proj.scale()+_.scale);
+        if ($.ocean && this._.options.showOcean) {
+            $.ocean.attr('r', this._.proj.scale()+_.scale);
         }
     }
 
@@ -76,6 +77,7 @@ export default selector => {
         },
         recreate() {
             create.call(this);
-        }
+        },
+        $ocean() {return $.ocean;},
     }
 }

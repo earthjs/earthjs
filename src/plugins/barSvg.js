@@ -116,8 +116,6 @@ export default (urlBars, selector) => {
                 return _.bars;
             }
         },
-        $bar() {
-            return $.bar;
-        }
+        $bar() {return $.bar;},
     }
 }

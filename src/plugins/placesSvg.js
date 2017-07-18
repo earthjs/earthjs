@@ -73,13 +73,6 @@ export default (urlPlaces, selector) => {
         onRefresh() {
             refresh.call(this);
         },
-        selectAll(q) {
-            if (q) {
-                _.q = q;
-                _.svg = d3.selectAll(q);
-            }
-            return _.svg;
-        },
         data(p) {
             if (p) {
                 const data = p.placesSvg.data()
@@ -87,6 +80,15 @@ export default (urlPlaces, selector) => {
             } else {
                 return {places: _.places}
             }
-        }
+        },
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
+            return _.svg;
+        },
+        $placePoints() {return $.placePoints;},
+        $placeLabels() {return $.placeLabels;},
     };
 }

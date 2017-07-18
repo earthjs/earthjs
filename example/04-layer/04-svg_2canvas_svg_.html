@@ -29,13 +29,13 @@
     <svg id="earth-js"></svg>
     <canvas class="ej-canvas"></canvas>
     <canvas class="ej-canvas"></canvas>
-    <svg id="earth2" width="700" height="500"></svg>
+    <svg class="ej-svg" width="700" height="500"></svg>
     <script>
         const g = earthjs({rotate: -40});
         g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
-        g.mousePlugin.selectAll('#earth-js2');
+        g.mousePlugin.selectAll('.ej-svg');
 
         g.register(earthjs.plugins.dropShadowSvg());
         g.register(earthjs.plugins.oceanSvg());
@@ -51,7 +51,7 @@
         g.worldCanvas.drawTo([1]);
 
         g.register(earthjs.plugins.fauxGlobeSvg());
-        g.fauxGlobeSvg.selectAll('#earth-js2');
+        g.fauxGlobeSvg.selectAll('.ej-svg');
 
         g.register(earthjs.plugins.barSvg('../d/bars.json'));
         g.barSvg.selectAll('#earth-js2');
@@ -70,7 +70,7 @@
         });
 
         const canvas = d3.selectAll('canvas').nodes();
-        const svg = d3.selectAll('#earth-js2').nodes();
+        const svg = d3.selectAll('.ej-svg').nodes();
         d3.select('#pan').on('input', function() {
             canvas[0].style.left = this.value;
             canvas[1].style.left = this.value*2;

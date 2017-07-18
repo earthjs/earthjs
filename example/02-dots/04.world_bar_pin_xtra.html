@@ -34,7 +34,7 @@
         const g = earthjs({selectAll:'.s1,.s2,.s3,.s4',transparent:true});
         g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
-        g.register(earthjs.plugins.mousePlugin());
+        g.register(earthjs.plugins.mousePlugin(null,{iDrag:true}));
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.dropShadowSvg());
         g.register(earthjs.plugins.oceanSvg());

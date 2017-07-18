@@ -126,8 +126,8 @@ export default (urlWorld, urlCountryNames, selector) => {
             }
             return _.svg;
         },
-        $countries() {
-            return $.countries;
-        }
+        $world()     {return $.world;    },
+        $lakes()     {return $.lakes;    },
+        $countries() {return $.countries;},
     };
 }

@@ -1,6 +1,9 @@
-export default (urlDots, selector) => {
+export default (urlDots, selector, options) => {
     /*eslint no-console: 0 */
-    const _ = {dataDots: null, radiusPath: null};
+    options = Object.assign({
+        important:false,
+    }, options);
+    const _ = {options, dataDots: null, radiusPath: null};
     const $ = {};
 
     function create() {
@@ -38,7 +41,7 @@ export default (urlDots, selector) => {
                     return gdistance > 1.57 ? 'none' : (_g.fillStyle || 'rgba(100,0,0,.4)');
                 });
                 $.dots.style('display', function() {
-                    return __.drag ? 'none' : 'inline';
+                    return (__.drag && !_.options.important) ? 'none' : 'inline';
                 });
                 $.dots.attr('d', __.path);
                 __.proj.clipAngle(90);
@@ -46,7 +49,7 @@ export default (urlDots, selector) => {
                 $.dots.style('display', function(d, i) {
                     coordinate = d.coordinates[0][i];
                     gdistance = d3.geoDistance(coordinate, __.proj.invert(__.center));
-                    return (gdistance > 1.57 || __.drag) ? 'none' : 'inline';
+                    return (gdistance > 1.57 || (__.drag && !_.options.important)) ? 'none' : 'inline';
                 });
                 $.dots.style('fill', _g.fillStyle   || 'rgba(100,0,0,.4)')
                 $.dots.attr('d', __.path);
@@ -82,7 +85,10 @@ export default (urlDots, selector) => {
             create.call(this);
         },
         onRefresh() {
-            refresh.call(this);
+            // execue if important or start/end of drag
+            if (_.options.important || this._.drag!==true) {
+                refresh.call(this);
+            }
         },
         radiusPath(path) {
             _.radiusPath = path;
@@ -119,8 +125,6 @@ export default (urlDots, selector) => {
             }
             return _.svg;
         },
-        $dots() {
-            return $.dots;
-        }
+        $dots() {return $.dots;},
     }
 }

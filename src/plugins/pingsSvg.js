@@ -72,6 +72,7 @@ export default selector => {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
-        }
+        },
+        $pings() {return $.pings;},
     }
 }

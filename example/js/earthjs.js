@@ -378,7 +378,7 @@ var mousePlugin = (function (selector) {
 
     /*eslint no-console: 0 */
     options = Object.assign({
-        intervalDrag: false,
+        iDrag: false,
         zoom: [0, 1000]
     }, options);
     var _ = { svg: null, q: null, sync: [], mouse: null, wait: null,
@@ -474,7 +474,7 @@ var mousePlugin = (function (selector) {
             __.drag = true;
             _._this = this;
             _.mouse = d3.mouse(this);
-            !_.options.intervalDrag && drag(__);
+            !_.options.iDrag && drag(__);
             // _.t1+=1; // twice call compare to onInterval
         }
 
@@ -519,7 +519,7 @@ var mousePlugin = (function (selector) {
         },
         onInterval: function onInterval() {
             var __ = this._;
-            if (__.drag && _.options.intervalDrag) {
+            if (__.drag && _.options.iDrag) {
                 if (_.oMouse[0] !== _.mouse[0] && _.oMouse[1] !== _.mouse[1]) {
                     _.oMouse = _.mouse;
                     drag(__);
@@ -1035,6 +1035,7 @@ var oceanSvg = (function (selector) {
         4: ['rgba( 96, 123, 148, 0.6)', 'rgba( 10,  93, 166,0.8)'],
         5: ['rgba( 87, 102, 131, 0.6)', 'rgba(  8,  52, 140,0.8)'] };
     var _ = { svg: null, q: null, scale: 0, oceanColor: 0 };
+    var $ = {};
 
     function create() {
         _.svg.selectAll('#ocean,.ocean').remove();
@@ -1048,14 +1049,14 @@ var oceanSvg = (function (selector) {
                 c = [c, c];
             }
             ocean_fill.append('stop').attr('offset', '100%').attr('stop-color', c[1]);
-            _.ocean = _.svg.append('g').attr('class', 'ocean').append('circle').attr('cx', this._.center[0]).attr('cy', this._.center[1]).attr('class', 'noclicks');
+            $.ocean = _.svg.append('g').attr('class', 'ocean').append('circle').attr('cx', this._.center[0]).attr('cy', this._.center[1]).attr('class', 'noclicks');
             resize.call(this);
         }
     }
 
     function resize() {
-        if (_.ocean && this._.options.showOcean) {
-            _.ocean.attr('r', this._.proj.scale() + _.scale);
+        if ($.ocean && this._.options.showOcean) {
+            $.ocean.attr('r', this._.proj.scale() + _.scale);
         }
     }
 
@@ -1097,24 +1098,28 @@ var oceanSvg = (function (selector) {
         },
         recreate: function recreate() {
             create.call(this);
+        },
+        $ocean: function $ocean() {
+            return $.ocean;
         }
     };
 });
 
 var sphereSvg = (function (selector) {
     var _ = { svg: null, q: null, sphereColor: 0 };
+    var $ = {};
 
     function create() {
         _.svg.selectAll('#glow,.sphere').remove();
         if (this._.options.showSphere) {
             this.$slc.defs.nodes()[0].append('\n<filter id=\'glow\'>\n    <feColorMatrix type=\'matrix\'\n        values=\n        \'0 0 0 0   0\n         0 0 0 0.9 0\n         0 0 0 0.9 0\n         0 0 0 1   0\'/>\n    <feGaussianBlur stdDeviation=\'5.5\' result=\'coloredBlur\'/>\n    <feMerge>\n        <feMergeNode in=\'coloredBlur\'/>\n        <feMergeNode in=\'SourceGraphic\'/>\n    </feMerge>\n</filter>\n');
-            _.sphere = _.svg.append('g').attr('class', 'sphere').append('circle').attr('cx', this._.center[0]).attr('cy', this._.center[1]).attr('class', 'noclicks').attr('filter', 'url(#glow)');
+            $.sphere = _.svg.append('g').attr('class', 'sphere').append('circle').attr('cx', this._.center[0]).attr('cy', this._.center[1]).attr('class', 'noclicks').attr('filter', 'url(#glow)');
             resize.call(this);
         }
     }
 
     function resize() {
-        _.sphere.attr('r', this._.proj.scale());
+        $.sphere.attr('r', this._.proj.scale());
     }
 
     return {
@@ -1136,6 +1141,9 @@ var sphereSvg = (function (selector) {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
+        },
+        $sphere: function $sphere() {
+            return $.sphere;
         }
     };
 });
@@ -1231,6 +1239,9 @@ var graticuleSvg = (function (selector) {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
+        },
+        $graticule: function $graticule() {
+            return $.graticule;
         }
     };
 });
@@ -1279,6 +1290,9 @@ var dropShadowSvg = (function (selector) {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
+        },
+        $dropShadow: function $dropShadow() {
+            return $.dropShadow;
         }
     };
 });
@@ -1345,6 +1359,12 @@ var fauxGlobeSvg = (function (selector) {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
+        },
+        $globeShading: function $globeShading() {
+            return $.globeShading;
+        },
+        $globeHilight: function $globeHilight() {
+            return $.globeHilight;
         }
     };
 });
@@ -1849,13 +1869,6 @@ var placesSvg = (function (urlPlaces, selector) {
         onRefresh: function onRefresh() {
             refresh.call(this);
         },
-        selectAll: function selectAll(q) {
-            if (q) {
-                _.q = q;
-                _.svg = d3.selectAll(q);
-            }
-            return _.svg;
-        },
         data: function data(p) {
             if (p) {
                 var data = p.placesSvg.data();
@@ -1863,6 +1876,19 @@ var placesSvg = (function (urlPlaces, selector) {
             } else {
                 return { places: _.places };
             }
+        },
+        selectAll: function selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
+            return _.svg;
+        },
+        $placePoints: function $placePoints() {
+            return $.placePoints;
+        },
+        $placeLabels: function $placeLabels() {
+            return $.placeLabels;
         }
     };
 });
@@ -2149,6 +2175,12 @@ var worldSvg = (function (urlWorld, urlCountryNames, selector) {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
+        },
+        $world: function $world() {
+            return $.world;
+        },
+        $lakes: function $lakes() {
+            return $.lakes;
         },
         $countries: function $countries() {
             return $.countries;
@@ -2538,9 +2570,12 @@ var barSvg = (function (urlBars, selector) {
     };
 });
 
-var dotsSvg = (function (urlDots, selector) {
+var dotsSvg = (function (urlDots, selector, options) {
     /*eslint no-console: 0 */
-    var _ = { dataDots: null, radiusPath: null };
+    options = Object.assign({
+        important: false
+    }, options);
+    var _ = { options: options, dataDots: null, radiusPath: null };
     var $ = {};
 
     function create() {
@@ -2576,7 +2611,7 @@ var dotsSvg = (function (urlDots, selector) {
                     return gdistance > 1.57 ? 'none' : _g.fillStyle || 'rgba(100,0,0,.4)';
                 });
                 $.dots.style('display', function () {
-                    return __.drag ? 'none' : 'inline';
+                    return __.drag && !_.options.important ? 'none' : 'inline';
                 });
                 $.dots.attr('d', __.path);
                 __.proj.clipAngle(90);
@@ -2584,7 +2619,7 @@ var dotsSvg = (function (urlDots, selector) {
                 $.dots.style('display', function (d, i) {
                     coordinate = d.coordinates[0][i];
                     gdistance = d3.geoDistance(coordinate, __.proj.invert(__.center));
-                    return gdistance > 1.57 || __.drag ? 'none' : 'inline';
+                    return gdistance > 1.57 || __.drag && !_.options.important ? 'none' : 'inline';
                 });
                 $.dots.style('fill', _g.fillStyle || 'rgba(100,0,0,.4)');
                 $.dots.attr('d', __.path);
@@ -2620,7 +2655,10 @@ var dotsSvg = (function (urlDots, selector) {
             create.call(this);
         },
         onRefresh: function onRefresh() {
-            refresh.call(this);
+            // execue if important or start/end of drag
+            if (_.options.important || this._.drag !== true) {
+                refresh.call(this);
+            }
         },
         radiusPath: function radiusPath(path) {
             _.radiusPath = path;
@@ -2756,13 +2794,16 @@ var pinCanvas = (function (urlJson, urlImage) {
     };
 });
 
-var dotsCanvas = (function (urlJson) {
+var dotsCanvas = (function (urlJson, options) {
     /*eslint no-console: 0 */
-    var _ = { dataDots: null, dots: [], radiusPath: null };
+    options = Object.assign({
+        important: false
+    }, options);
+    var _ = { options: options, dataDots: null, dots: [], radiusPath: null };
 
     function create() {
         var __ = this._;
-        if (!__.drag && _.dataDots && this._.options.showDots) {
+        if (!(__.drag && !_.options.important) && _.dataDots && this._.options.showDots) {
             var proj = this._.proj;
             var _g = _.dataDots.geometry || {};
             var center = proj.invert(this._.center);
@@ -2823,7 +2864,10 @@ var dotsCanvas = (function (urlJson) {
             create.call(this);
         },
         onRefresh: function onRefresh() {
-            create.call(this);
+            // execue if important or start/end of drag
+            if (_.options.important || this._.drag !== true) {
+                create.call(this);
+            }
         },
         radiusPath: function radiusPath(path) {
             _.radiusPath = path;
@@ -2992,6 +3036,9 @@ var pingsSvg = (function (selector) {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
+        },
+        $pings: function $pings() {
+            return $.pings;
         }
     };
 });

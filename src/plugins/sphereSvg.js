@@ -1,5 +1,6 @@
 export default selector => {
     const _ = {svg:null, q: null, sphereColor: 0};
+    const $ = {};
 
     function create() {
         _.svg.selectAll('#glow,.sphere').remove();
@@ -19,7 +20,7 @@ export default selector => {
     </feMerge>
 </filter>
 `);
-            _.sphere = _.svg.append('g').attr('class','sphere').append('circle')
+            $.sphere = _.svg.append('g').attr('class','sphere').append('circle')
             .attr('cx',this._.center[0]).attr('cy', this._.center[1])
             .attr('class', 'noclicks').attr('filter', 'url(#glow)');
             resize.call(this);
@@ -27,7 +28,7 @@ export default selector => {
     }
 
     function resize() {
-        _.sphere.attr('r', this._.proj.scale());
+        $.sphere.attr('r', this._.proj.scale());
     }
 
     return {
@@ -50,5 +51,6 @@ export default selector => {
             }
             return _.svg;
         },
+        $sphere() {return $.sphere;},
     }
 }

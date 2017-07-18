@@ -14,7 +14,7 @@
         g.register(earthjs.plugins.hoverCanvas());
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
-        g.register(earthjs.plugins.dotsCanvas('../d/bars.json'));
+        g.register(earthjs.plugins.dotsCanvas('../d/bars.json',{important:true}));
         g.register(earthjs.plugins.dotSelectCanvas());
         g.register(earthjs.plugins.dotTooltipCanvas());
         g.canvasPlugin.selectAll('.ej-canvas');

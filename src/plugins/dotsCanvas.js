@@ -1,10 +1,13 @@
-export default urlJson => {
+export default (urlJson, options) => {
     /*eslint no-console: 0 */
-    const _ = {dataDots: null, dots: [], radiusPath: null};
+    options = Object.assign({
+        important:false,
+    }, options);
+    const _ = {options, dataDots: null, dots: [], radiusPath: null};
 
     function create() {
         const __ = this._;
-        if (!__.drag && _.dataDots && this._.options.showDots) {
+        if (!(__.drag && !_.options.important) && _.dataDots && this._.options.showDots) {
             const proj = this._.proj;
             const _g = _.dataDots.geometry || {};
             const center = proj.invert(this._.center);
@@ -65,7 +68,10 @@ export default urlJson => {
             create.call(this);
         },
         onRefresh() {
-            create.call(this);
+            // execue if important or start/end of drag
+            if (_.options.important || this._.drag!==true) {
+                create.call(this);
+            }
         },
         radiusPath(path) {
             _.radiusPath = path;

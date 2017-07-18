@@ -81,6 +81,8 @@ export default selector => {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
-        }
+        },
+        $globeShading() {return $.globeShading;},
+        $globeHilight() {return $.globeHilight;},
     }
 }

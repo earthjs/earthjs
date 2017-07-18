@@ -29,13 +29,13 @@
     </div>
     <svg id="earth-js"></svg>
     <canvas class="ej-canvas"></canvas>
-    <svg id="earth2" width="700" height="500"></svg>
+    <svg class="ej-svg" width="700" height="500"></svg>
     <script>
         const g = earthjs({rotate: -40});
         g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.autorotatePlugin(10));
-        g.mousePlugin.selectAll('#earth-js2');
+        g.mousePlugin.selectAll('.ej-svg');
 
         g.register(earthjs.plugins.dropShadowSvg());
         g.register(earthjs.plugins.oceanSvg());
@@ -46,14 +46,14 @@
         g.register(earthjs.plugins.graticuleCanvas());
 
         g.register(earthjs.plugins.fauxGlobeSvg());
-        g.fauxGlobeSvg.selectAll('#earth-js2');
+        g.fauxGlobeSvg.selectAll('.ej-svg');
 
         // g.register(earthjs.plugins.placesSvg('../d/places.json'));
         g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
         g.worldCanvas.style({land: 'green'});
 
         g.register(earthjs.plugins.barSvg('../d/bars.json'));
-        g.barSvg.selectAll('#earth-js2');
+        g.barSvg.selectAll('.ej-svg');
         g.barSvg.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
             g.barSvg.data(json);
@@ -75,7 +75,7 @@ canvas.ej-canvas {
     /*top: ${this.value}px;*/
     left: ${this.value}px;
 }
-svg#earth-js2 {
+svg.ej-svg {
     /*top: ${this.value*2}px;*/
     left: ${this.value*2}px;
 }`          );
