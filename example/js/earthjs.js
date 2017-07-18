@@ -2655,10 +2655,7 @@ var dotsSvg = (function (urlDots, selector, options) {
             create.call(this);
         },
         onRefresh: function onRefresh() {
-            // execue if important or start/end of drag
-            if (_.options.important || this._.drag !== true) {
-                refresh.call(this);
-            }
+            refresh.call(this);
         },
         radiusPath: function radiusPath(path) {
             _.radiusPath = path;

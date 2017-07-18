@@ -85,10 +85,7 @@ export default (urlDots, selector, options) => {
             create.call(this);
         },
         onRefresh() {
-            // execue if important or start/end of drag
-            if (_.options.important || this._.drag!==true) {
-                refresh.call(this);
-            }
+            refresh.call(this);
         },
         radiusPath(path) {
             _.radiusPath = path;
