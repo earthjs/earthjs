@@ -327,13 +327,27 @@ var configPlugin = (function () {
     };
 });
 
-var autorotatePlugin = (function (degPerSec) {
+var autorotatePlugin = (function () {
+    var degPerSec = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
+
     /*eslint no-console: 0 */
     var _ = {
         lastTick: new Date(),
         degree: degPerSec / 1000,
         sync: []
     };
+
+    function interval() {
+        var now = new Date();
+        if (this._.options.spin && !this._.drag) {
+            var delta = now - _.lastTick;
+            rotate.call(this, delta);
+            _.sync.forEach(function (g) {
+                return rotate.call(g, delta);
+            });
+        }
+        _.lastTick = now;
+    }
 
     function rotate(delta) {
         var r = this._.proj.rotate();
@@ -347,15 +361,7 @@ var autorotatePlugin = (function (degPerSec) {
             this._.options.spin = true;
         },
         onInterval: function onInterval() {
-            var now = new Date();
-            if (this._.options.spin && !this._.drag) {
-                var delta = now - _.lastTick;
-                rotate.call(this, delta);
-                _.sync.forEach(function (g) {
-                    return rotate.call(g, delta);
-                });
-            }
-            _.lastTick = now;
+            interval.call(this);
         },
         speed: function speed(degPerSec) {
             _.degree = degPerSec / 1000;

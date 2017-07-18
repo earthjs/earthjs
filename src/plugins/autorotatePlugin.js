@@ -1,9 +1,19 @@
-export default degPerSec => {
+export default (degPerSec=10) => {
     /*eslint no-console: 0 */
     const _ = {
         lastTick: new Date(),
         degree: degPerSec/1000,
         sync: []
+    }
+
+    function interval() {
+        const now = new Date();
+        if (this._.options.spin && !this._.drag) {
+            const delta = now - _.lastTick;
+            rotate.call(this, delta);
+            _.sync.forEach(g => rotate.call(g, delta));
+        }
+        _.lastTick = now;
     }
 
     function rotate(delta) {
@@ -18,13 +28,7 @@ export default degPerSec => {
             this._.options.spin = true;
         },
         onInterval() {
-            const now = new Date();
-            if (this._.options.spin && !this._.drag) {
-                const delta = now - _.lastTick;
-                rotate.call(this, delta);
-                _.sync.forEach(g => rotate.call(g, delta));
-            }
-            _.lastTick = now;
+            interval.call(this);
         },
         speed(degPerSec) {
             _.degree = degPerSec/1000;

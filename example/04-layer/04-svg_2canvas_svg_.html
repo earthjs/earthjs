@@ -34,7 +34,7 @@
         const g = earthjs({rotate: -40});
         g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.autorotatePlugin(10));
+        g.register(earthjs.plugins.autorotatePlugin());
         g.mousePlugin.selectAll('.ej-svg');
 
         g.register(earthjs.plugins.dropShadowSvg());
