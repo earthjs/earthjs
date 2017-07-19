@@ -3,6 +3,7 @@ export default () => {
     _.scale = d3.scaleLinear().domain([0,200]).range([0,1]);
 
     function init() {
+        this._.options.showDebugSpahre = true;
         if (!_.sphereObject) {
             const SCALE = this._.proj.scale();
             const sphere         = new THREE.SphereGeometry(SCALE, 100, 100);
@@ -50,7 +51,6 @@ export default () => {
     return {
         name: 'debugThreejs',
         onInit() {
-            this._.options.showDebugSpahre = true;
             init.call(this);
         },
         onResize() {

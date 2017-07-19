@@ -14,7 +14,7 @@
         g.register(earthjs.plugins.hoverCanvas());
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.oceanSvg());
-        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json', '../d/world-110m-country-names.tsv'));
+        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json', {countryNameUrl:'../d/world-110m-country-names.tsv'}));
         g.register(earthjs.plugins.countryTooltipCanvas());
         g.canvasPlugin.selectAll('.ej-canvas');
         g._.options.showSelectedCountry = true;

@@ -1,5 +1,5 @@
 // John J Czaplewski’s Block http://bl.ocks.org/jczaplew/6798471
-export default (urlWorld, urlCountryNames) => {
+export default (worldUrl, {countryNameUrl}={}) => {
     /*eslint no-console: 0 */
     const color = {
         0:'rgba(117, 87, 57, 0.6)',
@@ -69,10 +69,10 @@ export default (urlWorld, urlCountryNames) => {
     }
 
     let urls = null;
-    if (urlWorld) {
-        urls = [urlWorld];
-        if (urlCountryNames) {
-            urls.push(urlCountryNames);
+    if (worldUrl) {
+        urls = [worldUrl];
+        if (countryNameUrl) {
+            urls.push(countryNameUrl);
         }
     }
 

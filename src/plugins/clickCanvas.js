@@ -11,17 +11,7 @@ export default () => {
         onCountryKeys: []
     }
 
-    function findCountry(pos) {
-        return _.countries.features.find(function(f) {
-            return f.geometry.coordinates.find(function(c1) {
-                return d3.polygonContains(c1, pos) || c1.find(function(c2) {
-                    return d3.polygonContains(c2, pos)
-                })
-            })
-        });
-    }
-
-    function initmouseClickHandler() {
+    function init() {
         if (this.worldCanvas) {
             const {world} = this.worldCanvas.data();
             if (world) {
@@ -63,10 +53,20 @@ export default () => {
         }
     }
 
+    function findCountry(pos) {
+        return _.countries.features.find(function(f) {
+            return f.geometry.coordinates.find(function(c1) {
+                return d3.polygonContains(c1, pos) || c1.find(function(c2) {
+                    return d3.polygonContains(c2, pos)
+                })
+            })
+        });
+    }
+
     return {
         name: 'clickCanvas',
         onInit() {
-            initmouseClickHandler.call(this);
+            init.call(this);
         },
         onCircle(obj) {
             Object.assign(_.onCircle, obj);

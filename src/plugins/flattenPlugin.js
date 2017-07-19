@@ -2,6 +2,15 @@ export default () => {
     /*eslint no-console: 0 */
     const _ = {};
 
+    function init() {
+        const g1 = this._.proj;
+        const g2 = d3.geoEquirectangular()
+            .scale(this._.options.width/6.3)
+            .translate(this._.center);
+        _.g1 = g1;
+        _.g2 = g2;
+    }
+
     function animation() {
         const _this = this;
         return _this._.svg.transition()
@@ -62,12 +71,7 @@ export default () => {
     return {
         name: 'flattenPlugin',
         onInit() {
-            const g1 = this._.proj;
-            const g2 = d3.geoEquirectangular()
-                .scale(this._.options.width/6.3)
-                .translate(this._.center);
-            _.g1 = g1;
-            _.g2 = g2;
+            init.call(this);
         },
         toMap() {
             defaultRotate.call(this).on('end', () => {

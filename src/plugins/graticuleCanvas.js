@@ -2,6 +2,12 @@ export default () => {
     const datumGraticule = d3.geoGraticule()();
     const _ = {style: {}, drawTo: null};
 
+    function init(){
+        const __ = this._;
+        __.options.showGraticule = true;
+        __.options.transparentGraticule = false;
+    }
+
     function create() {
         const __ = this._;
         if (__.options.showGraticule) {
@@ -24,8 +30,7 @@ export default () => {
     return {
         name: 'graticuleCanvas',
         onInit() {
-            this._.options.transparentGraticule = false;
-            this._.options.showGraticule = true;
+            init.call(this);
         },
         onCreate() {
             create.call(this);

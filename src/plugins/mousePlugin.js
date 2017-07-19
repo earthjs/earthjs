@@ -1,12 +1,7 @@
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
-export default (selector, options={}) => {
+export default ({selector,zoomScale,iDrag}={zoomScale:[0,1000]}) => {
     /*eslint no-console: 0 */
-    options = Object.assign({
-        iDrag:false,
-        zoom: [0,1000],
-    }, options);
     const _ = {svg:null, q: null, sync: [], mouse: null, wait: null,
-        options,
         onDrag: {},
         onDragKeys: [],
         onClick: {},
@@ -64,8 +59,10 @@ export default (selector, options={}) => {
             .scaleExtent([0.1, 5])
             .translateExtent([[0,0], wh]));
 
+        // todo: add zoom lifecycle to optimize plugins zoom-able
+        // ex: barTooltipSvg, at the end of zoom, need to recreate
         function zoom() {
-            const z = _.options.zoom;
+            const z = zoomScale;
             const r1 = s0 * d3.event.transform.k;
             if (r1>=z[0] && r1<=z[1]) {
                 __.scale(r1);
@@ -98,7 +95,7 @@ export default (selector, options={}) => {
             __.drag = true;
             _._this = this;
             _.mouse = d3.mouse(this);
-            !_.options.iDrag && drag(__);
+            !iDrag && drag(__);
             // _.t1+=1; // twice call compare to onInterval
         }
 
@@ -141,7 +138,7 @@ export default (selector, options={}) => {
         },
         onInterval() {
             const __ = this._;
-            if (__.drag && _.options.iDrag) {
+            if (__.drag && iDrag) {
                 if (_.oMouse[0]!==_.mouse[0] &&
                     _.oMouse[1]!==_.mouse[1]) {
                     _.oMouse = _.mouse;

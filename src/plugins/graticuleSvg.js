@@ -2,6 +2,13 @@ export default selector => {
     const _ = {svg:null, q: null, graticule: d3.geoGraticule()}
     const $ = {};
 
+    function init() {
+        const __ = this._;
+        __.options.showGraticule = true;
+        __.options.transparentGraticule = false;
+        _.svg = selector ? d3.selectAll(selector) : __.svg;
+    }
+
     function create() {
         _.svg.selectAll('.graticule').remove();
         if (this._.options.showGraticule) {
@@ -27,9 +34,7 @@ export default selector => {
     return {
         name: 'graticuleSvg',
         onInit() {
-            const __ = this._;
-            __.options.showGraticule = true;
-            _.svg = selector ? d3.selectAll(selector) : __.svg;
+            init.call(this);
         },
         onCreate() {
             create.call(this);

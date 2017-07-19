@@ -1,4 +1,4 @@
-export default (urlWorld, urlCountryNames) => {
+export default (worldUrl, {countryNameUrl}={}) => {
     /*eslint no-console: 0 */
     const _ = {checker: [], ocn: 0, spd: 10, pan: 0, clr: 0};
 
@@ -26,7 +26,7 @@ export default (urlWorld, urlCountryNames) => {
         r(p.oceanSvg());
         r(p.canvasPlugin());
         r(p.graticuleCanvas());
-        r(p.worldCanvas(urlWorld,urlCountryNames));
+        r(p.worldCanvas(worldUrl,{countryNameUrl}));
         this._.options.oceanColor = 2;
         this._.options.transparent = true;
         this.canvasPlugin.selectAll('.ej-canvas');

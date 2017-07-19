@@ -3,6 +3,13 @@ export default selector => {
     const _ = {svg:null, dataPings: null};
     const $ = {};
 
+    function init() {
+        const __ = this._;
+        __.options.showPings = true;
+        setInterval(() => animate.call(this), 3000);
+        _.svg = selector ? d3.selectAll(selector) : __.svg;
+    }
+
     function create() {
         _.svg.selectAll('.pings').remove();
         if (_.dataPings && this._.options.showPings) {
@@ -52,10 +59,7 @@ export default selector => {
     return {
         name: 'pingsSvg',
         onInit() {
-            const __ = this._;
-            __.options.showPings = true;
-            setInterval(() => animate.call(this), 3000);
-            _.svg = selector ? d3.selectAll(selector) : __.svg;
+            init.call(this);
         },
         onCreate() {
             create.call(this);

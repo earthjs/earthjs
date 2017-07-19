@@ -2,6 +2,12 @@ export default (urlPlaces, selector) => {
     const _ = {svg:null, q: null, places: null};
     const $ = {};
 
+    function init() {
+        const __ = this._;
+        __.options.showPlaces = true;
+        _.svg = selector ? d3.selectAll(selector) : __.svg;
+    }
+
     function create() {
         _.svg.selectAll('.points,.labels').remove();
         if (_.places) {
@@ -10,13 +16,6 @@ export default (urlPlaces, selector) => {
                 svgAddPlaceLabels.call(this);
                 refresh.call(this);
             }
-        }
-    }
-
-    function refresh() {
-        if ($.placePoints) {
-            $.placePoints.attr('d', this._.path);
-            position_labels.call(this);
         }
     }
 
@@ -56,6 +55,13 @@ export default (urlPlaces, selector) => {
             });
     }
 
+    function refresh() {
+        if ($.placePoints) {
+            $.placePoints.attr('d', this._.path);
+            position_labels.call(this);
+        }
+    }
+
     return {
         name: 'placesSvg',
         urls: urlPlaces && [urlPlaces],
@@ -63,9 +69,7 @@ export default (urlPlaces, selector) => {
             _.places = places;
         },
         onInit() {
-            const __ = this._;
-            __.options.showPlaces = true;
-            _.svg = selector ? d3.selectAll(selector) : __.svg;
+            init.call(this);
         },
         onCreate() {
             create.call(this);

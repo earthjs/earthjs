@@ -41,6 +41,12 @@ export default () => {
         .style('top', _.mouseXY[1] - 15 + 'px');
     }
 
+    function resize() {
+        create.call(this);
+        barTooltip.style('opacity', 0)
+        .style('display', 'none');
+    }
+
     return {
         name: 'barTooltipSvg',
         onInit() {
@@ -49,13 +55,11 @@ export default () => {
         onCreate() {
             create.call(this);
         },
-        onResize() {
-            create.call(this);
-            barTooltip.style('opacity', 0)
-            .style('display', 'none');
-        },
         onRefresh() {
             refresh.call(this);
+        },
+        onResize() {
+            resize.call(this);
         },
         show(d) {
             const props = d.properties;

@@ -19,6 +19,8 @@ export default () => {
 
     return {
         name: 'zoomPlugin',
-        onInit() {init.call(this);}
+        onInit() {
+            init.call(this);
+        }
     }
 }

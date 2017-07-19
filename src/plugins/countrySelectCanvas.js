@@ -10,7 +10,7 @@ export default () => {
         onDblClickKeys: [],
     };
 
-    function initCountrySelectHandler() {
+    function init() {
         if (this.hoverCanvas) {
             const hoverHandler = (mouse, country) => {
                 _.onHoverKeys.forEach(k => {
@@ -48,18 +48,22 @@ export default () => {
         }
     }
 
+    function create() {
+        if (this.worldCanvas && !_.countries) {
+            const {world} = this.worldCanvas.data();
+            if (world) {
+                _.countries = topojson.feature(world, world.objects.countries);
+            }
+        }
+    }
+
     return {
         name: 'countrySelectCanvas',
         onInit() {
-            initCountrySelectHandler.call(this);
+            init.call(this);
         },
         onCreate() {
-            if (this.worldCanvas && !_.countries) {
-                const {world} = this.worldCanvas.data();
-                if (world) {
-                    _.countries = topojson.feature(world, world.objects.countries);
-                }
-            }
+            create.call(this);
         },
         onHover(obj) {
             Object.assign(_.onHover, obj);

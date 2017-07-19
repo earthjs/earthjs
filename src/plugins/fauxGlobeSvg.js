@@ -4,6 +4,13 @@ export default selector => {
     const _ = {svg:null, q: null};
     const $ = {};
 
+    function init() {
+        const __ = this._;
+        __.options.showGlobeShading = true;
+        __.options.showGlobeHilight = true;
+        _.svg = selector ? d3.selectAll(selector) : __.svg;
+    }
+
     function create() {
         svgAddGlobeShading.call(this);
         svgAddGlobeHilight.call(this);
@@ -53,27 +60,28 @@ export default selector => {
         }
     }
 
+    function resize() {
+        const __ = this._;
+        const {options} = __;
+        const scale = __.proj.scale();
+        if ($.globeShading && options.showGlobeShading) {
+            $.globeShading.attr('r', scale);
+        }
+        if ($.globeHilight && options.showGlobeHilight) {
+            $.globeHilight.attr('r', scale);
+        }
+    }
+
     return {
         name: 'fauxGlobeSvg',
         onInit() {
-            const __ = this._;
-            __.options.showGlobeShading = true;
-            __.options.showGlobeHilight = true;
-            _.svg = selector ? d3.selectAll(selector) : __.svg;
+            init.call(this);
         },
         onCreate() {
             create.call(this);
         },
         onResize() {
-            const __ = this._;
-            const {options} = __;
-            const scale = __.proj.scale();
-            if ($.globeShading && options.showGlobeShading) {
-                $.globeShading.attr('r', scale);
-            }
-            if ($.globeHilight && options.showGlobeHilight) {
-                $.globeHilight.attr('r', scale);
-            }
+            resize.call(this);
         },
         selectAll(q) {
             if (q) {

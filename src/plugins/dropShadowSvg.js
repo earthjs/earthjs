@@ -4,6 +4,12 @@ export default selector => {
     const _ = {svg:null, q: null};
     const $ = {};
 
+    function init() {
+        const __ = this._;
+        __.options.showDropShadow = true;
+        _.svg = selector ? d3.selectAll(selector) : __.svg;
+    }
+
     function create() {
         const __ = this._;
         _.svg.selectAll('#drop_shadow,.drop_shadow').remove();
@@ -37,9 +43,7 @@ export default selector => {
     return {
         name: 'dropShadowSvg',
         onInit() {
-            const __ = this._;
-            __.options.showDropShadow = true;
-            _.svg = selector ? d3.selectAll(selector) : __.svg;
+            init.call(this);
         },
         onCreate() {
             create.call(this);

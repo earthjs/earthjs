@@ -9,6 +9,7 @@ export default (urlJson, urlImage, wh=[15,25]) => {
         _.image = document.getElementById('pin');
 
     function init(wh) {
+        this._.options.showPin = true;
         const sc = this._.proj.scale();
         _.w = d3.scaleLinear().domain([0,sc]).range([0,wh[0]]);
         _.h = d3.scaleLinear().domain([0,sc]).range([0,wh[1]]);
@@ -53,7 +54,6 @@ export default (urlJson, urlImage, wh=[15,25]) => {
             this.pinCanvas.data(json);
         },
         onInit() {
-            this._.options.showPin = true;
             init.call(this, wh);
         },
         onCreate() {

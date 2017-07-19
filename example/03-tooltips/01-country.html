@@ -11,7 +11,7 @@
         const g = earthjs();
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.oceanSvg());
-        g.register(earthjs.plugins.worldSvg('../d/world-110m.json', '../d/world-110m-country-names.tsv'));
+        g.register(earthjs.plugins.worldSvg('../d/world-110m.json', {countryNameUrl:'../d/world-110m-country-names.tsv'}));
         g.register(earthjs.plugins.countryTooltipSvg());
         g.ready(function() {
             g.create();

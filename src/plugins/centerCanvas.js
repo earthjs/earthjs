@@ -38,8 +38,7 @@ export default () => {
     return {
         name: 'centerCanvas',
         onInit() {
-            const options = this._.options;
-            options.enableCenter = true;
+            this._.options.enableCenter = true;
         },
         onCreate() {
             create.call(this);

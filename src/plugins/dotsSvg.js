@@ -1,10 +1,13 @@
-export default (urlDots, selector, options) => {
+export default (urlDots, {selectAll, important}={}) => {
     /*eslint no-console: 0 */
-    options = Object.assign({
-        important:false,
-    }, options);
-    const _ = {options, dataDots: null, radiusPath: null};
+    const _ = {dataDots: null, radiusPath: null};
     const $ = {};
+
+    function init() {
+        const __ = this._;
+        __.options.showDots = true;
+        _.svg = selectAll ? d3.selectAll(selectAll) : __.svg;
+    }
 
     function create() {
         const __ = this._;
@@ -41,7 +44,7 @@ export default (urlDots, selector, options) => {
                     return gdistance > 1.57 ? 'none' : (_g.fillStyle || 'rgba(100,0,0,.4)');
                 });
                 $.dots.style('display', function() {
-                    return (__.drag && !_.options.important) ? 'none' : 'inline';
+                    return (__.drag && !important) ? 'none' : 'inline';
                 });
                 $.dots.attr('d', __.path);
                 __.proj.clipAngle(90);
@@ -49,7 +52,7 @@ export default (urlDots, selector, options) => {
                 $.dots.style('display', function(d, i) {
                     coordinate = d.coordinates[0][i];
                     gdistance = d3.geoDistance(coordinate, __.proj.invert(__.center));
-                    return (gdistance > 1.57 || (__.drag && !_.options.important)) ? 'none' : 'inline';
+                    return (gdistance > 1.57 || (__.drag && !important)) ? 'none' : 'inline';
                 });
                 $.dots.style('fill', _g.fillStyle   || 'rgba(100,0,0,.4)')
                 $.dots.attr('d', __.path);
@@ -77,9 +80,7 @@ export default (urlDots, selector, options) => {
             this.dotsSvg.data(dots);
         },
         onInit() {
-            const __ = this._;
-            __.options.showDots = true;
-            _.svg = selector ? d3.selectAll(selector) : __.svg;
+            init.call(this);
         },
         onCreate() {
             create.call(this);

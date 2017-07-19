@@ -2,6 +2,12 @@ export default selector => {
     const _ = {svg:null, q: null, sphereColor: 0};
     const $ = {};
 
+    function init() {
+        const __ = this._;
+        __.options.showSphere = true;
+        _.svg = selector ? d3.selectAll(selector) : __.svg;        
+    }
+
     function create() {
         _.svg.selectAll('#glow,.sphere').remove();
         if (this._.options.showSphere) {
@@ -34,9 +40,7 @@ export default selector => {
     return {
         name: 'sphereSvg',
         onInit() {
-            const __ = this._;
-            __.options.showSphere = true;
-            _.svg = selector ? d3.selectAll(selector) : __.svg;
+            init.call(this);
         },
         onCreate() {
             create.call(this);

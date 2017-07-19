@@ -1,4 +1,4 @@
-export default (urlWorld, urlCountryNames, selector) => {
+export default (worldUrl, {countryNameUrl, selectAll}={}) => {
     /*eslint no-console: 0 */
     const _ = {svg:null, q: null, world: null, countryNames: null};
     const $ = {};
@@ -63,10 +63,10 @@ export default (urlWorld, urlCountryNames, selector) => {
     }
 
     let urls = null;
-    if (urlWorld) {
-        urls = [urlWorld];
-        if (urlCountryNames) {
-            urls.push(urlCountryNames);
+    if (worldUrl) {
+        urls = [worldUrl];
+        if (countryNameUrl) {
+            urls.push(countryNameUrl);
         }
     }
     return {
@@ -86,7 +86,7 @@ export default (urlWorld, urlCountryNames, selector) => {
             _.svgAddWorldBg = svgAddWorldBg;
             _.svgAddLakes = svgAddLakes;
             _.svgAddWorld = svgAddWorld;
-            _.svg = selector ? d3.selectAll(selector) : __.svg;
+            _.svg = selectAll ? d3.selectAll(selectAll) : __.svg;
         },
         onCreate() {
             create.call(this);

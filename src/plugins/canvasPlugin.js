@@ -1,7 +1,17 @@
 // Bo Ericsson’s Block http://bl.ocks.org/boeric/aa80b0048b7e39dd71c8fbe958d1b1d4
 export default (selector) => {
     /*eslint no-console: 0 */
-    const _ = {canvas: null, path: null, q: null}
+    const _ = {
+        canvas: selector && d3.selectAll(selector),
+        path: null,
+        q: null
+    }
+
+    function init() {
+        const __ = this._;
+        __.options.showCanvas = true;
+        _.path = d3.geoPath().projection(__.proj);
+    }
 
     function create() {
         const __ = this._;
@@ -40,15 +50,11 @@ export default (selector) => {
 
     return {
         name: 'canvasPlugin',
-        onInit() {
-            this._.options.showCanvas = true;
-            _.path = d3.geoPath().projection(this._.proj);
-            if (selector) {
-                _.canvas = d3.selectAll(selector);
-            }
+        onInit()    {
+            init   .call(this);
         },
-        onCreate() {
-            create.call(this);
+        onCreate()  {
+            create .call(this);
         },
         onRefresh() {
             refresh.call(this);

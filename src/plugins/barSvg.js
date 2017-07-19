@@ -1,7 +1,14 @@
-export default (urlBars, selector) => {
+export default (urlBars, {selector}={}) => {
     /*eslint no-console: 0 */
     const _ = {svg:null, barProjection: null, q: null, bars: null, valuePath: null};
     const $ = {};
+
+    function init() {
+        const __ = this._;
+        __.options.showBars = true;
+        _.barProjection = __.orthoGraphic();
+        _.svg = selector ? d3.selectAll(selector) : __.svg;
+    }
 
     function create() {
         const __ = this._;
@@ -41,6 +48,7 @@ export default (urlBars, selector) => {
             const scale = _.lengthScale;
             const proj2 = _.barProjection;
             const center = proj1.invert(__.center);
+            proj2.rotate(this._.proj.rotate());
             $.bar
                 .each(function(d) {
                     const arr = d.geometry.coordinates;
@@ -75,16 +83,12 @@ export default (urlBars, selector) => {
             this.barSvg.data(bars);
         },
         onInit() {
-            const __ = this._;
-            __.options.showBars = true;
-            _.barProjection = __.orthoGraphic();
-            _.svg = selector ? d3.selectAll(selector) : __.svg;
+            init.call(this);
         },
         onCreate() {
             create.call(this);
         },
         onRefresh() {
-            _.barProjection.rotate(this._.proj.rotate());
             refresh.call(this);
         },
         onResize() {

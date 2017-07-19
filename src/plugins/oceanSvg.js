@@ -9,6 +9,18 @@ export default selector => {
     const _ = {svg:null, q: null, scale: 0, oceanColor: 0};
     const $ = {};
 
+    function init() {
+        const __ = this._;
+        this._.options.showOcean = true;
+        Object.defineProperty(__.options, 'oceanColor', {
+            get: () => _.oceanColor,
+            set: (x) => {
+                _.oceanColor = x;
+            }
+        });
+        _.svg = selector ? d3.selectAll(selector) : __.svg;        
+    }
+
     function create() {
         _.svg.selectAll('#ocean,.ocean').remove();
         if (this._.options.showOcean) {
@@ -44,15 +56,7 @@ export default selector => {
     return {
         name: 'oceanSvg',
         onInit() {
-            const __ = this._;
-            this._.options.showOcean = true;
-            Object.defineProperty(__.options, 'oceanColor', {
-                get: () => _.oceanColor,
-                set: (x) => {
-                    _.oceanColor = x;
-                }
-            });
-            _.svg = selector ? d3.selectAll(selector) : __.svg;
+            init.call(this);
         },
         onCreate() {
             create.call(this);
