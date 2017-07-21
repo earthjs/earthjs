@@ -23,7 +23,7 @@ export default () => {
 
     function initmouseClickHandler() {
         if (this.worldCanvas) {
-            const {world} = this.worldCanvas.data();
+            const world = this.worldCanvas.data();
             if (world) {
                 _.countries = topojson.feature(world, world.objects.countries);
             }
@@ -76,10 +76,15 @@ export default () => {
             Object.assign(_.onCountry, obj);
             _.onCountryKeys = Object.keys(_.onCountry);
         },
-        world(w) {
-            _.countries = topojson.feature(w, w.objects.countries);
+        data(data) {
+            if (data) {
+                _.world = data;
+                _.countries = topojson.feature(data, data.objects.countries);
+            } else {
+                return _.world;
+            }
         },
-        data() {
+        state() {
             return {
                 pos: _.pos,
                 dot: _.dot,

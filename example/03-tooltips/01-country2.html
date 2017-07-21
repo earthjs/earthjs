@@ -19,8 +19,8 @@
         g.canvasPlugin.selectAll('.ej-canvas');
         g._.options.showSelectedCountry = true;
         g.ready(function() {
-            const world = g.worldCanvas.data().world;
-            g.hoverCanvas.world(world);
+            const world = g.worldCanvas.data();
+            g.hoverCanvas.data(world);
             g.create();
         })
     </script>

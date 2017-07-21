@@ -50,8 +50,9 @@ export default () => {
 
     function create() {
         if (this.worldCanvas && !_.countries) {
-            const {world} = this.worldCanvas.data();
+            const world = this.worldCanvas.data();
             if (world) {
+                _.world = world;
                 _.countries = topojson.feature(world, world.objects.countries);
             }
         }
@@ -77,8 +78,13 @@ export default () => {
             Object.assign(_.onDblClick, obj);
             _.onDblClickKeys = Object.keys(_.onDblClick);
         },
-        world(w) {
-            _.countries = topojson.feature(w, w.objects.countries);
+        data(data) {
+            if (data) {
+                _.world = data;
+                _.countries = topojson.feature(data, data.objects.countries);
+            } else {
+                return _.world;
+            }
         },
     }
 }

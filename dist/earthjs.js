@@ -763,10 +763,9 @@ var hoverCanvas = (function () {
     function init() {
         this._.options.showSelectedCountry = false;
         if (this.worldCanvas) {
-            var _worldCanvas$data = this.worldCanvas.data(),
-                world = _worldCanvas$data.world;
-
+            var world = this.worldCanvas.data();
             if (world) {
+                _.world = world;
                 _.countries = topojson.feature(world, world.objects.countries);
             }
         }
@@ -832,10 +831,15 @@ var hoverCanvas = (function () {
             Object.assign(_.onCountry, obj);
             _.onCountryKeys = Object.keys(_.onCountry);
         },
-        world: function world(w) {
-            _.countries = topojson.feature(w, w.objects.countries);
+        data: function data(_data) {
+            if (_data) {
+                _.world = _data;
+                _.countries = topojson.feature(_data, _data.objects.countries);
+            } else {
+                return _.world;
+            }
         },
-        data: function data() {
+        state: function state() {
             return {
                 pos: _.pos,
                 dot: _.dot,
@@ -861,9 +865,7 @@ var clickCanvas = (function () {
 
     function init() {
         if (this.worldCanvas) {
-            var _worldCanvas$data = this.worldCanvas.data(),
-                world = _worldCanvas$data.world;
-
+            var world = this.worldCanvas.data();
             if (world) {
                 _.countries = topojson.feature(world, world.objects.countries);
             }
@@ -928,10 +930,15 @@ var clickCanvas = (function () {
             Object.assign(_.onCountry, obj);
             _.onCountryKeys = Object.keys(_.onCountry);
         },
-        world: function world(w) {
-            _.countries = topojson.feature(w, w.objects.countries);
+        data: function data(_data) {
+            if (_data) {
+                _.world = _data;
+                _.countries = topojson.feature(_data, _data.objects.countries);
+            } else {
+                return _.world;
+            }
         },
-        data: function data() {
+        state: function state() {
             return {
                 pos: _.pos,
                 dot: _.dot,
@@ -967,9 +974,7 @@ var dblClickCanvas = (function () {
 
     function initmouseClickHandler() {
         if (this.worldCanvas) {
-            var _worldCanvas$data = this.worldCanvas.data(),
-                world = _worldCanvas$data.world;
-
+            var world = this.worldCanvas.data();
             if (world) {
                 _.countries = topojson.feature(world, world.objects.countries);
             }
@@ -1024,10 +1029,15 @@ var dblClickCanvas = (function () {
             Object.assign(_.onCountry, obj);
             _.onCountryKeys = Object.keys(_.onCountry);
         },
-        world: function world(w) {
-            _.countries = topojson.feature(w, w.objects.countries);
+        data: function data(_data) {
+            if (_data) {
+                _.world = _data;
+                _.countries = topojson.feature(_data, _data.objects.countries);
+            } else {
+                return _.world;
+            }
         },
-        data: function data() {
+        state: function state() {
             return {
                 pos: _.pos,
                 dot: _.dot,
@@ -1780,10 +1790,9 @@ var countrySelectCanvas = (function () {
 
     function create() {
         if (this.worldCanvas && !_.countries) {
-            var _worldCanvas$data = this.worldCanvas.data(),
-                world = _worldCanvas$data.world;
-
+            var world = this.worldCanvas.data();
             if (world) {
+                _.world = world;
                 _.countries = topojson.feature(world, world.objects.countries);
             }
         }
@@ -1809,8 +1818,13 @@ var countrySelectCanvas = (function () {
             Object.assign(_.onDblClick, obj);
             _.onDblClickKeys = Object.keys(_.onDblClick);
         },
-        world: function world(w) {
-            _.countries = topojson.feature(w, w.objects.countries);
+        data: function data(_data) {
+            if (_data) {
+                _.world = _data;
+                _.countries = topojson.feature(_data, _data.objects.countries);
+            } else {
+                return _.world;
+            }
         }
     };
 });
@@ -2096,12 +2110,11 @@ var placesSvg = (function (urlPlaces) {
         onRefresh: function onRefresh() {
             refresh.call(this);
         },
-        data: function data(p) {
-            if (p) {
-                var data = p.placesSvg.data();
-                _.places = data.places;
+        data: function data(_data) {
+            if (_data) {
+                _.places = _data;
             } else {
-                return { places: _.places };
+                return _.places;
             }
         },
         selectAll: function selectAll(q) {
@@ -2130,7 +2143,7 @@ var worldCanvas = (function (worldUrl) {
         3: 'rgba(149,114, 74, 0.6)',
         4: 'rgba(153,126, 87, 0.6)',
         5: 'rgba(155,141,115, 0.6)' };
-    var _ = { world: null, countryNames: null, style: {}, drawTo: null, options: {}, landColor: 0 };
+    var _ = { world: null, style: {}, drawTo: null, options: {}, landColor: 0 };
 
     function create() {
         var __ = this._;
@@ -2193,8 +2206,8 @@ var worldCanvas = (function (worldUrl) {
     return {
         name: 'worldCanvas',
         urls: worldUrl && [worldUrl],
-        onReady: function onReady(err, world) {
-            this.worldCanvas.data({ world: world });
+        onReady: function onReady(err, data) {
+            this.worldCanvas.data(data);
             Object.defineProperty(this._.options, 'landColor', {
                 get: function get() {
                     return _.landColor;
@@ -2233,16 +2246,13 @@ var worldCanvas = (function (worldUrl) {
         },
         data: function data(_data) {
             if (_data) {
-                _.world = _data.world;
-                _.countryNames = _data.countryNames;
-                _.land = topojson.feature(_.world, _.world.objects.land);
-                _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
-                _.countries = topojson.feature(_.world, _.world.objects.countries);
+                _.world = _data;
+                _.land = topojson.feature(_data, _data.objects.land);
+                _.lakes = topojson.feature(_data, _data.objects.ne_110m_lakes);
+                _.countries = topojson.feature(_data, _data.objects.countries);
+            } else {
+                return _.world;
             }
-            return {
-                world: _.world,
-                countryNames: _.countryNames
-            };
         },
         drawTo: function drawTo(arr) {
             _.drawTo = arr;
@@ -2261,7 +2271,7 @@ var worldCanvas = (function (worldUrl) {
 
 var worldSvg = (function (worldUrl) {
     /*eslint no-console: 0 */
-    var _ = { svg: null, q: null, world: null, countryNames: null };
+    var _ = { svg: null, q: null, world: null };
     var $ = {};
 
     function create() {
@@ -2325,8 +2335,8 @@ var worldSvg = (function (worldUrl) {
     return {
         name: 'worldSvg',
         urls: worldUrl && [worldUrl],
-        onReady: function onReady(err, world, countryNames) {
-            this.worldSvg.data({ world: world, countryNames: countryNames });
+        onReady: function onReady(err, data) {
+            this.worldSvg.data(data);
         },
         onInit: function onInit() {
             var __ = this._;
@@ -2352,16 +2362,13 @@ var worldSvg = (function (worldUrl) {
         },
         data: function data(_data) {
             if (_data) {
-                _.world = _data.world;
-                _.countryNames = _data.countryNames;
-                _.land = topojson.feature(_.world, _.world.objects.land);
-                _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
-                _.countries = topojson.feature(_.world, _.world.objects.countries);
+                _.world = _data;
+                _.land = topojson.feature(_data, _data.objects.land);
+                _.lakes = topojson.feature(_data, _data.objects.ne_110m_lakes);
+                _.countries = topojson.feature(_data, _data.objects.countries);
+            } else {
+                return _.world;
             }
-            return {
-                world: _.world,
-                countryNames: _.countryNames
-            };
         },
         selectAll: function selectAll(q) {
             if (q) {
@@ -3165,7 +3172,11 @@ var pingsCanvas = (function () {
             interval.call(this);
         },
         data: function data(_data) {
-            _.dataPings = _data;
+            if (_data) {
+                _.dataPings = _data;
+            } else {
+                return _.dataPings;
+            }
         },
         drawTo: function drawTo(arr) {
             _.drawTo = arr;
@@ -3240,7 +3251,11 @@ var pingsSvg = (function () {
             refresh.call(this);
         },
         data: function data(_data) {
-            _.dataPings = _data;
+            if (_data) {
+                _.dataPings = _data;
+            } else {
+                return _.dataPings;
+            }
         },
         selectAll: function selectAll(q) {
             if (q) {
@@ -3322,9 +3337,6 @@ var debugThreejs = (function () {
 });
 
 var commonPlugins = (function (worldUrl) {
-    var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-        countryNameUrl = _ref.countryNameUrl;
-
     /*eslint no-console: 0 */
     var _ = { checker: [], ocn: 0, spd: 10, pan: 0, clr: 0 };
 
@@ -3340,14 +3352,14 @@ var commonPlugins = (function (worldUrl) {
 
         var r = this.register;
         var p = earthjs.plugins;
-        r(p.configPlugin());
-        r(p.autorotatePlugin(10));
         r(p.mousePlugin());
+        r(p.configPlugin());
+        r(p.autorotatePlugin());
         r(p.dropShadowSvg());
         r(p.oceanSvg());
         r(p.canvasPlugin());
         r(p.graticuleCanvas());
-        r(p.worldCanvas(worldUrl, { countryNameUrl: countryNameUrl }));
+        r(p.worldCanvas(worldUrl));
         this._.options.oceanColor = 2;
         this._.options.transparent = true;
         this.canvasPlugin.selectAll('.ej-canvas');

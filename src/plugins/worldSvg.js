@@ -1,6 +1,6 @@
 export default worldUrl => {
     /*eslint no-console: 0 */
-    const _ = {svg:null, q: null, world: null, countryNames: null};
+    const _ = {svg:null, q: null, world: null};
     const $ = {};
 
     function create() {
@@ -65,8 +65,8 @@ export default worldUrl => {
     return {
         name: 'worldSvg',
         urls: worldUrl && [worldUrl],
-        onReady(err, world, countryNames) {
-            this.worldSvg.data({world, countryNames});
+        onReady(err, data) {
+            this.worldSvg.data(data);
         },
         onInit() {
             const __ = this._;
@@ -92,15 +92,12 @@ export default worldUrl => {
         },
         data(data) {
             if (data) {
-                _.world = data.world;
-                _.countryNames = data.countryNames;
-                _.land = topojson.feature(_.world, _.world.objects.land);
-                _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
-                _.countries = topojson.feature(_.world, _.world.objects.countries);
-            }
-            return {
-                world: _.world ,
-                countryNames: _.countryNames
+                _.world = data;
+                _.land = topojson.feature(data, data.objects.land);
+                _.lakes = topojson.feature(data, data.objects.ne_110m_lakes);
+                _.countries = topojson.feature(data, data.objects.countries);
+            } else {
+                return  _.world;
             }
         },
         selectAll(q) {

@@ -77,12 +77,11 @@ export default urlPlaces => {
         onRefresh() {
             refresh.call(this);
         },
-        data(p) {
-            if (p) {
-                const data = p.placesSvg.data()
-                _.places = data.places;
+        data(data) {
+            if (data) {
+                _.places = data;
             } else {
-                return {places: _.places}
+                return _.places;
             }
         },
         selectAll(q) {

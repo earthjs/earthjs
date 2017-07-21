@@ -44,7 +44,7 @@
             g.dotsCanvas.data(json);
         };
         g.ready(function(){
-            g.hoverCanvas.world(g.worldCanvas.data().world);
+            g.hoverCanvas.data(g.worldCanvas.data());
             // g.create();
             g.configPlugin.set({
                 showCountries: false,

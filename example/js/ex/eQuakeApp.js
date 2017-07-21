@@ -14,9 +14,9 @@ const eQuakeApp = () => {
             _.world = world;
             _.equake = equake;
             this.eQuakeApp.mag(5);
-            this.hoverCanvas.world(world);
-            this.worldCanvas.data({world});
-            this.countrySelectCanvas.world(world);
+            this.hoverCanvas.data(world);
+            this.worldCanvas.data(world);
+            this.countrySelectCanvas.data(world);
             this.countryTooltipCanvas.data(countryNames);
         },
         onInit() {

@@ -68,7 +68,11 @@ export default () => {
             refresh.call(this);
         },
         data(data) {
-            _.dataPings = data;
+            if (data) {
+                _.dataPings = data;
+            } else {
+                return _.dataPings;
+            }
         },
         selectAll(q) {
             if (q) {

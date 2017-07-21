@@ -8,7 +8,7 @@ export default worldUrl => {
         3:'rgba(149,114, 74, 0.6)',
         4:'rgba(153,126, 87, 0.6)',
         5:'rgba(155,141,115, 0.6)'}
-    const _ = {world: null, countryNames: null, style: {}, drawTo: null, options: {}, landColor: 0};
+    const _ = {world: null, style: {}, drawTo: null, options: {}, landColor: 0};
 
     function create() {
         const __ = this._;
@@ -71,8 +71,8 @@ export default worldUrl => {
     return {
         name: 'worldCanvas',
         urls: worldUrl && [worldUrl],
-        onReady(err, world) {
-            this.worldCanvas.data({world});
+        onReady(err, data) {
+            this.worldCanvas.data(data);
             Object.defineProperty(this._.options, 'landColor', {
                 get: () => _.landColor,
                 set: (x) => {
@@ -107,15 +107,12 @@ export default worldUrl => {
         },
         data(data) {
             if (data) {
-                _.world = data.world;
-                _.countryNames = data.countryNames;
-                _.land = topojson.feature(_.world, _.world.objects.land);
-                _.lakes = topojson.feature(_.world, _.world.objects.ne_110m_lakes);
-                _.countries = topojson.feature(_.world, _.world.objects.countries);
-            }
-            return {
-                world: _.world ,
-                countryNames: _.countryNames
+                _.world = data;
+                _.land = topojson.feature(data, data.objects.land);
+                _.lakes = topojson.feature(data, data.objects.ne_110m_lakes);
+                _.countries = topojson.feature(data, data.objects.countries);
+            } else {
+                return _.world;
             }
         },
         drawTo(arr) {

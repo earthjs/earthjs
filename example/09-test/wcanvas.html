@@ -42,10 +42,10 @@
 
         g.canvasPlugin.selectAll('.ej-canvas');
         g.ready(function(){
-            const world = g.worldCanvas.data().world;
-            g.hoverCanvas.world(world);
-            g.clickCanvas.world(world);
-            g.dblClickCanvas.world(world);
+            const world = g.worldCanvas.data();
+            g.hoverCanvas.data(world);
+            g.clickCanvas.data(world);
+            g.dblClickCanvas.data(world);
             // g.create();
             g.configPlugin.set({
                 showCountries: false,

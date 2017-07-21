@@ -49,7 +49,11 @@ export default () => {
             interval.call(this);
         },
         data(data) {
-            _.dataPings = data;
+            if (data) {
+                _.dataPings = data;
+            } else {
+                return _.dataPings;
+            }
         },
         drawTo(arr) {
             _.drawTo = arr;

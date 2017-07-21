@@ -1,4 +1,4 @@
-export default (worldUrl, {countryNameUrl}={}) => {
+export default worldUrl => {
     /*eslint no-console: 0 */
     const _ = {checker: [], ocn: 0, spd: 10, pan: 0, clr: 0};
 
@@ -19,14 +19,14 @@ export default (worldUrl, {countryNameUrl}={}) => {
     function addPlugins() {
         const r = this.register;
         const p = earthjs.plugins;
-        r(p.configPlugin());
-        r(p.autorotatePlugin(10));
         r(p.mousePlugin());
+        r(p.configPlugin());
+        r(p.autorotatePlugin());
         r(p.dropShadowSvg());
         r(p.oceanSvg());
         r(p.canvasPlugin());
         r(p.graticuleCanvas());
-        r(p.worldCanvas(worldUrl,{countryNameUrl}));
+        r(p.worldCanvas(worldUrl));
         this._.options.oceanColor = 2;
         this._.options.transparent = true;
         this.canvasPlugin.selectAll('.ej-canvas');
@@ -109,7 +109,6 @@ export default (worldUrl, {countryNameUrl}={}) => {
         onInit() {
             addPlugins.call(this);
             this._.options.showControll = true;
-
         },
         onCreate() {
             enableController.call(this);
