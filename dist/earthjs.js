@@ -381,7 +381,6 @@ var autorotatePlugin = (function () {
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 var mousePlugin = (function () {
     var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { zoomScale: [0, 1000] },
-        selectAll = _ref.selectAll,
         zoomScale = _ref.zoomScale,
         iDrag = _ref.iDrag;
 
@@ -520,7 +519,7 @@ var mousePlugin = (function () {
         onInit: function onInit() {
             _.oMouse = [];
             var __ = this._;
-            _.svg = selectAll ? d3.selectAll(selectAll) : __.svg;
+            _.svg = __.svg;
             init.call(this);
         },
         onInterval: function onInterval() {
@@ -1039,7 +1038,7 @@ var dblClickCanvas = (function () {
     };
 });
 
-var oceanSvg = (function (selector) {
+var oceanSvg = (function () {
     var color = {
         0: ['rgba(221, 221, 255, 0.6)', 'rgba(153, 170, 187,0.8)'],
         1: ['rgba(159, 240, 232, 0.6)', 'rgba(  5, 242, 219,0.8)'],
@@ -1061,7 +1060,7 @@ var oceanSvg = (function (selector) {
                 _.oceanColor = x;
             }
         });
-        _.svg = selector ? d3.selectAll(selector) : __.svg;
+        _.svg = __.svg;
     }
 
     function create() {
@@ -1122,14 +1121,14 @@ var oceanSvg = (function (selector) {
     };
 });
 
-var sphereSvg = (function (selector) {
+var sphereSvg = (function () {
     var _ = { svg: null, q: null, sphereColor: 0 };
     var $ = {};
 
     function init() {
         var __ = this._;
         __.options.showSphere = true;
-        _.svg = selector ? d3.selectAll(selector) : __.svg;
+        _.svg = __.svg;
     }
 
     function create() {
@@ -1339,7 +1338,7 @@ var graticuleThreejs = (function () {
     };
 });
 
-var graticuleSvg = (function (selector) {
+var graticuleSvg = (function () {
     var _ = { svg: null, q: null, graticule: d3.geoGraticule() };
     var $ = {};
 
@@ -1347,7 +1346,7 @@ var graticuleSvg = (function (selector) {
         var __ = this._;
         __.options.showGraticule = true;
         __.options.transparentGraticule = false;
-        _.svg = selector ? d3.selectAll(selector) : __.svg;
+        _.svg = __.svg;
     }
 
     function create() {
@@ -1396,7 +1395,7 @@ var graticuleSvg = (function (selector) {
 });
 
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
-var dropShadowSvg = (function (selector) {
+var dropShadowSvg = (function () {
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null };
     var $ = {};
@@ -1404,7 +1403,7 @@ var dropShadowSvg = (function (selector) {
     function init() {
         var __ = this._;
         __.options.showDropShadow = true;
-        _.svg = selector ? d3.selectAll(selector) : __.svg;
+        _.svg = __.svg;
     }
 
     function create() {
@@ -1451,7 +1450,7 @@ var dropShadowSvg = (function (selector) {
 });
 
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
-var fauxGlobeSvg = (function (selectAll) {
+var fauxGlobeSvg = (function () {
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null };
     var $ = {};
@@ -1460,7 +1459,7 @@ var fauxGlobeSvg = (function (selectAll) {
         var __ = this._;
         __.options.showGlobeShading = true;
         __.options.showGlobeHilight = true;
-        _.svg = selectAll ? d3.selectAll(selectAll) : __.svg;
+        _.svg = __.svg;
     }
 
     function create() {
@@ -2026,14 +2025,14 @@ var barTooltipSvg = (function () {
     };
 });
 
-var placesSvg = (function (urlPlaces, selector) {
+var placesSvg = (function (urlPlaces) {
     var _ = { svg: null, q: null, places: null };
     var $ = {};
 
     function init() {
         var __ = this._;
         __.options.showPlaces = true;
-        _.svg = selector ? d3.selectAll(selector) : __.svg;
+        _.svg = __.svg;
     }
 
     function create() {
@@ -2776,7 +2775,6 @@ var barSvg = (function (urlBars) {
 
 var dotsSvg = (function (urlDots) {
     var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-        selectAll = _ref.selectAll,
         important = _ref.important;
 
     /*eslint no-console: 0 */
@@ -2786,7 +2784,7 @@ var dotsSvg = (function (urlDots) {
     function init() {
         var __ = this._;
         __.options.showDots = true;
-        _.svg = selectAll ? d3.selectAll(selectAll) : __.svg;
+        _.svg = __.svg;
     }
 
     function create() {
@@ -3175,7 +3173,7 @@ var pingsCanvas = (function () {
     };
 });
 
-var pingsSvg = (function (selector) {
+var pingsSvg = (function () {
     /*eslint no-console: 0 */
     var _ = { svg: null, dataPings: null };
     var $ = {};
@@ -3188,7 +3186,7 @@ var pingsSvg = (function (selector) {
         setInterval(function () {
             return animate.call(_this);
         }, 3000);
-        _.svg = selector ? d3.selectAll(selector) : __.svg;
+        _.svg = __.svg;
     }
 
     function create() {
