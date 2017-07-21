@@ -14,12 +14,13 @@
     <script>
         const g = earthjs()
         .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.canvasPlugin('.ej-canvas'))
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.debugThreejs())
         .register(earthjs.plugins.graticuleCanvas())
         .register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
+        g.canvasPlugin.selectAll('.ej-canvas');
         g.ready(function(){
             g.create();
         })
