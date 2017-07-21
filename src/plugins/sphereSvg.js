@@ -1,11 +1,11 @@
-export default selector => {
+export default () => {
     const _ = {svg:null, q: null, sphereColor: 0};
     const $ = {};
 
     function init() {
         const __ = this._;
         __.options.showSphere = true;
-        _.svg = selector ? d3.selectAll(selector) : __.svg;        
+        _.svg = __.svg;
     }
 
     function create() {

@@ -1,4 +1,4 @@
-export default selector => {
+export default () => {
     const _ = {svg:null, q: null, graticule: d3.geoGraticule()}
     const $ = {};
 
@@ -6,7 +6,7 @@ export default selector => {
         const __ = this._;
         __.options.showGraticule = true;
         __.options.transparentGraticule = false;
-        _.svg = selector ? d3.selectAll(selector) : __.svg;
+        _.svg = __.svg;
     }
 
     function create() {

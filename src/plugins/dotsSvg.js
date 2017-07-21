@@ -1,4 +1,4 @@
-export default (urlDots, {selectAll, important}={}) => {
+export default (urlDots, {important}={}) => {
     /*eslint no-console: 0 */
     const _ = {dataDots: null, radiusPath: null};
     const $ = {};
@@ -6,7 +6,7 @@ export default (urlDots, {selectAll, important}={}) => {
     function init() {
         const __ = this._;
         __.options.showDots = true;
-        _.svg = selectAll ? d3.selectAll(selectAll) : __.svg;
+        _.svg = __.svg;
     }
 
     function create() {

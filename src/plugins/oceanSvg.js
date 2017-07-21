@@ -1,4 +1,4 @@
-export default selector => {
+export default () => {
     const color = {
         0:['rgba(221, 221, 255, 0.6)', 'rgba(153, 170, 187,0.8)'],
         1:['rgba(159, 240, 232, 0.6)', 'rgba(  5, 242, 219,0.8)'],
@@ -18,7 +18,7 @@ export default selector => {
                 _.oceanColor = x;
             }
         });
-        _.svg = selector ? d3.selectAll(selector) : __.svg;        
+        _.svg = __.svg;
     }
 
     function create() {

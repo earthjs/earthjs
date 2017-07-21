@@ -1,11 +1,11 @@
-export default (urlPlaces, selector) => {
+export default urlPlaces => {
     const _ = {svg:null, q: null, places: null};
     const $ = {};
 
     function init() {
         const __ = this._;
         __.options.showPlaces = true;
-        _.svg = selector ? d3.selectAll(selector) : __.svg;
+        _.svg = __.svg;
     }
 
     function create() {
