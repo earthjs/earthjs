@@ -8,8 +8,8 @@
     <svg id="earth-js"/>
     <script>
         const g = earthjs({transparent:true})
-        .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.oceanSvg())
         .register(earthjs.plugins.graticuleSvg())
         .create();

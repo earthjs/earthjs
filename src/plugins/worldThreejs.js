@@ -19,10 +19,20 @@ export default (imgUrl='../d/world.png') => {
                 _.sphereObject = new THREE.Mesh( geometry, material );
                 group.add(_.sphereObject);
                 refresh.call(_this);
+                _this.renderThree();
                 // setTimeout(()=>d3.select('#three-js').attr('style', 'opacity: 1'),200);
             });
             _this.threejsPlugin.addObject(group);
         }
+    }
+
+    function refresh() {
+        const __ = this._;
+        const rt = __.proj.rotate();
+        rt[0] -= 90;
+        const q1 = __.versor(rt);
+        const q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
+        _.sphereObject.setRotationFromQuaternion(q2);
     }
 
     function resize() {
@@ -33,26 +43,18 @@ export default (imgUrl='../d/world.png') => {
         se.scale.z = sc;
     }
 
-    function refresh() {
-        const rt = this._.proj.rotate();
-        rt[0] -= 90;
-        const q1 = this._.versor(rt);
-        const q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
-        _.sphereObject.setRotationFromQuaternion(q2);
-    }
-
     return {
         name: 'worldThreejs',
         onInit() {
             init.call(this);
         },
-        onResize() {
-            resize.call(this);
-        },
         onRefresh() {
             if (_.sphereObject) {
                 refresh.call(this);
             }
-        }
+        },
+        onResize() {
+            resize.call(this);
+        },
     }
 }

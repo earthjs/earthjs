@@ -381,7 +381,7 @@ var autorotatePlugin = (function () {
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 var mousePlugin = (function () {
     var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { zoomScale: [0, 1000] },
-        selector = _ref.selector,
+        selectAll = _ref.selectAll,
         zoomScale = _ref.zoomScale,
         iDrag = _ref.iDrag;
 
@@ -520,7 +520,7 @@ var mousePlugin = (function () {
         onInit: function onInit() {
             _.oMouse = [];
             var __ = this._;
-            _.svg = selector ? d3.selectAll(selector) : __.svg;
+            _.svg = selectAll ? d3.selectAll(selectAll) : __.svg;
             init.call(this);
         },
         onInterval: function onInterval() {
@@ -597,26 +597,23 @@ var threejsPlugin = (function () {
     var threejs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'three-js';
 
     /*eslint no-console: 0 */
-    var _ = { renderer: null, scene: null, camera: null, scale: null };
+    var _ = { renderer: null, scene: null, camera: null };
 
     function init() {
-        var width = this._.options.width,
-            height = this._.options.height;
-        _.scene = new THREE.Scene();
-        _.yAxis = new THREE.Vector3(0, 1, 0);
+        var _$options = this._.options,
+            width = _$options.width,
+            height = _$options.height;
+
+        var container = document.getElementById(threejs);
         _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 10000);
-        _.camera.position.z = 500; // (higher than RADIUS + size of the bubble)
+        _.scene = new THREE.Scene();
+        _.camera.position.z = 1010; // (higher than RADIUS + size of the bubble)
         this._.camera = _.camera;
 
-        // Create renderer object.
-        // https://stackoverflow.com/questions/29422118/threejs-canvas-background-black
-        // https://stackoverflow.com/questions/16177056/changing-three-js-background-to-transparent-or-other-color
-        var container = document.getElementById(threejs);
         _.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, canvas: container });
-        // _.renderer.domElement.id = threejs;
         _.renderer.setClearColor(0x000000, 0);
         _.renderer.setSize(width, height);
-        this.renderThree = renderThree; // renderer        
+        this.renderThree = renderThree;
     }
 
     function renderThree() {
@@ -640,10 +637,10 @@ var threejsPlugin = (function () {
 });
 
 // Bo Ericsson’s Block http://bl.ocks.org/boeric/aa80b0048b7e39dd71c8fbe958d1b1d4
-var canvasPlugin = (function (selector) {
+var canvasPlugin = (function () {
     /*eslint no-console: 0 */
     var _ = {
-        canvas: selector && d3.selectAll(selector),
+        canvas: null,
         path: null,
         q: null
     };
@@ -1224,6 +1221,124 @@ var graticuleCanvas = (function () {
     };
 });
 
+// https://bl.ocks.org/mbostock/2b85250396c17a79155302f91ec21224
+// https://bl.ocks.org/pbogden/2f8d2409f1b3746a1c90305a1a80d183
+// http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
+var graticuleThreejs = (function () {
+    /*eslint no-console: 0 */
+    var _ = { radius: null };
+    _.scale = d3.scaleLinear().domain([0, 200]).range([0, 1]);
+
+    // Converts a point [longitude, latitude] in degrees to a THREE.Vector3.
+    // Axes have been rotated so Three's "y" axis is parallel to the North Pole
+    function vertex(point) {
+        var lambda = point[0] * Math.PI / 180,
+            phi = point[1] * Math.PI / 180,
+            cosPhi = Math.cos(phi);
+        return new THREE.Vector3(_.radius * cosPhi * Math.cos(lambda), _.radius * Math.sin(phi), -_.radius * cosPhi * Math.sin(lambda));
+    }
+
+    // Converts a GeoJSON MultiLineString in spherical coordinates to a THREE.LineSegments.
+    function wireframe(multilinestring, material) {
+        var geometry = new THREE.Geometry();
+        multilinestring.coordinates.forEach(function (line) {
+            d3.pairs(line.map(vertex), function (a, b) {
+                geometry.vertices.push(a, b);
+            });
+        });
+        return new THREE.LineSegments(geometry, material);
+    }
+
+    // See https://github.com/d3/d3-geo/issues/95
+    function graticule10() {
+        var epsilon = 1e-6,
+            x1 = 180,
+            x0 = -x1,
+            y1 = 80,
+            y0 = -y1,
+            dx = 10,
+            dy = 10,
+            X1 = 180,
+            X0 = -X1,
+            Y1 = 90,
+            Y0 = -Y1,
+            DX = 90,
+            DY = 360,
+            x = graticuleX(y0, y1, 2.5),
+            y = graticuleY(x0, x1, 2.5),
+            X = graticuleX(Y0, Y1, 2.5),
+            Y = graticuleY(X0, X1, 2.5);
+
+        function graticuleX(y0, y1, dy) {
+            var y = d3.range(y0, y1 - epsilon, dy).concat(y1);
+            return function (x) {
+                return y.map(function (y) {
+                    return [x, y];
+                });
+            };
+        }
+
+        function graticuleY(x0, x1, dx) {
+            var x = d3.range(x0, x1 - epsilon, dx).concat(x1);
+            return function (y) {
+                return x.map(function (x) {
+                    return [x, y];
+                });
+            };
+        }
+
+        return {
+            type: "MultiLineString",
+            coordinates: d3.range(Math.ceil(X0 / DX) * DX, X1, DX).map(X).concat(d3.range(Math.ceil(Y0 / DY) * DY, Y1, DY).map(Y)).concat(d3.range(Math.ceil(x0 / dx) * dx, x1, dx).filter(function (x) {
+                return Math.abs(x % DX) > epsilon;
+            }).map(x)).concat(d3.range(Math.ceil(y0 / dy) * dy, y1 + epsilon, dy).filter(function (y) {
+                return Math.abs(y % DY) > epsilon;
+            }).map(y))
+        };
+    }
+
+    function init() {
+        var __ = this._;
+        __.options.showGraticule = true;
+        _.radius = this._.proj.scale();
+        _.graticule = wireframe(graticule10(), new THREE.LineBasicMaterial({ color: 0xaaaaaa })); //0x800000
+        this.threejsPlugin.addObject(_.graticule);
+        refresh.call(this);
+    }
+
+    function refresh() {
+        var __ = this._;
+        var rt = __.proj.rotate();
+        rt[0] -= 90;
+        var q1 = __.versor(rt);
+        var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
+        _.graticule.setRotationFromQuaternion(q2);
+    }
+
+    function resize() {
+        var sc = _.scale(this._.proj.scale());
+        var se = _.graticule;
+        se.scale.x = sc;
+        se.scale.y = sc;
+        se.scale.z = sc;
+    }
+
+    return {
+        name: 'graticuleThreejs',
+        onInit: function onInit() {
+            init.call(this);
+        },
+        onRefresh: function onRefresh() {
+            if (_.graticule) {
+                refresh.call(this);
+            }
+        },
+        onResize: function onResize() {
+            resize.call(this);
+        }
+    };
+});
+
 var graticuleSvg = (function (selector) {
     var _ = { svg: null, q: null, graticule: d3.geoGraticule() };
     var $ = {};
@@ -1336,7 +1451,7 @@ var dropShadowSvg = (function (selector) {
 });
 
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
-var fauxGlobeSvg = (function (selector) {
+var fauxGlobeSvg = (function (selectAll) {
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null };
     var $ = {};
@@ -1345,7 +1460,7 @@ var fauxGlobeSvg = (function (selector) {
         var __ = this._;
         __.options.showGlobeShading = true;
         __.options.showGlobeHilight = true;
-        _.svg = selector ? d3.selectAll(selector) : __.svg;
+        _.svg = selectAll ? d3.selectAll(selectAll) : __.svg;
     }
 
     function create() {
@@ -1702,19 +1817,30 @@ var countrySelectCanvas = (function () {
 });
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-var countryTooltipCanvas = (function () {
+var countryTooltipCanvas = (function (countryNameUrl) {
     /*eslint no-console: 0 */
     var countryTooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
+    var _ = {};
+
+    function countryName(d) {
+        var cname = '';
+        if (_.countryNames) {
+            cname = _.countryNames.find(function (x) {
+                return x.id == d.id;
+            });
+        }
+        return cname;
+    }
 
     function init() {
         var _this = this;
 
-        var toolTipsHandler = function toolTipsHandler(mouse, country) {
+        var toolTipsHandler = function toolTipsHandler(mouse, d) {
             // fn with  current context
-            if (!_this._.drag && country && _this._.options.showCountryTooltip) {
-                var countryName = _this.worldCanvas.countryName(country);
-                if (countryName && !(_this.barTooltipSvg && _this.barTooltipSvg.visible())) {
-                    refresh(mouse).style('display', 'block').style('opacity', 1).text(countryName.name);
+            if (!_this._.drag && d && _this._.options.showCountryTooltip) {
+                var country = countryName(d);
+                if (country && !(_this.barTooltipSvg && _this.barTooltipSvg.visible())) {
+                    refresh(mouse).style('display', 'block').style('opacity', 1).text(country.name);
                 } else {
                     hideTooltip();
                 }
@@ -1743,6 +1869,10 @@ var countryTooltipCanvas = (function () {
 
     return {
         name: 'countryTooltipCanvas',
+        urls: countryNameUrl && [countryNameUrl],
+        onReady: function onReady(err, countryNames) {
+            _.countryNames = countryNames;
+        },
         onInit: function onInit() {
             init.call(this);
         },
@@ -1750,22 +1880,39 @@ var countryTooltipCanvas = (function () {
             if (this._.drag) {
                 refresh(this.mousePlugin.mouse());
             }
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.countryNames = _data;
+            } else {
+                return _.countryNames;
+            }
         }
     };
 });
 
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-var countryTooltipSvg = (function () {
+var countryTooltipSvg = (function (countryNameUrl) {
     /*eslint no-console: 0 */
     var _ = { show: false };
     var countryTooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
+
+    function countryName(d) {
+        var cname = '';
+        if (_.countryNames) {
+            cname = _.countryNames.find(function (x) {
+                return x.id == d.id;
+            });
+        }
+        return cname;
+    }
 
     function create() {
         var _this = this;
         this.worldSvg.$countries().on('mouseover', function (d) {
             if (_this._.options.showCountryTooltip) {
                 _.show = true;
-                var country = _this.worldSvg.countryName.call(_this, d);
+                var country = countryName(d);
                 refresh().style('display', 'block').style('opacity', 1).text(country.name);
             }
         }).on('mouseout', function () {
@@ -1787,6 +1934,10 @@ var countryTooltipSvg = (function () {
 
     return {
         name: 'countryTooltipSvg',
+        urls: countryNameUrl && [countryNameUrl],
+        onReady: function onReady(err, countryNames) {
+            _.countryNames = countryNames;
+        },
         onInit: function onInit() {
             this._.options.showCountryTooltip = true;
         },
@@ -1796,6 +1947,13 @@ var countryTooltipSvg = (function () {
         onRefresh: function onRefresh() {
             if (this._.drag && _.show) {
                 refresh(this.mousePlugin.mouse());
+            }
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.countryNames = _data;
+            } else {
+                return _.countryNames;
             }
         }
     };
@@ -1965,9 +2123,6 @@ var placesSvg = (function (urlPlaces, selector) {
 
 // John J Czaplewski’s Block http://bl.ocks.org/jczaplew/6798471
 var worldCanvas = (function (worldUrl) {
-    var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-        countryNameUrl = _ref.countryNameUrl;
-
     /*eslint no-console: 0 */
     var color = {
         0: 'rgba(117, 87, 57, 0.6)',
@@ -2036,19 +2191,11 @@ var worldCanvas = (function (worldUrl) {
         }, _.drawTo, _.options);
     }
 
-    var urls = null;
-    if (worldUrl) {
-        urls = [worldUrl];
-        if (countryNameUrl) {
-            urls.push(countryNameUrl);
-        }
-    }
-
     return {
         name: 'worldCanvas',
-        urls: urls,
-        onReady: function onReady(err, world, countryNames) {
-            this.worldCanvas.data({ world: world, countryNames: countryNames });
+        urls: worldUrl && [worldUrl],
+        onReady: function onReady(err, world) {
+            this.worldCanvas.data({ world: world });
             Object.defineProperty(this._.options, 'landColor', {
                 get: function get() {
                     return _.landColor;
@@ -2101,15 +2248,6 @@ var worldCanvas = (function (worldUrl) {
         drawTo: function drawTo(arr) {
             _.drawTo = arr;
         },
-        countryName: function countryName(d) {
-            var cname = '';
-            if (_.countryNames) {
-                cname = _.countryNames.find(function (x) {
-                    return x.id == d.id;
-                });
-            }
-            return cname;
-        },
         style: function style(s) {
             if (s) {
                 _.style = s;
@@ -2123,10 +2261,6 @@ var worldCanvas = (function (worldUrl) {
 });
 
 var worldSvg = (function (worldUrl) {
-    var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-        countryNameUrl = _ref.countryNameUrl,
-        selectAll = _ref.selectAll;
-
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null, world: null, countryNames: null };
     var $ = {};
@@ -2189,16 +2323,9 @@ var worldSvg = (function (worldUrl) {
         $.lakes = _.svg.append('g').attr('class', 'lakes').append('path').datum(_.lakes);
     }
 
-    var urls = null;
-    if (worldUrl) {
-        urls = [worldUrl];
-        if (countryNameUrl) {
-            urls.push(countryNameUrl);
-        }
-    }
     return {
         name: 'worldSvg',
-        urls: urls,
+        urls: worldUrl && [worldUrl],
         onReady: function onReady(err, world, countryNames) {
             this.worldSvg.data({ world: world, countryNames: countryNames });
         },
@@ -2213,7 +2340,7 @@ var worldSvg = (function (worldUrl) {
             _.svgAddWorldBg = svgAddWorldBg;
             _.svgAddLakes = svgAddLakes;
             _.svgAddWorld = svgAddWorld;
-            _.svg = selectAll ? d3.selectAll(selectAll) : __.svg;
+            _.svg = __.svg;
         },
         onCreate: function onCreate() {
             create.call(this);
@@ -2236,15 +2363,6 @@ var worldSvg = (function (worldUrl) {
                 world: _.world,
                 countryNames: _.countryNames
             };
-        },
-        countryName: function countryName(d) {
-            var cname = '';
-            if (_.countryNames) {
-                cname = _.countryNames.find(function (x) {
-                    return x.id == d.id;
-                });
-            }
-            return cname;
         },
         selectAll: function selectAll(q) {
             if (q) {
@@ -2288,10 +2406,20 @@ var worldThreejs = (function () {
                 _.sphereObject = new THREE.Mesh(geometry, material);
                 group.add(_.sphereObject);
                 refresh.call(_this);
+                _this.renderThree();
                 // setTimeout(()=>d3.select('#three-js').attr('style', 'opacity: 1'),200);
             });
             _this.threejsPlugin.addObject(group);
         }
+    }
+
+    function refresh() {
+        var __ = this._;
+        var rt = __.proj.rotate();
+        rt[0] -= 90;
+        var q1 = __.versor(rt);
+        var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
+        _.sphereObject.setRotationFromQuaternion(q2);
     }
 
     function resize() {
@@ -2302,26 +2430,18 @@ var worldThreejs = (function () {
         se.scale.z = sc;
     }
 
-    function refresh() {
-        var rt = this._.proj.rotate();
-        rt[0] -= 90;
-        var q1 = this._.versor(rt);
-        var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
-        _.sphereObject.setRotationFromQuaternion(q2);
-    }
-
     return {
         name: 'worldThreejs',
         onInit: function onInit() {
             init.call(this);
         },
-        onResize: function onResize() {
-            resize.call(this);
-        },
         onRefresh: function onRefresh() {
             if (_.sphereObject) {
                 refresh.call(this);
             }
+        },
+        onResize: function onResize() {
+            resize.call(this);
         }
     };
 });
@@ -2538,9 +2658,6 @@ var flattenPlugin = (function () {
 });
 
 var barSvg = (function (urlBars) {
-    var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-        selector = _ref.selector;
-
     /*eslint no-console: 0 */
     var _ = { svg: null, barProjection: null, q: null, bars: null, valuePath: null };
     var $ = {};
@@ -2549,7 +2666,7 @@ var barSvg = (function (urlBars) {
         var __ = this._;
         __.options.showBars = true;
         _.barProjection = __.orthoGraphic();
-        _.svg = selector ? d3.selectAll(selector) : __.svg;
+        _.svg = __.svg;
     }
 
     function create() {
@@ -3337,6 +3454,7 @@ earthjs$1.plugins = {
     oceanSvg: oceanSvg,
     sphereSvg: sphereSvg,
     graticuleCanvas: graticuleCanvas,
+    graticuleThreejs: graticuleThreejs,
     graticuleSvg: graticuleSvg,
     dropShadowSvg: dropShadowSvg,
     fauxGlobeSvg: fauxGlobeSvg,

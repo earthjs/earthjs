@@ -36,6 +36,7 @@ Selected plugins bundled into library:
 * graticuleSvg,
 * fauxGlobeSvg,
 * graticuleCanvas,
+* graticuleThreejs,
 * countrySelectCanvas,
 * barTooltipSvg,
 * dotTooltipSvg,

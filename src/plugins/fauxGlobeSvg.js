@@ -1,5 +1,5 @@
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
-export default selector => {
+export default selectAll => {
     /*eslint no-console: 0 */
     const _ = {svg:null, q: null};
     const $ = {};
@@ -8,7 +8,7 @@ export default selector => {
         const __ = this._;
         __.options.showGlobeShading = true;
         __.options.showGlobeHilight = true;
-        _.svg = selector ? d3.selectAll(selector) : __.svg;
+        _.svg = selectAll ? d3.selectAll(selectAll) : __.svg;
     }
 
     function create() {

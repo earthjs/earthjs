@@ -1,32 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <style media="screen">
+        .input-area {
+            position: absolute;
+            z-index: 5;
+        }
+    </style>
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
     <script type='text/javascript' src='../js/three.min.js'></script>
+    <style>
+        #earth-js, #earth-js2 {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+        #earth-js2 {
+            z-index: 4;
+        }
+    </style>
 </head>
 <body>
+    <div class="input-area">
+        <input id="pan" type="range" min="0" max="400" step="1" value="0"/><br/>
+    </div>
     <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
     <canvas class="ej-canvas"></canvas>
-    <svg class="ej-svg noclicks" width="700" height="500"></svg>
+    <svg class="ej-svg" width="700" height="500"></svg>
     <script>
-        const g = earthjs()
+        const g = earthjs({rotate:[0,0,0]})
         .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.canvasPlugin('.ej-canvas'))
-        .register(earthjs.plugins.mousePlugin({zoomScale:[0,502]}))
+        .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.hoverCanvas())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.dropShadowSvg())
-        // .register(earthjs.plugins.graticuleCanvas())
+        .register(earthjs.plugins.graticuleThreejs())
         .register(earthjs.plugins.worldThreejs('../d/world.png'))
         .register(earthjs.plugins.dotsCanvas('../d/bars.json'))
         .register(earthjs.plugins.oceanSvg())
-        .register(earthjs.plugins.barSvg(null,'.ej-svg'))
         .register(earthjs.plugins.dotSelectCanvas())
-        .register(earthjs.plugins.dotTooltipCanvas());
+        .register(earthjs.plugins.dotTooltipCanvas())
+        .register(earthjs.plugins.fauxGlobeSvg())
+        .register(earthjs.plugins.barSvg());
+        g.canvasPlugin.selectAll('.ej-canvas');
+        g.fauxGlobeSvg.selectAll('.ej-svg');
+        g.mousePlugin.selectAll('.ej-svg');
+        g.barSvg.selectAll('.ej-svg');
         g.dotsCanvas.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
             json.geometry = {radius: 2}
@@ -40,6 +64,14 @@
 
         g.ready(function(){
             g.create();
+        })
+
+        const canvas = d3.selectAll('canvas').nodes();
+        const svg = d3.selectAll('.ej-svg').nodes();
+        d3.select('#pan').on('input', function() {
+            canvas[0].style.left = (this.value)+'px';
+            canvas[1].style.left = (this.value*2)+'px';
+               svg[0].style.left = (this.value*3)+'px';
         })
     </script>
 </body>

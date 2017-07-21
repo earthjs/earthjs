@@ -11,6 +11,7 @@ import dblClickCanvas from './src/plugins/dblClickCanvas';
 import oceanSvg from './src/plugins/oceanSvg.js';
 import sphereSvg from './src/plugins/sphereSvg.js';
 import graticuleCanvas from './src/plugins/graticuleCanvas.js';
+import graticuleThreejs from './src/plugins/graticuleThreejs.js';
 import graticuleSvg from './src/plugins/graticuleSvg.js';
 import dropShadowSvg from './src/plugins/dropShadowSvg.js';
 import fauxGlobeSvg from './src/plugins/fauxGlobeSvg.js';
@@ -49,6 +50,7 @@ app.plugins= {
     oceanSvg,
     sphereSvg,
     graticuleCanvas,
+    graticuleThreejs,
     graticuleSvg,
     dropShadowSvg,
     fauxGlobeSvg,

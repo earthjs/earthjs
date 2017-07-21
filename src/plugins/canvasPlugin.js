@@ -1,8 +1,8 @@
 // Bo Ericsson’s Block http://bl.ocks.org/boeric/aa80b0048b7e39dd71c8fbe958d1b1d4
-export default (selector) => {
+export default () => {
     /*eslint no-console: 0 */
     const _ = {
-        canvas: selector && d3.selectAll(selector),
+        canvas: null,
         path: null,
         q: null
     }

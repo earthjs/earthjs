@@ -19,10 +19,10 @@
         g.register(earthjs.plugins.oceanSvg());
         g.register(earthjs.plugins.graticuleSvg());
         g.register(earthjs.plugins.fauxGlobeSvg());
-        g.register(earthjs.plugins.worldSvg('../d/world-110m.json', {countryNameUrl:'../d/world-110m-country-names.tsv'}));
+        g.register(earthjs.plugins.worldSvg('../d/world-110m.json'));
         g.register(earthjs.plugins.placesSvg('../d/places.json'));
         g.register(earthjs.plugins.barSvg('../d/bars.json'));
-        g.register(earthjs.plugins.countryTooltipSvg());
+        g.register(earthjs.plugins.countryTooltipSvg('../d/world-110m-country-names.tsv'));
         g.register(earthjs.plugins.barTooltipSvg());
 
         g.barSvg.ready = function(err, json) {

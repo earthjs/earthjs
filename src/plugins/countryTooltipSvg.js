@@ -1,8 +1,18 @@
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
-export default () => {
+export default countryNameUrl => {
     /*eslint no-console: 0 */
     const _ = {show: false};
     const countryTooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
+
+    function countryName(d) {
+        let cname = '';
+        if (_.countryNames) {
+            cname = _.countryNames.find(function(x) {
+                return x.id==d.id;
+            });
+        }
+        return cname;
+    }
 
     function create() {
         const _this = this;
@@ -10,7 +20,7 @@ export default () => {
         .on('mouseover', function(d) {
             if (_this._.options.showCountryTooltip) {
                 _.show = true;
-                const country = _this.worldSvg.countryName.call(_this, d);
+                const country = countryName(d);
                 refresh()
                 .style('display', 'block')
                 .style('opacity', 1)
@@ -40,6 +50,10 @@ export default () => {
 
     return {
         name: 'countryTooltipSvg',
+        urls: countryNameUrl && [countryNameUrl],
+        onReady(err, countryNames) {
+            _.countryNames = countryNames;
+        },
         onInit() {
             this._.options.showCountryTooltip = true;
         },
@@ -49,6 +63,13 @@ export default () => {
         onRefresh() {
             if (this._.drag && _.show) {
                 refresh(this.mousePlugin.mouse());
+            }
+        },
+        data(data) {
+            if (data) {
+                _.countryNames = data;
+            } else {
+                return _.countryNames;
             }
         },
     }

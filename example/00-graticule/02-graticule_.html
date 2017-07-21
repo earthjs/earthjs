@@ -10,11 +10,12 @@
     <canvas class="ej-canvas"></canvas>
     <script>
         const g = earthjs({transparent:true})
-        .register(earthjs.plugins.canvasPlugin('.ej-canvas'))
-        .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.mousePlugin())
-        .register(earthjs.plugins.graticuleCanvas())
-        .create();
+        .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.graticuleCanvas());
+        g.canvasPlugin.selectAll('.ej-canvas');
+        g.create();
     </script>
 </body>
 </html>

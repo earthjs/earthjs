@@ -1,5 +1,5 @@
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
-export default ({selector,zoomScale,iDrag}={zoomScale:[0,1000]}) => {
+export default ({selectAll,zoomScale,iDrag}={zoomScale:[0,1000]}) => {
     /*eslint no-console: 0 */
     const _ = {svg:null, q: null, sync: [], mouse: null, wait: null,
         onDrag: {},
@@ -133,7 +133,7 @@ export default ({selector,zoomScale,iDrag}={zoomScale:[0,1000]}) => {
         onInit() {
             _.oMouse = [];
             const __ = this._;
-            _.svg = selector ? d3.selectAll(selector) : __.svg;
+            _.svg = selectAll ? d3.selectAll(selectAll) : __.svg;
             init.call(this);
         },
         onInterval() {

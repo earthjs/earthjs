@@ -18,12 +18,12 @@
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
         g.register(earthjs.plugins.fauxGlobeSvg());
-        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json', {countryNameUrl:'../d/world-110m-country-names.tsv'}));
+        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
         g.register(earthjs.plugins.hoverCanvas());
         g.register(earthjs.plugins.clickCanvas());
         g.register(earthjs.plugins.dblClickCanvas());
         g.register(earthjs.plugins.centerCanvas());
-        g.register(earthjs.plugins.countryTooltipCanvas());
+        g.register(earthjs.plugins.countryTooltipCanvas('../d/world-110m-country-names.tsv'));
 
         g.clickCanvas.onCountry({
             wcanvas: function(mouse, country) {

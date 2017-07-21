@@ -31,15 +31,15 @@
     </div>
     <script>
         const g = earthjs({selectAll:'.ej-svg'})
-        .register(earthjs.plugins.canvasPlugin('.ej-canvas'))
-        .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.dropShadowSvg())
         .register(earthjs.plugins.oceanSvg())
         .register(earthjs.plugins.graticuleCanvas())
         .register(earthjs.plugins.fauxGlobeSvg())
-        .create();
+        g.canvasPlugin.selectAll('.ej-canvas');
+        g.create();
     </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-export default (worldUrl, {countryNameUrl, selectAll}={}) => {
+export default worldUrl => {
     /*eslint no-console: 0 */
     const _ = {svg:null, q: null, world: null, countryNames: null};
     const $ = {};
@@ -62,16 +62,9 @@ export default (worldUrl, {countryNameUrl, selectAll}={}) => {
         $.lakes = _.svg.append('g').attr('class','lakes').append('path').datum(_.lakes);
     }
 
-    let urls = null;
-    if (worldUrl) {
-        urls = [worldUrl];
-        if (countryNameUrl) {
-            urls.push(countryNameUrl);
-        }
-    }
     return {
         name: 'worldSvg',
-        urls: urls,
+        urls: worldUrl && [worldUrl],
         onReady(err, world, countryNames) {
             this.worldSvg.data({world, countryNames});
         },
@@ -86,7 +79,7 @@ export default (worldUrl, {countryNameUrl, selectAll}={}) => {
             _.svgAddWorldBg = svgAddWorldBg;
             _.svgAddLakes = svgAddLakes;
             _.svgAddWorld = svgAddWorld;
-            _.svg = selectAll ? d3.selectAll(selectAll) : __.svg;
+            _.svg = __.svg;
         },
         onCreate() {
             create.call(this);
@@ -109,15 +102,6 @@ export default (worldUrl, {countryNameUrl, selectAll}={}) => {
                 world: _.world ,
                 countryNames: _.countryNames
             }
-        },
-        countryName(d) {
-            let cname = '';
-            if (_.countryNames) {
-                cname = _.countryNames.find(function(x) {
-                    return x.id==d.id;
-                });
-            }
-            return cname;
         },
         selectAll(q) {
             if (q) {

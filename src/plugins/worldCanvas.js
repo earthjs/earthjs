@@ -1,5 +1,5 @@
 // John J Czaplewski’s Block http://bl.ocks.org/jczaplew/6798471
-export default (worldUrl, {countryNameUrl}={}) => {
+export default worldUrl => {
     /*eslint no-console: 0 */
     const color = {
         0:'rgba(117, 87, 57, 0.6)',
@@ -68,19 +68,11 @@ export default (worldUrl, {countryNameUrl}={}) => {
         }, _.drawTo, _.options);
     }
 
-    let urls = null;
-    if (worldUrl) {
-        urls = [worldUrl];
-        if (countryNameUrl) {
-            urls.push(countryNameUrl);
-        }
-    }
-
     return {
         name: 'worldCanvas',
-        urls: urls,
-        onReady(err, world, countryNames) {
-            this.worldCanvas.data({world, countryNames});
+        urls: worldUrl && [worldUrl],
+        onReady(err, world) {
+            this.worldCanvas.data({world});
             Object.defineProperty(this._.options, 'landColor', {
                 get: () => _.landColor,
                 set: (x) => {
@@ -128,15 +120,6 @@ export default (worldUrl, {countryNameUrl}={}) => {
         },
         drawTo(arr) {
             _.drawTo = arr;
-        },
-        countryName(d) {
-            let cname = '';
-            if (_.countryNames) {
-                cname = _.countryNames.find(function(x) {
-                    return x.id==d.id;
-                });
-            }
-            return cname;
         },
         style(s) {
             if (s) {

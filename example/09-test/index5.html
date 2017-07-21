@@ -17,7 +17,7 @@
     <script>
         // https://github.com/mledoze/countries
         const g = earthjs();
-        g.register(earthjs.plugins.commonPlugins('../d/world-110m.json','../d/world-110m-country-names.tsv'));
+        g.register(earthjs.plugins.commonPlugins('../d/world-110m.json'));
         g.register(earthjs.plugins.dotsCanvas('../d/cities.geojson'));
         g.register(earthjs.plugins.barSvg('../d/bars.json'));
         g.register(earthjs.plugins.dotsSvg());
@@ -30,7 +30,7 @@
         g.register(earthjs.plugins.dotSelectCanvas());
         g.register(earthjs.plugins.dotTooltipCanvas());
         g.register(earthjs.plugins.countrySelectCanvas());
-        g.register(earthjs.plugins.countryTooltipCanvas());
+        g.register(earthjs.plugins.countryTooltipCanvas('../d/world-110m-country-names.tsv'));
         g.fauxGlobeSvg.selectAll('.ea-4');
 
         g.barSvg.valuePath('properties.mag');
