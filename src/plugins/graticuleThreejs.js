@@ -4,7 +4,11 @@
 export default () => {
     /*eslint no-console: 0 */
     const _ = {graticule: null};
-    _.scale = d3.scaleLinear().domain([0,200]).range([0,1]);
+
+    function init() {
+        this._.options.showGraticule = true;
+        _.graticule10 = graticule10();
+    }
 
     // See https://github.com/d3/d3-geo/issues/95
     function graticule10() {
@@ -36,16 +40,22 @@ export default () => {
     function create() {
         const tj = this.threejsPlugin;
         const material = new THREE.LineBasicMaterial({color: 0xaaaaaa});
-        _.graticule = tj.wireframe(graticule10(), material); //0x800000
-        this._.options.showGraticule = true;
-        tj.addGroup(_.graticule, 'graticule');
+        _.graticule = tj.wireframe(_.graticule10, material); //0x800000
+        _.graticule.visible = this._.options.showGraticule;
+        tj.addGroup(_.graticule);
         tj.rotate();
     }
 
     return {
         name: 'graticuleThreejs',
+        onInit() {
+            init.call(this);
+        },
         onCreate() {
             create.call(this);
         },
+        onRefresh() {
+            _.graticule.visible = this._.options.showGraticule;
+        }
     }
 }

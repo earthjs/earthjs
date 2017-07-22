@@ -5,7 +5,6 @@ export default (imgUrl='../d/world.png') => {
         ext = 'json';
     }
     const _ = {sphereObject: null, scale: null, ext};
-    _.scale = d3.scaleLinear().domain([0,200]).range([0,1]);
 
     function create() {
         if (!_.sphereObject) {
@@ -14,6 +13,9 @@ export default (imgUrl='../d/world.png') => {
             } else {
                 worldFromImage.call(this);
             }
+        } else {
+            const tj = this.threejsPlugin;
+            tj.addGroup(_.sphereObject);
         }
     }
 
@@ -21,11 +23,13 @@ export default (imgUrl='../d/world.png') => {
         const tj = this.threejsPlugin;
         const material = new THREE.LineBasicMaterial({color: 0xff0000});
         _.sphereObject = tj.wireframe(topojson.mesh(_.world, _.world.objects.land), material);
-        tj.addGroup(_.sphereObject, 'jsonGlobe');
+        _.sphereObject.visible = this._.options.showLand;
+        tj.addGroup(_.sphereObject);
         tj.rotate();
     }
 
     function worldFromImage() {
+        const __ = this._;
         const tj = this.threejsPlugin;
         const loader = new THREE.TextureLoader();
         loader.load(imgUrl, function(texture) {
@@ -37,7 +41,8 @@ export default (imgUrl='../d/world.png') => {
             } );
             material.opacity = 1;
             _.sphereObject = new THREE.Mesh( geometry, material );
-            tj.addGroup(_.sphereObject, 'imageGlobe');
+            _.sphereObject.visible = __.options.showLand;
+            tj.addGroup(_.sphereObject);
             tj.rotate();
         });
     }
@@ -48,8 +53,14 @@ export default (imgUrl='../d/world.png') => {
         onReady(err, data) {
             this.worldThreejs.data(data);
         },
+        onInit() {
+            this._.options.showLand = true;
+        },
         onCreate() {
             create.call(this);
+        },
+        onRefresh() {
+            _.sphereObject.visible = this._.options.showLand;
         },
         data(data) {
             if (data) {

@@ -1,4 +1,5 @@
 export default () => {
+    /*eslint no-console: 0 */
     return {
         name: 'configPlugin',
         set(newOpt) {

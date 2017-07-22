@@ -311,6 +311,7 @@ var earthjs$1 = function earthjs() {
 };
 
 var configPlugin = (function () {
+    /*eslint no-console: 0 */
     return {
         name: 'configPlugin',
         set: function set(newOpt) {
@@ -1304,7 +1305,11 @@ var graticuleCanvas = (function () {
 var graticuleThreejs = (function () {
     /*eslint no-console: 0 */
     var _ = { graticule: null };
-    _.scale = d3.scaleLinear().domain([0, 200]).range([0, 1]);
+
+    function init() {
+        this._.options.showGraticule = true;
+        _.graticule10 = graticule10();
+    }
 
     // See https://github.com/d3/d3-geo/issues/95
     function graticule10() {
@@ -1357,16 +1362,22 @@ var graticuleThreejs = (function () {
     function create() {
         var tj = this.threejsPlugin;
         var material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
-        _.graticule = tj.wireframe(graticule10(), material); //0x800000
-        this._.options.showGraticule = true;
-        tj.addGroup(_.graticule, 'graticule');
+        _.graticule = tj.wireframe(_.graticule10, material); //0x800000
+        _.graticule.visible = this._.options.showGraticule;
+        tj.addGroup(_.graticule);
         tj.rotate();
     }
 
     return {
         name: 'graticuleThreejs',
+        onInit: function onInit() {
+            init.call(this);
+        },
         onCreate: function onCreate() {
             create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            _.graticule.visible = this._.options.showGraticule;
         }
     };
 });
@@ -2421,7 +2432,6 @@ var worldThreejs = (function () {
         ext = 'json';
     }
     var _ = { sphereObject: null, scale: null, ext: ext };
-    _.scale = d3.scaleLinear().domain([0, 200]).range([0, 1]);
 
     function create() {
         if (!_.sphereObject) {
@@ -2430,6 +2440,9 @@ var worldThreejs = (function () {
             } else {
                 worldFromImage.call(this);
             }
+        } else {
+            var tj = this.threejsPlugin;
+            tj.addGroup(_.sphereObject);
         }
     }
 
@@ -2437,11 +2450,13 @@ var worldThreejs = (function () {
         var tj = this.threejsPlugin;
         var material = new THREE.LineBasicMaterial({ color: 0xff0000 });
         _.sphereObject = tj.wireframe(topojson.mesh(_.world, _.world.objects.land), material);
-        tj.addGroup(_.sphereObject, 'jsonGlobe');
+        _.sphereObject.visible = this._.options.showLand;
+        tj.addGroup(_.sphereObject);
         tj.rotate();
     }
 
     function worldFromImage() {
+        var __ = this._;
         var tj = this.threejsPlugin;
         var loader = new THREE.TextureLoader();
         loader.load(imgUrl, function (texture) {
@@ -2453,7 +2468,8 @@ var worldThreejs = (function () {
             });
             material.opacity = 1;
             _.sphereObject = new THREE.Mesh(geometry, material);
-            tj.addGroup(_.sphereObject, 'imageGlobe');
+            _.sphereObject.visible = __.options.showLand;
+            tj.addGroup(_.sphereObject);
             tj.rotate();
         });
     }
@@ -2464,8 +2480,14 @@ var worldThreejs = (function () {
         onReady: function onReady(err, data) {
             this.worldThreejs.data(data);
         },
+        onInit: function onInit() {
+            this._.options.showLand = true;
+        },
         onCreate: function onCreate() {
             create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            _.sphereObject.visible = this._.options.showLand;
         },
         data: function data(_data) {
             if (_data) {

@@ -107,5 +107,15 @@ export default (threejs='three-js') => {
         wireframe(multilinestring, material) {
             return wireframe(multilinestring, material);
         },
+        // toggleOption(obj, optName) {
+        //     delete this._.options[optName];
+        //     Object.defineProperty(this._.options, optName, {
+        //         get: () => obj.visible,
+        //         set: (x) => {
+        //             obj.visible = x;
+        //         },
+        //         configurable: true,
+        //     });
+        // }
     }
 }
