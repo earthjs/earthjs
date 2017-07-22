@@ -596,23 +596,73 @@ var threejsPlugin = (function () {
     var threejs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'three-js';
 
     /*eslint no-console: 0 */
-    var _ = { renderer: null, scene: null, camera: null };
+    var _ = { renderer: null, scene: null, camera: null, radius: null };
+    _.scale = d3.scaleLinear().domain([0, 200]).range([0, 1]);
+
+    // Converts a point [longitude, latitude] in degrees to a THREE.Vector3.
+    // Axes have been rotated so Three's "y" axis is parallel to the North Pole
+    function vertex(point) {
+        var lambda = point[0] * Math.PI / 180,
+            phi = point[1] * Math.PI / 180,
+            cosPhi = Math.cos(phi);
+        return new THREE.Vector3(_.radius * cosPhi * Math.cos(lambda), _.radius * Math.sin(phi), -_.radius * cosPhi * Math.sin(lambda));
+    }
+
+    // Converts a GeoJSON MultiLineString in spherical coordinates to a THREE.LineSegments.
+    function _wireframe(multilinestring, material) {
+        var geometry = new THREE.Geometry();
+        multilinestring.coordinates.forEach(function (line) {
+            d3.pairs(line.map(vertex), function (a, b) {
+                geometry.vertices.push(a, b);
+            });
+        });
+        return new THREE.LineSegments(geometry, material);
+    }
 
     function init() {
-        var _$options = this._.options,
+        var __ = this._;
+        var _$options = __.options,
             width = _$options.width,
             height = _$options.height;
 
         var container = document.getElementById(threejs);
         _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 10000);
         _.scene = new THREE.Scene();
+        _.group = new THREE.Group();
         _.camera.position.z = 1010; // (higher than RADIUS + size of the bubble)
+        _.radius = __.proj.scale();
+        _.scene.add(_.group);
         this._.camera = _.camera;
 
         _.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, canvas: container });
         _.renderer.setClearColor(0x000000, 0);
         _.renderer.setSize(width, height);
         this.renderThree = renderThree;
+        window.grp = _.group;
+    }
+
+    function _scale(obj) {
+        if (!obj) {
+            obj = _.group;
+        }
+        var sc = _.scale(this._.proj.scale());
+        obj.scale.x = sc;
+        obj.scale.y = sc;
+        obj.scale.z = sc;
+        renderThree.call(this);
+    }
+
+    function _rotate(obj) {
+        if (!obj) {
+            obj = _.group;
+        }
+        var __ = this._;
+        var rt = __.proj.rotate();
+        rt[0] -= 90;
+        var q1 = __.versor(rt);
+        var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
+        obj.setRotationFromQuaternion(q2);
+        renderThree.call(this);
     }
 
     function renderThree() {
@@ -626,11 +676,29 @@ var threejsPlugin = (function () {
         onInit: function onInit() {
             init.call(this);
         },
-        onRefresh: function onRefresh() {
-            renderThree.call(this);
+        onCreate: function onCreate() {
+            _.group.children = [];
         },
-        addObject: function addObject(obj) {
+        onRefresh: function onRefresh() {
+            _rotate.call(this);
+        },
+        onResize: function onResize() {
+            _scale.call(this);
+        },
+        addScene: function addScene(obj) {
             _.scene.add(obj);
+        },
+        addGroup: function addGroup(obj) {
+            _.group.add(obj);
+        },
+        scale: function scale(obj) {
+            _scale.call(this, obj);
+        },
+        rotate: function rotate(obj) {
+            _rotate.call(this, obj);
+        },
+        wireframe: function wireframe(multilinestring, material) {
+            return _wireframe(multilinestring, material);
         }
     };
 });
@@ -1235,28 +1303,8 @@ var graticuleCanvas = (function () {
 // http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
 var graticuleThreejs = (function () {
     /*eslint no-console: 0 */
-    var _ = { radius: null };
+    var _ = { graticule: null };
     _.scale = d3.scaleLinear().domain([0, 200]).range([0, 1]);
-
-    // Converts a point [longitude, latitude] in degrees to a THREE.Vector3.
-    // Axes have been rotated so Three's "y" axis is parallel to the North Pole
-    function vertex(point) {
-        var lambda = point[0] * Math.PI / 180,
-            phi = point[1] * Math.PI / 180,
-            cosPhi = Math.cos(phi);
-        return new THREE.Vector3(_.radius * cosPhi * Math.cos(lambda), _.radius * Math.sin(phi), -_.radius * cosPhi * Math.sin(lambda));
-    }
-
-    // Converts a GeoJSON MultiLineString in spherical coordinates to a THREE.LineSegments.
-    function wireframe(multilinestring, material) {
-        var geometry = new THREE.Geometry();
-        multilinestring.coordinates.forEach(function (line) {
-            d3.pairs(line.map(vertex), function (a, b) {
-                geometry.vertices.push(a, b);
-            });
-        });
-        return new THREE.LineSegments(geometry, material);
-    }
 
     // See https://github.com/d3/d3-geo/issues/95
     function graticule10() {
@@ -1306,44 +1354,19 @@ var graticuleThreejs = (function () {
         };
     }
 
-    function init() {
-        var __ = this._;
-        __.options.showGraticule = true;
-        _.radius = this._.proj.scale();
-        _.graticule = wireframe(graticule10(), new THREE.LineBasicMaterial({ color: 0xaaaaaa })); //0x800000
-        this.threejsPlugin.addObject(_.graticule);
-        refresh.call(this);
-    }
-
-    function refresh() {
-        var __ = this._;
-        var rt = __.proj.rotate();
-        rt[0] -= 90;
-        var q1 = __.versor(rt);
-        var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
-        _.graticule.setRotationFromQuaternion(q2);
-    }
-
-    function resize() {
-        var sc = _.scale(this._.proj.scale());
-        var se = _.graticule;
-        se.scale.x = sc;
-        se.scale.y = sc;
-        se.scale.z = sc;
+    function create() {
+        var tj = this.threejsPlugin;
+        var material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
+        _.graticule = tj.wireframe(graticule10(), material); //0x800000
+        this._.options.showGraticule = true;
+        tj.addGroup(_.graticule, 'graticule');
+        tj.rotate();
     }
 
     return {
         name: 'graticuleThreejs',
-        onInit: function onInit() {
-            init.call(this);
-        },
-        onRefresh: function onRefresh() {
-            if (_.graticule) {
-                refresh.call(this);
-            }
-        },
-        onResize: function onResize() {
-            resize.call(this);
+        onCreate: function onCreate() {
+            create.call(this);
         }
     };
 });
@@ -2393,61 +2416,63 @@ var worldThreejs = (function () {
     var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.png';
 
     /*eslint no-console: 0 */
-    var _ = { sphereObject: null, scale: null };
+    var ext = imgUrl.split('.').pop();
+    if (ext === 'geojson') {
+        ext = 'json';
+    }
+    var _ = { sphereObject: null, scale: null, ext: ext };
     _.scale = d3.scaleLinear().domain([0, 200]).range([0, 1]);
 
-    function init() {
+    function create() {
         if (!_.sphereObject) {
-            var _this = this;
-            var group = new THREE.Group();
-            var loader = new THREE.TextureLoader();
-            loader.load(imgUrl, function (texture) {
-                var geometry = new THREE.SphereGeometry(200, 30, 30);
-                var material = new THREE.MeshBasicMaterial({
-                    map: texture,
-                    overdraw: 0.5,
-                    opacity: 0
-                });
-                material.opacity = 1;
-                _.sphereObject = new THREE.Mesh(geometry, material);
-                group.add(_.sphereObject);
-                refresh.call(_this);
-                _this.renderThree();
-                // setTimeout(()=>d3.select('#three-js').attr('style', 'opacity: 1'),200);
-            });
-            _this.threejsPlugin.addObject(group);
+            if (_.ext === 'json') {
+                worldFromTopojson.call(this);
+            } else {
+                worldFromImage.call(this);
+            }
         }
     }
 
-    function refresh() {
-        var __ = this._;
-        var rt = __.proj.rotate();
-        rt[0] -= 90;
-        var q1 = __.versor(rt);
-        var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
-        _.sphereObject.setRotationFromQuaternion(q2);
+    function worldFromTopojson() {
+        var tj = this.threejsPlugin;
+        var material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+        _.sphereObject = tj.wireframe(topojson.mesh(_.world, _.world.objects.land), material);
+        tj.addGroup(_.sphereObject, 'jsonGlobe');
+        tj.rotate();
     }
 
-    function resize() {
-        var sc = _.scale(this._.proj.scale());
-        var se = _.sphereObject;
-        se.scale.x = sc;
-        se.scale.y = sc;
-        se.scale.z = sc;
+    function worldFromImage() {
+        var tj = this.threejsPlugin;
+        var loader = new THREE.TextureLoader();
+        loader.load(imgUrl, function (texture) {
+            var geometry = new THREE.SphereGeometry(200, 30, 30);
+            var material = new THREE.MeshBasicMaterial({
+                map: texture,
+                overdraw: 0.5,
+                opacity: 0
+            });
+            material.opacity = 1;
+            _.sphereObject = new THREE.Mesh(geometry, material);
+            tj.addGroup(_.sphereObject, 'imageGlobe');
+            tj.rotate();
+        });
     }
 
     return {
         name: 'worldThreejs',
-        onInit: function onInit() {
-            init.call(this);
+        urls: _.ext === 'json' && [imgUrl],
+        onReady: function onReady(err, data) {
+            this.worldThreejs.data(data);
         },
-        onRefresh: function onRefresh() {
-            if (_.sphereObject) {
-                refresh.call(this);
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.world = _data;
+            } else {
+                return _.world;
             }
-        },
-        onResize: function onResize() {
-            resize.call(this);
         }
     };
 });

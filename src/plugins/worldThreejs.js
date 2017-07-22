@@ -1,60 +1,62 @@
 export default (imgUrl='../d/world.png') => {
     /*eslint no-console: 0 */
-    const _ = {sphereObject: null, scale: null};
+    let ext = imgUrl.split('.').pop();
+    if (ext==='geojson') {
+        ext = 'json';
+    }
+    const _ = {sphereObject: null, scale: null, ext};
     _.scale = d3.scaleLinear().domain([0,200]).range([0,1]);
 
-    function init() {
+    function create() {
         if (!_.sphereObject) {
-            const _this  = this;
-            const group  = new THREE.Group();
-            const loader = new THREE.TextureLoader();
-            loader.load(imgUrl, function(texture) {
-                const geometry = new THREE.SphereGeometry( 200, 30, 30 );
-                const material = new THREE.MeshBasicMaterial( {
-                    map: texture,
-                    overdraw: 0.5,
-                    opacity: 0
-                } );
-                material.opacity = 1;
-                _.sphereObject = new THREE.Mesh( geometry, material );
-                group.add(_.sphereObject);
-                refresh.call(_this);
-                _this.renderThree();
-                // setTimeout(()=>d3.select('#three-js').attr('style', 'opacity: 1'),200);
-            });
-            _this.threejsPlugin.addObject(group);
+            if (_.ext==='json') {
+                worldFromTopojson.call(this);
+            } else {
+                worldFromImage.call(this);
+            }
         }
     }
 
-    function refresh() {
-        const __ = this._;
-        const rt = __.proj.rotate();
-        rt[0] -= 90;
-        const q1 = __.versor(rt);
-        const q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
-        _.sphereObject.setRotationFromQuaternion(q2);
+    function worldFromTopojson() {
+        const tj = this.threejsPlugin;
+        const material = new THREE.LineBasicMaterial({color: 0xff0000});
+        _.sphereObject = tj.wireframe(topojson.mesh(_.world, _.world.objects.land), material);
+        tj.addGroup(_.sphereObject, 'jsonGlobe');
+        tj.rotate();
     }
 
-    function resize() {
-        const sc = _.scale(this._.proj.scale());
-        const se = _.sphereObject;
-        se.scale.x = sc;
-        se.scale.y = sc;
-        se.scale.z = sc;
+    function worldFromImage() {
+        const tj = this.threejsPlugin;
+        const loader = new THREE.TextureLoader();
+        loader.load(imgUrl, function(texture) {
+            const geometry = new THREE.SphereGeometry( 200, 30, 30 );
+            const material = new THREE.MeshBasicMaterial( {
+                map: texture,
+                overdraw: 0.5,
+                opacity: 0
+            } );
+            material.opacity = 1;
+            _.sphereObject = new THREE.Mesh( geometry, material );
+            tj.addGroup(_.sphereObject, 'imageGlobe');
+            tj.rotate();
+        });
     }
 
     return {
         name: 'worldThreejs',
-        onInit() {
-            init.call(this);
+        urls: (_.ext==='json') && [imgUrl],
+        onReady(err, data) {
+            this.worldThreejs.data(data);
         },
-        onRefresh() {
-            if (_.sphereObject) {
-                refresh.call(this);
+        onCreate() {
+            create.call(this);
+        },
+        data(data) {
+            if (data) {
+                _.world = data;
+            } else {
+                return  _.world;
             }
-        },
-        onResize() {
-            resize.call(this);
         },
     }
 }

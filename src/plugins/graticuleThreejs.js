@@ -3,32 +3,8 @@
 // http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
 export default () => {
     /*eslint no-console: 0 */
-    const _ = {radius: null};
+    const _ = {graticule: null};
     _.scale = d3.scaleLinear().domain([0,200]).range([0,1]);
-
-    // Converts a point [longitude, latitude] in degrees to a THREE.Vector3.
-    // Axes have been rotated so Three's "y" axis is parallel to the North Pole
-    function vertex(point) {
-        var lambda = point[0] * Math.PI / 180,
-            phi = point[1] * Math.PI / 180,
-            cosPhi = Math.cos(phi);
-        return new THREE.Vector3(
-            _.radius * cosPhi * Math.cos(lambda),
-            _.radius * Math.sin(phi),
-          - _.radius * cosPhi * Math.sin(lambda)
-      );
-    }
-
-    // Converts a GeoJSON MultiLineString in spherical coordinates to a THREE.LineSegments.
-    function wireframe(multilinestring, material) {
-        var geometry = new THREE.Geometry;
-        multilinestring.coordinates.forEach(function(line) {
-            d3.pairs(line.map(vertex), function(a, b) {
-                geometry.vertices.push(a, b);
-            });
-        });
-        return new THREE.LineSegments(geometry, material);
-    }
 
     // See https://github.com/d3/d3-geo/issues/95
     function graticule10() {
@@ -57,44 +33,19 @@ export default () => {
         };
     }
 
-    function init() {
-        const __ = this._;
-        __.options.showGraticule = true;
-        _.radius = this._.proj.scale();
-        _.graticule = wireframe(graticule10(), new THREE.LineBasicMaterial({color: 0xaaaaaa})); //0x800000
-        this.threejsPlugin.addObject(_.graticule);
-        refresh.call(this);
-    }
-
-    function refresh() {
-        const __ = this._;
-        const rt = __.proj.rotate();
-        rt[0]   -= 90;
-        const q1 = __.versor(rt);
-        const q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
-        _.graticule.setRotationFromQuaternion(q2);
-    }
-
-    function resize() {
-        const sc = _.scale(this._.proj.scale());
-        const se = _.graticule;
-        se.scale.x = sc;
-        se.scale.y = sc;
-        se.scale.z = sc;
+    function create() {
+        const tj = this.threejsPlugin;
+        const material = new THREE.LineBasicMaterial({color: 0xaaaaaa});
+        _.graticule = tj.wireframe(graticule10(), material); //0x800000
+        this._.options.showGraticule = true;
+        tj.addGroup(_.graticule, 'graticule');
+        tj.rotate();
     }
 
     return {
         name: 'graticuleThreejs',
-        onInit() {
-            init.call(this);
-        },
-        onRefresh() {
-            if (_.graticule) {
-                refresh.call(this);
-            }
-        },
-        onResize() {
-            resize.call(this);
+        onCreate() {
+            create.call(this);
         },
     }
 }
