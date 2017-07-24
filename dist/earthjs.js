@@ -2755,6 +2755,7 @@ var barSvg = (function (urlBars) {
     /*eslint no-console: 0 */
     var _ = { svg: null, barProjection: null, q: null, bars: null, valuePath: null };
     var $ = {};
+    var scale50 = d3.scaleLinear().domain([0, 200]).range([5, 50]);
 
     function init() {
         var __ = this._;
@@ -2777,8 +2778,8 @@ var barSvg = (function (urlBars) {
                 return parseInt(d.geometry.value);
             });
 
-            var scale = __.proj.scale();
-            _.lengthScale = d3.scaleLinear().domain([0, _.max]).range([scale, scale + 50]);
+            var r = __.proj.scale();
+            _.heightScale = d3.scaleLinear().domain([0, _.max]).range([r, r + scale50(r)]);
 
             $.bar = gBar.selectAll('line').data(_.bars.features).enter().append('line').attr('stroke', 'red').attr('stroke-width', '2').attr('data-index', function (d, i) {
                 return i;
@@ -2791,7 +2792,7 @@ var barSvg = (function (urlBars) {
         var __ = this._;
         if (_.bars && __.options.showBars) {
             var proj1 = __.proj;
-            var scale = _.lengthScale;
+            var scale = _.heightScale;
             var proj2 = _.barProjection;
             var center = proj1.invert(__.center);
             proj2.rotate(this._.proj.rotate());

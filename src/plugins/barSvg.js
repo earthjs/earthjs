@@ -2,6 +2,7 @@ export default urlBars => {
     /*eslint no-console: 0 */
     const _ = {svg:null, barProjection: null, q: null, bars: null, valuePath: null};
     const $ = {};
+    const scale50 = d3.scaleLinear().domain([0, 200]).range([5, 50]);
 
     function init() {
         const __ = this._;
@@ -30,8 +31,8 @@ export default urlBars => {
 
             _.max = d3.max(_.bars.features, d => parseInt(d.geometry.value))
 
-            const scale = __.proj.scale();
-            _.lengthScale = d3.scaleLinear().domain([0, _.max]).range([scale, scale+50]);
+            const r = __.proj.scale();
+            _.heightScale = d3.scaleLinear().domain([0, _.max]).range([r, r+scale50(r)]);
 
             $.bar = gBar.selectAll('line').data(_.bars.features).enter().append('line')
                 .attr('stroke', 'red')
@@ -45,7 +46,7 @@ export default urlBars => {
         const __ = this._;
         if (_.bars && __.options.showBars) {
             const proj1 = __.proj;
-            const scale = _.lengthScale;
+            const scale = _.heightScale;
             const proj2 = _.barProjection;
             const center = proj1.invert(__.center);
             proj2.rotate(this._.proj.rotate());
