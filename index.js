@@ -26,6 +26,7 @@ import placesSvg from './src/plugins/placesSvg.js';
 import worldCanvas from './src/plugins/worldCanvas.js';
 import worldSvg from './src/plugins/worldSvg.js';
 import worldThreejs from './src/plugins/worldThreejs.js';
+import imageThreejs from './src/plugins/imageThreejs.js';
 import centerCanvas from './src/plugins/centerCanvas.js';
 import centerSvg from './src/plugins/centerSvg.js';
 import flattenPlugin from './src/plugins/flattenPlugin.js';
@@ -66,6 +67,7 @@ app.plugins= {
     worldCanvas,
     worldSvg,
     worldThreejs,
+    imageThreejs,
     centerCanvas,
     centerSvg,
     flattenPlugin,

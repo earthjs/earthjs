@@ -2501,6 +2501,45 @@ var worldThreejs = (function () {
     };
 });
 
+var imageThreejs = (function () {
+    var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.png';
+
+    /*eslint no-console: 0 */
+    var _ = { sphereObject: null };
+
+    function create() {
+        var tj = this.threejsPlugin;
+        if (!_.sphereObject) {
+            var _this = this;
+            var loader = new THREE.TextureLoader();
+            loader.load(imgUrl, function (map) {
+                var geometry = new THREE.SphereGeometry(200, 30, 30);
+                var material = new THREE.MeshBasicMaterial({ map: map });
+                _.sphereObject = new THREE.Mesh(geometry, material);
+                _.sphereObject.visible = _this._.options.showImage;
+                tj.addGroup(_.sphereObject);
+                tj.rotate();
+            });
+        } else {
+            tj.addGroup(_.sphereObject);
+            tj.rotate();
+        }
+    }
+
+    return {
+        name: 'imageThreejs',
+        onInit: function onInit() {
+            this._.options.showImage = true;
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            _.sphereObject.visible = this._.options.showImage;
+        }
+    };
+});
+
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var centerCanvas = (function () {
     /*eslint no-console: 0 */
@@ -3599,6 +3638,7 @@ earthjs$1.plugins = {
     worldCanvas: worldCanvas,
     worldSvg: worldSvg,
     worldThreejs: worldThreejs,
+    imageThreejs: imageThreejs,
     centerCanvas: centerCanvas,
     centerSvg: centerSvg,
     flattenPlugin: flattenPlugin,

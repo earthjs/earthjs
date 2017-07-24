@@ -44,6 +44,7 @@ Selected plugins bundled into library:
 * placesSvg,
 * worldCanvas,
 * worldThreejs,
+* imageThreejs,
 * barSvg,
 * dotsSvg,
 * pingsSvg,
