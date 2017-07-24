@@ -104,6 +104,9 @@ export default (threejs='three-js') => {
         rotate(obj) {
             rotate.call(this, obj);
         },
+        vertex(point) {
+            return vertex(point);
+        },
         wireframe(multilinestring, material) {
             return wireframe(multilinestring, material);
         },

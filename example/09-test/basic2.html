@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="//d3js.org/d3.v4.js"></script>
+  <script src="//d3js.org/topojson.v1.min.js"></script>
+  <style>
+    body { margin:0;position:fixed;top:0;right:0;bottom:0;left:0; }
+  </style>
+</head>
+
+<body>
+   <canvas id="canvas" width="1600" height="800"></canvas>
+  <script>
+    var width   = 1600;
+    var height  =  800;
+    var canvas  = d3.select("canvas");
+    var context = canvas.node().getContext("2d");
+
+    var datumGraticule = d3.geoGraticule()();
+    var projection = d3.geoMercator().scale(width/2/Math.PI)
+        .translate([width/2, height/2]).precision(0.5);
+
+    var path = d3.geoPath(projection, context);
+
+
+    var url = "https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-110m.json";
+    d3.json(url, function(err, world) {
+        var land = topojson.feature(world, world.objects.land);
+    //   svg.append("path").attr("d", path(geojson))
+        context.beginPath();
+        path(datumGraticule);
+        context.lineWidth = 0.4;
+        context.strokeStyle = 'rgba(119,119,119,0.6)';
+        context.stroke();
+
+        context.beginPath();
+        path(land);
+        context.fillStyle = 'rgba(119,119,119,0.2)'; //"#bbb";
+        context.fill();
+        context.lineWidth = '2'
+        context.strokeStyle = '#c9c4bc'
+        context.stroke()
+    })
+  </script>
+</body>

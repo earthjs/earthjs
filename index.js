@@ -33,6 +33,7 @@ import barSvg from './src/plugins/barSvg.js';
 import dotsSvg from './src/plugins/dotsSvg.js';
 import pinCanvas from './src/plugins/pinCanvas.js';
 import dotsCanvas from './src/plugins/dotsCanvas.js';
+import dotsThreejs from './src/plugins/dotsThreejs.js';
 import pingsCanvas from './src/plugins/pingsCanvas.js';
 import pingsSvg from './src/plugins/pingsSvg.js';
 import debugThreejs from './src/plugins/debugThreejs.js';
@@ -72,6 +73,7 @@ app.plugins= {
     dotsSvg,
     pinCanvas,
     dotsCanvas,
+    dotsThreejs,
     pingsCanvas,
     pingsSvg,
     debugThreejs,

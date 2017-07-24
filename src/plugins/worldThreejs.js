@@ -18,21 +18,23 @@ export default (imgUrl='../d/world.png') => {
             tj.addGroup(_.sphereObject);
         }
     }
-
-    function worldFromTopojson() {
-        const tj = this.threejsPlugin;
-        const material = new THREE.LineBasicMaterial({color: 0xff0000});
-        _.sphereObject = tj.wireframe(topojson.mesh(_.world, _.world.objects.land), material);
+    function updateGlobe(tj, obj) {
+        _.sphereObject = obj;
         _.sphereObject.visible = this._.options.showLand;
         tj.addGroup(_.sphereObject);
         tj.rotate();
     }
 
-    function worldFromImage() {
-        const __ = this._;
+    function worldFromTopojson() {
         const tj = this.threejsPlugin;
-        const loader = new THREE.TextureLoader();
-        loader.load(imgUrl, function(texture) {
+        const mesh = topojson.mesh(_.world, _.world.objects.land);
+        const material = new THREE.LineBasicMaterial({color: 0xff0000});
+        updateGlobe.call(this, tj, tj.wireframe(mesh, material));
+    }
+
+    function worldFromImage() {
+        const tj = this.threejsPlugin;
+        (new THREE.TextureLoader()).loader.load(imgUrl, function(texture) {
             const geometry = new THREE.SphereGeometry( 200, 30, 30 );
             const material = new THREE.MeshBasicMaterial( {
                 map: texture,
@@ -40,10 +42,7 @@ export default (imgUrl='../d/world.png') => {
                 opacity: 0
             } );
             material.opacity = 1;
-            _.sphereObject = new THREE.Mesh( geometry, material );
-            _.sphereObject.visible = __.options.showLand;
-            tj.addGroup(_.sphereObject);
-            tj.rotate();
+            updateGlobe.call(this, tj, new THREE.Mesh(geometry, material));
         });
     }
 
