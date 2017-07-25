@@ -38,6 +38,7 @@ import dotsSvg from './src/plugins/dotsSvg';
 import pinCanvas from './src/plugins/pinCanvas';
 import dotsCanvas from './src/plugins/dotsCanvas';
 import dotsThreejs from './src/plugins/dotsThreejs';
+import dotsCThreejs from './src/plugins/dotsCThreejs';
 import pingsCanvas from './src/plugins/pingsCanvas';
 import pingsSvg from './src/plugins/pingsSvg';
 import debugThreejs from './src/plugins/debugThreejs';
@@ -82,6 +83,7 @@ app.plugins= {
     pinCanvas,
     dotsCanvas,
     dotsThreejs,
+    dotsCThreejs,
     pingsCanvas,
     pingsSvg,
     debugThreejs,

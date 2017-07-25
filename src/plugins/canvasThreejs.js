@@ -7,12 +7,14 @@ export default worldUrl => {
         onDraw: {},
         onDrawVals: [],
     };
-    var material = new THREE.MeshBasicMaterial({transparent:true});
-    var geometry = new THREE.SphereGeometry(200,30,30);
-    var projection= d3.geoEquirectangular().precision(0.5).translate([512, 256]).scale(163)
     var canvas    = d3.select("body").append("canvas").style("display","none").attr("width","1024px").attr("height","512px");
     var context   = canvas.node().getContext("2d");
+    var texture   = new THREE.Texture(canvas.node());
+    var geometry  = new THREE.SphereGeometry(200,30,30);
+    var material  = new THREE.MeshBasicMaterial({transparent:true});
+    var projection= d3.geoEquirectangular().precision(0.5).translate([512, 256]).scale(163)
     var path      = d3.geoPath().projection(projection).context(context);
+    material.map  = texture;
 
     function init() {
         this._.options.showTjCanvas = true;
@@ -21,21 +23,19 @@ export default worldUrl => {
     function create() {
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
-            context.fillStyle = "#aaa";
-            context.beginPath();
-            path(_.countries);
-            context.fill();
-
-            _.onDrawVals.forEach(v => {
-                v.call(this, context, path);
-            });
-
-            _.texture = new THREE.Texture(canvas.node());
-            _.texture.needsUpdate = true;
-            material.map = _.texture;
             _.sphereObject= new THREE.Mesh(geometry, material);
-            _.sphereObject.visible = this._.options.showTjCanvas;
         }
+        context.clearRect(0, 0, 1024, 512);
+        context.fillStyle = "#aaa";
+        context.beginPath();
+        path(_.countries);
+        context.fill();
+
+        _.onDrawVals.forEach(v => {
+            v.call(this, context, path);
+        });
+        texture.needsUpdate = true;
+        _.sphereObject.visible = this._.options.showTjCanvas;
         tj.addGroup(_.sphereObject);
         tj.rotate();
     }

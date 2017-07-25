@@ -15,19 +15,22 @@
     <script>
         const g = earthjs()
         .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.configPlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.graticuleThreejs())
         .register(earthjs.plugins.oceanThreejs())
         .register(earthjs.plugins.canvasThreejs('../d/world-110m.json'))
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
-        .register(earthjs.plugins.barSvg('../d/bars.json'));
+        .register(earthjs.plugins.barSvg('../d/bars.json'))
+        .register(earthjs.plugins.dotsCThreejs());
         // .register(earthjs.plugins.textureThreejs())
         g.mousePlugin.selectAll('.ej-svg');
         g.barSvg.selectAll('.ej-svg');
         g.barSvg.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
             json.geometry = {radius: 2}
+            g.dotsCThreejs.data(json);
             g.barSvg.data(json);
         };
         g.ready(function(){

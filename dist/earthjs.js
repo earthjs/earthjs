@@ -1150,12 +1150,14 @@ var canvasThreejs = (function (worldUrl) {
         onDraw: {},
         onDrawVals: []
     };
-    var material = new THREE.MeshBasicMaterial({ transparent: true });
-    var geometry = new THREE.SphereGeometry(200, 30, 30);
-    var projection = d3.geoEquirectangular().precision(0.5).translate([512, 256]).scale(163);
     var canvas = d3.select("body").append("canvas").style("display", "none").attr("width", "1024px").attr("height", "512px");
     var context = canvas.node().getContext("2d");
+    var texture = new THREE.Texture(canvas.node());
+    var geometry = new THREE.SphereGeometry(200, 30, 30);
+    var material = new THREE.MeshBasicMaterial({ transparent: true });
+    var projection = d3.geoEquirectangular().precision(0.5).translate([512, 256]).scale(163);
     var path = d3.geoPath().projection(projection).context(context);
+    material.map = texture;
 
     function init() {
         this._.options.showTjCanvas = true;
@@ -1166,21 +1168,19 @@ var canvasThreejs = (function (worldUrl) {
 
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
-            context.fillStyle = "#aaa";
-            context.beginPath();
-            path(_.countries);
-            context.fill();
-
-            _.onDrawVals.forEach(function (v) {
-                v.call(_this, context, path);
-            });
-
-            _.texture = new THREE.Texture(canvas.node());
-            _.texture.needsUpdate = true;
-            material.map = _.texture;
             _.sphereObject = new THREE.Mesh(geometry, material);
-            _.sphereObject.visible = this._.options.showTjCanvas;
         }
+        context.clearRect(0, 0, 1024, 512);
+        context.fillStyle = "#aaa";
+        context.beginPath();
+        path(_.countries);
+        context.fill();
+
+        _.onDrawVals.forEach(function (v) {
+            v.call(_this, context, path);
+        });
+        texture.needsUpdate = true;
+        _.sphereObject.visible = this._.options.showTjCanvas;
         tj.addGroup(_.sphereObject);
         tj.rotate();
     }
@@ -3500,6 +3500,68 @@ var dotsThreejs = (function (urlJson) {
     };
 });
 
+var dotsCThreejs = (function (urlDots) {
+    /*eslint no-console: 0 */
+    var _ = { dataDots: null };
+
+    function init() {
+        var dots = void 0;
+        var __ = this._;
+        __.options.showDots = true;
+        this.canvasThreejs.onDraw({
+            dotsCThreejs: function dotsCThreejs(context, path) {
+                if (__.options.showDots) {
+                    if (!dots) {
+                        dots = _.dots.map(function (d) {
+                            return d.circle;
+                        });
+                    }
+                    var _g = _.dataDots.geometry || {};
+                    context.beginPath();
+                    path({ type: 'GeometryCollection', geometries: dots });
+                    context.lineWidth = _g.lineWidth || 0.2;
+                    context.fillStyle = _g.fillStyle || 'rgba(100,0,0,.4)';
+                    context.strokeStyle = _g.strokeStyle || 'rgba(100,0,0,.6)';
+                    context.fill();
+                    context.stroke();
+                }
+            }
+        });
+    }
+
+    function initData() {
+        var geoCircle = d3.geoCircle();
+        var _g = _.dataDots.geometry || {};
+        var _r = _g.radius || 0.5;
+        _.dots = _.dataDots.features.map(function (d) {
+            var coordinates = d.geometry.coordinates;
+            var properties = d.properties;
+            var r = d.geometry.radius || _r;
+            var circle = geoCircle.center(coordinates).radius(r)();
+            return { properties: properties, coordinates: coordinates, circle: circle };
+        });
+    }
+
+    return {
+        name: 'dotsCThreejs',
+        urls: urlDots && [urlDots],
+        onReady: function onReady(err, dots) {
+            this.dotsCThreejs.data(dots);
+        },
+        onInit: function onInit() {
+            init.call(this);
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.dataDots = _data;
+                initData();
+            } else {
+                return _.dataDots;
+            }
+        }
+    };
+});
+
 var pingsCanvas = (function () {
     var _ = { dataPings: null, pings: [] };
 
@@ -3868,6 +3930,7 @@ earthjs$1.plugins = {
     pinCanvas: pinCanvas,
     dotsCanvas: dotsCanvas,
     dotsThreejs: dotsThreejs,
+    dotsCThreejs: dotsCThreejs,
     pingsCanvas: pingsCanvas,
     pingsSvg: pingsSvg,
     debugThreejs: debugThreejs,
