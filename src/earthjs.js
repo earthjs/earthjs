@@ -11,19 +11,15 @@ const earthjs = (options={}) => {
     }, options);
     const _ = {
         onCreate: {},
-        onCreateKeys: [],
         onCreateVals: [],
 
         onRefresh: {},
-        onRefreshKeys: [],
         onRefreshVals: [],
 
         onResize: {},
-        onResizeKeys: [],
         onResizeVals: [],
 
         onInterval: {},
-        onIntervalKeys: [],
         onIntervalVals: [],
 
         ready: null,
@@ -237,7 +233,7 @@ const earthjs = (options={}) => {
         if (obj[qname]) {
             _[qname][obj.name] = obj[qname];
             _[qname+'Keys'] = Object.keys(_[qname]);
-            _[qname+'Vals'] = Object.values(_[qname]);
+            _[qname+'Vals'] = _[qname+'Keys'].map(k => _[qname][k]);
         }
     }
 }

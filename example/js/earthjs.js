@@ -83,19 +83,15 @@ var earthjs$1 = function earthjs() {
     }, options);
     var _ = {
         onCreate: {},
-        onCreateKeys: [],
         onCreateVals: [],
 
         onRefresh: {},
-        onRefreshKeys: [],
         onRefreshVals: [],
 
         onResize: {},
-        onResizeKeys: [],
         onResizeVals: [],
 
         onInterval: {},
-        onIntervalKeys: [],
         onIntervalVals: [],
 
         ready: null,
@@ -305,7 +301,9 @@ var earthjs$1 = function earthjs() {
         if (obj[qname]) {
             _[qname][obj.name] = obj[qname];
             _[qname + 'Keys'] = Object.keys(_[qname]);
-            _[qname + 'Vals'] = Object.values(_[qname]);
+            _[qname + 'Vals'] = _[qname + 'Keys'].map(function (k) {
+                return _[qname][k];
+            });
         }
     }
 };
@@ -388,23 +386,26 @@ var mousePlugin = (function () {
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null, sync: [], mouse: null, wait: null,
         onDrag: {},
-        onDragKeys: [],
+        onDragVals: [],
         onClick: {},
-        onClickKeys: [],
+        onClickVals: [],
         onDblClick: {},
-        onDblClickKeys: []
+        onDblClickVals: []
     };
+    if (zoomScale === undefined) {
+        zoomScale = [0, 1000];
+    }
 
     function onclick() {
-        _.onClickKeys.forEach(function (k) {
-            _.onClick[k].call(_._this, _.event, _.mouse);
+        _.onClickVals.forEach(function (v) {
+            v.call(_._this, _.event, _.mouse);
         });
         console.log('onClick');
     }
 
     function ondblclick() {
-        _.onDblClickKeys.forEach(function (k) {
-            _.onDblClick[k].call(_._this, _.event, _.mouse);
+        _.onDblClickVals.forEach(function (v) {
+            v.call(_._this, _.event, _.mouse);
         });
         console.log('onDblClick');
     }
@@ -427,8 +428,8 @@ var mousePlugin = (function () {
 
         r(__);
         __.rotate(_.r);
-        _.onDragKeys.forEach(function (k) {
-            _.onDrag[k].call(_this, _.mouse);
+        _.onDragVals.forEach(function (v) {
+            v.call(_this, _.mouse);
         });
     }
 
@@ -502,8 +503,8 @@ var mousePlugin = (function () {
             } else if (__.drag) {
                 r(__);
                 __.rotate(_.r);
-                _.onDragKeys.forEach(function (k) {
-                    _.onDrag[k].call(_._this, _.mouse);
+                _.onDragVals.forEach(function (v) {
+                    v.call(_._this, _.mouse);
                 });
                 _.sync.forEach(function (g) {
                     return rotate.call(g, _.r);
@@ -554,15 +555,21 @@ var mousePlugin = (function () {
         },
         onDrag: function onDrag(obj) {
             Object.assign(_.onDrag, obj);
-            _.onDragKeys = Object.keys(_.onDrag);
+            _.onDragVals = Object.keys(_.onDrag).map(function (k) {
+                return _.onDrag[k];
+            });
         },
         onClick: function onClick(obj) {
             Object.assign(_.onClick, obj);
-            _.onClickKeys = Object.keys(_.onClick);
+            _.onClickVals = Object.keys(_.onClick).map(function (k) {
+                return _.onClick[k];
+            });
         },
         onDblClick: function onDblClick(obj) {
             Object.assign(_.onDblClick, obj);
-            _.onDblClickKeys = Object.keys(_.onDblClick);
+            _.onDblClickVals = Object.keys(_.onDblClick).map(function (k) {
+                return _.onDblClick[k];
+            });
         }
     };
 });
@@ -829,9 +836,9 @@ var hoverCanvas = (function () {
         country: null,
         countries: null,
         onCircle: {},
-        onCircleKeys: [],
+        onCircleVals: [],
         onCountry: {},
-        onCountryKeys: []
+        onCountryVals: []
     };
 
     function init() {
@@ -861,16 +868,16 @@ var hoverCanvas = (function () {
             _.mouse = mouse;
             _.country = null;
             if (__.options.showDots) {
-                _.onCircleKeys.forEach(function (k) {
-                    _.dot = _.onCircle[k].call(_this, _.mouse, pos);
+                _.onCircleVals.forEach(function (v) {
+                    _.dot = v.call(_this, _.mouse, pos);
                 });
             }
             if (__.options.showLand && _.countries && !_.dot) {
                 if (!__.drag) {
                     _.country = findCountry(pos);
                 }
-                _.onCountryKeys.forEach(function (k) {
-                    _.onCountry[k].call(_this, _.mouse, _.country);
+                _.onCountryVals.forEach(function (v) {
+                    v.call(_this, _.mouse, _.country);
                 });
             }
         };
@@ -899,11 +906,15 @@ var hoverCanvas = (function () {
         },
         onCircle: function onCircle(obj) {
             Object.assign(_.onCircle, obj);
-            _.onCircleKeys = Object.keys(_.onCircle);
+            _.onCircleVals = Object.keys(_.onCircle).map(function (k) {
+                return _.onCircle[k];
+            });
         },
         onCountry: function onCountry(obj) {
             Object.assign(_.onCountry, obj);
-            _.onCountryKeys = Object.keys(_.onCountry);
+            _.onCountryVals = Object.keys(_.onCountry).map(function (k) {
+                return _.onCountry[k];
+            });
         },
         data: function data(_data) {
             if (_data) {
@@ -932,9 +943,9 @@ var clickCanvas = (function () {
         country: null,
         countries: null,
         onCircle: {},
-        onCircleKeys: [],
+        onCircleVals: [],
         onCountry: {},
-        onCountryKeys: []
+        onCountryVals: []
     };
 
     function init() {
@@ -961,16 +972,16 @@ var clickCanvas = (function () {
             _.mouse = xmouse;
             _.country = null;
             if (__.options.showDots) {
-                _.onCircleKeys.forEach(function (k) {
-                    _.dot = _.onCircle[k].call(_this, _.mouse, pos);
+                _.onCircleVals.forEach(function (v) {
+                    _.dot = v.call(_this, _.mouse, pos);
                 });
             }
             if (__.options.showLand && !_.dot) {
                 if (!__.drag) {
                     _.country = findCountry(pos);
                 }
-                _.onCountryKeys.forEach(function (k) {
-                    _.onCountry[k].call(_this, _.mouse, _.country);
+                _.onCountryVals.forEach(function (v) {
+                    v.call(_this, _.mouse, _.country);
                 });
             }
         };
@@ -998,11 +1009,15 @@ var clickCanvas = (function () {
         },
         onCircle: function onCircle(obj) {
             Object.assign(_.onCircle, obj);
-            _.onCircleKeys = Object.keys(_.onCircle);
+            _.onCircleVals = Object.keys(_.onCircle).map(function (k) {
+                return _.onCircle[k];
+            });
         },
         onCountry: function onCountry(obj) {
             Object.assign(_.onCountry, obj);
-            _.onCountryKeys = Object.keys(_.onCountry);
+            _.onCountryVals = Object.keys(_.onCountry).map(function (k) {
+                return _.onCountry[k];
+            });
         },
         data: function data(_data) {
             if (_data) {
@@ -1031,9 +1046,9 @@ var dblClickCanvas = (function () {
         country: null,
         countries: null,
         onCircle: {},
-        onCircleKeys: [],
+        onCircleVals: [],
         onCountry: {},
-        onCountryKeys: []
+        onCountryVals: []
     };
 
     function findCountry(pos) {
@@ -1070,16 +1085,16 @@ var dblClickCanvas = (function () {
             _.mouse = xmouse;
             _.country = null;
             if (__.options.showDots) {
-                _.onCircleKeys.forEach(function (k) {
-                    _.dot = _.onCircle[k].call(_this, _.mouse, pos);
+                _.onCircleVals.forEach(function (v) {
+                    _.dot = v.call(_this, _.mouse, pos);
                 });
             }
             if (__.options.showLand && !_.dot) {
                 if (!__.drag) {
                     _.country = findCountry(pos);
                 }
-                _.onCountryKeys.forEach(function (k) {
-                    _.onCountry[k].call(_this, _.mouse, _.country);
+                _.onCountryVals.forEach(function (v) {
+                    v.call(_this, _.mouse, _.country);
                 });
             }
         };
@@ -1097,11 +1112,15 @@ var dblClickCanvas = (function () {
         },
         onCircle: function onCircle(obj) {
             Object.assign(_.onCircle, obj);
-            _.onCircleKeys = Object.keys(_.onCircle);
+            _.onCircleVals = Object.keys(_.onCircle).map(function (k) {
+                return _.onCircle[k];
+            });
         },
         onCountry: function onCountry(obj) {
             Object.assign(_.onCountry, obj);
-            _.onCountryKeys = Object.keys(_.onCountry);
+            _.onCountryVals = Object.keys(_.onCountry).map(function (k) {
+                return _.onCountry[k];
+            });
         },
         data: function data(_data) {
             if (_data) {
@@ -1129,7 +1148,7 @@ var canvasThreejs = (function (worldUrl) {
     var _ = {
         sphereObject: null,
         onDraw: {},
-        onDrawKeys: []
+        onDrawVals: []
     };
     var material = new THREE.MeshBasicMaterial({ transparent: true });
     var geometry = new THREE.SphereGeometry(200, 30, 30);
@@ -1152,8 +1171,8 @@ var canvasThreejs = (function (worldUrl) {
             path(_.countries);
             context.fill();
 
-            _.onDrawKeys.forEach(function (k) {
-                _.onDraw[k].call(_this, context, path);
+            _.onDrawVals.forEach(function (v) {
+                v.call(_this, context, path);
             });
 
             _.texture = new THREE.Texture(canvas.node());
@@ -1183,7 +1202,9 @@ var canvasThreejs = (function (worldUrl) {
         },
         onDraw: function onDraw(obj) {
             Object.assign(_.onDraw, obj);
-            _.onDrawKeys = Object.keys(_.onDraw);
+            _.onDrawVals = Object.keys(_.onDraw).map(function (k) {
+                return _.onDraw[k];
+            });
         },
         data: function data(_data) {
             if (_data) {
@@ -1852,11 +1873,11 @@ var dotSelectCanvas = (function () {
     /*eslint no-console: 0 */
     var _ = { dataDots: null, dots: null, radiusPath: null,
         onHover: {},
-        onHoverKeys: [],
+        onHoverVals: [],
         onClick: {},
-        onClickKeys: [],
+        onClickVals: [],
         onDblClick: {},
-        onDblClickKeys: []
+        onDblClickVals: []
     };
 
     function detect(mouse, pos) {
@@ -1878,8 +1899,8 @@ var dotSelectCanvas = (function () {
         if (this.hoverCanvas) {
             var hoverHandler = function hoverHandler(mouse, pos) {
                 var dot = detect(mouse, pos);
-                _.onHoverKeys.forEach(function (k) {
-                    _.onHover[k].call(_this, mouse, dot);
+                _.onHoverVals.forEach(function (v) {
+                    v.call(_this, mouse, dot);
                 });
                 return dot;
             };
@@ -1891,8 +1912,8 @@ var dotSelectCanvas = (function () {
         if (this.clickCanvas) {
             var clickHandler = function clickHandler(mouse, pos) {
                 var dot = detect(mouse, pos);
-                _.onClickKeys.forEach(function (k) {
-                    _.onClick[k].call(_this, mouse, dot);
+                _.onClickVals.forEach(function (v) {
+                    v.call(_this, mouse, dot);
                 });
                 return dot;
             };
@@ -1904,8 +1925,8 @@ var dotSelectCanvas = (function () {
         if (this.dblClickCanvas) {
             var dblClickHandler = function dblClickHandler(mouse, pos) {
                 var dot = detect(mouse, pos);
-                _.onDblClickKeys.forEach(function (k) {
-                    _.onDblClick[k].call(_this, mouse, dot);
+                _.onDblClickVals.forEach(function (v) {
+                    v.call(_this, mouse, dot);
                 });
                 return dot;
             };
@@ -1927,15 +1948,21 @@ var dotSelectCanvas = (function () {
         },
         onHover: function onHover(obj) {
             Object.assign(_.onHover, obj);
-            _.onHoverKeys = Object.keys(_.onHover);
+            _.onHoverVals = Object.keys(_.onHover).map(function (k) {
+                return _.onHover[k];
+            });
         },
         onClick: function onClick(obj) {
             Object.assign(_.onClick, obj);
-            _.onClickKeys = Object.keys(_.onClick);
+            _.onClickVals = Object.keys(_.onClick).map(function (k) {
+                return _.onClick[k];
+            });
         },
         onDblClick: function onDblClick(obj) {
             Object.assign(_.onDblClick, obj);
-            _.onDblClickKeys = Object.keys(_.onDblClick);
+            _.onDblClickVals = Object.keys(_.onDblClick).map(function (k) {
+                return _.onDblClick[k];
+            });
         },
         dots: function dots(_dots) {
             _.dots = _dots;
@@ -1984,11 +2011,11 @@ var countrySelectCanvas = (function () {
     /*eslint no-console: 0 */
     var _ = { countries: null,
         onHover: {},
-        onHoverKeys: [],
+        onHoverVals: [],
         onClick: {},
-        onClickKeys: [],
+        onClickVals: [],
         onDblClick: {},
-        onDblClickKeys: []
+        onDblClickVals: []
     };
 
     function init() {
@@ -1996,8 +2023,8 @@ var countrySelectCanvas = (function () {
 
         if (this.hoverCanvas) {
             var hoverHandler = function hoverHandler(mouse, country) {
-                _.onHoverKeys.forEach(function (k) {
-                    _.onHover[k].call(_this, mouse, country);
+                _.onHoverVals.forEach(function (v) {
+                    v.call(_this, mouse, country);
                 });
                 return country;
             };
@@ -2008,8 +2035,8 @@ var countrySelectCanvas = (function () {
 
         if (this.clickCanvas) {
             var clickHandler = function clickHandler(mouse, country) {
-                _.onClickKeys.forEach(function (k) {
-                    _.onClick[k].call(_this, mouse, country);
+                _.onClickVals.forEach(function (v) {
+                    v.call(_this, mouse, country);
                 });
                 return country;
             };
@@ -2020,8 +2047,8 @@ var countrySelectCanvas = (function () {
 
         if (this.dblClickCanvas) {
             var dblClickHandler = function dblClickHandler(mouse, country) {
-                _.onDblClickKeys.forEach(function (k) {
-                    _.onDblClick[k].call(_this, mouse, country);
+                _.onDblClickVals.forEach(function (v) {
+                    v.call(_this, mouse, country);
                 });
                 return country;
             };
@@ -2051,15 +2078,21 @@ var countrySelectCanvas = (function () {
         },
         onHover: function onHover(obj) {
             Object.assign(_.onHover, obj);
-            _.onHoverKeys = Object.keys(_.onHover);
+            _.onHoverVals = Object.keys(_.onHover).map(function (k) {
+                return _.onHover[k];
+            });
         },
         onClick: function onClick(obj) {
             Object.assign(_.onClick, obj);
-            _.onClickKeys = Object.keys(_.onClick);
+            _.onClickVals = Object.keys(_.onClick).map(function (k) {
+                return _.onClick[k];
+            });
         },
         onDblClick: function onDblClick(obj) {
             Object.assign(_.onDblClick, obj);
-            _.onDblClickKeys = Object.keys(_.onDblClick);
+            _.onDblClickVals = Object.keys(_.onDblClick).map(function (k) {
+                return _.onDblClick[k];
+            });
         },
         data: function data(_data) {
             if (_data) {

@@ -3,18 +3,18 @@ export default () => {
     /*eslint no-console: 0 */
     const _ = {countries: null,
         onHover: {},
-        onHoverKeys: [],
+        onHoverVals: [],
         onClick: {},
-        onClickKeys: [],
+        onClickVals: [],
         onDblClick: {},
-        onDblClickKeys: [],
+        onDblClickVals: [],
     };
 
     function init() {
         if (this.hoverCanvas) {
             const hoverHandler = (mouse, country) => {
-                _.onHoverKeys.forEach(k => {
-                    _.onHover[k].call(this, mouse, country);
+                _.onHoverVals.forEach(v => {
+                    v.call(this, mouse, country);
                 });
                 return country;
             }
@@ -25,8 +25,8 @@ export default () => {
 
         if (this.clickCanvas) {
             const clickHandler = (mouse, country) => {
-                _.onClickKeys.forEach(k => {
-                    _.onClick[k].call(this, mouse, country);
+                _.onClickVals.forEach(v => {
+                    v.call(this, mouse, country);
                 });
                 return country;
             }
@@ -37,8 +37,8 @@ export default () => {
 
         if (this.dblClickCanvas) {
             const dblClickHandler = (mouse, country) => {
-                _.onDblClickKeys.forEach(k => {
-                    _.onDblClick[k].call(this, mouse, country);
+                _.onDblClickVals.forEach(v => {
+                    v.call(this, mouse, country);
                 });
                 return country;
             }
@@ -68,15 +68,15 @@ export default () => {
         },
         onHover(obj) {
             Object.assign(_.onHover, obj);
-            _.onHoverKeys = Object.keys(_.onHover);
+            _.onHoverVals = Object.keys(_.onHover).map(k => _.onHover[k]);
         },
         onClick(obj) {
             Object.assign(_.onClick, obj);
-            _.onClickKeys = Object.keys(_.onClick);
+            _.onClickVals = Object.keys(_.onClick).map(k => _.onClick[k]);
         },
         onDblClick(obj) {
             Object.assign(_.onDblClick, obj);
-            _.onDblClickKeys = Object.keys(_.onDblClick);
+            _.onDblClickVals = Object.keys(_.onDblClick).map(k => _.onDblClick[k]);
         },
         data(data) {
             if (data) {

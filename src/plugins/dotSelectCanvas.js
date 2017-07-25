@@ -2,11 +2,11 @@ export default () => {
     /*eslint no-console: 0 */
     const _ = {dataDots: null, dots: null, radiusPath: null,
         onHover: {},
-        onHoverKeys: [],
+        onHoverVals: [],
         onClick: {},
-        onClickKeys: [],
+        onClickVals: [],
         onDblClick: {},
-        onDblClickKeys: [],
+        onDblClickVals: [],
     };
 
     function detect(mouse, pos) {
@@ -26,8 +26,8 @@ export default () => {
         if (this.hoverCanvas) {
             const hoverHandler = (mouse, pos) => {
                 const dot = detect(mouse, pos);
-                _.onHoverKeys.forEach(k => {
-                    _.onHover[k].call(this, mouse, dot);
+                _.onHoverVals.forEach(v => {
+                    v.call(this, mouse, dot);
                 });
                 return dot;
             }
@@ -39,8 +39,8 @@ export default () => {
         if (this.clickCanvas) {
             const clickHandler = (mouse, pos) => {
                 const dot = detect(mouse, pos);
-                _.onClickKeys.forEach(k => {
-                    _.onClick[k].call(this, mouse, dot);
+                _.onClickVals.forEach(v => {
+                    v.call(this, mouse, dot);
                 });
                 return dot;
             }
@@ -52,8 +52,8 @@ export default () => {
         if (this.dblClickCanvas) {
             const dblClickHandler = (mouse, pos) => {
                 const dot = detect(mouse, pos);
-                _.onDblClickKeys.forEach(k => {
-                    _.onDblClick[k].call(this, mouse, dot);
+                _.onDblClickVals.forEach(v => {
+                    v.call(this, mouse, dot);
                 });
                 return dot;
             }
@@ -75,15 +75,15 @@ export default () => {
         },
         onHover(obj) {
             Object.assign(_.onHover, obj);
-            _.onHoverKeys = Object.keys(_.onHover);
+            _.onHoverVals = Object.keys(_.onHover).map(k => _.onHover[k]);
         },
         onClick(obj) {
             Object.assign(_.onClick, obj);
-            _.onClickKeys = Object.keys(_.onClick);
+            _.onClickVals = Object.keys(_.onClick).map(k => _.onClick[k]);
         },
         onDblClick(obj) {
             Object.assign(_.onDblClick, obj);
-            _.onDblClickKeys = Object.keys(_.onDblClick);
+            _.onDblClickVals = Object.keys(_.onDblClick).map(k => _.onDblClick[k]);
         },
         dots(dots) {
             _.dots = dots;

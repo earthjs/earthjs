@@ -5,7 +5,7 @@ export default worldUrl => {
     const _ = {
         sphereObject:null,
         onDraw: {},
-        onDrawKeys: [],
+        onDrawVals: [],
     };
     var material = new THREE.MeshBasicMaterial({transparent:true});
     var geometry = new THREE.SphereGeometry(200,30,30);
@@ -26,8 +26,8 @@ export default worldUrl => {
             path(_.countries);
             context.fill();
 
-            _.onDrawKeys.forEach(k => {
-                _.onDraw[k].call(this, context, path);
+            _.onDrawVals.forEach(v => {
+                v.call(this, context, path);
             });
 
             _.texture = new THREE.Texture(canvas.node());
@@ -57,7 +57,7 @@ export default worldUrl => {
         },
         onDraw(obj) {
             Object.assign(_.onDraw, obj);
-            _.onDrawKeys = Object.keys(_.onDraw);
+            _.onDrawVals = Object.keys(_.onDraw).map(k => _.onDraw[k]);
         },
         data(data) {
             if (data) {

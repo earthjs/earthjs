@@ -3,23 +3,26 @@ export default ({zoomScale,iDrag}={zoomScale:[0,1000]}) => {
     /*eslint no-console: 0 */
     const _ = {svg:null, q: null, sync: [], mouse: null, wait: null,
         onDrag: {},
-        onDragKeys: [],
+        onDragVals: [],
         onClick: {},
-        onClickKeys: [],
+        onClickVals: [],
         onDblClick: {},
-        onDblClickKeys: []
+        onDblClickVals: []
     };
+    if (zoomScale===undefined) {
+        zoomScale = [0,1000];
+    }
 
     function onclick() {
-        _.onClickKeys.forEach(k => {
-            _.onClick[k].call(_._this, _.event, _.mouse);
+        _.onClickVals.forEach(v => {
+            v.call(_._this, _.event, _.mouse);
         });
         console.log('onClick');
     }
 
     function ondblclick() {
-        _.onDblClickKeys.forEach(k => {
-            _.onDblClick[k].call(_._this, _.event, _.mouse);
+        _.onDblClickVals.forEach(v => {
+            v.call(_._this, _.event, _.mouse);
         });
         console.log('onDblClick');
     }
@@ -38,8 +41,8 @@ export default ({zoomScale,iDrag}={zoomScale:[0,1000]}) => {
     function drag(__) {
         r(__);
         __.rotate(_.r);
-        _.onDragKeys.forEach(k => {
-            _.onDrag[k].call(this, _.mouse);
+        _.onDragVals.forEach(v => {
+            v.call(this, _.mouse);
         });
     }
 
@@ -117,8 +120,8 @@ export default ({zoomScale,iDrag}={zoomScale:[0,1000]}) => {
             } else if (__.drag) {
                 r(__);
                 __.rotate(_.r);
-                _.onDragKeys.forEach(k => {
-                    _.onDrag[k].call(_._this, _.mouse);
+                _.onDragVals.forEach(v => {
+                    v.call(_._this, _.mouse);
                 });
                 _.sync.forEach(g=>rotate.call(g, _.r));
             }
@@ -172,15 +175,15 @@ export default ({zoomScale,iDrag}={zoomScale:[0,1000]}) => {
         },
         onDrag(obj) {
             Object.assign(_.onDrag, obj);
-            _.onDragKeys = Object.keys(_.onDrag);
+            _.onDragVals = Object.keys(_.onDrag).map(k => _.onDrag[k]);
         },
         onClick(obj) {
             Object.assign(_.onClick, obj);
-            _.onClickKeys = Object.keys(_.onClick);
+            _.onClickVals = Object.keys(_.onClick).map(k => _.onClick[k]);
         },
         onDblClick(obj) {
             Object.assign(_.onDblClick, obj);
-            _.onDblClickKeys = Object.keys(_.onDblClick);
+            _.onDblClickVals = Object.keys(_.onDblClick).map(k => _.onDblClick[k]);
         }
     }
 }

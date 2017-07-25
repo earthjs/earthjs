@@ -6,9 +6,9 @@ export default () => {
         country: null,
         countries: null,
         onCircle: {},
-        onCircleKeys: [],
+        onCircleVals: [],
         onCountry: {},
-        onCountryKeys: []
+        onCountryVals: []
     }
 
     function findCountry(pos) {
@@ -43,16 +43,16 @@ export default () => {
             _.mouse = xmouse;
             _.country = null;
             if (__.options.showDots) {
-                _.onCircleKeys.forEach(k => {
-                    _.dot = _.onCircle[k].call(this, _.mouse, pos);
+                _.onCircleVals.forEach(v => {
+                    _.dot = v.call(this, _.mouse, pos);
                 });
             }
             if (__.options.showLand && !_.dot) {
                 if (!__.drag) {
                     _.country = findCountry(pos);
                 }
-                _.onCountryKeys.forEach(k => {
-                    _.onCountry[k].call(this, _.mouse, _.country);
+                _.onCountryVals.forEach(v => {
+                    v.call(this, _.mouse, _.country);
                 });
             }
         }
@@ -70,11 +70,11 @@ export default () => {
         },
         onCircle(obj) {
             Object.assign(_.onCircle, obj);
-            _.onCircleKeys = Object.keys(_.onCircle);
+            _.onCircleVals = Object.keys(_.onCircle).map(k => _.onCircle[k]);
         },
         onCountry(obj) {
             Object.assign(_.onCountry, obj);
-            _.onCountryKeys = Object.keys(_.onCountry);
+            _.onCountryVals = Object.keys(_.onCountry).map(k => _.onCountry[k]);
         },
         data(data) {
             if (data) {
