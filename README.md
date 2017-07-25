@@ -28,6 +28,8 @@ Selected plugins bundled into library:
 * canvasPlugin,
 * threejsPlugin,
 * dropShadowSvg,
+* canvasThreejs,
+* oceanThreejs,
 * oceanSvg,
 * sphereSvg,
 * hoverCanvas,

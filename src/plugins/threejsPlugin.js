@@ -1,7 +1,9 @@
 // Philippe Rivière’s https://bl.ocks.org/Fil/9ed0567b68501ee3c3fef6fbe3c81564
 // https://gist.github.com/Fil/ad107bae48e0b88014a0e3575fe1ba64
+// http://bl.ocks.org/kenpenn/16a9c611417ffbfc6129
 export default (threejs='three-js') => {
     /*eslint no-console: 0 */
+    /*eslint no-debugger: 0 */
     const _ = {renderer: null, scene: null, camera: null, radius: null};
     _.scale = d3.scaleLinear().domain([0,200]).range([0,1]);
 

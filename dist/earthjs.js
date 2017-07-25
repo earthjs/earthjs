@@ -593,10 +593,12 @@ var zoomPlugin = (function () {
 
 // Philippe Rivière’s https://bl.ocks.org/Fil/9ed0567b68501ee3c3fef6fbe3c81564
 // https://gist.github.com/Fil/ad107bae48e0b88014a0e3575fe1ba64
+// http://bl.ocks.org/kenpenn/16a9c611417ffbfc6129
 var threejsPlugin = (function () {
     var threejs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'three-js';
 
     /*eslint no-console: 0 */
+    /*eslint no-debugger: 0 */
     var _ = { renderer: null, scene: null, camera: null, radius: null };
     _.scale = d3.scaleLinear().domain([0, 200]).range([0, 1]);
 
@@ -1120,6 +1122,127 @@ var dblClickCanvas = (function () {
     };
 });
 
+// http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
+var canvasThreejs = (function (worldUrl) {
+    /*eslint no-console: 0 */
+    /*eslint no-debugger: 0 */
+    var _ = {
+        sphereObject: null,
+        onDraw: {},
+        onDrawKeys: []
+    };
+    var material = new THREE.MeshBasicMaterial({ transparent: true });
+    var geometry = new THREE.SphereGeometry(200, 30, 30);
+    var projection = d3.geoEquirectangular().precision(0.5).translate([512, 256]).scale(163);
+    var canvas = d3.select("body").append("canvas").style("display", "none").attr("width", "1024px").attr("height", "512px");
+    var context = canvas.node().getContext("2d");
+    var path = d3.geoPath().projection(projection).context(context);
+
+    function init() {
+        this._.options.showTjCanvas = true;
+    }
+
+    function create() {
+        var _this = this;
+
+        var tj = this.threejsPlugin;
+        if (!_.sphereObject) {
+            context.fillStyle = "#aaa";
+            context.beginPath();
+            path(_.countries);
+            context.fill();
+
+            _.onDrawKeys.forEach(function (k) {
+                _.onDraw[k].call(_this, context, path);
+            });
+
+            _.texture = new THREE.Texture(canvas.node());
+            _.texture.needsUpdate = true;
+            material.map = _.texture;
+            _.sphereObject = new THREE.Mesh(geometry, material);
+            _.sphereObject.visible = this._.options.showTjCanvas;
+        }
+        tj.addGroup(_.sphereObject);
+        tj.rotate();
+    }
+
+    return {
+        name: 'canvasThreejs',
+        urls: worldUrl && [worldUrl],
+        onReady: function onReady(err, data) {
+            this.canvasThreejs.data(data);
+        },
+        onInit: function onInit() {
+            init.call(this);
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            _.sphereObject.visible = this._.options.showTjCanvas;
+        },
+        onDraw: function onDraw(obj) {
+            Object.assign(_.onDraw, obj);
+            _.onDrawKeys = Object.keys(_.onDraw);
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.world = _data;
+                _.countries = topojson.feature(_data, _data.objects.countries);
+            } else {
+                return _.world;
+            }
+        }
+    };
+});
+
+// http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
+var oceanThreejs = (function () {
+    /*eslint no-console: 0 */
+    var _ = { sphereObject: null };
+
+    function create() {
+        var tj = this.threejsPlugin;
+        if (!_.sphereObject) {
+            var geometry = new THREE.SphereGeometry(200, 30, 30);
+            var material = new THREE.MeshNormalMaterial({
+                transparent: true,
+                wireframe: false,
+                opacity: 0.8
+            });
+            // var material = new THREE.MeshPhongMaterial( {
+            //     shading: THREE.SmoothShading, //FlatShading,
+            //     transparent: true,
+            //     wireframe: false,
+            //     color: 0x3794cf, //0xff0000,
+            //     shininess: 40,
+            //     opacity: 0.8,
+            //     // polygonOffset: true,
+            //     // polygonOffsetFactor: 1, // positive value pushes polygon further away
+            //     // polygonOffsetUnits: 1
+            // });
+
+            _.sphereObject = new THREE.Mesh(geometry, material);
+            _.sphereObject.visible = this._.options.showOcean;
+        }
+        tj.addGroup(_.sphereObject);
+        tj.rotate();
+    }
+
+    return {
+        name: 'oceanThreejs',
+        onInit: function onInit() {
+            this._.options.showOcean = true;
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            _.sphereObject.visible = this._.options.showOcean;
+        }
+    };
+});
+
 var oceanSvg = (function () {
     var color = {
         0: ['rgba(221, 221, 255, 0.6)', 'rgba(153, 170, 187,0.8)'],
@@ -1250,6 +1373,87 @@ var sphereSvg = (function () {
     };
 });
 
+// https://bl.ocks.org/mbostock/2b85250396c17a79155302f91ec21224
+// https://bl.ocks.org/pbogden/2f8d2409f1b3746a1c90305a1a80d183
+// http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
+var textureThreejs = (function () {
+    /*eslint no-console: 0 */
+    var _ = {};
+    var geometry = new THREE.SphereGeometry(200, 30, 30);
+    var material = new THREE.MeshBasicMaterial();
+    var datumGraticule = d3.geoGraticule()();
+
+    function init() {
+        this._.options.showDrawing = true;
+        //http://bl.ocks.org/MAKIO135/eab7b74e85ed2be48eeb
+        var __ = this._;
+        var width = __.options.width;
+        var height = __.options.height;
+        var canvas = d3.select('body').append('canvas');
+        canvas.attr('height', height).attr('width', width);
+        _.canvas = canvas.node();
+        _.context = _.canvas.getContext("2d");
+        _.texture = new THREE.Texture(_.canvas);
+        _.canvas.width = _.canvas.height = 512;
+        _.texture.needsUpdate = true;
+        material.map = _.texture;
+
+        var projection = d3.geoMercator().scale(width / 2 / Math.PI).translate([width / 2, height / 2]).precision(0.5);
+
+        _.path = d3.geoPath(projection, _.context);
+
+        // var geometry = new THREE.BoxGeometry( 200, 200, 200 );
+        // _.context.clearRect(0, 0, width, height);
+
+        // _.context.font = '20pt Arial';
+        // _.context.fillStyle = 'red';
+        // _.context.fillRect(0, 0, _.canvas.width, _.canvas.height);
+        // _.context.fillStyle = 'white';
+        // _.context.fillRect(10, 10, _.canvas.width - 20, _.canvas.height - 20);
+        // _.context.fillStyle = 'black';
+        // _.context.textAlign = "center";
+        // _.context.textBaseline = "middle";
+        // _.context.fillText(new Date().getTime(), _.canvas.width / 2, _.canvas.height / 2);
+    }
+
+    function create() {
+        var __ = this._;
+        var tj = this.threejsPlugin;
+        var width = __.options.width;
+        var height = __.options.height;
+        if (!_.sphereObject) {
+            _.context.fillStyle = 'white';
+            _.context.fillRect(0, 0, width, height);
+            _.context.beginPath();
+            _.path(datumGraticule);
+            _.context.lineWidth = 0.4;
+            _.context.strokeStyle = 'rgba(119,119,119,0.6)';
+            _.context.stroke();
+            _.sphereObject = new THREE.Mesh(geometry, material);
+            _.sphereObject.visible = this._.options.showLand;
+            _.texture.needsUpdate = false;
+            // const material = new THREE.LineBasicMaterial({color: 0xaaaaaa});
+            // _.sphereObject = tj.wireframe(_.graticule10, material); //0x800000
+            // _.sphereObject.visible = this._.options.showDrawing;
+        }
+        tj.addGroup(_.sphereObject);
+        tj.rotate();
+    }
+
+    return {
+        name: 'textureThreejs',
+        onInit: function onInit() {
+            init.call(this);
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            _.graticule.visible = this._.options.showDrawing;
+        }
+    };
+});
+
 var graticuleCanvas = (function () {
     var datumGraticule = d3.geoGraticule()();
     var _ = { style: {}, drawTo: null };
@@ -1307,7 +1511,7 @@ var graticuleCanvas = (function () {
 // http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
 var graticuleThreejs = (function () {
     /*eslint no-console: 0 */
-    var _ = { graticule: null };
+    var _ = { sphereObject: null };
 
     function init() {
         this._.options.showGraticule = true;
@@ -1364,10 +1568,12 @@ var graticuleThreejs = (function () {
 
     function create() {
         var tj = this.threejsPlugin;
-        var material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
-        _.graticule = tj.wireframe(_.graticule10, material); //0x800000
-        _.graticule.visible = this._.options.showGraticule;
-        tj.addGroup(_.graticule);
+        if (!_.sphereObject) {
+            var material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
+            _.sphereObject = tj.wireframe(_.graticule10, material); //0x800000
+            _.sphereObject.visible = this._.options.showGraticule;
+        }
+        tj.addGroup(_.sphereObject);
         tj.rotate();
     }
 
@@ -1380,7 +1586,7 @@ var graticuleThreejs = (function () {
             create.call(this);
         },
         onRefresh: function onRefresh() {
-            _.graticule.visible = this._.options.showGraticule;
+            _.sphereObject.visible = this._.options.showGraticule;
         }
     };
 });
@@ -2427,58 +2633,36 @@ var worldSvg = (function (worldUrl) {
 });
 
 var worldThreejs = (function () {
-    var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.png';
+    var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.png';
 
     /*eslint no-console: 0 */
-    var ext = imgUrl.split('.').pop();
-    if (ext === 'geojson') {
-        ext = 'json';
-    }
-    var _ = { sphereObject: null, scale: null, ext: ext };
+    var _ = { sphereObject: null };
 
     function create() {
+        var tj = this.threejsPlugin;
         if (!_.sphereObject) {
-            if (_.ext === 'json') {
-                worldFromTopojson.call(this);
-            } else {
-                worldFromImage.call(this);
-            }
-        } else {
-            var tj = this.threejsPlugin;
-            tj.addGroup(_.sphereObject);
+            var mesh = topojson.mesh(_.world, _.world.objects.countries);
+            var material = new THREE.MeshBasicMaterial({
+                // side: THREE.DoubleSide,
+                color: 0x707070 });
+            // material
+            // var material = new THREE.MeshPhongMaterial( {
+            //     color: 0xff0000,
+            //     shading: THREE.FlatShading,
+            //     polygonOffset: true,
+            //     polygonOffsetFactor: 1, // positive value pushes polygon further away
+            //     polygonOffsetUnits: 1
+            // });
+            _.sphereObject = tj.wireframe(mesh, material);
+            _.sphereObject.visible = this._.options.showLand;
         }
-    }
-    function updateGlobe(tj, obj) {
-        _.sphereObject = obj;
-        _.sphereObject.visible = this._.options.showLand;
         tj.addGroup(_.sphereObject);
         tj.rotate();
     }
 
-    function worldFromTopojson() {
-        var tj = this.threejsPlugin;
-        var mesh = topojson.mesh(_.world, _.world.objects.land);
-        var material = new THREE.LineBasicMaterial({ color: 0xff0000 });
-        updateGlobe.call(this, tj, tj.wireframe(mesh, material));
-    }
-
-    function worldFromImage() {
-        var tj = this.threejsPlugin;
-        new THREE.TextureLoader().loader.load(imgUrl, function (texture) {
-            var geometry = new THREE.SphereGeometry(200, 30, 30);
-            var material = new THREE.MeshBasicMaterial({
-                map: texture,
-                overdraw: 0.5,
-                opacity: 0
-            });
-            material.opacity = 1;
-            updateGlobe.call(this, tj, new THREE.Mesh(geometry, material));
-        });
-    }
-
     return {
         name: 'worldThreejs',
-        urls: _.ext === 'json' && [imgUrl],
+        urls: worldUrl && [worldUrl],
         onReady: function onReady(err, data) {
             this.worldThreejs.data(data);
         },
@@ -3460,7 +3644,7 @@ var debugThreejs = (function () {
             _.sphereObject.add(sphereMesh, dot1Mesh, dot2Mesh, dot3Mesh);
 
             refresh.call(this);
-            this.threejsPlugin.addObject(_.sphereObject);
+            this.threejsPlugin.addScene(_.sphereObject);
         }
     }
 
@@ -3621,8 +3805,11 @@ earthjs$1.plugins = {
     hoverCanvas: hoverCanvas,
     clickCanvas: clickCanvas,
     dblClickCanvas: dblClickCanvas,
+    canvasThreejs: canvasThreejs,
+    oceanThreejs: oceanThreejs,
     oceanSvg: oceanSvg,
     sphereSvg: sphereSvg,
+    textureThreejs: textureThreejs,
     graticuleCanvas: graticuleCanvas,
     graticuleThreejs: graticuleThreejs,
     graticuleSvg: graticuleSvg,

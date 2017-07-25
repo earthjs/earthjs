@@ -28,7 +28,7 @@ export default () => {
             _.sphereObject.add(sphereMesh, dot1Mesh, dot2Mesh, dot3Mesh);
 
             refresh.call(this);
-            this.threejsPlugin.addObject(_.sphereObject);
+            this.threejsPlugin.addScene(_.sphereObject);
         }
     }
 

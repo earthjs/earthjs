@@ -3,7 +3,7 @@
 // http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
 export default () => {
     /*eslint no-console: 0 */
-    const _ = {graticule: null};
+    const _ = {sphereObject: null};
 
     function init() {
         this._.options.showGraticule = true;
@@ -39,10 +39,12 @@ export default () => {
 
     function create() {
         const tj = this.threejsPlugin;
-        const material = new THREE.LineBasicMaterial({color: 0xaaaaaa});
-        _.graticule = tj.wireframe(_.graticule10, material); //0x800000
-        _.graticule.visible = this._.options.showGraticule;
-        tj.addGroup(_.graticule);
+        if (!_.sphereObject) {
+            const material = new THREE.LineBasicMaterial({color: 0xaaaaaa});
+            _.sphereObject = tj.wireframe(_.graticule10, material); //0x800000
+            _.sphereObject.visible = this._.options.showGraticule;
+        }
+        tj.addGroup(_.sphereObject);
         tj.rotate();
     }
 
@@ -55,7 +57,7 @@ export default () => {
             create.call(this);
         },
         onRefresh() {
-            _.graticule.visible = this._.options.showGraticule;
+            _.sphereObject.visible = this._.options.showGraticule;
         }
     }
 }
