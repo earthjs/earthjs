@@ -137,6 +137,9 @@ const earthjs = (options={}) => {
             return globe;
         }
     }
+    Object.defineProperty(globe, 'loading', {
+        get: () => _.loadingData,
+    });
 
     //----------------------------------------
     let earths = [];
@@ -160,10 +163,12 @@ const earthjs = (options={}) => {
         const interval = __.interval;
         intervalTicker = intervalTicker || 50;
         ticker = setInterval(() => { // 33% less CPU compare with d3.timer
-            interval.call(globe);
-            earths.forEach(function(p) {
-                p._.interval.call(p);
-            });
+            if (!_.loadingData) {
+                interval.call(globe);
+                earths.forEach(function(p) {
+                    p._.interval.call(p);
+                });                
+            }
         }, intervalTicker);
         earthjs.ticker = ticker;
         return globe;

@@ -17,9 +17,15 @@
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.oceanThreejs())
+        .register(earthjs.plugins.graticuleThreejs())
+        .register(earthjs.plugins.world3d())
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'));
         g.ready(function(){
             g.create();
+            const s = g.worldThreejs.sphere().scale;
+            s.x = 1.027;
+            s.y = 1.027;
+            s.z = 1.027;
         })
     </script>
 </body>

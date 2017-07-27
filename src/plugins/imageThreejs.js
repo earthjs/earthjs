@@ -21,6 +21,12 @@ export default (imgUrl='../d/world.png') => {
         }
     }
 
+    function refresh() {
+        if (_.sphereObject) {
+            _.sphereObject.visible = this._.options.showImage;
+        }
+    }
+
     return {
         name: 'imageThreejs',
         onInit() {
@@ -30,7 +36,10 @@ export default (imgUrl='../d/world.png') => {
             create.call(this);
         },
         onRefresh() {
-            _.sphereObject.visible = this._.options.showImage;
+            refresh.call(this);
         },
+        sphere() {
+            return _.sphereObject;
+        }
     }
 }

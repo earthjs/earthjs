@@ -207,6 +207,11 @@ var earthjs$1 = function earthjs() {
             return globe;
         }
     };
+    Object.defineProperty(globe, 'loading', {
+        get: function get() {
+            return _.loadingData;
+        }
+    });
 
     //----------------------------------------
     var earths = [];
@@ -231,10 +236,12 @@ var earthjs$1 = function earthjs() {
         intervalTicker = intervalTicker || 50;
         ticker = setInterval(function () {
             // 33% less CPU compare with d3.timer
-            interval.call(globe);
-            earths.forEach(function (p) {
-                p._.interval.call(p);
-            });
+            if (!_.loadingData) {
+                interval.call(globe);
+                earths.forEach(function (p) {
+                    p._.interval.call(p);
+                });
+            }
         }, intervalTicker);
         earthjs.ticker = ticker;
         return globe;
@@ -2689,6 +2696,12 @@ var worldThreejs = (function () {
             _.sphereObject = tj.wireframe(mesh, material);
             _.sphereObject.visible = this._.options.showLand;
         }
+        // if (this.world3d) {
+        //     const s = _.sphereObject.scale;
+        //     s.x = 1.03;
+        //     s.y = 1.03;
+        //     s.z = 1.03;
+        // }
         tj.addGroup(_.sphereObject);
         tj.rotate();
     }
@@ -2714,6 +2727,9 @@ var worldThreejs = (function () {
             } else {
                 return _.world;
             }
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
         }
     };
 });
@@ -2743,6 +2759,12 @@ var imageThreejs = (function () {
         }
     }
 
+    function refresh() {
+        if (_.sphereObject) {
+            _.sphereObject.visible = this._.options.showImage;
+        }
+    }
+
     return {
         name: 'imageThreejs',
         onInit: function onInit() {
@@ -2752,7 +2774,10 @@ var imageThreejs = (function () {
             create.call(this);
         },
         onRefresh: function onRefresh() {
-            _.sphereObject.visible = this._.options.showImage;
+            refresh.call(this);
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
         }
     };
 });
@@ -3890,6 +3915,215 @@ var commonPlugins = (function (worldUrl) {
     };
 });
 
+//            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+//                    Version 2, December 2004
+//
+// Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+//
+// Everyone is permitted to copy and distribute verbatim or modified
+// copies of this license document, and changing it is allowed as long
+// as the name is changed.
+//
+//            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+//   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+//
+//  0. You just DO WHAT THE FUCK YOU WANT TO.
+
+function Map3DGeometry(data, innerRadius) {
+    /*eslint no-redeclare: 0 */
+    if (arguments.length < 2 || isNaN(parseFloat(innerRadius)) || !isFinite(innerRadius) || innerRadius < 0) {
+        // if no valid inner radius is given, do not extrude
+        innerRadius = 42;
+    }
+
+    THREE.Geometry.call(this);
+    // data.vertices = [lat, lon, ...]
+    // data.polygons = [[poly indices, hole i-s, ...], ...]
+    // data.triangles = [tri i-s, ...]
+    var i,
+        uvs = [];
+    for (i = 0; i < data.vertices.length; i += 2) {
+        var lon = data.vertices[i];
+        var lat = data.vertices[i + 1];
+        // colatitude
+        var phi = +(90 - lat) * 0.01745329252;
+        // azimuthal angle
+        var the = +(180 - lon) * 0.01745329252;
+        // translate into XYZ coordinates
+        var wx = Math.sin(the) * Math.sin(phi) * -1;
+        var wz = Math.cos(the) * Math.sin(phi);
+        var wy = Math.cos(phi);
+        // equirectangular projection
+        var wu = 0.25 + lon / 360.0;
+        var wv = 0.5 + lat / 180.0;
+
+        this.vertices.push(new THREE.Vector3(wx, wy, wz));
+
+        uvs.push(new THREE.Vector2(wu, wv));
+    }
+
+    var n = this.vertices.length;
+
+    if (innerRadius <= 1) {
+        for (i = 0; i < n; i++) {
+            var v = this.vertices[i];
+            this.vertices.push(v.clone().multiplyScalar(innerRadius));
+        }
+    }
+
+    for (i = 0; i < data.triangles.length; i += 3) {
+        var a = data.triangles[i];
+        var b = data.triangles[i + 1];
+        var c = data.triangles[i + 2];
+
+        this.faces.push(new THREE.Face3(a, b, c, [this.vertices[a], this.vertices[b], this.vertices[c]]));
+        this.faceVertexUvs[0].push([uvs[a], uvs[b], uvs[c]]);
+
+        if (0 < innerRadius && innerRadius <= 1) {
+            this.faces.push(new THREE.Face3(n + b, n + a, n + c, [this.vertices[b].clone().multiplyScalar(-1), this.vertices[a].clone().multiplyScalar(-1), this.vertices[c].clone().multiplyScalar(-1)]));
+            this.faceVertexUvs[0].push([uvs[b], uvs[a], uvs[c]]); // shitty uvs to make 3js exporter happy
+        }
+    }
+
+    // extrude
+    if (innerRadius < 1) {
+        for (i = 0; i < data.polygons.length; i++) {
+            var polyWithHoles = data.polygons[i];
+            for (var j = 0; j < polyWithHoles.length; j++) {
+                var polygonOrHole = polyWithHoles[j];
+                for (var k = 0; k < polygonOrHole.length; k++) {
+                    var a = polygonOrHole[k],
+                        b = polygonOrHole[(k + 1) % polygonOrHole.length];
+                    var va1 = this.vertices[a],
+                        vb1 = this.vertices[b];
+                    var va2 = this.vertices[n + a]; //, vb2 = this.vertices[n + b];
+                    var normal;
+                    if (j < 1) {
+                        // polygon
+                        normal = vb1.clone().sub(va1).cross(va2.clone().sub(va1)).normalize();
+                        this.faces.push(new THREE.Face3(a, b, n + a, [normal, normal, normal]));
+                        this.faceVertexUvs[0].push([uvs[a], uvs[b], uvs[a]]); // shitty uvs to make 3js exporter happy
+                        if (innerRadius > 0) {
+                            this.faces.push(new THREE.Face3(b, n + b, n + a, [normal, normal, normal]));
+                            this.faceVertexUvs[0].push([uvs[b], uvs[b], uvs[a]]); // shitty uvs to make 3js exporter happy
+                        }
+                    } else {
+                        // hole
+                        normal = va2.clone().sub(va1).cross(vb1.clone().sub(va1)).normalize();
+                        this.faces.push(new THREE.Face3(b, a, n + a, [normal, normal, normal]));
+                        this.faceVertexUvs[0].push([uvs[b], uvs[a], uvs[a]]); // shitty uvs to make 3js exporter happy
+                        if (innerRadius > 0) {
+                            this.faces.push(new THREE.Face3(b, n + a, n + b, [normal, normal, normal]));
+                            this.faceVertexUvs[0].push([uvs[b], uvs[a], uvs[b]]); // shitty uvs to make 3js exporter happy
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    this.computeFaceNormals();
+
+    this.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1);
+}
+
+Map3DGeometry.prototype = Object.create(THREE.Geometry.prototype);
+
+// import data from './globe';
+var world3d = (function () {
+    var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world_geometry.json';
+    var landUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '../d/gold.jpg';
+    var rtt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : -1.57;
+
+    /*eslint no-console: 0 */
+    var _ = { sphereObject: new THREE.Object3D() };
+
+    function loadCountry() {
+        var data = _.world;
+        for (var name in data) {
+            var geometry = new Map3DGeometry(data[name], 0.9);
+            _.sphereObject.add(data[name].mesh = new THREE.Mesh(geometry, _.material));
+        }
+        _.loaded = true;
+    }
+
+    function init() {
+        this._.options.showWorld = true;
+        _.sphereObject.rotation.y = rtt;
+        _.sphereObject.scale.set(205, 205, 205);
+        makeEnvMapMaterial(landUrl, function (material) {
+            _.material = material;
+            if (_.world && !_.loaded) {
+                loadCountry();
+            }
+        });
+    }
+
+    function create() {
+        if (_.material && !_.loaded) {
+            loadCountry();
+        }
+        _.sphereObject.visible = this._.options.showWorld;
+        var tj = this.threejsPlugin;
+        tj.addGroup(_.sphereObject);
+        tj.rotate();
+    }
+
+    var vertexShader = '\n    varying vec2 vN;\n    void main() {\n        vec4 p = vec4( position, 1. );\n        vec3 e = normalize( vec3( modelViewMatrix * p ) );\n        vec3 n = normalize( normalMatrix * normal );\n        vec3 r = reflect( e, n );\n        float m = 2. * length( vec3( r.xy, r.z + 1. ) );\n        vN = r.xy / m + .5;\n        gl_Position = projectionMatrix * modelViewMatrix * p;\n    }\n    ';
+    var fragmentShader = '\n    uniform sampler2D tMatCap;\n    varying vec2 vN;\n    void main() {\n        vec3 base = texture2D( tMatCap, vN ).rgb;\n        gl_FragColor = vec4( base, 1. );\n    }\n    ';
+    function makeEnvMapMaterial(imgUrl, cb) {
+        var loader = new THREE.TextureLoader();
+        loader.load(imgUrl, function (value) {
+            var type = 't';
+            var uniforms = { tMatCap: { type: type, value: value } };
+            var material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: vertexShader,
+                fragmentShader: fragmentShader,
+                shading: THREE.SmoothShading
+            });
+            cb.call(this, material);
+        });
+    }
+
+    function refresh() {
+        if (_.sphereObject) {
+            _.sphereObject.visible = this._.options.showWorld;
+        }
+    }
+
+    return {
+        name: 'world3d',
+        urls: worldUrl && [worldUrl],
+        onReady: function onReady(err, data) {
+            this.world3d.data(data);
+        },
+        onInit: function onInit() {
+            init.call(this);
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            refresh.call(this);
+        },
+        rotate: function rotate(rtt) {
+            _.sphereObject.rotation.y = rtt;
+            this.threejsPlugin.rotate();
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.world = _data;
+            } else {
+                return _.world;
+            }
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
+        }
+    };
+});
+
 earthjs$1.plugins = {
     configPlugin: configPlugin,
     autorotatePlugin: autorotatePlugin,
@@ -3934,7 +4168,8 @@ earthjs$1.plugins = {
     pingsCanvas: pingsCanvas,
     pingsSvg: pingsSvg,
     debugThreejs: debugThreejs,
-    commonPlugins: commonPlugins
+    commonPlugins: commonPlugins,
+    world3d: world3d
 };
 
 return earthjs$1;

@@ -22,6 +22,12 @@ export default (worldUrl='../d/world.png') => {
             _.sphereObject = tj.wireframe(mesh, material);
             _.sphereObject.visible = this._.options.showLand;
         }
+        // if (this.world3d) {
+        //     const s = _.sphereObject.scale;
+        //     s.x = 1.03;
+        //     s.y = 1.03;
+        //     s.z = 1.03;
+        // }
         tj.addGroup(_.sphereObject);
         tj.rotate();
     }
@@ -47,6 +53,9 @@ export default (worldUrl='../d/world.png') => {
             } else {
                 return  _.world;
             }
+        },
+        sphere() {
+            return _.sphereObject;
         },
     }
 }
