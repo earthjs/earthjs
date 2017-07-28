@@ -110,6 +110,7 @@ function Map3DGeometry(data, innerRadius) {
 
     this.boundingSphere = new THREE.Sphere (new THREE.Vector3 (), 1);
 }
-
-Map3DGeometry.prototype = Object.create (THREE.Geometry.prototype);
+if (window.THREE) {
+	Map3DGeometry.prototype = Object.create(THREE.Geometry.prototype);
+}
 export default Map3DGeometry;

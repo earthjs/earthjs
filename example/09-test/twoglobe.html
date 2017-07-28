@@ -9,7 +9,7 @@
     <svg class="s1"></svg>
     <svg class="s2"></svg>
     <script>
-        const g1 = earthjs({selectAll:'.s1', rotate: 0});
+        const g1 = earthjs({selector:'.s1', rotate: 0});
         g1.register(earthjs.plugins.configPlugin());
         g1.register(earthjs.plugins.autorotatePlugin());
         g1.register(earthjs.plugins.mousePlugin());
@@ -22,7 +22,7 @@
         g1.register(earthjs.plugins.graticuleCanvas());
         g1.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
 
-        const g2 = earthjs({selectAll:'.s2', rotate: 180});
+        const g2 = earthjs({selector:'.s2', rotate: 180});
         g2.register(earthjs.plugins.configPlugin());
         g2.register(earthjs.plugins.dropShadowSvg());
         g2.register(earthjs.plugins.oceanSvg());

@@ -1,10 +1,11 @@
 {
   "name": "earthjs",
-  "version": "0.7.51",
+  "version": "0.7.52",
   "description": "D3 Earth JS using SVG, Canvas & THREE js, build with some plugins.",
   "main": "index.js",
   "scripts": {
-    "test": "tape 'test/**/*-test.js' && mkdir -p test/output && eslint src",
+    "test": "browserify test/*-test.js | tape-run",
+    "pre-testem": "browserify test/_init_.js > test/bundle.js",
     "build": "rollup -c && uglifyjs dist/earthjs.js -c -m -o dist/earthjs.min.js",
     "build2": "rollup -c && squash dist/earthjs.js > dist/earthjs.min.js"
   },
@@ -39,6 +40,7 @@
   },
   "dependencies": {
     "d3": "^4.8.0",
+    "three": "^0.86.0",
     "topojson": "^3.0.0"
   }
 }

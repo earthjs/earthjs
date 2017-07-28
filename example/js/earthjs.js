@@ -77,7 +77,7 @@ var earthjs$1 = function earthjs() {
     /*eslint no-console: 0 */
     clearInterval(earthjs.ticker);
     options = Object.assign({
-        selectAll: '#earth-js',
+        selector: '#earth-js',
         rotate: [130, -33, -11],
         transparent: false
     }, options);
@@ -104,9 +104,8 @@ var earthjs$1 = function earthjs() {
             return globe;
         }
     };
-    window.__ = _;
     var drag = false;
-    var svg = d3.selectAll(options.selectAll);
+    var svg = d3.selectAll(options.selector);
     var width = svg.attr('width'),
         height = svg.attr('height');
     if (!width || !height) {
@@ -314,6 +313,10 @@ var earthjs$1 = function earthjs() {
         }
     }
 };
+if (window.d3 === undefined) {
+    window.d3 = {};
+}
+window.d3.earthjs = earthjs$1;
 
 var configPlugin = (function () {
     /*eslint no-console: 0 */
@@ -2684,7 +2687,9 @@ var worldThreejs = (function () {
             var mesh = topojson.mesh(_.world, _.world.objects.countries);
             var material = new THREE.MeshBasicMaterial({
                 // side: THREE.DoubleSide,
-                color: 0x707070 });
+                color: 0x707070 //0xefedea,
+                // overdraw: 0.25,
+            });
             // material
             // var material = new THREE.MeshPhongMaterial( {
             //     color: 0xff0000,
@@ -4026,8 +4031,9 @@ function Map3DGeometry(data, innerRadius) {
 
     this.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1);
 }
-
-Map3DGeometry.prototype = Object.create(THREE.Geometry.prototype);
+if (window.THREE) {
+    Map3DGeometry.prototype = Object.create(THREE.Geometry.prototype);
+}
 
 // import data from './globe';
 var world3d = (function () {

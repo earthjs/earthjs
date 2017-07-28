@@ -33,7 +33,7 @@
         <canvas class="ej-svg c ej-canvas"></canvas>
     </div>
     <script>
-        const g = earthjs({selectAll:'.s',transparent:true});
+        const g = earthjs({selector:'.s',transparent:true});
         g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.autorotatePlugin());
         g.register(earthjs.plugins.mousePlugin({iDrag:true}));

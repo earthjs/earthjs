@@ -5,7 +5,7 @@ const earthjs = (options={}) => {
     /*eslint no-console: 0 */
     clearInterval(earthjs.ticker);
     options = Object.assign({
-        selectAll: '#earth-js',
+        selector: '#earth-js',
         rotate: [130,-33,-11],
         transparent: false,
     }, options);
@@ -32,9 +32,8 @@ const earthjs = (options={}) => {
             return globe;
         }
     }
-    window.__ = _;
     const drag = false;
-    const svg = d3.selectAll(options.selectAll);
+    const svg = d3.selectAll(options.selector);
     let width = svg.attr('width'), height = svg.attr('height');
     if (!width || !height) {
         width = options.width || 700;
@@ -167,7 +166,7 @@ const earthjs = (options={}) => {
                 interval.call(globe);
                 earths.forEach(function(p) {
                     p._.interval.call(p);
-                });                
+                });
             }
         }, intervalTicker);
         earthjs.ticker = ticker;
@@ -242,4 +241,8 @@ const earthjs = (options={}) => {
         }
     }
 }
+if (window.d3===undefined) {
+    window.d3 = {};
+}
+window.d3.earthjs = earthjs;
 export default earthjs;

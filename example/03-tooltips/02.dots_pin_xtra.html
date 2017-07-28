@@ -40,7 +40,7 @@
             return json;
         };
         function factory(s,c,dUrl='../d/bars.json') {
-            const g = earthjs({selectAll:s,transparent:true});
+            const g = earthjs({selector:s,transparent:true});
             g.register(earthjs.plugins.hoverCanvas());
             g.register(earthjs.plugins.canvasPlugin());
             g.register(earthjs.plugins.graticuleCanvas());
