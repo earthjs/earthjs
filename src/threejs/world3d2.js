@@ -4,14 +4,14 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../d/gold.jpg', inn
     const _ = {sphereObject: new THREE.Object3D(), group: {}};
 
     function extrude(geometry,_i=0.9,_o=0) {
-        var half = geometry.vertices.length / 2;
-        geometry.vertices.forEach(function (vert, i) {
-            var r = _i;
+        const half = geometry.vertices.length / 2;
+        geometry.vertices.forEach(function(vert, i) {
+            let r = _i;
             if (i >= half) {
                 r = 1+_o;
             }
-            var phi= ( 90.0 - vert.oy) * 0.017453292519943295; //Math.PI / 180.0;
-            var the= (360.0 - vert.ox) * 0.017453292519943295; //Math.PI / 180.0;
+            const phi= ( 90.0 - vert.oy) * 0.017453292519943295; //Math.PI / 180.0;
+            const the= (360.0 - vert.ox) * 0.017453292519943295; //Math.PI / 180.0;
             vert.x = r * Math.sin(phi) * Math.cos(the);
             vert.y = r * Math.cos(phi);
             vert.z = r * Math.sin(phi) * Math.sin(the);
@@ -21,12 +21,12 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../d/gold.jpg', inn
     }
 
     function add_country(shape_points) {
-        var shape = new THREE.Shape(shape_points);
-        var geometry = new THREE.ExtrudeGeometry(shape,{
+        const shape = new THREE.Shape(shape_points);
+        const geometry = new THREE.ExtrudeGeometry(shape,{
             bevelEnabled:false,
             amount: 16
         });
-        geometry.vertices.forEach(function (vert) {
+        geometry.vertices.forEach(function(vert) {
             vert.ox = vert.x;
             vert.oy = vert.y;
             vert.oz = vert.z;
@@ -51,12 +51,12 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../d/gold.jpg', inn
     }
 
     function loadCountry() {
-        _.world.features.forEach(function (country) {
+        _.world.features.forEach(function(country) {
             const {coordinates} = country.geometry;
             if (coordinates.length === 1) {
                 shapePoints(country, coordinates[0]);
             } else {
-                coordinates.forEach(function (coord_set) {
+                coordinates.forEach(function(coord_set) {
                     if (coord_set.length == 1) {
                         shapePoints(country, coord_set[0]);
                     } else {

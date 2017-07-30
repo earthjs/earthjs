@@ -3,18 +3,13 @@ import configPlugin from './src/plugins/configPlugin';
 import autorotatePlugin from './src/plugins/autorotatePlugin';
 import mousePlugin from './src/plugins/mousePlugin';
 import zoomPlugin from './src/plugins/zoomPlugin';
-import threejsPlugin from './src/plugins/threejsPlugin';
 import canvasPlugin from './src/plugins/canvasPlugin';
 import hoverCanvas from './src/plugins/hoverCanvas';
 import clickCanvas from './src/plugins/clickCanvas';
 import dblClickCanvas from './src/plugins/dblClickCanvas';
-import canvasThreejs from './src/plugins/canvasThreejs';
-import oceanThreejs from './src/plugins/oceanThreejs';
 import oceanSvg from './src/plugins/oceanSvg';
 import sphereSvg from './src/plugins/sphereSvg';
-import textureThreejs from './src/plugins/textureThreejs';
 import graticuleCanvas from './src/plugins/graticuleCanvas';
-import graticuleThreejs from './src/plugins/graticuleThreejs';
 import graticuleSvg from './src/plugins/graticuleSvg';
 import dropShadowSvg from './src/plugins/dropShadowSvg';
 import fauxGlobeSvg from './src/plugins/fauxGlobeSvg';
@@ -28,8 +23,6 @@ import barTooltipSvg from './src/plugins/barTooltipSvg';
 import placesSvg from './src/plugins/placesSvg';
 import worldCanvas from './src/plugins/worldCanvas';
 import worldSvg from './src/plugins/worldSvg';
-import worldThreejs from './src/plugins/worldThreejs';
-import imageThreejs from './src/plugins/imageThreejs';
 import centerCanvas from './src/plugins/centerCanvas';
 import centerSvg from './src/plugins/centerSvg';
 import flattenPlugin from './src/plugins/flattenPlugin';
@@ -37,31 +30,36 @@ import barSvg from './src/plugins/barSvg';
 import dotsSvg from './src/plugins/dotsSvg';
 import pinCanvas from './src/plugins/pinCanvas';
 import dotsCanvas from './src/plugins/dotsCanvas';
-import dotsThreejs from './src/plugins/dotsThreejs';
-import dotsCThreejs from './src/plugins/dotsCThreejs';
 import pingsCanvas from './src/plugins/pingsCanvas';
 import pingsSvg from './src/plugins/pingsSvg';
-import debugThreejs from './src/plugins/debugThreejs';
+
+import threejsPlugin    from './src/threejs/threejsPlugin';
+import barThreejs       from './src/threejs/barThreejs';
+import dotsThreejs      from './src/threejs/dotsThreejs';
+import dotsCThreejs     from './src/threejs/dotsCThreejs';
+import canvasThreejs    from './src/threejs/canvasThreejs';
+import textureThreejs   from './src/threejs/textureThreejs';
+import graticuleThreejs from './src/threejs/graticuleThreejs';
+import debugThreejs     from './src/threejs/debugThreejs';
+import oceanThreejs     from './src/threejs/oceanThreejs';
+import imageThreejs     from './src/threejs/imageThreejs';
+import worldThreejs     from './src/threejs/worldThreejs';
+import world3d          from './src/threejs/world3d';
+import world3d2         from './src/threejs/world3d2';
+
 import commonPlugins from './src/pluginLoader/commonPlugins';
-import world3d from './src/world3d/world3d';
-import world3d2 from './src/world3d/world3d2';
 app.plugins= {
     configPlugin,
     autorotatePlugin,
     mousePlugin,
     zoomPlugin,
-    threejsPlugin,
     canvasPlugin,
     hoverCanvas,
     clickCanvas,
     dblClickCanvas,
-    canvasThreejs,
-    oceanThreejs,
     oceanSvg,
     sphereSvg,
-    textureThreejs,
     graticuleCanvas,
-    graticuleThreejs,
     graticuleSvg,
     dropShadowSvg,
     fauxGlobeSvg,
@@ -75,8 +73,6 @@ app.plugins= {
     placesSvg,
     worldCanvas,
     worldSvg,
-    worldThreejs,
-    imageThreejs,
     centerCanvas,
     centerSvg,
     flattenPlugin,
@@ -84,13 +80,23 @@ app.plugins= {
     dotsSvg,
     pinCanvas,
     dotsCanvas,
-    dotsThreejs,
-    dotsCThreejs,
     pingsCanvas,
     pingsSvg,
+
+    threejsPlugin,
+    barThreejs,
+    dotsThreejs,
+    dotsCThreejs,
+    canvasThreejs,
+    textureThreejs,
+    graticuleThreejs,
     debugThreejs,
-    commonPlugins,
+    oceanThreejs,
+    imageThreejs,
+    worldThreejs,
     world3d,
     world3d2,
+
+    commonPlugins,
 };
 export default app;

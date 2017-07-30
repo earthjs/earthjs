@@ -47,6 +47,11 @@ export default (threejs='three-js') => {
         _.renderer.setClearColor(0x000000, 0);
         _.renderer.setSize(width, height);
         this.renderThree = renderThree;
+
+        // var geometry = new THREE.SphereGeometry(3, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+        // var material = new THREE.MeshNormalMaterial();
+        // var cube = new THREE.Mesh(geometry, material);
+        // _.group.add(cube);
         window.grp = _.group;
     }
 
@@ -96,6 +101,9 @@ export default (threejs='three-js') => {
         },
         addScene(obj) {
             _.scene.add(obj);
+        },
+        group() {
+            return _.group;
         },
         addGroup(obj) {
             _.group.add(obj);

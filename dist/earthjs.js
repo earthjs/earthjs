@@ -608,124 +608,6 @@ var zoomPlugin = (function () {
     };
 });
 
-// Philippe Rivière’s https://bl.ocks.org/Fil/9ed0567b68501ee3c3fef6fbe3c81564
-// https://gist.github.com/Fil/ad107bae48e0b88014a0e3575fe1ba64
-// http://bl.ocks.org/kenpenn/16a9c611417ffbfc6129
-var threejsPlugin = (function () {
-    var threejs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'three-js';
-
-    /*eslint no-console: 0 */
-    /*eslint no-debugger: 0 */
-    var _ = { renderer: null, scene: null, camera: null, radius: null };
-    _.scale = d3.scaleLinear().domain([0, 200]).range([0, 1]);
-
-    // Converts a point [longitude, latitude] in degrees to a THREE.Vector3.
-    // Axes have been rotated so Three's "y" axis is parallel to the North Pole
-    function _vertex(point) {
-        var lambda = point[0] * Math.PI / 180,
-            phi = point[1] * Math.PI / 180,
-            cosPhi = Math.cos(phi);
-        return new THREE.Vector3(_.radius * cosPhi * Math.cos(lambda), _.radius * Math.sin(phi), -_.radius * cosPhi * Math.sin(lambda));
-    }
-
-    // Converts a GeoJSON MultiLineString in spherical coordinates to a THREE.LineSegments.
-    function _wireframe(multilinestring, material) {
-        var geometry = new THREE.Geometry();
-        multilinestring.coordinates.forEach(function (line) {
-            d3.pairs(line.map(_vertex), function (a, b) {
-                geometry.vertices.push(a, b);
-            });
-        });
-        return new THREE.LineSegments(geometry, material);
-    }
-
-    function init() {
-        var __ = this._;
-        var _$options = __.options,
-            width = _$options.width,
-            height = _$options.height;
-
-        var container = document.getElementById(threejs);
-        _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 10000);
-        _.scene = new THREE.Scene();
-        _.group = new THREE.Group();
-        _.camera.position.z = 1010; // (higher than RADIUS + size of the bubble)
-        _.radius = __.proj.scale();
-        _.scene.add(_.group);
-        this._.camera = _.camera;
-
-        _.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, canvas: container });
-        _.renderer.setClearColor(0x000000, 0);
-        _.renderer.setSize(width, height);
-        this.renderThree = renderThree;
-        window.grp = _.group;
-    }
-
-    function _scale(obj) {
-        if (!obj) {
-            obj = _.group;
-        }
-        var sc = _.scale(this._.proj.scale());
-        obj.scale.x = sc;
-        obj.scale.y = sc;
-        obj.scale.z = sc;
-        renderThree.call(this);
-    }
-
-    function _rotate(obj) {
-        if (!obj) {
-            obj = _.group;
-        }
-        var __ = this._;
-        var rt = __.proj.rotate();
-        rt[0] -= 90;
-        var q1 = __.versor(rt);
-        var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
-        obj.setRotationFromQuaternion(q2);
-        renderThree.call(this);
-    }
-
-    function renderThree() {
-        setTimeout(function () {
-            _.renderer.render(_.scene, _.camera);
-        }, 1);
-    }
-
-    return {
-        name: 'threejsPlugin',
-        onInit: function onInit() {
-            init.call(this);
-        },
-        onCreate: function onCreate() {
-            _.group.children = [];
-        },
-        onRefresh: function onRefresh() {
-            _rotate.call(this);
-        },
-        onResize: function onResize() {
-            _scale.call(this);
-        },
-        addScene: function addScene(obj) {
-            _.scene.add(obj);
-        },
-        addGroup: function addGroup(obj) {
-            _.group.add(obj);
-        },
-        scale: function scale(obj) {
-            _scale.call(this, obj);
-        },
-        rotate: function rotate(obj) {
-            _rotate.call(this, obj);
-        },
-        vertex: function vertex(point) {
-            return _vertex(point);
-        },
-        wireframe: function wireframe(multilinestring, material) {
-            return _wireframe(multilinestring, material);
-        }
-    };
-});
-
 // Bo Ericsson’s Block http://bl.ocks.org/boeric/aa80b0048b7e39dd71c8fbe958d1b1d4
 var canvasPlugin = (function () {
     /*eslint no-console: 0 */
@@ -1151,132 +1033,6 @@ var dblClickCanvas = (function () {
     };
 });
 
-// http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
-var canvasThreejs = (function (worldUrl) {
-    /*eslint no-console: 0 */
-    /*eslint no-debugger: 0 */
-    var _ = {
-        sphereObject: null,
-        onDraw: {},
-        onDrawVals: []
-    };
-    var canvas = d3.select("body").append("canvas").style("display", "none").attr("width", "1024px").attr("height", "512px");
-    var context = canvas.node().getContext("2d");
-    var texture = new THREE.Texture(canvas.node());
-    var geometry = new THREE.SphereGeometry(200, 30, 30);
-    var material = new THREE.MeshBasicMaterial({ transparent: true });
-    var projection = d3.geoEquirectangular().precision(0.5).translate([512, 256]).scale(163);
-    var path = d3.geoPath().projection(projection).context(context);
-    material.map = texture;
-
-    function init() {
-        this._.options.showTjCanvas = true;
-    }
-
-    function create() {
-        var _this = this;
-
-        var tj = this.threejsPlugin;
-        if (!_.sphereObject) {
-            _.sphereObject = new THREE.Mesh(geometry, material);
-        }
-        context.clearRect(0, 0, 1024, 512);
-        context.fillStyle = "#aaa";
-        context.beginPath();
-        path(_.countries);
-        context.fill();
-
-        _.onDrawVals.forEach(function (v) {
-            v.call(_this, context, path);
-        });
-        texture.needsUpdate = true;
-        _.sphereObject.visible = this._.options.showTjCanvas;
-        tj.addGroup(_.sphereObject);
-        tj.rotate();
-    }
-
-    return {
-        name: 'canvasThreejs',
-        urls: worldUrl && [worldUrl],
-        onReady: function onReady(err, data) {
-            this.canvasThreejs.data(data);
-        },
-        onInit: function onInit() {
-            init.call(this);
-        },
-        onCreate: function onCreate() {
-            create.call(this);
-        },
-        onRefresh: function onRefresh() {
-            _.sphereObject.visible = this._.options.showTjCanvas;
-        },
-        onDraw: function onDraw(obj) {
-            Object.assign(_.onDraw, obj);
-            _.onDrawVals = Object.keys(_.onDraw).map(function (k) {
-                return _.onDraw[k];
-            });
-        },
-        data: function data(_data) {
-            if (_data) {
-                _.world = _data;
-                _.countries = topojson.feature(_data, _data.objects.countries);
-            } else {
-                return _.world;
-            }
-        }
-    };
-});
-
-// http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
-var oceanThreejs = (function () {
-    /*eslint no-console: 0 */
-    var _ = { sphereObject: null };
-
-    function create() {
-        var tj = this.threejsPlugin;
-        if (!_.sphereObject) {
-            var geometry = new THREE.SphereGeometry(200, 30, 30);
-            var material = new THREE.MeshNormalMaterial({
-                transparent: true,
-                wireframe: false,
-                opacity: 0.8
-            });
-            // var material = new THREE.MeshPhongMaterial( {
-            //     shading: THREE.SmoothShading, //FlatShading,
-            //     transparent: true,
-            //     wireframe: false,
-            //     color: 0x3794cf, //0xff0000,
-            //     shininess: 40,
-            //     opacity: 0.8,
-            //     // polygonOffset: true,
-            //     // polygonOffsetFactor: 1, // positive value pushes polygon further away
-            //     // polygonOffsetUnits: 1
-            // });
-
-            _.sphereObject = new THREE.Mesh(geometry, material);
-            _.sphereObject.visible = this._.options.showOcean;
-        }
-        tj.addGroup(_.sphereObject);
-        tj.rotate();
-    }
-
-    return {
-        name: 'oceanThreejs',
-        onInit: function onInit() {
-            this._.options.showOcean = true;
-        },
-        onCreate: function onCreate() {
-            create.call(this);
-        },
-        onRefresh: function onRefresh() {
-            _.sphereObject.visible = this._.options.showOcean;
-        },
-        sphere: function sphere() {
-            return _.sphereObject;
-        }
-    };
-});
-
 var oceanSvg = (function () {
     var color = {
         0: ['rgba(221, 221, 255, 0.6)', 'rgba(153, 170, 187,0.8)'],
@@ -1407,87 +1163,6 @@ var sphereSvg = (function () {
     };
 });
 
-// https://bl.ocks.org/mbostock/2b85250396c17a79155302f91ec21224
-// https://bl.ocks.org/pbogden/2f8d2409f1b3746a1c90305a1a80d183
-// http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
-var textureThreejs = (function () {
-    /*eslint no-console: 0 */
-    var _ = {};
-    var geometry = new THREE.SphereGeometry(200, 30, 30);
-    var material = new THREE.MeshBasicMaterial();
-    var datumGraticule = d3.geoGraticule()();
-
-    function init() {
-        this._.options.showDrawing = true;
-        //http://bl.ocks.org/MAKIO135/eab7b74e85ed2be48eeb
-        var __ = this._;
-        var width = __.options.width;
-        var height = __.options.height;
-        var canvas = d3.select('body').append('canvas');
-        canvas.attr('height', height).attr('width', width);
-        _.canvas = canvas.node();
-        _.context = _.canvas.getContext("2d");
-        _.texture = new THREE.Texture(_.canvas);
-        _.canvas.width = _.canvas.height = 512;
-        _.texture.needsUpdate = true;
-        material.map = _.texture;
-
-        var projection = d3.geoMercator().scale(width / 2 / Math.PI).translate([width / 2, height / 2]).precision(0.5);
-
-        _.path = d3.geoPath(projection, _.context);
-
-        // var geometry = new THREE.BoxGeometry( 200, 200, 200 );
-        // _.context.clearRect(0, 0, width, height);
-
-        // _.context.font = '20pt Arial';
-        // _.context.fillStyle = 'red';
-        // _.context.fillRect(0, 0, _.canvas.width, _.canvas.height);
-        // _.context.fillStyle = 'white';
-        // _.context.fillRect(10, 10, _.canvas.width - 20, _.canvas.height - 20);
-        // _.context.fillStyle = 'black';
-        // _.context.textAlign = "center";
-        // _.context.textBaseline = "middle";
-        // _.context.fillText(new Date().getTime(), _.canvas.width / 2, _.canvas.height / 2);
-    }
-
-    function create() {
-        var __ = this._;
-        var tj = this.threejsPlugin;
-        var width = __.options.width;
-        var height = __.options.height;
-        if (!_.sphereObject) {
-            _.context.fillStyle = 'white';
-            _.context.fillRect(0, 0, width, height);
-            _.context.beginPath();
-            _.path(datumGraticule);
-            _.context.lineWidth = 0.4;
-            _.context.strokeStyle = 'rgba(119,119,119,0.6)';
-            _.context.stroke();
-            _.sphereObject = new THREE.Mesh(geometry, material);
-            _.sphereObject.visible = this._.options.showLand;
-            _.texture.needsUpdate = false;
-            // const material = new THREE.LineBasicMaterial({color: 0xaaaaaa});
-            // _.sphereObject = tj.wireframe(_.graticule10, material); //0x800000
-            // _.sphereObject.visible = this._.options.showDrawing;
-        }
-        tj.addGroup(_.sphereObject);
-        tj.rotate();
-    }
-
-    return {
-        name: 'textureThreejs',
-        onInit: function onInit() {
-            init.call(this);
-        },
-        onCreate: function onCreate() {
-            create.call(this);
-        },
-        onRefresh: function onRefresh() {
-            _.graticule.visible = this._.options.showDrawing;
-        }
-    };
-});
-
 var graticuleCanvas = (function () {
     var datumGraticule = d3.geoGraticule()();
     var _ = { style: {}, drawTo: null };
@@ -1536,94 +1211,6 @@ var graticuleCanvas = (function () {
                 _.style = s;
             }
             return _.style;
-        }
-    };
-});
-
-// https://bl.ocks.org/mbostock/2b85250396c17a79155302f91ec21224
-// https://bl.ocks.org/pbogden/2f8d2409f1b3746a1c90305a1a80d183
-// http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
-var graticuleThreejs = (function () {
-    /*eslint no-console: 0 */
-    var _ = { sphereObject: null };
-
-    function init() {
-        this._.options.showGraticule = true;
-        _.graticule10 = graticule10();
-    }
-
-    // See https://github.com/d3/d3-geo/issues/95
-    function graticule10() {
-        var epsilon = 1e-6,
-            x1 = 180,
-            x0 = -x1,
-            y1 = 80,
-            y0 = -y1,
-            dx = 10,
-            dy = 10,
-            X1 = 180,
-            X0 = -X1,
-            Y1 = 90,
-            Y0 = -Y1,
-            DX = 90,
-            DY = 360,
-            x = graticuleX(y0, y1, 2.5),
-            y = graticuleY(x0, x1, 2.5),
-            X = graticuleX(Y0, Y1, 2.5),
-            Y = graticuleY(X0, X1, 2.5);
-
-        function graticuleX(y0, y1, dy) {
-            var y = d3.range(y0, y1 - epsilon, dy).concat(y1);
-            return function (x) {
-                return y.map(function (y) {
-                    return [x, y];
-                });
-            };
-        }
-
-        function graticuleY(x0, x1, dx) {
-            var x = d3.range(x0, x1 - epsilon, dx).concat(x1);
-            return function (y) {
-                return x.map(function (x) {
-                    return [x, y];
-                });
-            };
-        }
-
-        return {
-            type: "MultiLineString",
-            coordinates: d3.range(Math.ceil(X0 / DX) * DX, X1, DX).map(X).concat(d3.range(Math.ceil(Y0 / DY) * DY, Y1, DY).map(Y)).concat(d3.range(Math.ceil(x0 / dx) * dx, x1, dx).filter(function (x) {
-                return Math.abs(x % DX) > epsilon;
-            }).map(x)).concat(d3.range(Math.ceil(y0 / dy) * dy, y1 + epsilon, dy).filter(function (y) {
-                return Math.abs(y % DY) > epsilon;
-            }).map(y))
-        };
-    }
-
-    function create() {
-        var tj = this.threejsPlugin;
-        if (!_.sphereObject) {
-            var material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
-            _.sphereObject = tj.wireframe(_.graticule10, material); //0x800000
-            _.sphereObject.visible = this._.options.showGraticule;
-        }
-        tj.addGroup(_.sphereObject);
-        tj.rotate();
-    }
-
-    return {
-        name: 'graticuleThreejs',
-        onInit: function onInit() {
-            init.call(this);
-        },
-        onCreate: function onCreate() {
-            create.call(this);
-        },
-        onRefresh: function onRefresh() {
-            _.sphereObject.visible = this._.options.showGraticule;
-        },
-        sphere: function sphere() {
-            return _.sphereObject;
         }
     };
 });
@@ -2681,118 +2268,6 @@ var worldSvg = (function (worldUrl) {
     };
 });
 
-var worldThreejs = (function () {
-    var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.png';
-
-    /*eslint no-console: 0 */
-    var _ = { sphereObject: null };
-
-    function create() {
-        var tj = this.threejsPlugin;
-        if (!_.sphereObject) {
-            var mesh = topojson.mesh(_.world, _.world.objects.countries);
-            var material = new THREE.MeshBasicMaterial({
-                // side: THREE.DoubleSide,
-                color: 0x707070 //0xefedea,
-                // overdraw: 0.25,
-            });
-            // material
-            // var material = new THREE.MeshPhongMaterial( {
-            //     color: 0xff0000,
-            //     shading: THREE.FlatShading,
-            //     polygonOffset: true,
-            //     polygonOffsetFactor: 1, // positive value pushes polygon further away
-            //     polygonOffsetUnits: 1
-            // });
-            _.sphereObject = tj.wireframe(mesh, material);
-            _.sphereObject.visible = this._.options.showLand;
-        }
-        // if (this.world3d) {
-        //     const s = _.sphereObject.scale;
-        //     s.x = 1.03;
-        //     s.y = 1.03;
-        //     s.z = 1.03;
-        // }
-        tj.addGroup(_.sphereObject);
-        tj.rotate();
-    }
-
-    return {
-        name: 'worldThreejs',
-        urls: worldUrl && [worldUrl],
-        onReady: function onReady(err, data) {
-            this.worldThreejs.data(data);
-        },
-        onInit: function onInit() {
-            this._.options.showLand = true;
-        },
-        onCreate: function onCreate() {
-            create.call(this);
-        },
-        onRefresh: function onRefresh() {
-            _.sphereObject.visible = this._.options.showLand;
-        },
-        data: function data(_data) {
-            if (_data) {
-                _.world = _data;
-            } else {
-                return _.world;
-            }
-        },
-        sphere: function sphere() {
-            return _.sphereObject;
-        }
-    };
-});
-
-var imageThreejs = (function () {
-    var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.png';
-
-    /*eslint no-console: 0 */
-    var _ = { sphereObject: null };
-
-    function create() {
-        var tj = this.threejsPlugin;
-        if (!_.sphereObject) {
-            var _this = this;
-            var loader = new THREE.TextureLoader();
-            loader.load(imgUrl, function (map) {
-                var geometry = new THREE.SphereGeometry(200, 30, 30);
-                var material = new THREE.MeshBasicMaterial({ map: map });
-                _.sphereObject = new THREE.Mesh(geometry, material);
-                _.sphereObject.visible = _this._.options.showImage;
-                tj.addGroup(_.sphereObject);
-                tj.rotate();
-            });
-        } else {
-            tj.addGroup(_.sphereObject);
-            tj.rotate();
-        }
-    }
-
-    function refresh() {
-        if (_.sphereObject) {
-            _.sphereObject.visible = this._.options.showImage;
-        }
-    }
-
-    return {
-        name: 'imageThreejs',
-        onInit: function onInit() {
-            this._.options.showImage = true;
-        },
-        onCreate: function onCreate() {
-            create.call(this);
-        },
-        onRefresh: function onRefresh() {
-            refresh.call(this);
-        },
-        sphere: function sphere() {
-            return _.sphereObject;
-        }
-    };
-});
-
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var centerCanvas = (function () {
     /*eslint no-console: 0 */
@@ -3465,139 +2940,6 @@ var dotsCanvas = (function (urlJson) {
     };
 });
 
-// https://bl.ocks.org/mbostock/2b85250396c17a79155302f91ec21224
-// https://bl.ocks.org/pbogden/2f8d2409f1b3746a1c90305a1a80d183
-// http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
-var dotsThreejs = (function (urlJson) {
-    /*eslint no-console: 0 */
-    var _ = { dataDots: null };
-
-    function init() {
-        this._.options.showDots = true;
-    }
-
-    function createDot(feature) {
-        if (feature) {
-            var tj = this.threejsPlugin;
-            // var dc = [-77.0369, 38.9072];
-            // var position = tj.vertex(feature ? feature.geometry.coordinates : dc);
-            var position = tj.vertex(feature.geometry.coordinates);
-            var material = new THREE.SpriteMaterial({ color: 0x0000ff });
-            var dot = new THREE.Sprite(material);
-            dot.position.set(position.x, position.y, position.z);
-            return dot;
-        }
-    }
-
-    function create() {
-        var tj = this.threejsPlugin;
-        if (!_.dots) {
-            create1.call(this);
-        }
-        _.dots.visible = this._.options.showDots;
-        tj.addGroup(_.dots);
-        tj.rotate();
-    }
-
-    function create1() {
-        var _this = this;
-        _.dots = new THREE.Group();
-        _.dataDots.features.forEach(function (d) {
-            var dot = createDot.call(_this, d);
-            dot && _.dots.add(dot);
-        });
-    }
-
-    // function create2() {
-    // }
-
-    return {
-        name: 'dotsThreejs',
-        urls: urlJson && [urlJson],
-        onReady: function onReady(err, data) {
-            this.dotsThreejs.data(data);
-        },
-        onInit: function onInit() {
-            init.call(this);
-        },
-        onCreate: function onCreate() {
-            create.call(this);
-        },
-        onRefresh: function onRefresh() {
-            _.dots.visible = this._.options.showDots;
-        },
-        data: function data(_data) {
-            if (_data) {
-                _.dataDots = _data;
-            } else {
-                return _.dataDots;
-            }
-        }
-    };
-});
-
-var dotsCThreejs = (function (urlDots) {
-    /*eslint no-console: 0 */
-    var _ = { dataDots: null };
-
-    function init() {
-        var dots = void 0;
-        var __ = this._;
-        __.options.showDots = true;
-        this.canvasThreejs.onDraw({
-            dotsCThreejs: function dotsCThreejs(context, path) {
-                if (__.options.showDots) {
-                    if (!dots) {
-                        dots = _.dots.map(function (d) {
-                            return d.circle;
-                        });
-                    }
-                    var _g = _.dataDots.geometry || {};
-                    context.beginPath();
-                    path({ type: 'GeometryCollection', geometries: dots });
-                    context.lineWidth = _g.lineWidth || 0.2;
-                    context.fillStyle = _g.fillStyle || 'rgba(100,0,0,.4)';
-                    context.strokeStyle = _g.strokeStyle || 'rgba(100,0,0,.6)';
-                    context.fill();
-                    context.stroke();
-                }
-            }
-        });
-    }
-
-    function initData() {
-        var geoCircle = d3.geoCircle();
-        var _g = _.dataDots.geometry || {};
-        var _r = _g.radius || 0.5;
-        _.dots = _.dataDots.features.map(function (d) {
-            var coordinates = d.geometry.coordinates;
-            var properties = d.properties;
-            var r = d.geometry.radius || _r;
-            var circle = geoCircle.center(coordinates).radius(r)();
-            return { properties: properties, coordinates: coordinates, circle: circle };
-        });
-    }
-
-    return {
-        name: 'dotsCThreejs',
-        urls: urlDots && [urlDots],
-        onReady: function onReady(err, dots) {
-            this.dotsCThreejs.data(dots);
-        },
-        onInit: function onInit() {
-            init.call(this);
-        },
-        data: function data(_data) {
-            if (_data) {
-                _.dataDots = _data;
-                initData();
-            } else {
-                return _.dataDots;
-            }
-        }
-    };
-});
-
 var pingsCanvas = (function () {
     var _ = { dataPings: null, pings: [] };
 
@@ -3745,6 +3087,606 @@ var pingsSvg = (function () {
     };
 });
 
+// Philippe Rivière’s https://bl.ocks.org/Fil/9ed0567b68501ee3c3fef6fbe3c81564
+// https://gist.github.com/Fil/ad107bae48e0b88014a0e3575fe1ba64
+// http://bl.ocks.org/kenpenn/16a9c611417ffbfc6129
+var threejsPlugin = (function () {
+    var threejs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'three-js';
+
+    /*eslint no-console: 0 */
+    /*eslint no-debugger: 0 */
+    var _ = { renderer: null, scene: null, camera: null, radius: null };
+    _.scale = d3.scaleLinear().domain([0, 200]).range([0, 1]);
+
+    // Converts a point [longitude, latitude] in degrees to a THREE.Vector3.
+    // Axes have been rotated so Three's "y" axis is parallel to the North Pole
+    function _vertex(point) {
+        var lambda = point[0] * Math.PI / 180,
+            phi = point[1] * Math.PI / 180,
+            cosPhi = Math.cos(phi);
+        return new THREE.Vector3(_.radius * cosPhi * Math.cos(lambda), _.radius * Math.sin(phi), -_.radius * cosPhi * Math.sin(lambda));
+    }
+
+    // Converts a GeoJSON MultiLineString in spherical coordinates to a THREE.LineSegments.
+    function _wireframe(multilinestring, material) {
+        var geometry = new THREE.Geometry();
+        multilinestring.coordinates.forEach(function (line) {
+            d3.pairs(line.map(_vertex), function (a, b) {
+                geometry.vertices.push(a, b);
+            });
+        });
+        return new THREE.LineSegments(geometry, material);
+    }
+
+    function init() {
+        var __ = this._;
+        var _$options = __.options,
+            width = _$options.width,
+            height = _$options.height;
+
+        var container = document.getElementById(threejs);
+        _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 10000);
+        _.scene = new THREE.Scene();
+        _.group = new THREE.Group();
+        _.camera.position.z = 1010; // (higher than RADIUS + size of the bubble)
+        _.radius = __.proj.scale();
+        _.scene.add(_.group);
+        this._.camera = _.camera;
+
+        _.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, canvas: container });
+        _.renderer.setClearColor(0x000000, 0);
+        _.renderer.setSize(width, height);
+        this.renderThree = renderThree;
+
+        // var geometry = new THREE.SphereGeometry(3, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+        // var material = new THREE.MeshNormalMaterial();
+        // var cube = new THREE.Mesh(geometry, material);
+        // _.group.add(cube);
+        window.grp = _.group;
+    }
+
+    function _scale(obj) {
+        if (!obj) {
+            obj = _.group;
+        }
+        var sc = _.scale(this._.proj.scale());
+        obj.scale.x = sc;
+        obj.scale.y = sc;
+        obj.scale.z = sc;
+        renderThree.call(this);
+    }
+
+    function _rotate(obj) {
+        if (!obj) {
+            obj = _.group;
+        }
+        var __ = this._;
+        var rt = __.proj.rotate();
+        rt[0] -= 90;
+        var q1 = __.versor(rt);
+        var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
+        obj.setRotationFromQuaternion(q2);
+        renderThree.call(this);
+    }
+
+    function renderThree() {
+        setTimeout(function () {
+            _.renderer.render(_.scene, _.camera);
+        }, 1);
+    }
+
+    return {
+        name: 'threejsPlugin',
+        onInit: function onInit() {
+            init.call(this);
+        },
+        onCreate: function onCreate() {
+            _.group.children = [];
+        },
+        onRefresh: function onRefresh() {
+            _rotate.call(this);
+        },
+        onResize: function onResize() {
+            _scale.call(this);
+        },
+        addScene: function addScene(obj) {
+            _.scene.add(obj);
+        },
+        group: function group() {
+            return _.group;
+        },
+        addGroup: function addGroup(obj) {
+            _.group.add(obj);
+        },
+        scale: function scale(obj) {
+            _scale.call(this, obj);
+        },
+        rotate: function rotate(obj) {
+            _rotate.call(this, obj);
+        },
+        vertex: function vertex(point) {
+            return _vertex(point);
+        },
+        wireframe: function wireframe(multilinestring, material) {
+            return _wireframe(multilinestring, material);
+        }
+    };
+});
+
+// http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
+var barThreejs = (function (urlBars) {
+    var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 5;
+
+    /*eslint no-console: 0 */
+    var _ = { sphereObject: null, bars: null };
+    var material = new THREE.MeshBasicMaterial({
+        vertexColors: THREE.FaceColors,
+        morphTargets: false,
+        color: 0xaaffff
+    });
+
+    function createGeometry(w) {
+        var geometry = new THREE.BoxGeometry(5, 5, w);
+        for (var i = 0; i < geometry.faces.length; i += 2) {
+            var hex = Math.random() * 0xffffff;
+            geometry.faces[i].color.setHex(hex);
+            geometry.faces[i + 1].color.setHex(hex);
+        }
+        return geometry;
+    }
+
+    function meshCoordinate(mesh, sc) {
+        var phi = (90 - mesh.coordinates[1]) * 0.017453292519943295; //Math.PI / 180.0;
+        var the = (360 - mesh.coordinates[0]) * 0.017453292519943295; //Math.PI / 180.0;
+
+        mesh.position.x = sc * Math.sin(phi) * Math.cos(the);
+        mesh.position.y = sc * Math.cos(phi);
+        mesh.position.z = sc * Math.sin(phi) * Math.sin(the);
+        mesh.lookAt({ x: 0, y: 0, z: 0 });
+    }
+
+    function init() {
+        var __ = this._;
+        __.options.showBars = true;
+    }
+
+    function create() {
+        var tj = this.threejsPlugin;
+        if (!_.sphereObject) {
+            var group = new THREE.Group();
+            var SCALE = this._.proj.scale();
+            // const root = this.threejsPlugin.group().position;
+            _.bars.features.forEach(function (bar) {
+                var geometry = createGeometry(width);
+                var mesh = new THREE.Mesh(geometry, material);
+                mesh.coordinates = bar.geometry.coordinates;
+                meshCoordinate(mesh, SCALE + width / 2);
+                group.add(mesh);
+            });
+            _.sphereObject = group;
+            _.sphereObject.visible = this._.options.showBars;
+        }
+        tj.addGroup(_.sphereObject);
+        tj.rotate();
+    }
+
+    return {
+        name: 'barThreejs',
+        urls: urlBars && [urlBars],
+        onReady: function onReady(err, data) {
+            this.barThreejs.data(data);
+        },
+        onInit: function onInit() {
+            init.call(this);
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            _.sphereObject.visible = this._.options.showBars;
+        },
+        data: function data(_data) {
+            if (_data) {
+                if (_.valuePath) {
+                    var p = _.valuePath.split('.');
+                    _data.features.forEach(function (d) {
+                        var v = d;
+                        p.forEach(function (o) {
+                            return v = v[o];
+                        });
+                        d.geometry.value = v;
+                    });
+                }
+                _.bars = _data;
+                // setTimeout(() => refresh.call(this),1);
+            } else {
+                return _.bars;
+            }
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
+        }
+    };
+});
+
+// https://bl.ocks.org/mbostock/2b85250396c17a79155302f91ec21224
+// https://bl.ocks.org/pbogden/2f8d2409f1b3746a1c90305a1a80d183
+// http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
+var dotsThreejs = (function (urlJson) {
+    /*eslint no-console: 0 */
+    var _ = { dataDots: null };
+
+    function init() {
+        this._.options.showDots = true;
+    }
+
+    function createDot(feature) {
+        if (feature) {
+            var tj = this.threejsPlugin;
+            // var dc = [-77.0369, 38.9072];
+            // var position = tj.vertex(feature ? feature.geometry.coordinates : dc);
+            var position = tj.vertex(feature.geometry.coordinates);
+            var material = new THREE.SpriteMaterial({ color: 0x0000ff });
+            var dot = new THREE.Sprite(material);
+            dot.position.set(position.x, position.y, position.z);
+            return dot;
+        }
+    }
+
+    function create() {
+        var tj = this.threejsPlugin;
+        if (!_.dots) {
+            create1.call(this);
+        }
+        _.dots.visible = this._.options.showDots;
+        tj.addGroup(_.dots);
+        tj.rotate();
+    }
+
+    function create1() {
+        var _this = this;
+        _.dots = new THREE.Group();
+        _.dataDots.features.forEach(function (d) {
+            var dot = createDot.call(_this, d);
+            dot && _.dots.add(dot);
+        });
+    }
+
+    // function create2() {
+    // }
+
+    return {
+        name: 'dotsThreejs',
+        urls: urlJson && [urlJson],
+        onReady: function onReady(err, data) {
+            this.dotsThreejs.data(data);
+        },
+        onInit: function onInit() {
+            init.call(this);
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            _.dots.visible = this._.options.showDots;
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.dataDots = _data;
+            } else {
+                return _.dataDots;
+            }
+        }
+    };
+});
+
+var dotsCThreejs = (function (urlDots) {
+    /*eslint no-console: 0 */
+    var _ = { dataDots: null };
+
+    function init() {
+        var dots = void 0;
+        var __ = this._;
+        __.options.showDots = true;
+        this.canvasThreejs.onDraw({
+            dotsCThreejs: function dotsCThreejs(context, path) {
+                if (__.options.showDots) {
+                    if (!dots) {
+                        dots = _.dots.map(function (d) {
+                            return d.circle;
+                        });
+                    }
+                    var _g = _.dataDots.geometry || {};
+                    context.beginPath();
+                    path({ type: 'GeometryCollection', geometries: dots });
+                    context.lineWidth = _g.lineWidth || 0.2;
+                    context.fillStyle = _g.fillStyle || 'rgba(100,0,0,.4)';
+                    context.strokeStyle = _g.strokeStyle || 'rgba(100,0,0,.6)';
+                    context.fill();
+                    context.stroke();
+                }
+            }
+        });
+    }
+
+    function initData() {
+        var geoCircle = d3.geoCircle();
+        var _g = _.dataDots.geometry || {};
+        var _r = _g.radius || 0.5;
+        _.dots = _.dataDots.features.map(function (d) {
+            var coordinates = d.geometry.coordinates;
+            var properties = d.properties;
+            var r = d.geometry.radius || _r;
+            var circle = geoCircle.center(coordinates).radius(r)();
+            return { properties: properties, coordinates: coordinates, circle: circle };
+        });
+    }
+
+    return {
+        name: 'dotsCThreejs',
+        urls: urlDots && [urlDots],
+        onReady: function onReady(err, dots) {
+            this.dotsCThreejs.data(dots);
+        },
+        onInit: function onInit() {
+            init.call(this);
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.dataDots = _data;
+                initData();
+            } else {
+                return _.dataDots;
+            }
+        }
+    };
+});
+
+// http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
+var canvasThreejs = (function (worldUrl) {
+    /*eslint no-console: 0 */
+    /*eslint no-debugger: 0 */
+    var _ = {
+        sphereObject: null,
+        onDraw: {},
+        onDrawVals: []
+    };
+    var canvas = d3.select("body").append("canvas").style("display", "none").attr("width", "1024px").attr("height", "512px");
+    var context = canvas.node().getContext("2d");
+    var texture = new THREE.Texture(canvas.node());
+    var geometry = new THREE.SphereGeometry(200, 30, 30);
+    var material = new THREE.MeshBasicMaterial({ transparent: true });
+    var projection = d3.geoEquirectangular().precision(0.5).translate([512, 256]).scale(163);
+    var path = d3.geoPath().projection(projection).context(context);
+    material.map = texture;
+
+    function init() {
+        this._.options.showTjCanvas = true;
+    }
+
+    function create() {
+        var _this = this;
+
+        var tj = this.threejsPlugin;
+        if (!_.sphereObject) {
+            _.sphereObject = new THREE.Mesh(geometry, material);
+        }
+        context.clearRect(0, 0, 1024, 512);
+        context.fillStyle = "#aaa";
+        context.beginPath();
+        path(_.countries);
+        context.fill();
+
+        _.onDrawVals.forEach(function (v) {
+            v.call(_this, context, path);
+        });
+        texture.needsUpdate = true;
+        _.sphereObject.visible = this._.options.showTjCanvas;
+        tj.addGroup(_.sphereObject);
+        tj.rotate();
+    }
+
+    return {
+        name: 'canvasThreejs',
+        urls: worldUrl && [worldUrl],
+        onReady: function onReady(err, data) {
+            this.canvasThreejs.data(data);
+        },
+        onInit: function onInit() {
+            init.call(this);
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            _.sphereObject.visible = this._.options.showTjCanvas;
+        },
+        onDraw: function onDraw(obj) {
+            Object.assign(_.onDraw, obj);
+            _.onDrawVals = Object.keys(_.onDraw).map(function (k) {
+                return _.onDraw[k];
+            });
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.world = _data;
+                _.countries = topojson.feature(_data, _data.objects.countries);
+            } else {
+                return _.world;
+            }
+        }
+    };
+});
+
+// https://bl.ocks.org/mbostock/2b85250396c17a79155302f91ec21224
+// https://bl.ocks.org/pbogden/2f8d2409f1b3746a1c90305a1a80d183
+// http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
+var textureThreejs = (function () {
+    /*eslint no-console: 0 */
+    var _ = {};
+    var geometry = new THREE.SphereGeometry(200, 30, 30);
+    var material = new THREE.MeshBasicMaterial();
+    var datumGraticule = d3.geoGraticule()();
+
+    function init() {
+        this._.options.showDrawing = true;
+        //http://bl.ocks.org/MAKIO135/eab7b74e85ed2be48eeb
+        var __ = this._;
+        var width = __.options.width;
+        var height = __.options.height;
+        var canvas = d3.select('body').append('canvas');
+        canvas.attr('height', height).attr('width', width);
+        _.canvas = canvas.node();
+        _.context = _.canvas.getContext("2d");
+        _.texture = new THREE.Texture(_.canvas);
+        _.canvas.width = _.canvas.height = 512;
+        _.texture.needsUpdate = true;
+        material.map = _.texture;
+
+        var projection = d3.geoMercator().scale(width / 2 / Math.PI).translate([width / 2, height / 2]).precision(0.5);
+
+        _.path = d3.geoPath(projection, _.context);
+
+        // var geometry = new THREE.BoxGeometry( 200, 200, 200 );
+        // _.context.clearRect(0, 0, width, height);
+
+        // _.context.font = '20pt Arial';
+        // _.context.fillStyle = 'red';
+        // _.context.fillRect(0, 0, _.canvas.width, _.canvas.height);
+        // _.context.fillStyle = 'white';
+        // _.context.fillRect(10, 10, _.canvas.width - 20, _.canvas.height - 20);
+        // _.context.fillStyle = 'black';
+        // _.context.textAlign = "center";
+        // _.context.textBaseline = "middle";
+        // _.context.fillText(new Date().getTime(), _.canvas.width / 2, _.canvas.height / 2);
+    }
+
+    function create() {
+        var __ = this._;
+        var tj = this.threejsPlugin;
+        var width = __.options.width;
+        var height = __.options.height;
+        if (!_.sphereObject) {
+            _.context.fillStyle = 'white';
+            _.context.fillRect(0, 0, width, height);
+            _.context.beginPath();
+            _.path(datumGraticule);
+            _.context.lineWidth = 0.4;
+            _.context.strokeStyle = 'rgba(119,119,119,0.6)';
+            _.context.stroke();
+            _.sphereObject = new THREE.Mesh(geometry, material);
+            _.sphereObject.visible = this._.options.showLand;
+            _.texture.needsUpdate = false;
+            // const material = new THREE.LineBasicMaterial({color: 0xaaaaaa});
+            // _.sphereObject = tj.wireframe(_.graticule10, material); //0x800000
+            // _.sphereObject.visible = this._.options.showDrawing;
+        }
+        tj.addGroup(_.sphereObject);
+        tj.rotate();
+    }
+
+    return {
+        name: 'textureThreejs',
+        onInit: function onInit() {
+            init.call(this);
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            _.graticule.visible = this._.options.showDrawing;
+        }
+    };
+});
+
+// https://bl.ocks.org/mbostock/2b85250396c17a79155302f91ec21224
+// https://bl.ocks.org/pbogden/2f8d2409f1b3746a1c90305a1a80d183
+// http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
+var graticuleThreejs = (function () {
+    /*eslint no-console: 0 */
+    var _ = { sphereObject: null };
+
+    function init() {
+        this._.options.showGraticule = true;
+        _.graticule10 = graticule10();
+    }
+
+    // See https://github.com/d3/d3-geo/issues/95
+    function graticule10() {
+        var epsilon = 1e-6,
+            x1 = 180,
+            x0 = -x1,
+            y1 = 80,
+            y0 = -y1,
+            dx = 10,
+            dy = 10,
+            X1 = 180,
+            X0 = -X1,
+            Y1 = 90,
+            Y0 = -Y1,
+            DX = 90,
+            DY = 360,
+            x = graticuleX(y0, y1, 2.5),
+            y = graticuleY(x0, x1, 2.5),
+            X = graticuleX(Y0, Y1, 2.5),
+            Y = graticuleY(X0, X1, 2.5);
+
+        function graticuleX(y0, y1, dy) {
+            var y = d3.range(y0, y1 - epsilon, dy).concat(y1);
+            return function (x) {
+                return y.map(function (y) {
+                    return [x, y];
+                });
+            };
+        }
+
+        function graticuleY(x0, x1, dx) {
+            var x = d3.range(x0, x1 - epsilon, dx).concat(x1);
+            return function (y) {
+                return x.map(function (x) {
+                    return [x, y];
+                });
+            };
+        }
+
+        return {
+            type: "MultiLineString",
+            coordinates: d3.range(Math.ceil(X0 / DX) * DX, X1, DX).map(X).concat(d3.range(Math.ceil(Y0 / DY) * DY, Y1, DY).map(Y)).concat(d3.range(Math.ceil(x0 / dx) * dx, x1, dx).filter(function (x) {
+                return Math.abs(x % DX) > epsilon;
+            }).map(x)).concat(d3.range(Math.ceil(y0 / dy) * dy, y1 + epsilon, dy).filter(function (y) {
+                return Math.abs(y % DY) > epsilon;
+            }).map(y))
+        };
+    }
+
+    function create() {
+        var tj = this.threejsPlugin;
+        if (!_.sphereObject) {
+            var material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
+            _.sphereObject = tj.wireframe(_.graticule10, material); //0x800000
+            _.sphereObject.visible = this._.options.showGraticule;
+        }
+        tj.addGroup(_.sphereObject);
+        tj.rotate();
+    }
+
+    return {
+        name: 'graticuleThreejs',
+        onInit: function onInit() {
+            init.call(this);
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            _.sphereObject.visible = this._.options.showGraticule;
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
+        }
+    };
+});
+
 var debugThreejs = (function () {
     var _ = { sphereObject: null, scale: null };
     _.scale = d3.scaleLinear().domain([0, 200]).range([0, 1]);
@@ -3811,117 +3753,164 @@ var debugThreejs = (function () {
     };
 });
 
-var commonPlugins = (function (worldUrl) {
+// http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
+var oceanThreejs = (function () {
     /*eslint no-console: 0 */
-    var _ = { checker: [], ocn: 0, spd: 10, pan: 0, clr: 0 };
+    var _ = { sphereObject: null };
 
-    _.checker = [':Shadow:showDropShadow', ':Ocean:showOcean', ':Graticule:showGraticule', ':Land:showLand', ':Country:showCountries', ':Lakes:showLakes', ':Transparent:transparent',
-    // ':TGraticule:transparentGraticule',
-    // ':TLand:transparentLand',
-    ':Canvas:showCanvas', ':Spin:spin'].map(function (d) {
-        return d.split(':');
-    });
+    function create() {
+        var tj = this.threejsPlugin;
+        if (!_.sphereObject) {
+            var geometry = new THREE.SphereGeometry(200, 30, 30);
+            var material = new THREE.MeshNormalMaterial({
+                transparent: true,
+                wireframe: false,
+                opacity: 0.8
+            });
+            // var material = new THREE.MeshPhongMaterial( {
+            //     shading: THREE.SmoothShading, //FlatShading,
+            //     transparent: true,
+            //     wireframe: false,
+            //     color: 0x3794cf, //0xff0000,
+            //     shininess: 40,
+            //     opacity: 0.8,
+            //     // polygonOffset: true,
+            //     // polygonOffsetFactor: 1, // positive value pushes polygon further away
+            //     // polygonOffsetUnits: 1
+            // });
 
-    function addPlugins() {
-        var _this2 = this;
-
-        var r = this.register;
-        var p = earthjs.plugins;
-        r(p.mousePlugin());
-        r(p.configPlugin());
-        r(p.autorotatePlugin());
-        r(p.dropShadowSvg());
-        r(p.oceanSvg());
-        r(p.canvasPlugin());
-        r(p.graticuleCanvas());
-        r(p.worldCanvas(worldUrl));
-        this._.options.oceanColor = 2;
-        this._.options.transparent = true;
-        this.canvasPlugin.selectAll('.ej-canvas');
-        this.graticuleCanvas.drawTo([1]);
-        this.worldCanvas.drawTo([0]);
-
-        _.options = this.configPlugin.set();
-        _.buttonClick = function (str) {
-            var arr = str.split(':'),
-                key = arr[2],
-                resultx = {},
-                options = _this2.configPlugin.set();
-            options[key] = !options[key];
-            resultx[key] = options[key];
-            if (key == 'transparent') {
-                if (options.transparentGraticule || options.transparentLand) {
-                    resultx.transparent = false;
-                }
-                resultx.transparentGraticule = false;
-                resultx.transparentLand = false;
-            } else if (key == 'showCountries' || key == 'showLakes') {
-                resultx.showLand = true;
-            } else if (key == 'transparentGraticule' || key == 'transparentLand') {
-                if (options.transparent) {
-                    resultx.transparentGraticule = false;
-                    resultx.transparentLand = false;
-                }
-                resultx.transparent = false;
-            }
-            _this2.configPlugin.set(resultx);
-        };
+            _.sphereObject = new THREE.Mesh(geometry, material);
+            _.sphereObject.visible = this._.options.showOcean;
+        }
+        tj.addGroup(_.sphereObject);
+        tj.rotate();
     }
 
-    function rangeInput(opt, id, min, max, stp, vl, handler) {
-        opt.append('br');
-        opt.append('input').attr('id', id).attr('type', 'range').attr('min', min).attr('max', max).attr('step', stp).attr('value', vl).on('input', handler);
+    return {
+        name: 'oceanThreejs',
+        onInit: function onInit() {
+            this._.options.showOcean = true;
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            _.sphereObject.visible = this._.options.showOcean;
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
+        }
+    };
+});
+
+var imageThreejs = (function () {
+    var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.png';
+
+    /*eslint no-console: 0 */
+    var _ = { sphereObject: null };
+
+    function create() {
+        var tj = this.threejsPlugin;
+        if (!_.sphereObject) {
+            var _this = this;
+            var loader = new THREE.TextureLoader();
+            loader.load(imgUrl, function (map) {
+                var geometry = new THREE.SphereGeometry(200, 30, 30);
+                var material = new THREE.MeshBasicMaterial({ map: map });
+                _.sphereObject = new THREE.Mesh(geometry, material);
+                _.sphereObject.visible = _this._.options.showImage;
+                tj.addGroup(_.sphereObject);
+                tj.rotate();
+            });
+        } else {
+            tj.addGroup(_.sphereObject);
+            tj.rotate();
+        }
     }
 
-    function enableController() {
-        var _this3 = this;
-
-        var _this = this;
-        var opt = d3.select('.set-options');
-        var opt2 = d3.select('.set-options2');
-        opt.selectAll('button, input, br').remove();
-        opt2.selectAll('button, input, br').remove();
-        if (this._.options.showControll) {
-            opt.selectAll('button').data(_.checker).enter().append('button').text(function (d) {
-                return d[1];
-            }).on('click', function (d) {
-                return _.buttonClick.call(_this3, d.join(':'));
-            });
-            rangeInput(opt2, 'pan', 0, 400, 1, _.pan, function () {
-                _.pan = +this.value;
-                for (var i = 1; i < nodes.length; i++) {
-                    // nodes[i].style.top = (_.pan * i)+'px';
-                    nodes[i].style.left = _.pan * i + 'px';
-                }
-            });
-            rangeInput(opt2, 'ocn', 0, 20, 1, _.ocn, function () {
-                _.ocn = this.value;_this.oceanSvg.scale(-_.ocn);
-            });
-            rangeInput(opt2, 'spd', 10, 200, 10, _.spd, function () {
-                _.spd = this.value;_this.autorotatePlugin.speed(_.spd);
-            });
-            var nodes = d3.selectAll('.ea-layer').nodes();
-            window.nodes = nodes;
-            rangeInput(opt2, 'clr', 0, 5, 1, _this._.options.oceanColor, function () {
-                _this._.options.oceanColor = +this.value;
-                _this.oceanSvg.recreate();
-            });
+    function refresh() {
+        if (_.sphereObject) {
+            _.sphereObject.visible = this._.options.showImage;
         }
     }
 
     return {
-        name: 'commonPlugins',
+        name: 'imageThreejs',
         onInit: function onInit() {
-            addPlugins.call(this);
-            this._.options.showControll = true;
+            this._.options.showImage = true;
         },
         onCreate: function onCreate() {
-            enableController.call(this);
+            create.call(this);
         },
-        addChecker: function addChecker(checker) {
-            _.checker.push(checker);
-            _.options = this.configPlugin.set();
-            enableController.call(this);
+        onRefresh: function onRefresh() {
+            refresh.call(this);
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
+        }
+    };
+});
+
+var worldThreejs = (function () {
+    var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.png';
+
+    /*eslint no-console: 0 */
+    var _ = { sphereObject: null };
+
+    function create() {
+        var tj = this.threejsPlugin;
+        if (!_.sphereObject) {
+            var mesh = topojson.mesh(_.world, _.world.objects.countries);
+            var material = new THREE.MeshBasicMaterial({
+                // side: THREE.DoubleSide,
+                color: 0x707070 //0xefedea,
+                // overdraw: 0.25,
+            });
+            // material
+            // var material = new THREE.MeshPhongMaterial( {
+            //     color: 0xff0000,
+            //     shading: THREE.FlatShading,
+            //     polygonOffset: true,
+            //     polygonOffsetFactor: 1, // positive value pushes polygon further away
+            //     polygonOffsetUnits: 1
+            // });
+            _.sphereObject = tj.wireframe(mesh, material);
+            _.sphereObject.visible = this._.options.showLand;
+        }
+        // if (this.world3d) {
+        //     const s = _.sphereObject.scale;
+        //     s.x = 1.03;
+        //     s.y = 1.03;
+        //     s.z = 1.03;
+        // }
+        tj.addGroup(_.sphereObject);
+        tj.rotate();
+    }
+
+    return {
+        name: 'worldThreejs',
+        urls: worldUrl && [worldUrl],
+        onReady: function onReady(err, data) {
+            this.worldThreejs.data(data);
+        },
+        onInit: function onInit() {
+            this._.options.showLand = true;
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            _.sphereObject.visible = this._.options.showLand;
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.world = _data;
+            } else {
+                return _.world;
+            }
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
         }
     };
 });
@@ -4303,23 +4292,133 @@ var world3d2 = (function () {
     };
 });
 
+var commonPlugins = (function (worldUrl) {
+    /*eslint no-console: 0 */
+    var _ = { checker: [], ocn: 0, spd: 10, pan: 0, clr: 0 };
+
+    _.checker = [':Shadow:showDropShadow', ':Ocean:showOcean', ':Graticule:showGraticule', ':Land:showLand', ':Country:showCountries', ':Lakes:showLakes', ':Transparent:transparent',
+    // ':TGraticule:transparentGraticule',
+    // ':TLand:transparentLand',
+    ':Canvas:showCanvas', ':Spin:spin'].map(function (d) {
+        return d.split(':');
+    });
+
+    function addPlugins() {
+        var _this2 = this;
+
+        var r = this.register;
+        var p = earthjs.plugins;
+        r(p.mousePlugin());
+        r(p.configPlugin());
+        r(p.autorotatePlugin());
+        r(p.dropShadowSvg());
+        r(p.oceanSvg());
+        r(p.canvasPlugin());
+        r(p.graticuleCanvas());
+        r(p.worldCanvas(worldUrl));
+        this._.options.oceanColor = 2;
+        this._.options.transparent = true;
+        this.canvasPlugin.selectAll('.ej-canvas');
+        this.graticuleCanvas.drawTo([1]);
+        this.worldCanvas.drawTo([0]);
+
+        _.options = this.configPlugin.set();
+        _.buttonClick = function (str) {
+            var arr = str.split(':'),
+                key = arr[2],
+                resultx = {},
+                options = _this2.configPlugin.set();
+            options[key] = !options[key];
+            resultx[key] = options[key];
+            if (key == 'transparent') {
+                if (options.transparentGraticule || options.transparentLand) {
+                    resultx.transparent = false;
+                }
+                resultx.transparentGraticule = false;
+                resultx.transparentLand = false;
+            } else if (key == 'showCountries' || key == 'showLakes') {
+                resultx.showLand = true;
+            } else if (key == 'transparentGraticule' || key == 'transparentLand') {
+                if (options.transparent) {
+                    resultx.transparentGraticule = false;
+                    resultx.transparentLand = false;
+                }
+                resultx.transparent = false;
+            }
+            _this2.configPlugin.set(resultx);
+        };
+    }
+
+    function rangeInput(opt, id, min, max, stp, vl, handler) {
+        opt.append('br');
+        opt.append('input').attr('id', id).attr('type', 'range').attr('min', min).attr('max', max).attr('step', stp).attr('value', vl).on('input', handler);
+    }
+
+    function enableController() {
+        var _this3 = this;
+
+        var _this = this;
+        var opt = d3.select('.set-options');
+        var opt2 = d3.select('.set-options2');
+        opt.selectAll('button, input, br').remove();
+        opt2.selectAll('button, input, br').remove();
+        if (this._.options.showControll) {
+            opt.selectAll('button').data(_.checker).enter().append('button').text(function (d) {
+                return d[1];
+            }).on('click', function (d) {
+                return _.buttonClick.call(_this3, d.join(':'));
+            });
+            rangeInput(opt2, 'pan', 0, 400, 1, _.pan, function () {
+                _.pan = +this.value;
+                for (var i = 1; i < nodes.length; i++) {
+                    // nodes[i].style.top = (_.pan * i)+'px';
+                    nodes[i].style.left = _.pan * i + 'px';
+                }
+            });
+            rangeInput(opt2, 'ocn', 0, 20, 1, _.ocn, function () {
+                _.ocn = this.value;_this.oceanSvg.scale(-_.ocn);
+            });
+            rangeInput(opt2, 'spd', 10, 200, 10, _.spd, function () {
+                _.spd = this.value;_this.autorotatePlugin.speed(_.spd);
+            });
+            var nodes = d3.selectAll('.ea-layer').nodes();
+            window.nodes = nodes;
+            rangeInput(opt2, 'clr', 0, 5, 1, _this._.options.oceanColor, function () {
+                _this._.options.oceanColor = +this.value;
+                _this.oceanSvg.recreate();
+            });
+        }
+    }
+
+    return {
+        name: 'commonPlugins',
+        onInit: function onInit() {
+            addPlugins.call(this);
+            this._.options.showControll = true;
+        },
+        onCreate: function onCreate() {
+            enableController.call(this);
+        },
+        addChecker: function addChecker(checker) {
+            _.checker.push(checker);
+            _.options = this.configPlugin.set();
+            enableController.call(this);
+        }
+    };
+});
+
 earthjs$1.plugins = {
     configPlugin: configPlugin,
     autorotatePlugin: autorotatePlugin,
     mousePlugin: mousePlugin,
     zoomPlugin: zoomPlugin,
-    threejsPlugin: threejsPlugin,
     canvasPlugin: canvasPlugin,
     hoverCanvas: hoverCanvas,
     clickCanvas: clickCanvas,
     dblClickCanvas: dblClickCanvas,
-    canvasThreejs: canvasThreejs,
-    oceanThreejs: oceanThreejs,
     oceanSvg: oceanSvg,
     sphereSvg: sphereSvg,
-    textureThreejs: textureThreejs,
     graticuleCanvas: graticuleCanvas,
-    graticuleThreejs: graticuleThreejs,
     graticuleSvg: graticuleSvg,
     dropShadowSvg: dropShadowSvg,
     fauxGlobeSvg: fauxGlobeSvg,
@@ -4333,8 +4432,6 @@ earthjs$1.plugins = {
     placesSvg: placesSvg,
     worldCanvas: worldCanvas,
     worldSvg: worldSvg,
-    worldThreejs: worldThreejs,
-    imageThreejs: imageThreejs,
     centerCanvas: centerCanvas,
     centerSvg: centerSvg,
     flattenPlugin: flattenPlugin,
@@ -4342,14 +4439,24 @@ earthjs$1.plugins = {
     dotsSvg: dotsSvg,
     pinCanvas: pinCanvas,
     dotsCanvas: dotsCanvas,
-    dotsThreejs: dotsThreejs,
-    dotsCThreejs: dotsCThreejs,
     pingsCanvas: pingsCanvas,
     pingsSvg: pingsSvg,
+
+    threejsPlugin: threejsPlugin,
+    barThreejs: barThreejs,
+    dotsThreejs: dotsThreejs,
+    dotsCThreejs: dotsCThreejs,
+    canvasThreejs: canvasThreejs,
+    textureThreejs: textureThreejs,
+    graticuleThreejs: graticuleThreejs,
     debugThreejs: debugThreejs,
-    commonPlugins: commonPlugins,
+    oceanThreejs: oceanThreejs,
+    imageThreejs: imageThreejs,
+    worldThreejs: worldThreejs,
     world3d: world3d,
-    world3d2: world3d2
+    world3d2: world3d2,
+
+    commonPlugins: commonPlugins
 };
 
 return earthjs$1;
