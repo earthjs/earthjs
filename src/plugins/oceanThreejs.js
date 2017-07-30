@@ -42,5 +42,8 @@ export default () => {
         onRefresh() {
             _.sphereObject.visible = this._.options.showOcean;
         },
+        sphere() {
+            return _.sphereObject;
+        },
     }
 }

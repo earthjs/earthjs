@@ -44,6 +44,7 @@ import pingsSvg from './src/plugins/pingsSvg';
 import debugThreejs from './src/plugins/debugThreejs';
 import commonPlugins from './src/pluginLoader/commonPlugins';
 import world3d from './src/world3d/world3d';
+import world3d2 from './src/world3d/world3d2';
 app.plugins= {
     configPlugin,
     autorotatePlugin,
@@ -90,5 +91,6 @@ app.plugins= {
     debugThreejs,
     commonPlugins,
     world3d,
+    world3d2,
 };
 export default app;

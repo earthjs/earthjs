@@ -26,24 +26,24 @@
             s.x = 1.027;
             s.y = 1.027;
             s.z = 1.027;
-
-            var geos = g.world3d.data();
-            var keys = Object.keys(geos);
-            var ttls = keys.length-1, scl;
-            setInterval(() => {
-                var idx = Math.floor(Math.random() * ttls);
-                var key = keys[idx];
-                scl = geos[key].mesh.scale;
-                if (scl.x===1) {
-                    scl.x = 1.15;
-                    scl.y = 1.15;
-                    scl.z = 1.15;
-                } else {
-                    scl.x = 1;
-                    scl.y = 1;
-                    scl.z = 1;
-                }
-            }, 100);
+            //
+            // var geos = g.world3d2.data();
+            // var keys = Object.keys(geos);
+            // var ttls = keys.length-1, scl;
+            // setInterval(() => {
+            //     var idx = Math.floor(Math.random() * ttls);
+            //     var key = keys[idx];
+            //     scl = geos[key].mesh.scale;
+            //     if (scl.x===1) {
+            //         scl.x = 1.15;
+            //         scl.y = 1.15;
+            //         scl.z = 1.15;
+            //     } else {
+            //         scl.x = 1;
+            //         scl.y = 1;
+            //         scl.z = 1;
+            //     }
+            // }, 100);
 
         })
 

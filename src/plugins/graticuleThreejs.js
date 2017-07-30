@@ -58,6 +58,9 @@ export default () => {
         },
         onRefresh() {
             _.sphereObject.visible = this._.options.showGraticule;
-        }
+        },
+        sphere() {
+            return _.sphereObject;
+        },
     }
 }
