@@ -37,6 +37,7 @@ import threejsPlugin    from './src/threejs/threejsPlugin';
 import barThreejs       from './src/threejs/barThreejs';
 import dotsThreejs      from './src/threejs/dotsThreejs';
 import dotsCThreejs     from './src/threejs/dotsCThreejs';
+import iconsThreejs     from './src/threejs/iconsThreejs';
 import canvasThreejs    from './src/threejs/canvasThreejs';
 import textureThreejs   from './src/threejs/textureThreejs';
 import graticuleThreejs from './src/threejs/graticuleThreejs';
@@ -87,6 +88,7 @@ app.plugins= {
     barThreejs,
     dotsThreejs,
     dotsCThreejs,
+    iconsThreejs,
     canvasThreejs,
     textureThreejs,
     graticuleThreejs,

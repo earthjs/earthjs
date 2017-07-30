@@ -1,22 +1,6 @@
-// http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
-export default (jsonUrl, height=2) => {
+export default (jsonUrl, iconUrl) => {
     /*eslint no-console: 0 */
-    const _ = {sphereObject: null, data: null};
-    const material = new THREE.MeshBasicMaterial({
-        vertexColors: THREE.FaceColors,
-        morphTargets: false,
-        color: 0xaaffff,
-    });
-
-    function createGeometry(w) {
-        const geometry = new THREE.BoxGeometry(2, 2, w);
-        for (let i = 0; i < geometry.faces.length; i += 2 ) {
-            const hex = Math.random() * 0xffffff;
-            geometry.faces[ i ].color.setHex( hex );
-            geometry.faces[ i + 1 ].color.setHex( hex );
-        }
-        return geometry;
-    }
+    const _ = {sphereObject: null};
 
     function meshCoordinate(mesh, sc) {
         const phi = ( 90 - mesh.coordinates[1]) * 0.017453292519943295; //Math.PI / 180.0;
@@ -28,38 +12,58 @@ export default (jsonUrl, height=2) => {
         mesh.lookAt({x:0,y:0,z:0});
     }
 
-    function init() {
-        this._.options.showBars = true;
-    }
-
-    function create() {
+    function loadIcons() {
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
             const group = new THREE.Group();
             const SCALE = this._.proj.scale();
-            _.max = d3.max(_.data.features, d => parseInt(d.geometry.value))
-            _.scale = d3.scaleLinear().domain([0, _.max]).range([2, 70]);
             _.data.features.forEach(function(data) {
-                const v = data.geometry.value;
-                const h = _.scale(v ? v : height);
-                const geometry = createGeometry(h);
-                const mesh = new THREE.Mesh(geometry, material);
+                const geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+                const mesh = new THREE.Mesh(geometry, _.material);
                 mesh.coordinates = data.geometry.coordinates;
-                meshCoordinate(mesh, SCALE+(h/2));
+                meshCoordinate(mesh, SCALE+1);
+                mesh.scale.set(6,6,1);
                 group.add(mesh);
             })
             _.sphereObject = group;
-            _.sphereObject.visible = this._.options.showBars;
+            _.sphereObject.visible = this._.options.showIcons;
         }
         tj.addGroup(_.sphereObject);
         tj.rotate();
     }
 
+    function init() {
+        this._.options.showIcons = true;
+        const loader = new THREE.TextureLoader();
+        loader.load(iconUrl, map => {
+            _.material = new THREE.MeshPhongMaterial({
+                side: THREE.DoubleSide,
+                transparent: true,
+                map
+            });
+            if (_.data && !_.loaded) {
+                loadIcons.call(this);
+            }
+        });
+    }
+
+    function create() {
+        if (_.material && !_.loaded) {
+            loadIcons.call(this);
+        }
+    }
+
+    function refresh() {
+        if (_.sphereObject) {
+            _.sphereObject.visible = this._.options.showIcons;
+        }
+    }
+
     return {
-        name: 'barThreejs',
+        name: 'iconsThreejs',
         urls: jsonUrl && [jsonUrl],
         onReady(err, data) {
-            this.barThreejs.data(data);
+            this.iconsThreejs.data(data);
         },
         onInit() {
             init.call(this);
@@ -68,7 +72,7 @@ export default (jsonUrl, height=2) => {
             create.call(this);
         },
         onRefresh() {
-            _.sphereObject.visible = this._.options.showBars;
+            refresh.call(this);
         },
         data(data) {
             if (data) {
@@ -87,6 +91,6 @@ export default (jsonUrl, height=2) => {
         },
         sphere() {
             return _.sphereObject;
-        },
+        }
     }
 }

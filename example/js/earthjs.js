@@ -3214,11 +3214,11 @@ var threejsPlugin = (function () {
 });
 
 // http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
-var barThreejs = (function (urlBars) {
-    var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 5;
+var barThreejs = (function (jsonUrl) {
+    var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2;
 
     /*eslint no-console: 0 */
-    var _ = { sphereObject: null, bars: null };
+    var _ = { sphereObject: null, data: null };
     var material = new THREE.MeshBasicMaterial({
         vertexColors: THREE.FaceColors,
         morphTargets: false,
@@ -3226,7 +3226,7 @@ var barThreejs = (function (urlBars) {
     });
 
     function createGeometry(w) {
-        var geometry = new THREE.BoxGeometry(5, 5, w);
+        var geometry = new THREE.BoxGeometry(2, 2, w);
         for (var i = 0; i < geometry.faces.length; i += 2) {
             var hex = Math.random() * 0xffffff;
             geometry.faces[i].color.setHex(hex);
@@ -3246,8 +3246,7 @@ var barThreejs = (function (urlBars) {
     }
 
     function init() {
-        var __ = this._;
-        __.options.showBars = true;
+        this._.options.showBars = true;
     }
 
     function create() {
@@ -3255,12 +3254,17 @@ var barThreejs = (function (urlBars) {
         if (!_.sphereObject) {
             var group = new THREE.Group();
             var SCALE = this._.proj.scale();
-            // const root = this.threejsPlugin.group().position;
-            _.bars.features.forEach(function (bar) {
-                var geometry = createGeometry(width);
+            _.max = d3.max(_.data.features, function (d) {
+                return parseInt(d.geometry.value);
+            });
+            _.scale = d3.scaleLinear().domain([0, _.max]).range([2, 70]);
+            _.data.features.forEach(function (data) {
+                var v = data.geometry.value;
+                var h = _.scale(v ? v : height);
+                var geometry = createGeometry(h);
                 var mesh = new THREE.Mesh(geometry, material);
-                mesh.coordinates = bar.geometry.coordinates;
-                meshCoordinate(mesh, SCALE + width / 2);
+                mesh.coordinates = data.geometry.coordinates;
+                meshCoordinate(mesh, SCALE + h / 2);
                 group.add(mesh);
             });
             _.sphereObject = group;
@@ -3272,7 +3276,7 @@ var barThreejs = (function (urlBars) {
 
     return {
         name: 'barThreejs',
-        urls: urlBars && [urlBars],
+        urls: jsonUrl && [jsonUrl],
         onReady: function onReady(err, data) {
             this.barThreejs.data(data);
         },
@@ -3297,10 +3301,9 @@ var barThreejs = (function (urlBars) {
                         d.geometry.value = v;
                     });
                 }
-                _.bars = _data;
-                // setTimeout(() => refresh.call(this),1);
+                _.data = _data;
             } else {
-                return _.bars;
+                return _.data;
             }
         },
         sphere: function sphere() {
@@ -3438,6 +3441,107 @@ var dotsCThreejs = (function (urlDots) {
             } else {
                 return _.dataDots;
             }
+        }
+    };
+});
+
+var iconsThreejs = (function (jsonUrl, iconUrl) {
+    /*eslint no-console: 0 */
+    var _ = { sphereObject: null };
+
+    function meshCoordinate(mesh, sc) {
+        var phi = (90 - mesh.coordinates[1]) * 0.017453292519943295; //Math.PI / 180.0;
+        var the = (360 - mesh.coordinates[0]) * 0.017453292519943295; //Math.PI / 180.0;
+
+        mesh.position.x = sc * Math.sin(phi) * Math.cos(the);
+        mesh.position.y = sc * Math.cos(phi);
+        mesh.position.z = sc * Math.sin(phi) * Math.sin(the);
+        mesh.lookAt({ x: 0, y: 0, z: 0 });
+    }
+
+    function loadIcons() {
+        var tj = this.threejsPlugin;
+        if (!_.sphereObject) {
+            var group = new THREE.Group();
+            var SCALE = this._.proj.scale();
+            _.data.features.forEach(function (data) {
+                var geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+                var mesh = new THREE.Mesh(geometry, _.material);
+                mesh.coordinates = data.geometry.coordinates;
+                meshCoordinate(mesh, SCALE + 1);
+                mesh.scale.set(6, 6, 1);
+                group.add(mesh);
+            });
+            _.sphereObject = group;
+            _.sphereObject.visible = this._.options.showIcons;
+        }
+        tj.addGroup(_.sphereObject);
+        tj.rotate();
+    }
+
+    function init() {
+        var _this = this;
+
+        this._.options.showIcons = true;
+        var loader = new THREE.TextureLoader();
+        loader.load(iconUrl, function (map) {
+            _.material = new THREE.MeshPhongMaterial({
+                side: THREE.DoubleSide,
+                transparent: true,
+                map: map
+            });
+            if (_.data && !_.loaded) {
+                loadIcons.call(_this);
+            }
+        });
+    }
+
+    function create() {
+        if (_.material && !_.loaded) {
+            loadIcons.call(this);
+        }
+    }
+
+    function refresh() {
+        if (_.sphereObject) {
+            _.sphereObject.visible = this._.options.showIcons;
+        }
+    }
+
+    return {
+        name: 'iconsThreejs',
+        urls: jsonUrl && [jsonUrl],
+        onReady: function onReady(err, data) {
+            this.iconsThreejs.data(data);
+        },
+        onInit: function onInit() {
+            init.call(this);
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            refresh.call(this);
+        },
+        data: function data(_data) {
+            if (_data) {
+                if (_.valuePath) {
+                    var p = _.valuePath.split('.');
+                    _data.features.forEach(function (d) {
+                        var v = d;
+                        p.forEach(function (o) {
+                            return v = v[o];
+                        });
+                        d.geometry.value = v;
+                    });
+                }
+                _.data = _data;
+            } else {
+                return _.data;
+            }
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
         }
     };
 });
@@ -4446,6 +4550,7 @@ earthjs$1.plugins = {
     barThreejs: barThreejs,
     dotsThreejs: dotsThreejs,
     dotsCThreejs: dotsCThreejs,
+    iconsThreejs: iconsThreejs,
     canvasThreejs: canvasThreejs,
     textureThreejs: textureThreejs,
     graticuleThreejs: graticuleThreejs,

@@ -16,14 +16,20 @@
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.world3d2('../d/countries.geo.json','../d/blue.jpg',0.9))
+        .register(earthjs.plugins.world3d2('../d/countries.geo.json','../d/wgreen.jpg',0.9))
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
         .register(earthjs.plugins.oceanThreejs())
-        .register(earthjs.plugins.graticuleThreejs());
+        .register(earthjs.plugins.graticuleThreejs())
+        .register(earthjs.plugins.iconsThreejs('../d/bars.json','../d/check.svg'))
+        .register(earthjs.plugins.barThreejs('../d/bars.json'));
+        g.barThreejs.ready = function(err, json) {
+            json.features.forEach(d => d.geometry.value = d.properties.mag);
+            g.barThreejs.data(json);
+        };
         g.ready(function(){
             g.create();
             g.oceanThreejs.sphere().scale.set(0.945,0.945,0.945);
-            g.graticuleThreejs.sphere().scale.set(0.945,0.945,0.945);
+            // g.graticuleThreejs.sphere().scale.set(0.945,0.945,0.945);
         })
     </script>
 </body>
