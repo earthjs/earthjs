@@ -3250,6 +3250,7 @@ var barThreejs = (function (jsonUrl) {
     }
 
     function create() {
+        var o = this._.options;
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
             var group = new THREE.Group();
@@ -3260,7 +3261,7 @@ var barThreejs = (function (jsonUrl) {
             _.scale = d3.scaleLinear().domain([0, _.max]).range([2, 70]);
             _.data.features.forEach(function (data) {
                 var v = data.geometry.value;
-                var h = _.scale(v ? v : height);
+                var h = v ? _.scale(v) : height;
                 var geometry = createGeometry(h);
                 var mesh = new THREE.Mesh(geometry, material);
                 mesh.coordinates = data.geometry.coordinates;
@@ -3268,8 +3269,8 @@ var barThreejs = (function (jsonUrl) {
                 group.add(mesh);
             });
             _.sphereObject = group;
-            _.sphereObject.visible = this._.options.showBars;
         }
+        _.sphereObject.visible = o.showBars;
         tj.addGroup(_.sphereObject);
         tj.rotate();
     }
@@ -3304,6 +3305,121 @@ var barThreejs = (function (jsonUrl) {
                 _.data = _data;
             } else {
                 return _.data;
+            }
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
+        }
+    };
+});
+
+// https://github.com/pyalot/webgl-heatmap
+// https://github.com/pyalot/webgl-heatmap/blob/master/example.html
+var hmapThreejs = (function (hmapUrl) {
+    /*eslint no-console: 0 */
+    var _ = {
+        sphereObject: null,
+        material: new THREE.MeshBasicMaterial({ transparent: true })
+    };
+    var $ = { canvas: null };
+
+    function init() {
+        this._.options.showHmap = true;
+        var SCALE = this._.proj.scale();
+        _.geometry = new THREE.SphereGeometry(SCALE, 30, 30);
+        $.canvas = d3.select('body').append('canvas').style('position', 'absolute').style('display', 'none').style('top', '450px').attr('id', 'webgl-hmap');
+        _.canvas = $.canvas.node();
+        _.heatmap = createWebGLHeatmap({
+            intensityToAlpha: true,
+            width: 1024,
+            height: 512,
+            canvas: _.canvas
+        });
+        _.texture = new THREE.Texture(_.canvas);
+        _.material.map = _.texture;
+
+        if (!hmapUrl) {
+            $.canvas.style('display', 'inherit');
+            var paintAtCoord = function paintAtCoord(x, y) {
+                var count = 0;
+                while (count < 200) {
+                    var xoff = Math.random() * 2 - 1;
+                    var yoff = Math.random() * 2 - 1;
+                    var l = xoff * xoff + yoff * yoff;
+                    if (l > 1) {
+                        continue;
+                    }
+                    var ls = Math.sqrt(l);
+                    xoff /= ls;yoff /= ls;
+                    xoff *= 1 - l;yoff *= 1 - l;
+                    count += 1;
+                    _.heatmap.addPoint(x + xoff * 50, y + yoff * 50, 30, 2 / 300);
+                }
+            };
+            // event handling
+            var onTouchMove = function onTouchMove(evt) {
+                evt.preventDefault();
+                var touches = evt.changedTouches;
+                for (var i = 0; i < touches.length; i++) {
+                    var touch = touches[i];
+                    paintAtCoord(touch.pageX, touch.pageY);
+                }
+            };
+            _.canvas.addEventListener("touchmove", onTouchMove, false);
+            _.canvas.onmousemove = function (event) {
+                var x = event.offsetX || event.clientX;
+                var y = event.offsetY || event.clientY;
+                paintAtCoord(x, y);
+            };
+            _.canvas.onclick = function () {
+                _.heatmap.clear();
+            };
+        }
+    }
+
+    function create() {
+        var tj = this.threejsPlugin;
+        if (!_.sphereObject) {
+            _.sphereObject = new THREE.Mesh(_.geometry, _.material);
+        }
+        _.sphereObject.visible = this._.options.showHmap;
+        _.texture.needsUpdate = true;
+        tj.addGroup(_.sphereObject);
+        tj.rotate();
+    }
+
+    function refresh() {
+        _.heatmap.update();
+        _.heatmap.display();
+        _.sphereObject.visible = this._.options.showHmap;
+    }
+
+    return {
+        name: 'hmapThreejs',
+        urls: hmapUrl && [hmapUrl],
+        onReady: function onReady(err, data) {
+            this.hmapThreejs.data(data);
+        },
+        onInit: function onInit() {
+            init.call(this);
+        },
+        onInterval: function onInterval() {
+            if (!hmapUrl) {
+                _.texture.needsUpdate = true;
+            }
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            refresh.call(this);
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.world = _data;
+                _.countries = topojson.feature(_data, _data.objects.countries);
+            } else {
+                return _.world;
             }
         },
         sphere: function sphere() {
@@ -3389,11 +3505,11 @@ var dotsCThreejs = (function (urlDots) {
 
     function init() {
         var dots = void 0;
-        var __ = this._;
-        __.options.showDots = true;
+        var o = this._.options;
+        o.showDots = true;
         this.canvasThreejs.onDraw({
             dotsCThreejs: function dotsCThreejs(context, path) {
-                if (__.options.showDots) {
+                if (o.showDots) {
                     if (!dots) {
                         dots = _.dots.map(function (d) {
                             return d.circle;
@@ -3549,43 +3665,49 @@ var iconsThreejs = (function (jsonUrl, iconUrl) {
 // http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
 var canvasThreejs = (function (worldUrl) {
     /*eslint no-console: 0 */
-    /*eslint no-debugger: 0 */
     var _ = {
         sphereObject: null,
         onDraw: {},
-        onDrawVals: []
+        onDrawVals: [],
+        material: new THREE.MeshBasicMaterial({ transparent: false })
     };
-    var canvas = d3.select("body").append("canvas").style("display", "none").attr("width", "1024px").attr("height", "512px");
-    var context = canvas.node().getContext("2d");
-    var texture = new THREE.Texture(canvas.node());
-    var geometry = new THREE.SphereGeometry(200, 30, 30);
-    var material = new THREE.MeshBasicMaterial({ transparent: true });
-    var projection = d3.geoEquirectangular().precision(0.5).translate([512, 256]).scale(163);
-    var path = d3.geoPath().projection(projection).context(context);
-    material.map = texture;
 
     function init() {
-        this._.options.showTjCanvas = true;
+        var o = this._.options;
+        o.showTjCanvas = true;
+        o.transparentLand = false;
+        var SCALE = this._.proj.scale();
+        _.geometry = new THREE.SphereGeometry(SCALE, 30, 30);
+        _.canvas = d3.select('body').append('canvas').style('position', 'absolute').style('display', 'none').style('top', '450px').attr('width', '1024').attr('height', '512').attr('id', 'tjs-canvas').node();
+        _.texture = new THREE.Texture(_.canvas);
+        _.material.map = _.texture;
+
+        _.context = _.canvas.getContext('2d');
+        _.proj = d3.geoEquirectangular().precision(0.5).translate([512, 256]).scale(163);
+        _.path = d3.geoPath().projection(_.proj).context(_.context);
     }
 
     function create() {
         var _this = this;
 
+        var o = this._.options;
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
-            _.sphereObject = new THREE.Mesh(geometry, material);
+            _.sphereObject = new THREE.Mesh(_.geometry, _.material);
         }
-        context.clearRect(0, 0, 1024, 512);
-        context.fillStyle = "#aaa";
-        context.beginPath();
-        path(_.countries);
-        context.fill();
+        _.material.transparent = o.transparent || o.transparentLand;
+        _.context.clearRect(0, 0, 1024, 512);
+        _.context.fillStyle = '#00ff00';
+        _.context.beginPath();
+        _.path(_.countries);
+        _.context.fill();
 
         _.onDrawVals.forEach(function (v) {
-            v.call(_this, context, path);
+            v.call(_this, _.context, _.path);
         });
-        texture.needsUpdate = true;
-        _.sphereObject.visible = this._.options.showTjCanvas;
+
+        _.texture.needsUpdate = true;
+        _.sphereObject.visible = o.showTjCanvas;
         tj.addGroup(_.sphereObject);
         tj.rotate();
     }
@@ -3618,6 +3740,9 @@ var canvasThreejs = (function (worldUrl) {
             } else {
                 return _.world;
             }
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
         }
     };
 });
@@ -3860,32 +3985,31 @@ var debugThreejs = (function () {
 // http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
 var oceanThreejs = (function () {
     /*eslint no-console: 0 */
-    var _ = { sphereObject: null };
+    var _ = {
+        sphereObject: null,
+        material: new THREE.MeshNormalMaterial({
+            transparent: false,
+            wireframe: false,
+            opacity: 0.8
+        })
+    };
+
+    function init() {
+        var o = this._.options;
+        o.showOcean = true;
+        o.transparentOcean = false;
+    }
 
     function create() {
+        var o = this._.options;
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
-            var geometry = new THREE.SphereGeometry(200, 30, 30);
-            var material = new THREE.MeshNormalMaterial({
-                transparent: true,
-                wireframe: false,
-                opacity: 0.8
-            });
-            // var material = new THREE.MeshPhongMaterial( {
-            //     shading: THREE.SmoothShading, //FlatShading,
-            //     transparent: true,
-            //     wireframe: false,
-            //     color: 0x3794cf, //0xff0000,
-            //     shininess: 40,
-            //     opacity: 0.8,
-            //     // polygonOffset: true,
-            //     // polygonOffsetFactor: 1, // positive value pushes polygon further away
-            //     // polygonOffsetUnits: 1
-            // });
-
-            _.sphereObject = new THREE.Mesh(geometry, material);
-            _.sphereObject.visible = this._.options.showOcean;
+            var SCALE = this._.proj.scale();
+            var geometry = new THREE.SphereGeometry(SCALE, 30, 30);
+            _.sphereObject = new THREE.Mesh(geometry, _.material);
         }
+        _.material.transparent = o.transparent || o.transparentOcean;
+        _.sphereObject.visible = o.showOcean;
         tj.addGroup(_.sphereObject);
         tj.rotate();
     }
@@ -3893,7 +4017,7 @@ var oceanThreejs = (function () {
     return {
         name: 'oceanThreejs',
         onInit: function onInit() {
-            this._.options.showOcean = true;
+            init.call(this);
         },
         onCreate: function onCreate() {
             create.call(this);
@@ -3917,9 +4041,10 @@ var imageThreejs = (function () {
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
             var _this = this;
+            var SCALE = this._.proj.scale();
             var loader = new THREE.TextureLoader();
             loader.load(imgUrl, function (map) {
-                var geometry = new THREE.SphereGeometry(200, 30, 30);
+                var geometry = new THREE.SphereGeometry(SCALE, 30, 30);
                 var material = new THREE.MeshBasicMaterial({ map: map });
                 _.sphereObject = new THREE.Mesh(geometry, material);
                 _.sphereObject.visible = _this._.options.showImage;
@@ -4548,6 +4673,7 @@ earthjs$1.plugins = {
 
     threejsPlugin: threejsPlugin,
     barThreejs: barThreejs,
+    hmapThreejs: hmapThreejs,
     dotsThreejs: dotsThreejs,
     dotsCThreejs: dotsCThreejs,
     iconsThreejs: iconsThreejs,

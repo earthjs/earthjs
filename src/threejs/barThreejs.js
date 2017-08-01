@@ -33,6 +33,7 @@ export default (jsonUrl, height=2) => {
     }
 
     function create() {
+        const o = this._.options;
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
             const group = new THREE.Group();
@@ -41,7 +42,7 @@ export default (jsonUrl, height=2) => {
             _.scale = d3.scaleLinear().domain([0, _.max]).range([2, 70]);
             _.data.features.forEach(function(data) {
                 const v = data.geometry.value;
-                const h = _.scale(v ? v : height);
+                const h = v ? _.scale(v) : height;
                 const geometry = createGeometry(h);
                 const mesh = new THREE.Mesh(geometry, material);
                 mesh.coordinates = data.geometry.coordinates;
@@ -49,8 +50,8 @@ export default (jsonUrl, height=2) => {
                 group.add(mesh);
             })
             _.sphereObject = group;
-            _.sphereObject.visible = this._.options.showBars;
         }
+        _.sphereObject.visible = o.showBars;
         tj.addGroup(_.sphereObject);
         tj.rotate();
     }

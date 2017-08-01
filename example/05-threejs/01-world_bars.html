@@ -50,10 +50,10 @@
         .register(earthjs.plugins.oceanSvg())
         .register(earthjs.plugins.dotSelectCanvas())
         .register(earthjs.plugins.dotTooltipCanvas())
-        .register(earthjs.plugins.fauxGlobeSvg())
+        // .register(earthjs.plugins.fauxGlobeSvg())
         .register(earthjs.plugins.barSvg());
         g.canvasPlugin.selectAll('.ej-canvas');
-        g.fauxGlobeSvg.selectAll('.ej-svg');
+        // g.fauxGlobeSvg.selectAll('.ej-svg');
         g.mousePlugin.selectAll('.ej-svg');
         g.barSvg.selectAll('.ej-svg');
         g.dotsCanvas.ready = function(err, json) {

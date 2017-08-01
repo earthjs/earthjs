@@ -1,32 +1,31 @@
 // http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
 export default () => {
     /*eslint no-console: 0 */
-    const _ = {sphereObject: null};
+    const _ = {
+        sphereObject: null,
+        material: new THREE.MeshNormalMaterial({
+            transparent: false,
+            wireframe: false,
+            opacity: 0.8,
+        })
+    }
+
+    function init() {
+        const o = this._.options;
+        o.showOcean = true;
+        o.transparentOcean = false;
+    }
 
     function create() {
+        const o = this._.options;
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
-            const geometry = new THREE.SphereGeometry(200,30,30);
-            const material = new THREE.MeshNormalMaterial({
-                transparent: true,
-                wireframe: false,
-                opacity: 0.8,
-            });
-            // var material = new THREE.MeshPhongMaterial( {
-            //     shading: THREE.SmoothShading, //FlatShading,
-            //     transparent: true,
-            //     wireframe: false,
-            //     color: 0x3794cf, //0xff0000,
-            //     shininess: 40,
-            //     opacity: 0.8,
-            //     // polygonOffset: true,
-            //     // polygonOffsetFactor: 1, // positive value pushes polygon further away
-            //     // polygonOffsetUnits: 1
-            // });
-
-            _.sphereObject = new THREE.Mesh(geometry, material);
-            _.sphereObject.visible = this._.options.showOcean;
+            const SCALE = this._.proj.scale();
+            const geometry = new THREE.SphereGeometry(SCALE, 30, 30);
+            _.sphereObject = new THREE.Mesh(geometry, _.material);
         }
+        _.material.transparent = (o.transparent || o.transparentOcean);
+        _.sphereObject.visible = o.showOcean;
         tj.addGroup(_.sphereObject);
         tj.rotate();
     }
@@ -34,7 +33,7 @@ export default () => {
     return {
         name: 'oceanThreejs',
         onInit() {
-            this._.options.showOcean = true;
+            init.call(this);
         },
         onCreate() {
             create.call(this);

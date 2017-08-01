@@ -8,21 +8,34 @@
     <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
+    <div class="input-area">
+        <input id="pan" type="range" min="0" max="400" step="1" value="0"/><br/>
+    </div>
     <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
-    <canvas class="ej-canvas"></canvas>
     <script>
         const g = earthjs()
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.dropShadowSvg())
         .register(earthjs.plugins.oceanThreejs())
         .register(earthjs.plugins.graticuleThreejs())
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
         .register(earthjs.plugins.iconsThreejs('../d/bars.json','../d/check.svg'))
-        .register(earthjs.plugins.barThreejs('../d/bars.json',50));
+        .register(earthjs.plugins.barThreejs());
+        g.iconsThreejs.ready = function(err, json) {
+            json.features.forEach(d => d.geometry.value = d.properties.mag);
+            g.iconsThreejs.data(json);
+            g.barThreejs.data(json);
+        };
         g.ready(function(){
             g.create();
+        })
+
+        const canvas = d3.selectAll('canvas').nodes();
+        d3.select('#pan').on('input', function() {
+            canvas[0].style.left = (this.value)+'px';
         })
     </script>
 </body>

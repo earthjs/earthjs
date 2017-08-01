@@ -35,6 +35,7 @@ import pingsSvg from './src/plugins/pingsSvg';
 
 import threejsPlugin    from './src/threejs/threejsPlugin';
 import barThreejs       from './src/threejs/barThreejs';
+import hmapThreejs      from './src/threejs/hmapThreejs';
 import dotsThreejs      from './src/threejs/dotsThreejs';
 import dotsCThreejs     from './src/threejs/dotsCThreejs';
 import iconsThreejs     from './src/threejs/iconsThreejs';
@@ -86,6 +87,7 @@ app.plugins= {
 
     threejsPlugin,
     barThreejs,
+    hmapThreejs,
     dotsThreejs,
     dotsCThreejs,
     iconsThreejs,

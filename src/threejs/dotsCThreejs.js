@@ -4,11 +4,11 @@ export default urlDots => {
 
     function init() {
         let dots;
-        const __ = this._;
-        __.options.showDots = true;
+        const o = this._.options;
+        o.showDots = true;
         this.canvasThreejs.onDraw({
             dotsCThreejs(context, path) {
-                if (__.options.showDots) {
+                if (o.showDots) {
                     if (!dots) {
                         dots = _.dots.map(d => d.circle);
                     }

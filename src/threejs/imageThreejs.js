@@ -6,9 +6,10 @@ export default (imgUrl='../d/world.png') => {
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
             const _this = this;
+            const SCALE = this._.proj.scale();
             const loader = new THREE.TextureLoader();
             loader.load(imgUrl, function(map) {
-                const geometry = new THREE.SphereGeometry(200,30,30);
+                const geometry = new THREE.SphereGeometry(SCALE, 30, 30);
                 const material = new THREE.MeshBasicMaterial({map});
                 _.sphereObject = new THREE.Mesh(geometry, material);
                 _.sphereObject.visible = _this._.options.showImage;

@@ -6,6 +6,16 @@
     <script type='text/javascript' src='../js/three.min.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
+    <style>
+        #earth-js, #earth-js2 {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+        #earth-js2 {
+            z-index: 4;
+        }
+    </style>
 </head>
 <body>
     <div class="input-area">
@@ -13,37 +23,39 @@
     </div>
     <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
+    <canvas class="ej-canvas"></canvas>
+    <svg class="ej-svg noclicks" width="700" height="500"></svg>
     <script>
         const g = earthjs()
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.configPlugin())
+        .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.dropShadowSvg())
-        .register(earthjs.plugins.oceanThreejs())
-        // .register(earthjs.plugins.graticuleThreejs())
-        .register(earthjs.plugins.canvasThreejs('../d/world-110m.json'))
-        // .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
-        .register(earthjs.plugins.dotsCThreejs())
-        .register(earthjs.plugins.barThreejs('../d/bars.json'));
-        g.canvasThreejs.ready = function(err, json) {
-            g.canvasThreejs.data(json);
-            // g.worldThreejs.data(json);
-        };
-        g.barThreejs.ready = function(err, json) {
+        .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
+        .register(earthjs.plugins.imageThreejs('../d/graticule.svg'))
+        .register(earthjs.plugins.dotsCanvas('../d/bars.json'))
+        .register(earthjs.plugins.oceanSvg())
+        .register(earthjs.plugins.barSvg());
+        g.canvasPlugin.selectAll('.ej-canvas');
+        g.barSvg.selectAll('.ej-svg');
+        g.dotsCanvas.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
             json.geometry = {radius: 2}
-            g.dotsCThreejs.data(json);
-            g.barThreejs.data(json);
+            g.dotsCanvas.data(json);
+            g.barSvg.data(json);
         };
-        g._.options.transparent = true;
         g.ready(function(){
             g.create();
         })
 
         const canvas = d3.selectAll('canvas').nodes();
+        const svg = d3.selectAll('.ej-svg').nodes();
         d3.select('#pan').on('input', function() {
             canvas[0].style.left = (this.value)+'px';
+            canvas[1].style.left = (this.value*2)+'px';
+               svg[0].style.left = (this.value*3)+'px';
         })
     </script>
 </body>

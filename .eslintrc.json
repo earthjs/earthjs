@@ -16,7 +16,9 @@
         "THREE": true,
         "window": true,
         "earthjs": true,
-        "topojson": true
+        "topojson": true,
+        "document": true,
+        "createWebGLHeatmap": true
     },
 
     "rules": {
