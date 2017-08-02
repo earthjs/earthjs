@@ -31,7 +31,9 @@
             // g.worldThreejs.data(json);
         };
         g.barThreejs.ready = function(err, json) {
-            json.features.forEach(d => d.geometry.value = d.properties.mag);
+            json.features.forEach(function(d) {
+                d.geometry.value = d.properties.mag;
+            });
             json.geometry = {radius: 2}
             g.dotsCThreejs.data(json);
             g.barThreejs.data(json);

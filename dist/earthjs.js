@@ -387,6 +387,59 @@ var autorotatePlugin = (function () {
     };
 });
 
+// http://bl.ocks.org/syntagmatic/6645345
+var countryCanvas = (function (worldUrl) {
+    /*eslint no-console: 0 */
+    var _ = {};
+
+    function init() {
+        _.canvas = d3.select('body').append('canvas').attr('class', 'ej-hidden').attr('width', '1024').attr('height', '512').node();
+        _.context = _.canvas.getContext('2d');
+        _.proj = d3.geoEquirectangular().precision(0.5).translate([512, 256]).scale(163);
+        _.path = d3.geoPath().projection(_.proj).context(_.context);
+    }
+
+    function create() {
+        _.context.clearRect(0, 0, 1024, 512);
+        var i = _.countries.features.length;
+        while (i--) {
+            _.context.beginPath();
+            _.path(_.countries.features[i]);
+            _.context.fillStyle = "rgb(" + (i + 1) + ",0,0)";
+            _.context.fill();
+        }
+    }
+
+    return {
+        name: 'countryCanvas',
+        urls: worldUrl && [worldUrl],
+        onReady: function onReady(err, data) {
+            this.countryCanvas.data(data);
+        },
+        onInit: function onInit() {
+            init.call(this);
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.world = _data;
+                _.countries = topojson.feature(_data, _data.objects.countries);
+            } else {
+                return _.world;
+            }
+        },
+        detectCountry: function detectCountry(pos) {
+            var hiddenPos = _.proj(pos);
+            if (hiddenPos[0] > 0) {
+                var p = _.context.getImageData(hiddenPos[0], hiddenPos[1], 1, 1).data;
+                return _.countries.features[p[0] - 1];
+            }
+        }
+    };
+});
+
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 var mousePlugin = (function () {
     var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { zoomScale: [0, 1000] },
@@ -743,8 +796,9 @@ var hoverCanvas = (function () {
             }
         }
         var __ = this._;
+        var _this = this;
         var mouseMoveHandler = function mouseMoveHandler() {
-            var _this = this;
+            var _this2 = this;
 
             var event = d3.event;
             if (__.drag || !event) {
@@ -761,15 +815,19 @@ var hoverCanvas = (function () {
             _.country = null;
             if (__.options.showDots) {
                 _.onCircleVals.forEach(function (v) {
-                    _.dot = v.call(_this, _.mouse, pos);
+                    _.dot = v.call(_this2, _.mouse, pos);
                 });
             }
             if (__.options.showLand && _.countries && !_.dot) {
                 if (!__.drag) {
-                    _.country = findCountry(pos);
+                    if (_this.countryCanvas) {
+                        _.country = _this.countryCanvas.detectCountry(pos);
+                    } else {
+                        _.country = findCountry(pos);
+                    }
                 }
                 _.onCountryVals.forEach(function (v) {
-                    v.call(_this, _.mouse, _.country);
+                    v.call(_this2, _.mouse, _.country);
                 });
             }
         };
@@ -815,6 +873,9 @@ var hoverCanvas = (function () {
             } else {
                 return _.world;
             }
+        },
+        country: function country() {
+            return _.country;
         },
         state: function state() {
             return {
@@ -2039,12 +2100,15 @@ var worldCanvas = (function (worldUrl) {
             if (!__.drag) {
                 __.options.showLakes && canvasAddLakes.call(this);
                 if (this.hoverCanvas && __.options.showSelectedCountry) {
-                    this.canvasPlugin.render(function (context, path) {
-                        context.beginPath();
-                        path(this.hoverCanvas.data().country);
-                        context.fillStyle = 'rgba(117, 0, 0, 0.4)';
-                        context.fill();
-                    }, _.drawTo, _.options);
+                    var country = this.hoverCanvas.country();
+                    if (country) {
+                        this.canvasPlugin.render(function (context, path) {
+                            context.beginPath();
+                            path(country);
+                            context.fillStyle = 'rgba(117, 0, 0, 0.4)';
+                            context.fill();
+                        }, _.drawTo, _.options);
+                    }
                 }
             }
         }
@@ -3136,6 +3200,7 @@ var threejsPlugin = (function () {
         _.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, canvas: container });
         _.renderer.setClearColor(0x000000, 0);
         _.renderer.setSize(width, height);
+        _.renderer.sortObjects = false;
         this.renderThree = renderThree;
 
         // var geometry = new THREE.SphereGeometry(3, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
@@ -4639,6 +4704,7 @@ var commonPlugins = (function (worldUrl) {
 earthjs$1.plugins = {
     configPlugin: configPlugin,
     autorotatePlugin: autorotatePlugin,
+    countryCanvas: countryCanvas,
     mousePlugin: mousePlugin,
     zoomPlugin: zoomPlugin,
     canvasPlugin: canvasPlugin,

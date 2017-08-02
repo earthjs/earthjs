@@ -25,12 +25,15 @@ export default worldUrl => {
             if (!__.drag) {
                 __.options.showLakes && canvasAddLakes.call(this);
                 if (this.hoverCanvas && __.options.showSelectedCountry) {
-                    this.canvasPlugin.render(function(context, path) {
-                        context.beginPath();
-                        path(this.hoverCanvas.data().country);
-                        context.fillStyle = 'rgba(117, 0, 0, 0.4)';
-                        context.fill();
-                    }, _.drawTo, _.options);
+                    const country = this.hoverCanvas.country();
+                    if (country) {
+                        this.canvasPlugin.render(function(context, path) {
+                            context.beginPath();
+                            path(country);
+                            context.fillStyle = 'rgba(117, 0, 0, 0.4)';
+                            context.fill();
+                        }, _.drawTo, _.options);                        
+                    }
                 }
             }
         }

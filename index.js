@@ -1,6 +1,7 @@
 import app from './src/earthjs';
 import configPlugin from './src/plugins/configPlugin';
 import autorotatePlugin from './src/plugins/autorotatePlugin';
+import countryCanvas from './src/plugins/countryCanvas';
 import mousePlugin from './src/plugins/mousePlugin';
 import zoomPlugin from './src/plugins/zoomPlugin';
 import canvasPlugin from './src/plugins/canvasPlugin';
@@ -53,6 +54,7 @@ import commonPlugins from './src/pluginLoader/commonPlugins';
 app.plugins= {
     configPlugin,
     autorotatePlugin,
+    countryCanvas,
     mousePlugin,
     zoomPlugin,
     canvasPlugin,

@@ -78,6 +78,9 @@ body {
     text-align: left;
     z-index: 3;
 }
+.ej-hidden {
+    display: none;
+}
 .input-area {
     position: absolute;
     z-index: 5;

@@ -41,7 +41,9 @@
         g.canvasPlugin.selectAll('.ej-canvas');
         g.barSvg.selectAll('.ej-svg');
         g.dotsCanvas.ready = function(err, json) {
-            json.features.forEach(d => d.geometry.value = d.properties.mag);
+            json.features.forEach(function(d) {
+                d.geometry.value = d.properties.mag;
+            });
             json.geometry = {radius: 2}
             g.dotsCanvas.data(json);
             g.barSvg.data(json);

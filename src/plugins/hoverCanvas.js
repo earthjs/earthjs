@@ -21,6 +21,7 @@ export default () => {
             }
         }
         const __ = this._;
+        const _this = this;
         const mouseMoveHandler = function() {
             let event = d3.event;
             if (__.drag || !event) {
@@ -42,7 +43,11 @@ export default () => {
             }
             if (__.options.showLand && _.countries && !_.dot) {
                 if (!__.drag) {
-                    _.country = findCountry(pos);
+                    if (_this.countryCanvas) {
+                        _.country = _this.countryCanvas.detectCountry(pos);
+                    } else {
+                        _.country = findCountry(pos);
+                    }
                 }
                 _.onCountryVals.forEach(v => {
                     v.call(this, _.mouse, _.country);
@@ -87,6 +92,9 @@ export default () => {
             } else {
                 return _.world;
             }
+        },
+        country() {
+            return _.country;
         },
         state() {
             return {

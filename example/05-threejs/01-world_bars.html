@@ -32,7 +32,7 @@
     <canvas class="ej-canvas"></canvas>
     <svg class="ej-svg" width="700" height="500"></svg>
     <script>
-        const g = earthjs({rotate:[0,0,0]})
+        const g = earthjs()
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.configPlugin())
@@ -57,15 +57,20 @@
         g.mousePlugin.selectAll('.ej-svg');
         g.barSvg.selectAll('.ej-svg');
         g.dotsCanvas.ready = function(err, json) {
-            json.features.forEach(d => d.geometry.value = d.properties.mag);
+            json.features.forEach(function(d) {
+                d.geometry.value = d.properties.mag;
+            });
             json.geometry = {radius: 2}
             g.dotsThreejs.data(json);
             g.dotsCanvas.data(json);
             g.barSvg.data(json);
         };
         g.dotTooltipCanvas.onShow = function(d) {
-            const {mag, place} = d.properties;
-            return {properties: {mag, place}};
+            const p = d.properties;
+            return {properties: {
+                place: p.place,
+                mag: p.mag,
+            }};
         }
 
         g.ready(function(){

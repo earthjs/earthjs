@@ -25,7 +25,9 @@
         .register(earthjs.plugins.iconsThreejs('../d/bars.json','../d/check.svg'))
         .register(earthjs.plugins.barThreejs());
         g.iconsThreejs.ready = function(err, json) {
-            json.features.forEach(d => d.geometry.value = d.properties.mag);
+            json.features.forEach(function(d) {
+                d.geometry.value = d.properties.mag;
+            });
             g.iconsThreejs.data(json);
             g.barThreejs.data(json);
         };

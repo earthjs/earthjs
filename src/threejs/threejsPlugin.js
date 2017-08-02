@@ -46,6 +46,7 @@ export default (threejs='three-js') => {
         _.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true, canvas: container});
         _.renderer.setClearColor(0x000000, 0);
         _.renderer.setSize(width, height);
+        _.renderer.sortObjects = false;
         this.renderThree = renderThree;
 
         // var geometry = new THREE.SphereGeometry(3, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);

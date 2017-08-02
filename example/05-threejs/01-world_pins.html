@@ -50,14 +50,19 @@
         g.fauxGlobeSvg.selectAll('.ej-svg');
         g.mousePlugin.selectAll('.ej-svg');
         g.pinCanvas.ready = function(err, json) {
-            json.features.forEach(d => d.geometry.value = d.properties.mag);
+            json.features.forEach(function(d) {
+                d.geometry.value = d.properties.mag;
+            });
             json.geometry = {radius: 2}
             g.dotsCanvas.data(json);
             g.pinCanvas.data(json);
         };
         g.dotTooltipCanvas.onShow = function(d) {
-            const {mag, place} = d.properties;
-            return {properties: {mag, place}};
+            const p = d.properties;
+            return {properties: {
+                place: p.place,
+                mag: p.mag,
+            }};
         }
 
         g.ready(function(){
