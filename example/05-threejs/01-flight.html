@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+</head>
+<body>
+    <div class="input-area">
+        <input id="pan" type="range" min="0" max="400" step="1" value="0"/><br/>
+    </div>
+    <svg id="earth-js"></svg>
+    <canvas id="three-js"></canvas>
+    <script>
+        const g = earthjs()
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.dropShadowSvg())
+        .register(earthjs.plugins.oceanThreejs())
+        .register(earthjs.plugins.graticuleThreejs())
+        .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
+        .register(earthjs.plugins.flightLineThreejs('../d/locations.json',50));
+        g.ready(function(){
+            g.create();
+        })
+
+        const canvas = d3.selectAll('canvas').nodes();
+        d3.select('#pan').on('input', function() {
+            canvas[0].style.left = (this.value)+'px';
+        })
+    </script>
+</body>
+</html>
