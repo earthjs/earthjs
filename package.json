@@ -1,9 +1,10 @@
 {
   "name": "earthjs",
-  "version": "0.7.57",
+  "version": "0.7.58",
   "description": "D3 Earth JS using SVG, Canvas & THREE js, build with some plugins.",
   "main": "index.js",
   "scripts": {
+    "npm": "buble src --no modules -o npm",
     "test": "browserify test/*-test.js | tape-run",
     "pre-testem": "browserify test/_init_.js > test/bundle.js",
     "build": "rollup -c && uglifyjs dist/earthjs.js -c -m -o dist/earthjs.min.js",
@@ -23,6 +24,14 @@
     "visualization"
   ],
   "author": "Widi Harsojo",
+  "contributors": [
+    {
+      "name": "List of Earthjs contributors. Updated before every release."
+    },
+    {
+      "name": "Widi Harsojo"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/earthjs/earthjs/issues"

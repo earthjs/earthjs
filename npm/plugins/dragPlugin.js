@@ -1,8 +1,8 @@
-export default () => {
+export default function () {
 
     function init() {
-        let m0, o0;
-        const _this = this;
+        var m0, o0;
+        var _this = this;
 
         function mousedown() {
           m0 = [d3.event.pageX, d3.event.pageY];
@@ -13,7 +13,7 @@ export default () => {
 
         function mousemove() {
           if (m0) {
-            const m1 = [d3.event.pageX, d3.event.pageY]
+            var m1 = [d3.event.pageX, d3.event.pageY]
               , o1 = [o0[0] + (m1[0] - m0[0]) / 6, o0[1] + (m0[1] - m1[1]) / 6];
             o1[1] = o1[1] > 30  ? 30  :
                     o1[1] < -30 ? -30 :
@@ -30,7 +30,7 @@ export default () => {
           }
         }
 
-        const win = d3.select(window);
+        var win = d3.select(window);
         win.on('mouseup',   mouseup);
         win.on('mousemove', mousemove);
         this._.svg.on('mousedown', mousedown);
@@ -38,7 +38,7 @@ export default () => {
 
     return {
         name: 'dragPlugin',
-        onInit() {
+        onInit: function onInit() {
             init.call(this);
         },
     }
