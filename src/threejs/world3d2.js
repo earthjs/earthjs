@@ -68,7 +68,7 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../d/gold.jpg', inn
     }
 
     function init() {
-        const r = 200;
+        const r = this._.proj.scale();
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r,r,r);

@@ -21,14 +21,14 @@ export default function (ref) {
         _.onClickVals.forEach(function (v) {
             v.call(_._this, _.event, _.mouse);
         });
-        console.log('onClick');
+        // console.log('onClick');
     }
 
     function ondblclick() {
         _.onDblClickVals.forEach(function (v) {
             v.call(_._this, _.event, _.mouse);
         });
-        console.log('onDblClick');
+        // console.log('onDblClick');
     }
 
     var v0, // Mouse position in Cartesian coordinates at start of drag gesture.

@@ -4,8 +4,8 @@
 export default (threejs='three-js') => {
     /*eslint no-console: 0 */
     /*eslint no-debugger: 0 */
-    const _ = {renderer: null, scene: null, camera: null, radius: null};
-    _.scale = d3.scaleLinear().domain([0,200]).range([0,1]);
+    const _ = {renderer: null, scene: null, camera: null};
+    let SCALE;
 
     // Converts a point [longitude, latitude] in degrees to a THREE.Vector3.
     // Axes have been rotated so Three's "y" axis is parallel to the North Pole
@@ -14,9 +14,9 @@ export default (threejs='three-js') => {
             phi = point[1] * Math.PI / 180,
             cosPhi = Math.cos(phi);
         return new THREE.Vector3(
-            _.radius * cosPhi * Math.cos(lambda),
-            _.radius * Math.sin(phi),
-          - _.radius * cosPhi * Math.sin(lambda)
+            SCALE * cosPhi * Math.cos(lambda),
+            SCALE * Math.sin(phi),
+          - SCALE * cosPhi * Math.sin(lambda)
       );
     }
 
@@ -33,13 +33,14 @@ export default (threejs='three-js') => {
 
     function init() {
         const __ = this._;
+        SCALE = __.proj.scale();
         const {width, height} = __.options;
         const container = document.getElementById(threejs);
+        _.scale  = d3.scaleLinear().domain([0,SCALE]).range([0,1]);
         _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 10000)
         _.scene  = new THREE.Scene();
-        _.group = new THREE.Group();
+        _.group  = new THREE.Group();
         _.camera.position.z = 1010; // (higher than RADIUS + size of the bubble)
-        _.radius = __.proj.scale();
         _.scene.add(_.group);
         this._.camera = _.camera;
 
@@ -90,6 +91,9 @@ export default (threejs='three-js') => {
         name: 'threejsPlugin',
         onInit() {
             init.call(this);
+        },
+        onInterval() {
+            renderThree.call(this);
         },
         onCreate() {
             _.group.children = [];

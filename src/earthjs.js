@@ -3,7 +3,7 @@ import versorFn from './versor.js';
 const versor = versorFn();
 const earthjs = (options={}) => {
     /*eslint no-console: 0 */
-    clearInterval(earthjs.ticker);
+    cancelAnimationFrame(earthjs.ticker);
     options = Object.assign({
         selector: '#earth-js',
         rotate: [130,-33,-11],
@@ -160,16 +160,22 @@ const earthjs = (options={}) => {
     globe.$slc.defs = __.svg.append('defs');
     __.ticker = function(intervalTicker) {
         const interval = __.interval;
-        intervalTicker = intervalTicker || 50;
-        ticker = setInterval(() => { // 33% less CPU compare with d3.timer
-            if (!_.loadingData) {
-                interval.call(globe);
-                earths.forEach(function(p) {
-                    p._.interval.call(p);
-                });
+        intervalTicker = intervalTicker || 40;
+
+        var start = 0;
+        function step(timestamp) {
+            if ((timestamp - start) > intervalTicker) {
+                if (!_.loadingData) {
+                    interval.call(globe);
+                    earths.forEach(function(p) {
+                        p._.interval.call(p);
+                    });
+                }
+                start = timestamp;
             }
-        }, intervalTicker);
-        earthjs.ticker = ticker;
+            earthjs.ticker = requestAnimationFrame(step);
+        }
+        earthjs.ticker = requestAnimationFrame(step);
         return globe;
     }
 

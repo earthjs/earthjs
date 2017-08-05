@@ -1,4 +1,4 @@
-import app from './src/earthjs';
+import earthjs from './src/earthjs';
 import configPlugin from './src/plugins/configPlugin';
 import autorotatePlugin from './src/plugins/autorotatePlugin';
 import countryCanvas from './src/plugins/countryCanvas';
@@ -34,25 +34,26 @@ import dotsCanvas from './src/plugins/dotsCanvas';
 import pingsCanvas from './src/plugins/pingsCanvas';
 import pingsSvg from './src/plugins/pingsSvg';
 
-import threejsPlugin     from './src/threejs/threejsPlugin';
-import barThreejs        from './src/threejs/barThreejs';
-import hmapThreejs       from './src/threejs/hmapThreejs';
-import dotsThreejs       from './src/threejs/dotsThreejs';
-import dotsCThreejs      from './src/threejs/dotsCThreejs';
-import iconsThreejs      from './src/threejs/iconsThreejs';
-import canvasThreejs     from './src/threejs/canvasThreejs';
-import textureThreejs    from './src/threejs/textureThreejs';
-import graticuleThreejs  from './src/threejs/graticuleThreejs';
-import flightLineThreejs from './src/threejs/flightLineThreejs';
-import debugThreejs      from './src/threejs/debugThreejs';
-import oceanThreejs      from './src/threejs/oceanThreejs';
-import imageThreejs      from './src/threejs/imageThreejs';
-import worldThreejs      from './src/threejs/worldThreejs';
-import world3d           from './src/threejs/world3d';
-import world3d2          from './src/threejs/world3d2';
+import threejsPlugin      from './src/threejs/threejsPlugin';
+import barThreejs         from './src/threejs/barThreejs';
+import hmapThreejs        from './src/threejs/hmapThreejs';
+import dotsThreejs        from './src/threejs/dotsThreejs';
+import dotsCThreejs       from './src/threejs/dotsCThreejs';
+import iconsThreejs       from './src/threejs/iconsThreejs';
+import canvasThreejs      from './src/threejs/canvasThreejs';
+import textureThreejs     from './src/threejs/textureThreejs';
+import graticuleThreejs   from './src/threejs/graticuleThreejs';
+import flightLineThreejs  from './src/threejs/flightLineThreejs';
+import flightLine2Threejs from './src/threejs/flightLine2Threejs';
+import debugThreejs       from './src/threejs/debugThreejs';
+import oceanThreejs       from './src/threejs/oceanThreejs';
+import imageThreejs       from './src/threejs/imageThreejs';
+import worldThreejs       from './src/threejs/worldThreejs';
+import world3d            from './src/threejs/world3d';
+import world3d2           from './src/threejs/world3d2';
 
 import commonPlugins from './src/pluginLoader/commonPlugins';
-app.plugins= {
+earthjs.plugins= {
     configPlugin,
     autorotatePlugin,
     countryCanvas,
@@ -98,6 +99,7 @@ app.plugins= {
     textureThreejs,
     graticuleThreejs,
     flightLineThreejs,
+    flightLine2Threejs,
     debugThreejs,
     oceanThreejs,
     imageThreejs,
@@ -107,4 +109,4 @@ app.plugins= {
 
     commonPlugins,
 };
-export default app;
+export default earthjs;

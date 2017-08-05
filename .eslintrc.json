@@ -18,7 +18,10 @@
         "earthjs": true,
         "topojson": true,
         "document": true,
-        "createWebGLHeatmap": true
+        "onmessage": true,
+        "createWebGLHeatmap": true,
+        "cancelAnimationFrame": true,
+        "requestAnimationFrame": true
     },
 
     "rules": {

@@ -6,6 +6,11 @@
     <script type='text/javascript' src='../js/three.min.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
+    <style>
+        body {
+            background: #555;
+        }
+    </style>
 </head>
 <body>
     <div class="input-area">
@@ -14,15 +19,17 @@
     <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
     <script>
-        const g = earthjs()
+        // const g = earthjs()
+        const g = earthjs({width: 1400, height: 500})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.threejsPlugin())
-        .register(earthjs.plugins.autorotatePlugin())
+        // .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.dropShadowSvg())
         .register(earthjs.plugins.oceanThreejs())
         .register(earthjs.plugins.graticuleThreejs())
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
-        .register(earthjs.plugins.flightLineThreejs('../d/locations.json',50));
+        // .register(earthjs.plugins.flightLineThreejs('../d/locations.json',50))
+        .register(earthjs.plugins.flightLine2Threejs('../d/flights.json','../images/point.png'));
         g.ready(function(){
             g.create();
         })

@@ -1,11 +1,11 @@
 export default () => {
     const _ = {sphereObject: null, scale: null};
-    _.scale = d3.scaleLinear().domain([0,200]).range([0,1]);
 
     function init() {
         this._.options.showDebugSpahre = true;
         if (!_.sphereObject) {
             const SCALE = this._.proj.scale();
+            _.scale = d3.scaleLinear().domain([0,SCALE]).range([0,1]);
             const sphere         = new THREE.SphereGeometry(SCALE, 100, 100);
             const sphereMaterial = new THREE.MeshNormalMaterial({wireframe: false});
             const sphereMesh     = new THREE.Mesh(sphere, sphereMaterial);

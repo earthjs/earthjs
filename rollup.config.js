@@ -1,11 +1,12 @@
 // Rollup plugins
 import babel from 'rollup-plugin-babel';
 import eslint from 'rollup-plugin-eslint';
+import bundleWorker from 'rollup-plugin-bundle-worker';
 // import butternut from 'rollup-plugin-butternut';
 // import node from "rollup-plugin-node-resolve";
 
 export default {
-    entry: "index.js",
+    entry: "build.js",
     format: "iife",
     moduleName: "earthjs",
     dest: "dist/earthjs.js",
@@ -13,6 +14,7 @@ export default {
     plugins: [
         // node(),
         // butternut(),
+        bundleWorker(),
         eslint({
           exclude: [
             'src/styles/**',

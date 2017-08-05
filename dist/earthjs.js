@@ -71,11 +71,11 @@ var versorFn = (function () {
 });
 
 var versor = versorFn();
-var earthjs$1 = function earthjs() {
+var earthjs$2 = function earthjs() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     /*eslint no-console: 0 */
-    clearInterval(earthjs.ticker);
+    cancelAnimationFrame(earthjs.ticker);
     options = Object.assign({
         selector: '#earth-js',
         rotate: [130, -33, -11],
@@ -232,17 +232,22 @@ var earthjs$1 = function earthjs() {
     globe.$slc.defs = __.svg.append('defs');
     __.ticker = function (intervalTicker) {
         var interval = __.interval;
-        intervalTicker = intervalTicker || 50;
-        ticker = setInterval(function () {
-            // 33% less CPU compare with d3.timer
-            if (!_.loadingData) {
-                interval.call(globe);
-                earths.forEach(function (p) {
-                    p._.interval.call(p);
-                });
+        intervalTicker = intervalTicker || 40;
+
+        var start = 0;
+        function step(timestamp) {
+            if (timestamp - start > intervalTicker) {
+                if (!_.loadingData) {
+                    interval.call(globe);
+                    earths.forEach(function (p) {
+                        p._.interval.call(p);
+                    });
+                }
+                start = timestamp;
             }
-        }, intervalTicker);
-        earthjs.ticker = ticker;
+            earthjs.ticker = requestAnimationFrame(step);
+        }
+        earthjs.ticker = requestAnimationFrame(step);
         return globe;
     };
 
@@ -316,7 +321,7 @@ var earthjs$1 = function earthjs() {
 if (window.d3 === undefined) {
     window.d3 = {};
 }
-window.d3.earthjs = earthjs$1;
+window.d3.earthjs = earthjs$2;
 
 var configPlugin = (function () {
     /*eslint no-console: 0 */
@@ -463,14 +468,14 @@ var mousePlugin = (function () {
         _.onClickVals.forEach(function (v) {
             v.call(_._this, _.event, _.mouse);
         });
-        console.log('onClick');
+        // console.log('onClick');
     }
 
     function ondblclick() {
         _.onDblClickVals.forEach(function (v) {
             v.call(_._this, _.event, _.mouse);
         });
-        console.log('onDblClick');
+        // console.log('onDblClick');
     }
 
     var v0 = void 0,
@@ -3159,8 +3164,8 @@ var threejsPlugin = (function () {
 
     /*eslint no-console: 0 */
     /*eslint no-debugger: 0 */
-    var _ = { renderer: null, scene: null, camera: null, radius: null };
-    _.scale = d3.scaleLinear().domain([0, 200]).range([0, 1]);
+    var _ = { renderer: null, scene: null, camera: null };
+    var SCALE = void 0;
 
     // Converts a point [longitude, latitude] in degrees to a THREE.Vector3.
     // Axes have been rotated so Three's "y" axis is parallel to the North Pole
@@ -3168,7 +3173,7 @@ var threejsPlugin = (function () {
         var lambda = point[0] * Math.PI / 180,
             phi = point[1] * Math.PI / 180,
             cosPhi = Math.cos(phi);
-        return new THREE.Vector3(_.radius * cosPhi * Math.cos(lambda), _.radius * Math.sin(phi), -_.radius * cosPhi * Math.sin(lambda));
+        return new THREE.Vector3(SCALE * cosPhi * Math.cos(lambda), SCALE * Math.sin(phi), -SCALE * cosPhi * Math.sin(lambda));
     }
 
     // Converts a GeoJSON MultiLineString in spherical coordinates to a THREE.LineSegments.
@@ -3184,16 +3189,17 @@ var threejsPlugin = (function () {
 
     function init() {
         var __ = this._;
+        SCALE = __.proj.scale();
         var _$options = __.options,
             width = _$options.width,
             height = _$options.height;
 
         var container = document.getElementById(threejs);
+        _.scale = d3.scaleLinear().domain([0, SCALE]).range([0, 1]);
         _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 10000);
         _.scene = new THREE.Scene();
         _.group = new THREE.Group();
         _.camera.position.z = 1010; // (higher than RADIUS + size of the bubble)
-        _.radius = __.proj.scale();
         _.scene.add(_.group);
         this._.camera = _.camera;
 
@@ -3244,6 +3250,9 @@ var threejsPlugin = (function () {
         name: 'threejsPlugin',
         onInit: function onInit() {
             init.call(this);
+        },
+        onInterval: function onInterval() {
+            renderThree.call(this);
         },
         onCreate: function onCreate() {
             _.group.children = [];
@@ -3815,19 +3824,21 @@ var canvasThreejs = (function (worldUrl) {
 // https://bl.ocks.org/mbostock/2b85250396c17a79155302f91ec21224
 // https://bl.ocks.org/pbogden/2f8d2409f1b3746a1c90305a1a80d183
 // http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
+// http://bl.ocks.org/MAKIO135/eab7b74e85ed2be48eeb
 var textureThreejs = (function () {
     /*eslint no-console: 0 */
-    var _ = {};
-    var geometry = new THREE.SphereGeometry(200, 30, 30);
+    var _ = {},
+        datumGraticule = d3.geoGraticule()();
     var material = new THREE.MeshBasicMaterial();
-    var datumGraticule = d3.geoGraticule()();
+    var geometry;
 
     function init() {
-        this._.options.showDrawing = true;
-        //http://bl.ocks.org/MAKIO135/eab7b74e85ed2be48eeb
         var __ = this._;
+        var SCALE = __.proj.scale();
         var width = __.options.width;
         var height = __.options.height;
+        this._.options.showDrawing = true;
+        geometry = new THREE.SphereGeometry(SCALE, 30, 30);
         var canvas = d3.select('body').append('canvas');
         canvas.attr('height', height).attr('width', width);
         _.canvas = canvas.node();
@@ -3840,19 +3851,6 @@ var textureThreejs = (function () {
         var projection = d3.geoMercator().scale(width / 2 / Math.PI).translate([width / 2, height / 2]).precision(0.5);
 
         _.path = d3.geoPath(projection, _.context);
-
-        // var geometry = new THREE.BoxGeometry( 200, 200, 200 );
-        // _.context.clearRect(0, 0, width, height);
-
-        // _.context.font = '20pt Arial';
-        // _.context.fillStyle = 'red';
-        // _.context.fillRect(0, 0, _.canvas.width, _.canvas.height);
-        // _.context.fillStyle = 'white';
-        // _.context.fillRect(10, 10, _.canvas.width - 20, _.canvas.height - 20);
-        // _.context.fillStyle = 'black';
-        // _.context.textAlign = "center";
-        // _.context.textBaseline = "middle";
-        // _.context.fillText(new Date().getTime(), _.canvas.width / 2, _.canvas.height / 2);
     }
 
     function create() {
@@ -3871,9 +3869,6 @@ var textureThreejs = (function () {
             _.sphereObject = new THREE.Mesh(geometry, material);
             _.sphereObject.visible = this._.options.showLand;
             _.texture.needsUpdate = false;
-            // const material = new THREE.LineBasicMaterial({color: 0xaaaaaa});
-            // _.sphereObject = tj.wireframe(_.graticule10, material); //0x800000
-            // _.sphereObject.visible = this._.options.showDrawing;
         }
         tj.addGroup(_.sphereObject);
         tj.rotate();
@@ -4152,14 +4147,443 @@ var flightLineThreejs = (function (jsonUrl) {
     };
 });
 
+// http://callumprentice.github.io/apps/flight_stream/index.html
+var flightLine2Threejs = (function (jsonUrl, imgUrl) {
+    /*eslint no-console: 0 */
+    var _ = {
+        sphereObject: null,
+        track_lines_object: null,
+        track_points_object: null,
+        texture: null
+    };
+
+    var min_arc_distance = +Infinity;
+    var max_arc_distance = -Infinity;
+    var cur_arc_distance = 0;
+    var point_spacing = 100;
+    var point_opacity = 0.5;
+    var point_speed = 1.0;
+    var point_size = 40;
+    var point_cache = [];
+    var all_tracks = [];
+
+    var positions = void 0,
+        colors = void 0,
+        sizes = void 0,
+        ttl_num_points = 0;
+    function generateControlPoints(radius) {
+
+        for (var f = 0; f < _.data.length; ++f) {
+            var start_lat = _.data[f][0];
+            var start_lng = _.data[f][1];
+            var end_lat = _.data[f][2];
+            var end_lng = _.data[f][3];
+
+            if (start_lat === end_lat && start_lng === end_lng) {
+                continue;
+            }
+
+            var points = [];
+            var spline_control_points = 8;
+            var max_height = Math.random() * _.SCALE + 0.05;
+            for (var i = 0; i < spline_control_points + 1; i++) {
+                var arc_angle = i * 180.0 / spline_control_points;
+                var arc_radius = radius + Math.sin(arc_angle * Math.PI / 180.0) * max_height;
+                var latlng = lat_lng_inter_point(start_lat, start_lng, end_lat, end_lng, i / spline_control_points);
+                var pos = xyz_from_lat_lng(latlng.lat, latlng.lng, arc_radius);
+
+                points.push(new THREE.Vector3(pos.x, pos.y, pos.z));
+            }
+
+            var spline = new THREE.CatmullRomCurve3(points);
+            var arc_distance = lat_lng_distance(start_lat, start_lng, end_lat, end_lng, radius);
+
+            var point_positions = [];
+            for (var t = 0; t < arc_distance; t += point_spacing) {
+                var offset = t / arc_distance;
+                point_positions.push(spline.getPoint(offset));
+            }
+
+            var arc_distance_miles = arc_distance / (2 * Math.PI) * 24901;
+            if (arc_distance_miles < min_arc_distance) {
+                min_arc_distance = arc_distance_miles;
+            }
+
+            if (arc_distance_miles > max_arc_distance) {
+                max_arc_distance = parseInt(Math.ceil(arc_distance_miles / 1000.0) * 1000);
+                cur_arc_distance = max_arc_distance;
+            }
+
+            var default_speed = Math.random() * 600 + 400;
+            var speed = default_speed * point_speed;
+            var num_points = parseInt(arc_distance / point_spacing) + 1;
+            ttl_num_points += num_points;
+
+            var track = {
+                spline: spline,
+                num_points: num_points,
+                arc_distance: arc_distance,
+                arc_distance_miles: arc_distance_miles,
+                point_positions: point_positions,
+                default_speed: default_speed,
+                speed: speed
+            };
+            all_tracks.push(track);
+        }
+    }
+
+    function xyz_from_lat_lng(lat, lng, radius) {
+
+        var phi = (90 - lat) * Math.PI / 180;
+        var theta = (360 - lng) * Math.PI / 180;
+
+        return {
+            x: radius * Math.sin(phi) * Math.cos(theta),
+            y: radius * Math.cos(phi),
+            z: radius * Math.sin(phi) * Math.sin(theta)
+        };
+    }
+
+    function lat_lng_distance(lat1, lng1, lat2, lng2, radius) {
+
+        var a = Math.sin((lat2 - lat1) * Math.PI / 180 / 2) * Math.sin((lat2 - lat1) * Math.PI / 180 / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin((lng2 - lng1) * Math.PI / 180 / 2) * Math.sin((lng2 - lng1) * Math.PI / 180 / 2);
+
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return radius * c;
+    }
+
+    function lat_lng_inter_point(lat1, lng1, lat2, lng2, offset) {
+
+        lat1 = lat1 * Math.PI / 180.0;
+        lng1 = lng1 * Math.PI / 180.0;
+        lat2 = lat2 * Math.PI / 180.0;
+        lng2 = lng2 * Math.PI / 180.0;
+
+        var d = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin((lat1 - lat2) / 2), 2) + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin((lng1 - lng2) / 2), 2)));
+        var A = Math.sin((1 - offset) * d) / Math.sin(d);
+        var B = Math.sin(offset * d) / Math.sin(d);
+        var x = A * Math.cos(lat1) * Math.cos(lng1) + B * Math.cos(lat2) * Math.cos(lng2);
+        var y = A * Math.cos(lat1) * Math.sin(lng1) + B * Math.cos(lat2) * Math.sin(lng2);
+        var z = A * Math.sin(lat1) + B * Math.sin(lat2);
+        var lat = Math.atan2(z, Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))) * 180 / Math.PI;
+        var lng = Math.atan2(y, x) * 180 / Math.PI;
+
+        return {
+            lat: lat,
+            lng: lng
+        };
+    }
+
+    var vertexshader = '\n    attribute float size;\n    attribute vec3 customColor;\n    varying vec3 vColor;\n\n    void main() {\n        vColor = customColor;\n        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );\n        gl_PointSize = size * ( 300.0 / length( mvPosition.xyz ) );\n        gl_Position = projectionMatrix * mvPosition;\n    }';
+
+    var fragmentshader = '\n    uniform vec3 color;\n    uniform sampler2D texture;\n    uniform float opacity;\n\n    varying vec3 vColor;\n\n    void main() {\n        gl_FragColor = vec4( color * vColor, opacity );\n        gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );\n    }';
+
+    function generate_point_cloud() {
+        positions = new Float32Array(ttl_num_points * 3);
+        colors = new Float32Array(ttl_num_points * 3);
+        sizes = new Float32Array(ttl_num_points);
+
+        var index = 0;
+        for (var i = 0; i < all_tracks.length; ++i) {
+            var color = new THREE.Color(0xffffff).setHSL(i / all_tracks.length, 0.6, 0.6);
+
+            for (var j = 0; j < all_tracks[i].point_positions.length; ++j) {
+
+                positions[3 * index + 0] = 0;
+                positions[3 * index + 1] = 0;
+                positions[3 * index + 2] = 0;
+
+                colors[3 * index + 0] = color.r;
+                colors[3 * index + 1] = color.g;
+                colors[3 * index + 2] = color.b;
+
+                sizes[index] = point_size;
+
+                ++index;
+            }
+        }
+
+        var point_cloud_geom = new THREE.BufferGeometry();
+        point_cloud_geom.addAttribute('position', new THREE.BufferAttribute(positions, 3));
+        point_cloud_geom.addAttribute('customColor', new THREE.BufferAttribute(colors, 3));
+        point_cloud_geom.addAttribute('size', new THREE.BufferAttribute(sizes, 1));
+        point_cloud_geom.computeBoundingBox();
+
+        _.track_points_object = new THREE.Points(point_cloud_geom, _.shaderMaterial);
+        return _.track_points_object;
+    }
+
+    function update_point_cloud() {
+        var index = 0;
+        for (var i = 0; i < all_tracks.length; ++i) {
+            var _all_tracks$i = all_tracks[i],
+                speed = _all_tracks$i.speed,
+                spline = _all_tracks$i.spline,
+                num_points = _all_tracks$i.num_points,
+                arc_distance = _all_tracks$i.arc_distance,
+                arc_distance_miles = _all_tracks$i.arc_distance_miles;
+
+
+            var normalized = point_spacing / arc_distance;
+            var time_scale = Date.now() % speed / (speed * num_points);
+
+            for (var j = 0; j < num_points; j++) {
+
+                if (arc_distance_miles <= cur_arc_distance) {
+                    var offset_time = j * normalized + time_scale;
+
+                    var _fast_get_spline_poin = fast_get_spline_point(i, offset_time, spline),
+                        x = _fast_get_spline_poin.x,
+                        y = _fast_get_spline_poin.y,
+                        z = _fast_get_spline_poin.z;
+
+                    positions[3 * index + 0] = x;
+                    positions[3 * index + 1] = y;
+                    positions[3 * index + 2] = z;
+                } else {
+                    positions[3 * index + 0] = Infinity;
+                    positions[3 * index + 1] = Infinity;
+                    positions[3 * index + 2] = Infinity;
+                }
+
+                index++;
+            }
+        }
+        _.track_points_object.geometry.attributes.position.needsUpdate = true;
+    }
+
+    function fast_get_spline_point(i, t, spline) {
+        var tc = parseInt(t * 1000);
+        if (point_cache[i] === undefined) {
+            point_cache[i] = [];
+        }
+
+        var pcache = point_cache[i];
+        if (pcache[tc] !== undefined) {
+            return pcache[tc];
+        }
+
+        var pos = spline.getPoint(t);
+        pcache[tc] = pos;
+        return pos;
+    }
+
+    var line_positions;
+    var line_opacity = 0.2;
+    var curve_points = 24;
+    var material = new THREE.LineBasicMaterial({
+        vertexColors: THREE.VertexColors,
+        opacity: line_opacity,
+        transparent: true,
+        depthWrite: false,
+        depthTest: true,
+        color: 0xffffff,
+        linewidth: 0.2
+    });
+    function generate_track_lines() {
+        var geometry = new THREE.BufferGeometry();
+        var total_arr = all_tracks.length * 3 * 2 * curve_points;
+        line_positions = new Float32Array(total_arr);
+        var colors = new Float32Array(total_arr);
+
+        for (var i = 0; i < all_tracks.length; ++i) {
+            var spline = all_tracks[i].spline;
+
+            var _setHSL = new THREE.Color(0xffffff).setHSL(i / all_tracks.length, 0.9, 0.8),
+                r = _setHSL.r,
+                g = _setHSL.g,
+                b = _setHSL.b;
+
+            for (var j = 0; j < curve_points - 1; ++j) {
+                /*eslint no-redeclare:0*/
+                var i_curve = (i * curve_points + j) * 6;
+
+                var _spline$getPoint = spline.getPoint(j / (curve_points - 1)),
+                    x = _spline$getPoint.x,
+                    y = _spline$getPoint.y,
+                    z = _spline$getPoint.z;
+
+                line_positions[i_curve + 0] = x;
+                line_positions[i_curve + 1] = y;
+                line_positions[i_curve + 2] = z;
+
+                var _spline$getPoint2 = spline.getPoint((j + 1) / (curve_points - 1)),
+                    x = _spline$getPoint2.x,
+                    y = _spline$getPoint2.y,
+                    z = _spline$getPoint2.z;
+
+                line_positions[i_curve + 3] = x;
+                line_positions[i_curve + 4] = y;
+                line_positions[i_curve + 5] = z;
+
+                colors[i_curve + 0] = r;
+                colors[i_curve + 1] = g;
+                colors[i_curve + 2] = b;
+                colors[i_curve + 3] = r;
+                colors[i_curve + 4] = g;
+                colors[i_curve + 5] = b;
+            }
+        }
+
+        geometry.addAttribute('position', new THREE.BufferAttribute(line_positions, 3));
+        geometry.addAttribute('color', new THREE.BufferAttribute(colors, 3));
+        geometry.computeBoundingSphere();
+
+        _.track_lines_object = new THREE.Line(geometry, material, THREE.LineSegments);
+        return _.track_lines_object;
+    }
+
+    function update_track_lines() {
+
+        for (var i = 0; i < all_tracks.length; ++i) {
+            var _all_tracks$i2 = all_tracks[i],
+                spline = _all_tracks$i2.spline,
+                arc_distance_miles = _all_tracks$i2.arc_distance_miles;
+
+            for (var j = 0; j < curve_points - 1; ++j) {
+                /*eslint no-redeclare:0*/
+                var i_curve = (i * curve_points + j) * 6;
+                if (arc_distance_miles <= cur_arc_distance) {
+                    var _spline$getPoint3 = spline.getPoint(j / (curve_points - 1)),
+                        x = _spline$getPoint3.x,
+                        y = _spline$getPoint3.y,
+                        z = _spline$getPoint3.z;
+
+                    line_positions[i_curve + 0] = x;
+                    line_positions[i_curve + 1] = y;
+                    line_positions[i_curve + 2] = z;
+
+                    var _spline$getPoint4 = spline.getPoint((j + 1) / (curve_points - 1)),
+                        x = _spline$getPoint4.x,
+                        y = _spline$getPoint4.y,
+                        z = _spline$getPoint4.z;
+
+                    line_positions[i_curve + 3] = x;
+                    line_positions[i_curve + 4] = y;
+                    line_positions[i_curve + 5] = z;
+                } else {
+                    line_positions[i_curve + 0] = 0.0;
+                    line_positions[i_curve + 1] = 0.0;
+                    line_positions[i_curve + 2] = 0.0;
+                    line_positions[i_curve + 3] = 0.0;
+                    line_positions[i_curve + 4] = 0.0;
+                    line_positions[i_curve + 5] = 0.0;
+                }
+            }
+        }
+
+        _.track_lines_object.geometry.attributes.position.needsUpdate = true;
+    }
+
+    function loadFlights() {
+        var uniforms = {
+            color: {
+                type: "c",
+                value: new THREE.Color(0x00ff00)
+            },
+            texture: {
+                type: "t",
+                value: _.texture
+            },
+            opacity: {
+                type: "f",
+                value: point_opacity
+            }
+        };
+        _.shaderMaterial = new THREE.ShaderMaterial({
+            uniforms: uniforms,
+            vertexShader: vertexshader,
+            fragmentShader: fragmentshader,
+            blending: THREE.AdditiveBlending,
+            depthTest: true,
+            depthWrite: false,
+            transparent: true
+        });
+
+        var group = new THREE.Group();
+        generateControlPoints(_.SCALE + 5);
+        group.add(generate_track_lines());
+        group.add(generate_point_cloud());
+        _.sphereObject = group;
+        _.loaded = true;
+
+        var tj = this.threejsPlugin;
+        tj.addGroup(_.sphereObject);
+        tj.rotate();
+    }
+
+    function init() {
+        _.SCALE = this._.proj.scale();
+        var manager = new THREE.LoadingManager();
+        var loader = new THREE.TextureLoader(manager);
+        this._.options.showFlightLine = true;
+        // const loader = new THREE.TextureLoader();
+        // loader.load(imgUrl, texture => {
+        //     _.texture = texture
+        //     if (_.data && !_.loaded) {
+        //         console.log('done add:1');
+        //         loadFlights.call(this);
+        //     }
+        // });
+        _.texture = loader.load(imgUrl, function (point_texture) {
+            return point_texture;
+        });
+    }
+
+    function create() {
+        var o = this._.options;
+        if (_.texture && !_.sphereObject && !_.loaded) {
+            console.log('done add:2');
+            loadFlights.call(this);
+        } else if (_.sphereObject) {
+            _.sphereObject.visible = o.showFlightLine;
+            var tj = this.threejsPlugin;
+            tj.addGroup(_.sphereObject);
+            tj.rotate();
+        }
+    }
+
+    return {
+        name: 'flightLine2Threejs',
+        urls: jsonUrl && [jsonUrl],
+        onReady: function onReady(err, data) {
+            this.flightLine2Threejs.data(data);
+        },
+        onInit: function onInit() {
+            init.call(this);
+        },
+        onInterval: function onInterval() {
+            update_track_lines();
+            update_point_cloud();
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            _.sphereObject.visible = this._.options.showFlightLine;
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.data = _data;
+            } else {
+                return _.data;
+            }
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
+        }
+    };
+});
+
 var debugThreejs = (function () {
     var _ = { sphereObject: null, scale: null };
-    _.scale = d3.scaleLinear().domain([0, 200]).range([0, 1]);
 
     function init() {
         this._.options.showDebugSpahre = true;
         if (!_.sphereObject) {
             var SCALE = this._.proj.scale();
+            _.scale = d3.scaleLinear().domain([0, SCALE]).range([0, 1]);
             var sphere = new THREE.SphereGeometry(SCALE, 100, 100);
             var sphereMaterial = new THREE.MeshNormalMaterial({ wireframe: false });
             var sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
@@ -4379,20 +4803,6 @@ var worldThreejs = (function () {
         }
     };
 });
-
-//            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-//                    Version 2, December 2004
-//
-// Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
-//
-// Everyone is permitted to copy and distribute verbatim or modified
-// copies of this license document, and changing it is allowed as long
-// as the name is changed.
-//
-//            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-//   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-//
-//  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 function Map3DGeometry(data, innerRadius) {
     /*eslint no-redeclare: 0 */
@@ -4672,7 +5082,7 @@ var world3d2 = (function () {
     }
 
     function init() {
-        var r = 200;
+        var r = this._.proj.scale();
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r, r, r);
@@ -4872,7 +5282,7 @@ var commonPlugins = (function (worldUrl) {
     };
 });
 
-earthjs$1.plugins = {
+earthjs$2.plugins = {
     configPlugin: configPlugin,
     autorotatePlugin: autorotatePlugin,
     countryCanvas: countryCanvas,
@@ -4918,6 +5328,7 @@ earthjs$1.plugins = {
     textureThreejs: textureThreejs,
     graticuleThreejs: graticuleThreejs,
     flightLineThreejs: flightLineThreejs,
+    flightLine2Threejs: flightLine2Threejs,
     debugThreejs: debugThreejs,
     oceanThreejs: oceanThreejs,
     imageThreejs: imageThreejs,
@@ -4928,7 +5339,7 @@ earthjs$1.plugins = {
     commonPlugins: commonPlugins
 };
 
-return earthjs$1;
+return earthjs$2;
 
 }());
 //# sourceMappingURL=earthjs.js.map
