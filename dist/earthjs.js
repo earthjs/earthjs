@@ -4167,6 +4167,8 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
     var point_cache = [];
     var all_tracks = [];
 
+    var PI180 = Math.PI / 180.0;
+
     var positions = void 0,
         colors = void 0,
         sizes = void 0,
@@ -4188,7 +4190,7 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
             var max_height = Math.random() * _.SCALE + 0.05;
             for (var i = 0; i < spline_control_points + 1; i++) {
                 var arc_angle = i * 180.0 / spline_control_points;
-                var arc_radius = radius + Math.sin(arc_angle * Math.PI / 180.0) * max_height;
+                var arc_radius = radius + Math.sin(arc_angle * PI180) * max_height; //PI180 = PI180.0
                 var latlng = lat_lng_inter_point(start_lat, start_lng, end_lat, end_lng, i / spline_control_points);
                 var pos = xyz_from_lat_lng(latlng.lat, latlng.lng, arc_radius);
 
@@ -4234,8 +4236,8 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
 
     function xyz_from_lat_lng(lat, lng, radius) {
 
-        var phi = (90 - lat) * Math.PI / 180;
-        var theta = (360 - lng) * Math.PI / 180;
+        var phi = (90 - lat) * PI180;
+        var theta = (360 - lng) * PI180;
 
         return {
             x: radius * Math.sin(phi) * Math.cos(theta),
@@ -4246,7 +4248,7 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
 
     function lat_lng_distance(lat1, lng1, lat2, lng2, radius) {
 
-        var a = Math.sin((lat2 - lat1) * Math.PI / 180 / 2) * Math.sin((lat2 - lat1) * Math.PI / 180 / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin((lng2 - lng1) * Math.PI / 180 / 2) * Math.sin((lng2 - lng1) * Math.PI / 180 / 2);
+        var a = Math.sin((lat2 - lat1) * PI180 / 2) * Math.sin((lat2 - lat1) * PI180 / 2) + Math.cos(lat1 * PI180) * Math.cos(lat2 * PI180) * Math.sin((lng2 - lng1) * PI180 / 2) * Math.sin((lng2 - lng1) * PI180 / 2);
 
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
@@ -4255,10 +4257,10 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
 
     function lat_lng_inter_point(lat1, lng1, lat2, lng2, offset) {
 
-        lat1 = lat1 * Math.PI / 180.0;
-        lng1 = lng1 * Math.PI / 180.0;
-        lat2 = lat2 * Math.PI / 180.0;
-        lng2 = lng2 * Math.PI / 180.0;
+        lat1 = lat1 * PI180;
+        lng1 = lng1 * PI180;
+        lat2 = lat2 * PI180;
+        lng2 = lng2 * PI180;
 
         var d = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin((lat1 - lat2) / 2), 2) + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin((lng1 - lng2) / 2), 2)));
         var A = Math.sin((1 - offset) * d) / Math.sin(d);
@@ -4316,7 +4318,8 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
 
     function update_point_cloud() {
         var index = 0;
-        for (var i = 0; i < all_tracks.length; ++i) {
+        var i_length = all_tracks.length;
+        for (var i = 0; i < i_length; ++i) {
             var _all_tracks$i = all_tracks[i],
                 speed = _all_tracks$i.speed,
                 spline = _all_tracks$i.spline,
@@ -4325,29 +4328,31 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
                 arc_distance_miles = _all_tracks$i.arc_distance_miles;
 
 
-            var normalized = point_spacing / arc_distance;
-            var time_scale = Date.now() % speed / (speed * num_points);
+            if (arc_distance_miles <= cur_arc_distance) {
+                var normalized = point_spacing / arc_distance;
+                var time_scale = Date.now() % speed / (speed * num_points);
+                for (var j = 0; j < num_points; j++) {
+                    var t = j * normalized + time_scale;
 
-            for (var j = 0; j < num_points; j++) {
-
-                if (arc_distance_miles <= cur_arc_distance) {
-                    var offset_time = j * normalized + time_scale;
-
-                    var _fast_get_spline_poin = fast_get_spline_point(i, offset_time, spline),
+                    var _fast_get_spline_poin = fast_get_spline_point(i, t, spline),
                         x = _fast_get_spline_poin.x,
                         y = _fast_get_spline_poin.y,
                         z = _fast_get_spline_poin.z;
 
-                    positions[3 * index + 0] = x;
-                    positions[3 * index + 1] = y;
-                    positions[3 * index + 2] = z;
-                } else {
-                    positions[3 * index + 0] = Infinity;
-                    positions[3 * index + 1] = Infinity;
-                    positions[3 * index + 2] = Infinity;
+                    var index3 = 3 * index;
+                    positions[index3 + 0] = x;
+                    positions[index3 + 1] = y;
+                    positions[index3 + 2] = z;
+                    index++;
                 }
-
-                index++;
+            } else {
+                for (var j = 0; j < num_points; j++) {
+                    var index3 = 3 * index;
+                    positions[index3 + 0] = Infinity;
+                    positions[index3 + 1] = Infinity;
+                    positions[index3 + 2] = Infinity;
+                    index++;
+                }
             }
         }
         _.track_points_object.geometry.attributes.position.needsUpdate = true;
@@ -4434,47 +4439,39 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
         return _.track_lines_object;
     }
 
-    function update_track_lines() {
-
-        for (var i = 0; i < all_tracks.length; ++i) {
-            var _all_tracks$i2 = all_tracks[i],
-                spline = _all_tracks$i2.spline,
-                arc_distance_miles = _all_tracks$i2.arc_distance_miles;
-
-            for (var j = 0; j < curve_points - 1; ++j) {
-                /*eslint no-redeclare:0*/
-                var i_curve = (i * curve_points + j) * 6;
-                if (arc_distance_miles <= cur_arc_distance) {
-                    var _spline$getPoint3 = spline.getPoint(j / (curve_points - 1)),
-                        x = _spline$getPoint3.x,
-                        y = _spline$getPoint3.y,
-                        z = _spline$getPoint3.z;
-
-                    line_positions[i_curve + 0] = x;
-                    line_positions[i_curve + 1] = y;
-                    line_positions[i_curve + 2] = z;
-
-                    var _spline$getPoint4 = spline.getPoint((j + 1) / (curve_points - 1)),
-                        x = _spline$getPoint4.x,
-                        y = _spline$getPoint4.y,
-                        z = _spline$getPoint4.z;
-
-                    line_positions[i_curve + 3] = x;
-                    line_positions[i_curve + 4] = y;
-                    line_positions[i_curve + 5] = z;
-                } else {
-                    line_positions[i_curve + 0] = 0.0;
-                    line_positions[i_curve + 1] = 0.0;
-                    line_positions[i_curve + 2] = 0.0;
-                    line_positions[i_curve + 3] = 0.0;
-                    line_positions[i_curve + 4] = 0.0;
-                    line_positions[i_curve + 5] = 0.0;
-                }
-            }
-        }
-
-        _.track_lines_object.geometry.attributes.position.needsUpdate = true;
-    }
+    // function update_track_lines() {
+    //
+    //     for (var i = 0; i < all_tracks.length; ++i) {
+    //         var {
+    //             spline,
+    //             arc_distance_miles
+    //         } = all_tracks[i];
+    //         for (var j = 0; j < curve_points - 1; ++j) {
+    //             /*eslint no-redeclare:0*/
+    //             var i_curve = (i * curve_points + j) * 6;
+    //             if (arc_distance_miles <= cur_arc_distance) {
+    //                 var {x,y,z} = spline.getPoint(j / (curve_points - 1));
+    //                 line_positions[i_curve + 0] = x;
+    //                 line_positions[i_curve + 1] = y;
+    //                 line_positions[i_curve + 2] = z;
+    //
+    //                 var {x,y,z} = spline.getPoint((j + 1) / (curve_points - 1));
+    //                 line_positions[i_curve + 3] = x;
+    //                 line_positions[i_curve + 4] = y;
+    //                 line_positions[i_curve + 5] = z;
+    //             } else {
+    //                 line_positions[i_curve + 0] = 0.0;
+    //                 line_positions[i_curve + 1] = 0.0;
+    //                 line_positions[i_curve + 2] = 0.0;
+    //                 line_positions[i_curve + 3] = 0.0;
+    //                 line_positions[i_curve + 4] = 0.0;
+    //                 line_positions[i_curve + 5] = 0.0;
+    //             }
+    //         }
+    //     }
+    //
+    //     _.track_lines_object.geometry.attributes.position.needsUpdate = true;
+    // }
 
     function loadFlights() {
         var uniforms = {
@@ -4554,7 +4551,7 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
             init.call(this);
         },
         onInterval: function onInterval() {
-            update_track_lines();
+            // update_track_lines();
             update_point_cloud();
         },
         onCreate: function onCreate() {
