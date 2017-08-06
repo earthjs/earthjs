@@ -11,6 +11,7 @@
 <body>
     <div class="input-area">
         <input id="pan" type="range" min="0" max="1000" step="1" value="0"/><br/>
+        <a id="g7" href=''>[ G7 Countries ]</a>
     </div>
     <svg id="earth-js" width="1000" height="920"></svg>
     <canvas id="three-js"></canvas>
@@ -31,8 +32,24 @@
         g.canvasPlugin.selectAll('.ej-canvas');
         g._.options.showSelectedCountry = true;
         g._.options.showBorder = true;
-        g.centerCanvas.focused(function() {
+        g.centerCanvas.focused(function(event, country) {
             g.autorotatePlugin.stop();
+            if (event.metaKey) {
+                const arr = g.worldCanvas.selectedCountries().concat(country);
+                g.worldCanvas.selectedCountries(arr);
+            } else {
+                g.worldCanvas.selectedCountries([country]);
+            }
+            console.log(country);
+        })
+        g.clickCanvas.onCountry({
+            autorotate(event, country) {
+                if (!country) {
+                    g.worldCanvas.style({});
+                    g.worldCanvas.selectedCountries([]);
+                    g.autorotatePlugin.start();
+                }
+            }
         })
         g.ready(function(){
             const world = g.worldCanvas.data();
@@ -45,6 +62,17 @@
         const canvas = d3.selectAll('canvas').nodes();
         d3.select('#pan').on('input', function() {
             canvas[0].style.left = (this.value)+'px';
+        })
+        d3.select('#g7').on('click', function(e) {
+            event.preventDefault();
+            var g7 = [840,124,392,250,826,616,112,380];
+            var arr= g.worldCanvas.countries().filter(function(x) {
+                return g7.indexOf(x.id)>-1;
+            });
+            g.worldCanvas.style({selected: 'rgba(150, 100, 0, 0.4)'});
+            g.worldCanvas.selectedCountries(arr);
+            g.autorotatePlugin.stop();
+            g.centerCanvas.go(826);
         })
     </script>
 </body>

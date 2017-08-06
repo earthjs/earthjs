@@ -15,11 +15,11 @@ export default countryNameUrl => {
     }
 
     function init() {
-        const toolTipsHandler = (mouse, d) => { // fn with  current context
+        const toolTipsHandler = (event, d) => { // fn with  current context
             if (!this._.drag && d && this._.options.showCountryTooltip) {
                 const country = countryName(d);
                 if (country && !(this.barTooltipSvg && this.barTooltipSvg.visible())) {
-                    refresh(mouse)
+                    refresh([event.clientX, event.clientY])
                     .style('display', 'block')
                     .style('opacity', 1)
                     .text(country.name);

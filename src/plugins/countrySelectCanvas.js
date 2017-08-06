@@ -12,9 +12,9 @@ export default () => {
 
     function init() {
         if (this.hoverCanvas) {
-            const hoverHandler = (mouse, country) => {
+            const hoverHandler = (event, country) => {
                 _.onHoverVals.forEach(v => {
-                    v.call(this, mouse, country);
+                    v.call(this, event, country);
                 });
                 return country;
             }
@@ -24,9 +24,9 @@ export default () => {
         }
 
         if (this.clickCanvas) {
-            const clickHandler = (mouse, country) => {
+            const clickHandler = (event, country) => {
                 _.onClickVals.forEach(v => {
-                    v.call(this, mouse, country);
+                    v.call(this, event, country);
                 });
                 return country;
             }
@@ -36,9 +36,9 @@ export default () => {
         }
 
         if (this.dblClickCanvas) {
-            const dblClickHandler = (mouse, country) => {
+            const dblClickHandler = (event, country) => {
                 _.onDblClickVals.forEach(v => {
-                    v.call(this, mouse, country);
+                    v.call(this, event, country);
                 });
                 return country;
             }

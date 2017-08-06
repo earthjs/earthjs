@@ -8,7 +8,17 @@ export default worldUrl => {
         3:'rgba(149,114, 74, 0.6)',
         4:'rgba(153,126, 87, 0.6)',
         5:'rgba(155,141,115, 0.6)'}
-    const _ = {world: null, style: {}, drawTo: null, options: {}, landColor: 0};
+    const _ = {
+        world: null,
+        style: {},
+        options: {},
+        drawTo: null,
+        landColor: 0,
+        selected: {
+            type: 'FeatureCollection',
+            features:[]
+        },
+    };
 
     function create() {
         const __ = this._;
@@ -28,16 +38,24 @@ export default worldUrl => {
             }
             if (!__.drag) {
                 __.options.showLakes && canvasAddLakes.call(this);
-                if (this.hoverCanvas && __.options.showSelectedCountry) {
-                    const country = this.hoverCanvas.country();
-                    if (country) {
-                        this.canvasPlugin.render(function(context, path) {
-                            context.beginPath();
-                            path(country);
-                            context.fillStyle = 'rgba(117, 0, 0, 0.4)';
-                            context.fill();
-                        }, _.drawTo, _.options);
-                    }
+            }
+            if (this.hoverCanvas && __.options.showSelectedCountry) {
+                if (_.selected.features.length>0) {
+                    this.canvasPlugin.render(function(context, path) {
+                        context.beginPath();
+                        path(_.selected);
+                        context.fillStyle = _.style.selected || 'rgba(80, 100, 0, 0.4)';
+                        context.fill();
+                    }, _.drawTo, _.options);
+                }
+                const country = this.hoverCanvas.country();
+                if (country && !_.selected.features.find(obj=>obj.id===country.id)) {
+                    this.canvasPlugin.render(function(context, path) {
+                        context.beginPath();
+                        path(country);
+                        context.fillStyle = _.style.hover || 'rgba(117, 0, 0, 0.4)';
+                        context.fill();
+                    }, _.drawTo, _.options);
                 }
             }
         }
@@ -114,6 +132,13 @@ export default worldUrl => {
         },
         countries() {
             return _.countries.features;
+        },
+        selectedCountries(arr) {
+            if (arr) {
+                _.selected.features = arr;
+            } else {
+                return _.selected.features;
+            }
         },
         data(data) {
             if (data) {

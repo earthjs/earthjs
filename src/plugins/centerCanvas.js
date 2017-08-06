@@ -4,7 +4,7 @@ export default () => {
     const _ = {focused: null}
 
     function country(cnt, id) {
-        id = id.replace('x', '');
+        id = (''+id).replace('x', '');
         for(let i=0, l=cnt.length; i<l; i++) {
             if(cnt[i].id == id) {return cnt[i];}
         }
@@ -23,11 +23,11 @@ export default () => {
         const _this = this;
         if (this.clickCanvas) {
             this.clickCanvas.onCountry({
-                centerCanvas: function(mouse, country) {
+                centerCanvas: function(event, country) {
                     if (country) {
                         transition.call(_this, d3.geoCentroid(country));
                         if (typeof(_.focused)==='function') {
-                            _.focused.call(_this);
+                            _.focused.call(_this, event, country);
                         }
                     }
                 }

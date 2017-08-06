@@ -837,7 +837,7 @@ var hoverCanvas = (function () {
             _.country = null;
             if (__.options.showDots) {
                 _.onCircleVals.forEach(function (v) {
-                    _.dot = v.call(_this2, _.mouse, pos);
+                    _.dot = v.call(_this2, event, pos);
                 });
             }
             if (__.options.showLand && _.countries && !_.dot) {
@@ -849,7 +849,7 @@ var hoverCanvas = (function () {
                     }
                 }
                 _.onCountryVals.forEach(function (v) {
-                    v.call(_this2, _.mouse, _.country);
+                    v.call(_this2, event, _.country);
                 });
             }
         };
@@ -948,7 +948,7 @@ var clickCanvas = (function () {
             _.country = null;
             if (__.options.showDots) {
                 _.onCircleVals.forEach(function (v) {
-                    _.dot = v.call(_this, _.mouse, pos);
+                    _.dot = v.call(_this, event, pos);
                 });
             }
             if (__.options.showLand && !_.dot) {
@@ -956,7 +956,7 @@ var clickCanvas = (function () {
                     _.country = findCountry(pos);
                 }
                 _.onCountryVals.forEach(function (v) {
-                    v.call(_this, _.mouse, _.country);
+                    v.call(_this, event, _.country);
                 });
             }
         };
@@ -1061,7 +1061,7 @@ var dblClickCanvas = (function () {
             _.country = null;
             if (__.options.showDots) {
                 _.onCircleVals.forEach(function (v) {
-                    _.dot = v.call(_this, _.mouse, pos);
+                    _.dot = v.call(_this, event, pos);
                 });
             }
             if (__.options.showLand && !_.dot) {
@@ -1069,7 +1069,7 @@ var dblClickCanvas = (function () {
                     _.country = findCountry(pos);
                 }
                 _.onCountryVals.forEach(function (v) {
-                    v.call(_this, _.mouse, _.country);
+                    v.call(_this, event, _.country);
                 });
             }
         };
@@ -1708,9 +1708,9 @@ var countrySelectCanvas = (function () {
         var _this = this;
 
         if (this.hoverCanvas) {
-            var hoverHandler = function hoverHandler(mouse, country) {
+            var hoverHandler = function hoverHandler(event, country) {
                 _.onHoverVals.forEach(function (v) {
-                    v.call(_this, mouse, country);
+                    v.call(_this, event, country);
                 });
                 return country;
             };
@@ -1720,9 +1720,9 @@ var countrySelectCanvas = (function () {
         }
 
         if (this.clickCanvas) {
-            var clickHandler = function clickHandler(mouse, country) {
+            var clickHandler = function clickHandler(event, country) {
                 _.onClickVals.forEach(function (v) {
-                    v.call(_this, mouse, country);
+                    v.call(_this, event, country);
                 });
                 return country;
             };
@@ -1732,9 +1732,9 @@ var countrySelectCanvas = (function () {
         }
 
         if (this.dblClickCanvas) {
-            var dblClickHandler = function dblClickHandler(mouse, country) {
+            var dblClickHandler = function dblClickHandler(event, country) {
                 _.onDblClickVals.forEach(function (v) {
-                    v.call(_this, mouse, country);
+                    v.call(_this, event, country);
                 });
                 return country;
             };
@@ -1810,12 +1810,12 @@ var countryTooltipCanvas = (function (countryNameUrl) {
     function init() {
         var _this = this;
 
-        var toolTipsHandler = function toolTipsHandler(mouse, d) {
+        var toolTipsHandler = function toolTipsHandler(event, d) {
             // fn with  current context
             if (!_this._.drag && d && _this._.options.showCountryTooltip) {
                 var country = countryName(d);
                 if (country && !(_this.barTooltipSvg && _this.barTooltipSvg.visible())) {
-                    refresh(mouse).style('display', 'block').style('opacity', 1).text(country.name);
+                    refresh([event.clientX, event.clientY]).style('display', 'block').style('opacity', 1).text(country.name);
                 } else {
                     hideTooltip();
                 }
@@ -2105,7 +2105,17 @@ var worldCanvas = (function (worldUrl) {
         3: 'rgba(149,114, 74, 0.6)',
         4: 'rgba(153,126, 87, 0.6)',
         5: 'rgba(155,141,115, 0.6)' };
-    var _ = { world: null, style: {}, drawTo: null, options: {}, landColor: 0 };
+    var _ = {
+        world: null,
+        style: {},
+        options: {},
+        drawTo: null,
+        landColor: 0,
+        selected: {
+            type: 'FeatureCollection',
+            features: []
+        }
+    };
 
     function create() {
         var __ = this._;
@@ -2125,16 +2135,26 @@ var worldCanvas = (function (worldUrl) {
             }
             if (!__.drag) {
                 __.options.showLakes && canvasAddLakes.call(this);
-                if (this.hoverCanvas && __.options.showSelectedCountry) {
-                    var country = this.hoverCanvas.country();
-                    if (country) {
-                        this.canvasPlugin.render(function (context, path) {
-                            context.beginPath();
-                            path(country);
-                            context.fillStyle = 'rgba(117, 0, 0, 0.4)';
-                            context.fill();
-                        }, _.drawTo, _.options);
-                    }
+            }
+            if (this.hoverCanvas && __.options.showSelectedCountry) {
+                if (_.selected.features.length > 0) {
+                    this.canvasPlugin.render(function (context, path) {
+                        context.beginPath();
+                        path(_.selected);
+                        context.fillStyle = _.style.selected || 'rgba(80, 100, 0, 0.4)';
+                        context.fill();
+                    }, _.drawTo, _.options);
+                }
+                var country = this.hoverCanvas.country();
+                if (country && !_.selected.features.find(function (obj) {
+                    return obj.id === country.id;
+                })) {
+                    this.canvasPlugin.render(function (context, path) {
+                        context.beginPath();
+                        path(country);
+                        context.fillStyle = _.style.hover || 'rgba(117, 0, 0, 0.4)';
+                        context.fill();
+                    }, _.drawTo, _.options);
                 }
             }
         }
@@ -2217,6 +2237,13 @@ var worldCanvas = (function (worldUrl) {
         },
         countries: function countries() {
             return _.countries.features;
+        },
+        selectedCountries: function selectedCountries(arr) {
+            if (arr) {
+                _.selected.features = arr;
+            } else {
+                return _.selected.features;
+            }
         },
         data: function data(_data) {
             if (_data) {
@@ -2369,7 +2396,7 @@ var centerCanvas = (function () {
     var _ = { focused: null };
 
     function country(cnt, id) {
-        id = id.replace('x', '');
+        id = ('' + id).replace('x', '');
         for (var i = 0, l = cnt.length; i < l; i++) {
             if (cnt[i].id == id) {
                 return cnt[i];
@@ -2392,11 +2419,11 @@ var centerCanvas = (function () {
         var _this = this;
         if (this.clickCanvas) {
             this.clickCanvas.onCountry({
-                centerCanvas: function centerCanvas(mouse, country) {
+                centerCanvas: function centerCanvas(event, country) {
                     if (country) {
                         transition.call(_this, d3.geoCentroid(country));
                         if (typeof _.focused === 'function') {
-                            _.focused.call(_this);
+                            _.focused.call(_this, event, country);
                         }
                     }
                 }

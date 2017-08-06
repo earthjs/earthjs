@@ -44,7 +44,7 @@ export default () => {
             _.country = null;
             if (__.options.showDots) {
                 _.onCircleVals.forEach(v => {
-                    _.dot = v.call(this, _.mouse, pos);
+                    _.dot = v.call(this, event, pos);
                 });
             }
             if (__.options.showLand && !_.dot) {
@@ -52,7 +52,7 @@ export default () => {
                     _.country = findCountry(pos);
                 }
                 _.onCountryVals.forEach(v => {
-                    v.call(this, _.mouse, _.country);
+                    v.call(this, event, _.country);
                 });
             }
         }

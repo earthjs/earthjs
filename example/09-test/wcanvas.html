@@ -26,13 +26,13 @@
         g.register(earthjs.plugins.countryTooltipCanvas('../d/world-110m-country-names.tsv'));
 
         g.clickCanvas.onCountry({
-            wcanvas: function(mouse, country) {
-                country && console.log('country click', mouse, country);
+            wcanvas: function(event, country) {
+                country && console.log('country click', event, country);
             }
         })
         g.dblClickCanvas.onCountry({
-            wcanvas: function(mouse, country) {
-                country && console.log('country dblclick', mouse, country);
+            wcanvas: function(event, country) {
+                country && console.log('country dblclick', event, country);
             }
         })
 
