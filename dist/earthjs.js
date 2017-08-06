@@ -232,17 +232,21 @@ var earthjs$2 = function earthjs() {
     globe.$slc.defs = __.svg.append('defs');
     __.ticker = function (intervalTicker) {
         var interval = __.interval;
-        intervalTicker = intervalTicker || 20;
+        intervalTicker = intervalTicker || 10;
 
-        var start = 0;
+        var start1 = 0;
+        var start2 = 0;
         function step(timestamp) {
-            if (timestamp - start > intervalTicker) {
-                start = timestamp;
+            if (timestamp - start1 > intervalTicker) {
+                start1 = timestamp;
                 if (!_.loadingData) {
                     interval.call(globe, timestamp);
-                    earths.forEach(function (p) {
-                        p._.interval.call(p, timestamp);
-                    });
+                    if (timestamp - start2 > intervalTicker + 30) {
+                        start2 = timestamp;
+                        earths.forEach(function (p) {
+                            p._.interval.call(p, timestamp);
+                        });
+                    }
                 }
             }
             earthjs.ticker = requestAnimationFrame(step);
@@ -301,7 +305,12 @@ var earthjs$2 = function earthjs() {
         if (typeof r === 'number') {
             __.options.rotate = [r, -33, -11];
         }
-        return d3.geoOrthographic().rotate(__.options.rotate).scale(__.options.width / 3.5).translate(__.center).precision(0.1).clipAngle(90);
+        var scale = __.options.scale;
+
+        if (!scale) {
+            scale = __.options.width / 3.5;
+        }
+        return d3.geoOrthographic().rotate(__.options.rotate).translate(__.center).precision(0.1).clipAngle(90).scale(scale);
     };
 
     __.proj = __.orthoGraphic();
@@ -3219,7 +3228,7 @@ var threejsPlugin = (function () {
         _.renderer.setClearColor(0x000000, 0);
         _.renderer.setSize(width, height);
         _.renderer.sortObjects = false;
-        this.renderThree = renderThree;
+        this.renderThree = _renderThree;
 
         // var geometry = new THREE.SphereGeometry(3, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
         // var material = new THREE.MeshNormalMaterial();
@@ -3236,7 +3245,7 @@ var threejsPlugin = (function () {
         obj.scale.x = sc;
         obj.scale.y = sc;
         obj.scale.z = sc;
-        renderThree.call(this);
+        _renderThree.call(this);
     }
 
     function _rotate(obj) {
@@ -3249,11 +3258,11 @@ var threejsPlugin = (function () {
         var q1 = __.versor(rt);
         var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
         obj.setRotationFromQuaternion(q2);
-        renderThree.call(this);
+        _renderThree.call(this);
     }
 
     var timeout = null;
-    function renderThree() {
+    function _renderThree() {
         if (timeout === null) {
             timeout = setTimeout(function () {
                 _.renderer.render(_.scene, _.camera);
@@ -3262,21 +3271,10 @@ var threejsPlugin = (function () {
         }
     }
 
-    var start = 0;
-    function interval(timestamp) {
-        if (timestamp - start > 100) {
-            start = timestamp;
-            renderThree.call(this);
-        }
-    }
-
     return {
         name: 'threejsPlugin',
         onInit: function onInit() {
             init.call(this);
-        },
-        onInterval: function onInterval(t) {
-            interval.call(this, t);
         },
         onCreate: function onCreate() {
             _.group.children = [];
@@ -3307,7 +3305,21 @@ var threejsPlugin = (function () {
         },
         wireframe: function wireframe(multilinestring, material) {
             return _wireframe(multilinestring, material);
+        },
+        renderThree: function renderThree() {
+            _renderThree.call(this);
         }
+        // toggleOption(obj, optName) {
+        //     delete this._.options[optName];
+        //     Object.defineProperty(this._.options, optName, {
+        //         get: () => obj.visible,
+        //         set: (x) => {
+        //             obj.visible = x;
+        //         },
+        //         configurable: true,
+        //     });
+        // }
+
     };
 });
 
@@ -4172,7 +4184,7 @@ var flightLineThreejs = (function (jsonUrl) {
 });
 
 // http://callumprentice.github.io/apps/flight_stream/index.html
-var flightLine2Threejs = (function (jsonUrl, imgUrl) {
+var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
     /*eslint no-console: 0 */
     var _ = {
         sphereObject: null,
@@ -4211,7 +4223,7 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
 
             var points = [];
             var spline_control_points = 8;
-            var max_height = Math.random() * _.SCALE + 0.05;
+            var max_height = Math.random() * (height || _.SCALE) + 0.05;
             for (var i = 0; i < spline_control_points + 1; i++) {
                 var arc_angle = i * 180.0 / spline_control_points;
                 var arc_radius = radius + Math.sin(arc_angle * PI180) * max_height; //PI180 = PI180.0
@@ -4243,11 +4255,13 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
             var default_speed = Math.random() * 600 + 400;
             var speed = default_speed * point_speed;
             var num_points = parseInt(arc_distance / point_spacing) + 1;
+            var spd_points = speed * num_points;
             ttl_num_points += num_points;
 
             var track = {
                 spline: spline,
                 num_points: num_points,
+                spd_points: spd_points,
                 arc_distance: arc_distance,
                 arc_distance_miles: arc_distance_miles,
                 point_positions: point_positions,
@@ -4337,24 +4351,27 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
         point_cloud_geom.computeBoundingBox();
 
         _.track_points_object = new THREE.Points(point_cloud_geom, _.shaderMaterial);
+        _.attr_position = _.track_points_object.geometry.attributes.position;
         return _.track_points_object;
     }
 
     function update_point_cloud() {
         var index = 0;
+        var dates = Date.now();
         var i_length = all_tracks.length;
         for (var i = 0; i < i_length; ++i) {
             var _all_tracks$i = all_tracks[i],
                 speed = _all_tracks$i.speed,
                 spline = _all_tracks$i.spline,
                 num_points = _all_tracks$i.num_points,
+                spd_points = _all_tracks$i.spd_points,
                 arc_distance = _all_tracks$i.arc_distance,
                 arc_distance_miles = _all_tracks$i.arc_distance_miles;
 
 
             if (arc_distance_miles <= cur_arc_distance) {
                 var normalized = point_spacing / arc_distance;
-                var time_scale = Date.now() % speed / (speed * num_points);
+                var time_scale = dates % speed / spd_points;
                 for (var j = 0; j < num_points; j++) {
                     var t = j * normalized + time_scale;
 
@@ -4379,23 +4396,19 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
                 }
             }
         }
-        _.track_points_object.geometry.attributes.position.needsUpdate = true;
+        _.attr_position.needsUpdate = true;
     }
 
     function fast_get_spline_point(i, t, spline) {
-        var tc = parseInt(t * 1000);
         if (point_cache[i] === undefined) {
             point_cache[i] = [];
         }
-
+        var tc = parseInt(t * 1000);
         var pcache = point_cache[i];
-        if (pcache[tc] !== undefined) {
-            return pcache[tc];
+        if (pcache[tc] === undefined) {
+            pcache[tc] = spline.getPoint(t);
         }
-
-        var pos = spline.getPoint(t);
-        pcache[tc] = pos;
-        return pos;
+        return pcache[tc];
     }
 
     var line_positions;
@@ -4567,10 +4580,10 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
 
     var start = 0;
     function interval(timestamp) {
-        if (timestamp - start > 100) {
+        if (timestamp - start > 30) {
             start = timestamp;
             update_point_cloud();
-            // update_track_lines();
+            this.threejsPlugin.renderThree();
         }
     }
 

@@ -91,21 +91,10 @@ export default (threejs='three-js') => {
         }
     }
 
-    var start = 0;
-    function interval(timestamp) {
-        if ((timestamp - start) > 100) {
-            start = timestamp;
-            renderThree.call(this);
-        }
-    }
-
     return {
         name: 'threejsPlugin',
         onInit() {
             init.call(this);
-        },
-        onInterval(t) {
-            interval.call(this, t);
         },
         onCreate() {
             _.group.children = [];
@@ -137,6 +126,9 @@ export default (threejs='three-js') => {
         wireframe(multilinestring, material) {
             return wireframe(multilinestring, material);
         },
+        renderThree() {
+            renderThree.call(this);
+        }
         // toggleOption(obj, optName) {
         //     delete this._.options[optName];
         //     Object.defineProperty(this._.options, optName, {

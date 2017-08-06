@@ -1,5 +1,5 @@
 // http://callumprentice.github.io/apps/flight_stream/index.html
-export default (jsonUrl, imgUrl) => {
+export default (jsonUrl, imgUrl, height) => {
     /*eslint no-console: 0 */
     const _ = {
         sphereObject: null,
@@ -35,7 +35,7 @@ export default (jsonUrl, imgUrl) => {
 
             var points = [];
             var spline_control_points = 8;
-            var max_height = Math.random() * _.SCALE  + 0.05;
+            var max_height = Math.random() * (height || _.SCALE) + 0.05;
             for (var i = 0; i < spline_control_points + 1; i++) {
                 var arc_angle = i * 180.0 / spline_control_points;
                 var arc_radius = radius + (Math.sin(arc_angle * PI180)) * max_height;  //PI180 = PI180.0
@@ -67,11 +67,13 @@ export default (jsonUrl, imgUrl) => {
             var default_speed = Math.random()*600+400;
             var speed = default_speed * point_speed;
             var num_points = parseInt(arc_distance / point_spacing) + 1;
+            var spd_points = speed * num_points;
             ttl_num_points += num_points;
 
             var track = {
                 spline,
                 num_points,
+                spd_points,
                 arc_distance,
                 arc_distance_miles,
                 point_positions,
@@ -187,24 +189,27 @@ export default (jsonUrl, imgUrl) => {
         point_cloud_geom.computeBoundingBox();
 
         _.track_points_object = new THREE.Points(point_cloud_geom, _.shaderMaterial);
+        _.attr_position = _.track_points_object.geometry.attributes.position;
         return _.track_points_object;
     }
 
     function update_point_cloud() {
         var index = 0;
+        var dates = Date.now();
         var i_length = all_tracks.length;
         for (var i = 0; i < i_length; ++i) {
             var {
                 speed,
                 spline,
                 num_points,
+                spd_points,
                 arc_distance,
                 arc_distance_miles
             } = all_tracks[i];
 
             if (arc_distance_miles <= cur_arc_distance) {
                 var normalized = point_spacing / arc_distance;
-                var time_scale = (Date.now() % speed) / (speed * num_points);
+                var time_scale = (dates % speed) / spd_points;
                 for (var j = 0; j < num_points; j++) {
                     var  t = j * normalized + time_scale;
                     var {x,y,z}= fast_get_spline_point(i, t, spline);
@@ -225,23 +230,19 @@ export default (jsonUrl, imgUrl) => {
 
             }
         }
-        _.track_points_object.geometry.attributes.position.needsUpdate = true;
+        _.attr_position.needsUpdate = true;
     }
 
     function fast_get_spline_point(i, t, spline) {
-        var tc = parseInt(t * 1000);
         if (point_cache[i] === undefined) {
             point_cache[i] = [];
         }
-
+        var tc = parseInt(t * 1000);
         var pcache = point_cache[i];
-        if (pcache[tc] !== undefined) {
-            return pcache[tc];
+        if (pcache[tc] === undefined) {
+            pcache[tc] = spline.getPoint(t);
         }
-
-        var pos = spline.getPoint(t);
-        pcache[tc] = pos;
-        return pos;
+        return pcache[tc];
     }
 
     var line_positions;
@@ -400,10 +401,10 @@ export default (jsonUrl, imgUrl) => {
 
     var start = 0;
     function interval(timestamp) {
-        if ((timestamp - start) > 100) {
+        if ((timestamp - start)>30) {
             start = timestamp;
             update_point_cloud();
-            // update_track_lines();
+            this.threejsPlugin.renderThree();
         }
     }
 

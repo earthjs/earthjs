@@ -160,17 +160,21 @@ const earthjs = (options={}) => {
     globe.$slc.defs = __.svg.append('defs');
     __.ticker = function(intervalTicker) {
         const interval = __.interval;
-        intervalTicker = intervalTicker || 20;
+        intervalTicker = intervalTicker || 10;
 
-        let start = 0;
+        let start1 = 0;
+        let start2 = 0;
         function step(timestamp) {
-            if ((timestamp - start) > intervalTicker) {
-                start = timestamp;
+            if ((timestamp - start1) > intervalTicker) {
+                start1 = timestamp;
                 if (!_.loadingData) {
                     interval.call(globe, timestamp);
-                    earths.forEach(function(p) {
-                        p._.interval.call(p, timestamp);
-                    });
+                    if ((timestamp - start2) > intervalTicker+30) {
+                        start2 = timestamp;
+                        earths.forEach(function(p) {
+                            p._.interval.call(p, timestamp);
+                        });
+                    }
                 }
             }
             earthjs.ticker = requestAnimationFrame(step);
@@ -227,12 +231,16 @@ const earthjs = (options={}) => {
         if (typeof(r)==='number') {
             __.options.rotate = [r,-33,-11];
         }
+        let {scale} = __.options;
+        if (!scale) {
+             scale =  __.options.width/3.5;
+        }
         return d3.geoOrthographic()
             .rotate(__.options.rotate)
-            .scale(__.options.width/3.5)
             .translate(__.center)
             .precision(0.1)
-            .clipAngle(90);
+            .clipAngle(90)
+            .scale(scale);
     }
 
     __.proj = __.orthoGraphic();
