@@ -131,6 +131,21 @@ export default ({zoomScale,iDrag}={zoomScale:[0,1000]}) => {
         }
     }
 
+    function interval() {
+        const __ = this._;
+        if (__.drag && iDrag) {
+            if (_.oMouse[0]!==_.mouse[0] &&
+                _.oMouse[1]!==_.mouse[1]) {
+                _.oMouse = _.mouse;
+                drag(__);
+                // _.t2+=1;
+            }
+        } else if (_.wait===false) {
+            _.wait = null;
+            onclick();
+        }
+    }
+
     return {
         name: 'mousePlugin',
         onInit() {
@@ -140,18 +155,7 @@ export default ({zoomScale,iDrag}={zoomScale:[0,1000]}) => {
             init.call(this);
         },
         onInterval() {
-            const __ = this._;
-            if (__.drag && iDrag) {
-                if (_.oMouse[0]!==_.mouse[0] &&
-                    _.oMouse[1]!==_.mouse[1]) {
-                    _.oMouse = _.mouse;
-                    drag(__);
-                    // _.t2+=1;
-                }
-            } else if (_.wait===false) {
-                _.wait = null;
-                onclick();
-            }
+            interval.call(this);
         },
         selectAll(q) {
             if (q) {

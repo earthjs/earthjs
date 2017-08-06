@@ -6,14 +6,18 @@ export default (degPerSec=10) => {
         sync: []
     }
 
-    function interval() {
-        const now = new Date();
-        if (this._.options.spin && !this._.drag) {
-            const delta = now - _.lastTick;
-            rotate.call(this, delta);
-            _.sync.forEach(g => rotate.call(g, delta));
+    var start = 0;
+    function interval(timestamp) {
+        if ((timestamp - start) > 40) {
+            start = timestamp;
+            const now = new Date();
+            if (this._.options.spin && !this._.drag) {
+                const delta = now - _.lastTick;
+                rotate.call(this, delta);
+                _.sync.forEach(g => rotate.call(g, delta));
+            }
+            _.lastTick = now;
         }
-        _.lastTick = now;
     }
 
     function rotate(delta) {
@@ -27,8 +31,8 @@ export default (degPerSec=10) => {
         onInit() {
             this._.options.spin = true;
         },
-        onInterval() {
-            interval.call(this);
+        onInterval(t) {
+            interval.call(this, t);
         },
         speed(degPerSec) {
             _.degree = degPerSec/1000;

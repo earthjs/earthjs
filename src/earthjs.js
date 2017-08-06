@@ -166,9 +166,9 @@ const earthjs = (options={}) => {
         function step(timestamp) {
             if ((timestamp - start) > intervalTicker) {
                 if (!_.loadingData) {
-                    interval.call(globe);
+                    interval.call(globe, timestamp);
                     earths.forEach(function(p) {
-                        p._.interval.call(p);
+                        p._.interval.call(p, timestamp);
                     });
                 }
                 start = timestamp;

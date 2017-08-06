@@ -238,9 +238,9 @@ var earthjs$2 = function earthjs() {
         function step(timestamp) {
             if (timestamp - start > intervalTicker) {
                 if (!_.loadingData) {
-                    interval.call(globe);
+                    interval.call(globe, timestamp);
                     earths.forEach(function (p) {
-                        p._.interval.call(p);
+                        p._.interval.call(p, timestamp);
                     });
                 }
                 start = timestamp;
@@ -351,16 +351,20 @@ var autorotatePlugin = (function () {
         sync: []
     };
 
-    function interval() {
-        var now = new Date();
-        if (this._.options.spin && !this._.drag) {
-            var delta = now - _.lastTick;
-            rotate.call(this, delta);
-            _.sync.forEach(function (g) {
-                return rotate.call(g, delta);
-            });
+    var start = 0;
+    function interval(timestamp) {
+        if (timestamp - start > 40) {
+            start = timestamp;
+            var now = new Date();
+            if (this._.options.spin && !this._.drag) {
+                var delta = now - _.lastTick;
+                rotate.call(this, delta);
+                _.sync.forEach(function (g) {
+                    return rotate.call(g, delta);
+                });
+            }
+            _.lastTick = now;
         }
-        _.lastTick = now;
     }
 
     function rotate(delta) {
@@ -374,8 +378,8 @@ var autorotatePlugin = (function () {
         onInit: function onInit() {
             this._.options.spin = true;
         },
-        onInterval: function onInterval() {
-            interval.call(this);
+        onInterval: function onInterval(t) {
+            interval.call(this, t);
         },
         speed: function speed(degPerSec) {
             _.degree = degPerSec / 1000;
@@ -584,6 +588,20 @@ var mousePlugin = (function () {
         }
     }
 
+    function interval() {
+        var __ = this._;
+        if (__.drag && iDrag) {
+            if (_.oMouse[0] !== _.mouse[0] && _.oMouse[1] !== _.mouse[1]) {
+                _.oMouse = _.mouse;
+                drag(__);
+                // _.t2+=1;
+            }
+        } else if (_.wait === false) {
+            _.wait = null;
+            onclick();
+        }
+    }
+
     return {
         name: 'mousePlugin',
         onInit: function onInit() {
@@ -593,17 +611,7 @@ var mousePlugin = (function () {
             init.call(this);
         },
         onInterval: function onInterval() {
-            var __ = this._;
-            if (__.drag && iDrag) {
-                if (_.oMouse[0] !== _.mouse[0] && _.oMouse[1] !== _.mouse[1]) {
-                    _.oMouse = _.mouse;
-                    drag(__);
-                    // _.t2+=1;
-                }
-            } else if (_.wait === false) {
-                _.wait = null;
-                onclick();
-            }
+            interval.call(this);
         },
         selectAll: function selectAll(q) {
             if (q) {
@@ -3012,39 +3020,43 @@ var dotsCanvas = (function (urlJson) {
 var pingsCanvas = (function () {
     var _ = { dataPings: null, pings: [] };
 
-    function interval() {
-        if (!this._.drag && this._.options.showPings) {
-            var center = void 0;
-            var proj = this._.proj;
-            if (_.pings.length <= 7) {
-                center = this._.proj.invert(this._.center);
-                var visible = _.dataPings.features.filter(function (d) {
-                    return d3.geoDistance(d.geometry.coordinates, center) <= 1.57;
-                });
-                var d = visible[Math.floor(Math.random() * (visible.length - 1))];
-                _.pings.push({ r: 2.5, l: d.geometry.coordinates });
-            }
-            var p = _.pings[0];
-            if (d3.geoDistance(p.l, this._.proj.invert(this._.center)) > 1.57) {
-                _.pings.shift();
-            } else {
-                if (!this._.options.spin) {
-                    this._.refresh(/anvas/);
+    var start = 0;
+    function interval(timestamp) {
+        if (timestamp - start > 40) {
+            start = timestamp;
+            if (!this._.drag && this._.options.showPings) {
+                var center = void 0;
+                var proj = this._.proj;
+                if (_.pings.length <= 7) {
+                    center = this._.proj.invert(this._.center);
+                    var visible = _.dataPings.features.filter(function (d) {
+                        return d3.geoDistance(d.geometry.coordinates, center) <= 1.57;
+                    });
+                    var d = visible[Math.floor(Math.random() * (visible.length - 1))];
+                    _.pings.push({ r: 2.5, l: d.geometry.coordinates });
                 }
-                this.canvasPlugin.render(function (context) {
-                    context.beginPath();
-                    context.fillStyle = '#F80';
-                    context.arc(proj(p.l)[0], proj(p.l)[1], p.r, 0, 2 * Math.PI);
-                    context.fill();
-                    context.closePath();
-                    p.r = p.r + 0.2;
-                    if (p.r > 5) {
-                        _.pings.shift();
-                    } else if (_.pings.length > 1) {
-                        var _d = _.pings.shift();
-                        _.pings.push(_d);
+                var p = _.pings[0];
+                if (d3.geoDistance(p.l, this._.proj.invert(this._.center)) > 1.57) {
+                    _.pings.shift();
+                } else {
+                    if (!this._.options.spin) {
+                        this._.refresh(/anvas/);
                     }
-                }, _.drawTo);
+                    this.canvasPlugin.render(function (context) {
+                        context.beginPath();
+                        context.fillStyle = '#F80';
+                        context.arc(proj(p.l)[0], proj(p.l)[1], p.r, 0, 2 * Math.PI);
+                        context.fill();
+                        context.closePath();
+                        p.r = p.r + 0.2;
+                        if (p.r > 5) {
+                            _.pings.shift();
+                        } else if (_.pings.length > 1) {
+                            var _d = _.pings.shift();
+                            _.pings.push(_d);
+                        }
+                    }, _.drawTo);
+                }
             }
         }
     }
@@ -3054,8 +3066,8 @@ var pingsCanvas = (function () {
         onInit: function onInit() {
             this._.options.showPings = true;
         },
-        onInterval: function onInterval() {
-            interval.call(this);
+        onInterval: function onInterval(t) {
+            interval.call(this, t);
         },
         data: function data(_data) {
             if (_data) {
@@ -3240,10 +3252,18 @@ var threejsPlugin = (function () {
         renderThree.call(this);
     }
 
+    var timeout = null;
     function renderThree() {
-        setTimeout(function () {
-            _.renderer.render(_.scene, _.camera);
-        }, 1);
+        if (timeout === null) {
+            timeout = setTimeout(function () {
+                _.renderer.render(_.scene, _.camera);
+                timeout = null;
+            }, 1);
+        }
+    }
+
+    function interval(t) {
+        renderThree.call(this, t);
     }
 
     return {
@@ -3251,8 +3271,8 @@ var threejsPlugin = (function () {
         onInit: function onInit() {
             init.call(this);
         },
-        onInterval: function onInterval() {
-            renderThree.call(this);
+        onInterval: function onInterval(t) {
+            interval.call(this, t);
         },
         onCreate: function onCreate() {
             _.group.children = [];

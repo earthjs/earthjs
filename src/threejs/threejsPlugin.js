@@ -81,10 +81,18 @@ export default (threejs='three-js') => {
         renderThree.call(this);
     }
 
+    let timeout = null;
     function renderThree() {
-        setTimeout(function() {
-            _.renderer.render(_.scene, _.camera);
-        },1);
+        if (timeout===null) {
+            timeout = setTimeout(function() {
+                _.renderer.render(_.scene, _.camera);
+                timeout = null;
+            },1);
+        }
+    }
+
+    function interval(t) {
+        renderThree.call(this, t);
     }
 
     return {
@@ -92,8 +100,8 @@ export default (threejs='three-js') => {
         onInit() {
             init.call(this);
         },
-        onInterval() {
-            renderThree.call(this);
+        onInterval(t) {
+            interval.call(this, t);
         },
         onCreate() {
             _.group.children = [];
