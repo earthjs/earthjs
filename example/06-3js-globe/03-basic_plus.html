@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+    <style>body {background: #555;}</style>
+</head>
+<body>
+    <div class="input-area">
+        <input id="pan" type="range" min="0" max="1000" step="1" value="0"/><br/>
+        <input id="scl" type="range" min="1" max="3" step="0.1" value="0"/><br/>
+    </div>
+    <svg id="earth-js" class="ej-center" width="1000" height="920"></svg>
+    <canvas id="three-js" class="ej-center"></canvas>
+    <script>
+        var g = earthjs({scale:300})
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.dropShadowSvg())
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.globeThreejs())
+        .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
+        .register(earthjs.plugins.iconsThreejs('../d/bars.json','../d/check.svg'))
+        .register(earthjs.plugins.barThreejs());
+        g.iconsThreejs.ready = function(err, json) {
+            json.features.forEach(function(d) {
+                d.geometry.value = d.properties.mag;
+            });
+            g.iconsThreejs.data(json);
+            g.barThreejs.data(json);
+        };
+        g.ready(function(){
+            g.create();
+        })
+
+        const canvas = d3.selectAll('canvas').nodes();
+        d3.select('#pan').on('input', function() {
+            canvas[0].style.left = (this.value)+'px';
+        })
+        d3.select('#scl').on('input', function() {
+            var v = +this.value;
+            g.barThreejs.scale(v);
+        })
+    </script>
+</body>
+</html>

@@ -6,6 +6,11 @@ body {
     left: 0;
     top: 0;
 }
+.ej-center {
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
 #earth-js {
     z-index: 2;
 }

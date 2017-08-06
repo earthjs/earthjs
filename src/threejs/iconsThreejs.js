@@ -89,6 +89,11 @@ export default (jsonUrl, iconUrl) => {
                 return _.data;
             }
         },
+        scale(sc) {
+            _.sphereObject.children.forEach(mesh=>{
+                mesh.scale.set(sc+2,sc+2,1);
+            });
+        },
         sphere() {
             return _.sphereObject;
         }

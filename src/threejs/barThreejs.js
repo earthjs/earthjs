@@ -46,7 +46,8 @@ export default (jsonUrl, height=2) => {
                 const geometry = createGeometry(h);
                 const mesh = new THREE.Mesh(geometry, material);
                 mesh.coordinates = data.geometry.coordinates;
-                meshCoordinate(mesh, SCALE+(h/2));
+                meshCoordinate(mesh, h/2+SCALE);
+                mesh.ov = h;
                 group.add(mesh);
             })
             _.sphereObject = group;
@@ -85,6 +86,13 @@ export default (jsonUrl, height=2) => {
             } else {
                 return _.data;
             }
+        },
+        scale(sc) {
+            _.sphereObject.children.forEach(mesh=>{
+                mesh.scale.x = sc;
+                mesh.scale.y = sc;
+                mesh.scale.z = sc;
+            });
         },
         sphere() {
             return _.sphereObject;

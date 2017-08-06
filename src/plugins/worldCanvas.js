@@ -21,7 +21,11 @@ export default worldUrl => {
                     context.fill();
                 }, _.drawTo, _.options);
             }
-            __.options.showCountries ? canvasAddCountries.call(this) : canvasAddWorld.call(this);
+            if (__.options.showBorder) {
+                canvasAddCountries.call(this, true);
+            } else {
+                __.options.showCountries ? canvasAddCountries.call(this) : canvasAddWorld.call(this);
+            }
             if (!__.drag) {
                 __.options.showLakes && canvasAddLakes.call(this);
                 if (this.hoverCanvas && __.options.showSelectedCountry) {
@@ -32,7 +36,7 @@ export default worldUrl => {
                             path(country);
                             context.fillStyle = 'rgba(117, 0, 0, 0.4)';
                             context.fill();
-                        }, _.drawTo, _.options);                        
+                        }, _.drawTo, _.options);
                     }
                 }
             }
@@ -49,13 +53,15 @@ export default worldUrl => {
         }, _.drawTo, _.options);
     }
 
-    function canvasAddCountries() {
+    function canvasAddCountries(border=false) {
         this.canvasPlugin.render(function(context, path) {
             const c = _.landColor;
             context.beginPath();
             path(_.countries);
-            context.fillStyle = _.style.land || (typeof(c)==='number' ? color[c] : c);
-            context.fill();
+            if (!border) {
+                context.fillStyle = _.style.land || (typeof(c)==='number' ? color[c] : c);
+                context.fill();
+            }
             context.lineWidth = 0.1;
             context.strokeStyle = _.style.countries || 'rgb(239, 237, 234)';
             context.stroke();
@@ -87,6 +93,7 @@ export default worldUrl => {
             const options = this._.options;
             options.showLand = true;
             options.showLakes = true;
+            options.showBorder = false;
             options.showCountries = true;
             options.transparentLand = false;
             options.landColor = 0;

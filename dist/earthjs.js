@@ -2118,7 +2118,11 @@ var worldCanvas = (function (worldUrl) {
                     context.fill();
                 }, _.drawTo, _.options);
             }
-            __.options.showCountries ? canvasAddCountries.call(this) : canvasAddWorld.call(this);
+            if (__.options.showBorder) {
+                canvasAddCountries.call(this, true);
+            } else {
+                __.options.showCountries ? canvasAddCountries.call(this) : canvasAddWorld.call(this);
+            }
             if (!__.drag) {
                 __.options.showLakes && canvasAddLakes.call(this);
                 if (this.hoverCanvas && __.options.showSelectedCountry) {
@@ -2147,12 +2151,16 @@ var worldCanvas = (function (worldUrl) {
     }
 
     function canvasAddCountries() {
+        var border = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
         this.canvasPlugin.render(function (context, path) {
             var c = _.landColor;
             context.beginPath();
             path(_.countries);
-            context.fillStyle = _.style.land || (typeof c === 'number' ? color[c] : c);
-            context.fill();
+            if (!border) {
+                context.fillStyle = _.style.land || (typeof c === 'number' ? color[c] : c);
+                context.fill();
+            }
             context.lineWidth = 0.1;
             context.strokeStyle = _.style.countries || 'rgb(239, 237, 234)';
             context.stroke();
@@ -2186,6 +2194,7 @@ var worldCanvas = (function (worldUrl) {
             var options = this._.options;
             options.showLand = true;
             options.showLakes = true;
+            options.showBorder = false;
             options.showCountries = true;
             options.transparentLand = false;
             options.landColor = 0;
@@ -3375,7 +3384,8 @@ var barThreejs = (function (jsonUrl) {
                 var geometry = createGeometry(h);
                 var mesh = new THREE.Mesh(geometry, material);
                 mesh.coordinates = data.geometry.coordinates;
-                meshCoordinate(mesh, SCALE + h / 2);
+                meshCoordinate(mesh, h / 2 + SCALE);
+                mesh.ov = h;
                 group.add(mesh);
             });
             _.sphereObject = group;
@@ -3416,6 +3426,13 @@ var barThreejs = (function (jsonUrl) {
             } else {
                 return _.data;
             }
+        },
+        scale: function scale(sc) {
+            _.sphereObject.children.forEach(function (mesh) {
+                mesh.scale.x = sc;
+                mesh.scale.y = sc;
+                mesh.scale.z = sc;
+            });
         },
         sphere: function sphere() {
             return _.sphereObject;
@@ -3765,6 +3782,11 @@ var iconsThreejs = (function (jsonUrl, iconUrl) {
             } else {
                 return _.data;
             }
+        },
+        scale: function scale(sc) {
+            _.sphereObject.children.forEach(function (mesh) {
+                mesh.scale.set(sc + 2, sc + 2, 1);
+            });
         },
         sphere: function sphere() {
             return _.sphereObject;
@@ -4846,6 +4868,83 @@ var worldThreejs = (function () {
     };
 });
 
+var globeThreejs = (function () {
+    var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.jpg';
+    var elvUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '../d/elevation.jpg';
+    var wtrUrl = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '../d/water.png';
+
+    /*eslint no-console: 0 */
+    var _ = { sphereObject: null };
+    var manager = new THREE.LoadingManager();
+    var loader = new THREE.TextureLoader(manager);
+
+    function init() {
+        this._.options.showGlobe = true;
+    }
+
+    function create() {
+        var tj = this.threejsPlugin;
+        if (!_.sphereObject) {
+            var SCALE = this._.proj.scale();
+            var earth_img = loader.load(imgUrl, function (image) {
+                return image;
+            });
+            var elevt_img = loader.load(elvUrl, function (image) {
+                return image;
+            });
+            var water_img = loader.load(wtrUrl, function (image) {
+                return image;
+            });
+            var geometry = new THREE.SphereGeometry(SCALE, 30, 30);
+            var material = new THREE.MeshPhongMaterial({
+                map: earth_img,
+                bumpMap: elevt_img,
+                bumpScale: 0.01,
+                specularMap: water_img,
+                specular: new THREE.Color('grey')
+            });
+            _.sphereObject = new THREE.Mesh(geometry, material);
+            _.sphereObject.visible = this._.options.showGlobe;
+
+            var ambient = new THREE.AmbientLight(0x777777);
+            var light1 = new THREE.DirectionalLight(0xffffff, 0.2);
+            var light2 = new THREE.DirectionalLight(0xffffff, 0.2);
+            light1.position.set(5, 3, 6);
+            light2.position.set(5, 3, -6);
+            tj.addGroup(ambient);
+            tj.addGroup(light1);
+            tj.addGroup(light2);
+            tj.addGroup(_.sphereObject);
+            tj.rotate();
+        } else {
+            tj.addGroup(_.sphereObject);
+            tj.rotate();
+        }
+    }
+
+    function refresh() {
+        if (_.sphereObject) {
+            _.sphereObject.visible = this._.options.showGlobe;
+        }
+    }
+
+    return {
+        name: 'globeThreejs',
+        onInit: function onInit() {
+            init.call(this);
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            refresh.call(this);
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
+        }
+    };
+});
+
 function Map3DGeometry(data, innerRadius) {
     /*eslint no-redeclare: 0 */
     if (arguments.length < 2 || isNaN(parseFloat(innerRadius)) || !isFinite(innerRadius) || innerRadius < 0) {
@@ -5375,6 +5474,7 @@ earthjs$2.plugins = {
     oceanThreejs: oceanThreejs,
     imageThreejs: imageThreejs,
     worldThreejs: worldThreejs,
+    globeThreejs: globeThreejs,
     world3d: world3d,
     world3d2: world3d2,
 
