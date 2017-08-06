@@ -232,18 +232,18 @@ var earthjs$2 = function earthjs() {
     globe.$slc.defs = __.svg.append('defs');
     __.ticker = function (intervalTicker) {
         var interval = __.interval;
-        intervalTicker = intervalTicker || 40;
+        intervalTicker = intervalTicker || 20;
 
         var start = 0;
         function step(timestamp) {
             if (timestamp - start > intervalTicker) {
+                start = timestamp;
                 if (!_.loadingData) {
                     interval.call(globe, timestamp);
                     earths.forEach(function (p) {
                         p._.interval.call(p, timestamp);
                     });
                 }
-                start = timestamp;
             }
             earthjs.ticker = requestAnimationFrame(step);
         }
@@ -266,9 +266,9 @@ var earthjs$2 = function earthjs() {
         return globe;
     };
 
-    __.interval = function () {
+    __.interval = function (t) {
         _.onIntervalVals.forEach(function (fn) {
-            fn.call(globe);
+            fn.call(globe, t);
         });
         return globe;
     };
@@ -3262,8 +3262,12 @@ var threejsPlugin = (function () {
         }
     }
 
-    function interval(t) {
-        renderThree.call(this, t);
+    var start = 0;
+    function interval(timestamp) {
+        if (timestamp - start > 100) {
+            start = timestamp;
+            renderThree.call(this);
+        }
     }
 
     return {
@@ -4561,6 +4565,15 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
         }
     }
 
+    var start = 0;
+    function interval(timestamp) {
+        if (timestamp - start > 100) {
+            start = timestamp;
+            update_point_cloud();
+            // update_track_lines();
+        }
+    }
+
     return {
         name: 'flightLine2Threejs',
         urls: jsonUrl && [jsonUrl],
@@ -4570,9 +4583,8 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl) {
         onInit: function onInit() {
             init.call(this);
         },
-        onInterval: function onInterval() {
-            // update_track_lines();
-            update_point_cloud();
+        onInterval: function onInterval(t) {
+            interval.call(this, t);
         },
         onCreate: function onCreate() {
             create.call(this);

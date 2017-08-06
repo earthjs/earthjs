@@ -160,18 +160,18 @@ const earthjs = (options={}) => {
     globe.$slc.defs = __.svg.append('defs');
     __.ticker = function(intervalTicker) {
         const interval = __.interval;
-        intervalTicker = intervalTicker || 40;
+        intervalTicker = intervalTicker || 20;
 
-        var start = 0;
+        let start = 0;
         function step(timestamp) {
             if ((timestamp - start) > intervalTicker) {
+                start = timestamp;
                 if (!_.loadingData) {
                     interval.call(globe, timestamp);
                     earths.forEach(function(p) {
                         p._.interval.call(p, timestamp);
                     });
                 }
-                start = timestamp;
             }
             earthjs.ticker = requestAnimationFrame(step);
         }
@@ -194,9 +194,9 @@ const earthjs = (options={}) => {
         return globe;
     }
 
-    __.interval = function() {
+    __.interval = function(t) {
         _.onIntervalVals.forEach(function(fn) {
-            fn.call(globe);
+            fn.call(globe, t);
         });
         return globe;
     }

@@ -398,6 +398,15 @@ export default (jsonUrl, imgUrl) => {
         }
     }
 
+    var start = 0;
+    function interval(timestamp) {
+        if ((timestamp - start) > 100) {
+            start = timestamp;
+            update_point_cloud();
+            // update_track_lines();
+        }
+    }
+
     return {
         name: 'flightLine2Threejs',
         urls: jsonUrl && [jsonUrl],
@@ -407,9 +416,8 @@ export default (jsonUrl, imgUrl) => {
         onInit() {
             init.call(this);
         },
-        onInterval() {
-            // update_track_lines();
-            update_point_cloud();
+        onInterval(t) {
+            interval.call(this, t);
         },
         onCreate() {
             create.call(this);

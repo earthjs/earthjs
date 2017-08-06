@@ -91,8 +91,12 @@ export default (threejs='three-js') => {
         }
     }
 
-    function interval(t) {
-        renderThree.call(this, t);
+    var start = 0;
+    function interval(timestamp) {
+        if ((timestamp - start) > 100) {
+            start = timestamp;
+            renderThree.call(this);
+        }
     }
 
     return {
