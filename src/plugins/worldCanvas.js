@@ -44,7 +44,7 @@ export default worldUrl => {
                     this.canvasPlugin.render(function(context, path) {
                         context.beginPath();
                         path(_.selected);
-                        context.fillStyle = _.style.selected || 'rgba(80, 100, 0, 0.4)';
+                        context.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.4)';
                         context.fill();
                     }, _.drawTo, _.options);
                 }

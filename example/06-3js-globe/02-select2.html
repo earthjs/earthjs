@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+    <style>body {background: #555;}</style>
+</head>
+<body>
+    <div class="input-area">
+        <input id="pan" type="range" min="0" max="1000" step="1" value="0"/><br/>
+        <a id="g7" href=''>[ G7 Countries ]</a>
+    </div>
+    <svg id="earth-js" width="1000" height="920"></svg>
+    <canvas id="three-js"></canvas>
+    <canvas class="ej-canvas"></canvas>
+    <script>
+        var g = earthjs({scale:300})
+        .register(earthjs.plugins.selectCountryMix())
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.globeThreejs());
+        g.ready(function(){
+            g.create();
+        })
+
+        var canvas = d3.selectAll('canvas').nodes();
+        d3.select('#pan').on('input', function() {
+            canvas[0].style.left = (this.value)+'px';
+        })
+        var g7 = [840,124,392,250,826,616,276,380];
+        d3.select('#g7').on('click', function(e) {
+            event.preventDefault();
+            g.selectCountryMix.region(g7, 246);
+        })
+    </script>
+</body>
+</html>

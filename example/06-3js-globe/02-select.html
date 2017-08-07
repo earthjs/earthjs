@@ -23,17 +23,18 @@
         .register(earthjs.plugins.clickCanvas())
         .register(earthjs.plugins.centerCanvas())
         .register(earthjs.plugins.canvasPlugin())
-        .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.dropShadowSvg())
-        .register(earthjs.plugins.threejsPlugin())
-        .register(earthjs.plugins.globeThreejs())
+        .register(earthjs.plugins.countryCanvas())
+        .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.worldCanvas('../d/world-110m.json'))
-        .register(earthjs.plugins.countryCanvas());
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.globeThreejs());
         g.canvasPlugin.selectAll('.ej-canvas');
         g._.options.showSelectedCountry = true;
         g._.options.showBorder = true;
         g.centerCanvas.focused(function(event, country) {
             g.autorotatePlugin.stop();
+            g.worldCanvas.style({});
             if (event.metaKey) {
                 const arr = g.worldCanvas.selectedCountries().concat(country);
                 g.worldCanvas.selectedCountries(arr);
@@ -46,33 +47,33 @@
             autorotate(event, country) {
                 if (!country) {
                     g.worldCanvas.style({});
-                    g.worldCanvas.selectedCountries([]);
                     g.autorotatePlugin.start();
+                    g.worldCanvas.selectedCountries([]);
                 }
             }
         })
         g.ready(function(){
             const world = g.worldCanvas.data();
+            g.countryCanvas.data(world);
             g.hoverCanvas.data(world);
             g.clickCanvas.data(world);
-            g.countryCanvas.data(world);
             g.create();
         })
 
-        const canvas = d3.selectAll('canvas').nodes();
+        var canvas = d3.selectAll('canvas').nodes();
         d3.select('#pan').on('input', function() {
             canvas[0].style.left = (this.value)+'px';
         })
+        var g7 = [840,124,392,250,826,616,276,380];
         d3.select('#g7').on('click', function(e) {
             event.preventDefault();
-            var g7 = [840,124,392,250,826,616,112,380];
             var arr= g.worldCanvas.countries().filter(function(x) {
                 return g7.indexOf(x.id)>-1;
             });
-            g.worldCanvas.style({selected: 'rgba(150, 100, 0, 0.4)'});
+            g.worldCanvas.style({selected: 'rgba(255, 235, 0, 0.4)'});
             g.worldCanvas.selectedCountries(arr);
             g.autorotatePlugin.stop();
-            g.centerCanvas.go(826);
+            g.centerCanvas.go(246);
         })
     </script>
 </body>

@@ -54,6 +54,8 @@ import world3d            from './src/threejs/world3d';
 import world3d2           from './src/threejs/world3d2';
 
 import commonPlugins from './src/pluginLoader/commonPlugins';
+import selectCountryMix from './src/pluginLoader/selectCountryMix';
+
 earthjs.plugins= {
     configPlugin,
     autorotatePlugin,
@@ -110,5 +112,6 @@ earthjs.plugins= {
     world3d2,
 
     commonPlugins,
+    selectCountryMix,
 };
 export default earthjs;
