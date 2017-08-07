@@ -29,10 +29,10 @@ export default (jsonUrl, iconUrl) => {
             _.sphereObject.visible = this._.options.showIcons;
         }
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     function init() {
+        const tj = this.threejsPlugin;
         this._.options.showIcons = true;
         const loader = new THREE.TextureLoader();
         loader.load(iconUrl, map => {
@@ -43,6 +43,7 @@ export default (jsonUrl, iconUrl) => {
             });
             if (_.data && !_.loaded) {
                 loadIcons.call(this);
+                tj.rotate();
             }
         });
     }

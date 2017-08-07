@@ -87,7 +87,6 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../d/gold.jpg', inn
         _.sphereObject.visible = this._.options.showWorld;
         const tj = this.threejsPlugin;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     const vertexShader = `
@@ -148,7 +147,6 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../d/gold.jpg', inn
         },
         rotate(rtt) {
             _.sphereObject.rotation.y = rtt;
-            this.threejsPlugin.rotate();
         },
         data(data) {
             if (data) {

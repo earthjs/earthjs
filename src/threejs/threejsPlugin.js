@@ -3,12 +3,10 @@
 // http://bl.ocks.org/kenpenn/16a9c611417ffbfc6129
 export default (threejs='three-js') => {
     /*eslint no-console: 0 */
-    /*eslint no-debugger: 0 */
     const _ = {renderer: null, scene: null, camera: null};
     let SCALE;
 
     // Converts a point [longitude, latitude] in degrees to a THREE.Vector3.
-    // Axes have been rotated so Three's "y" axis is parallel to the North Pole
     function vertex(point) {
         var lambda = point[0] * Math.PI / 180,
             phi = point[1] * Math.PI / 180,
@@ -49,12 +47,6 @@ export default (threejs='three-js') => {
         _.renderer.setSize(width, height);
         _.renderer.sortObjects = false;
         this.renderThree = renderThree;
-
-        // var geometry = new THREE.SphereGeometry(3, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
-        // var material = new THREE.MeshNormalMaterial();
-        // var cube = new THREE.Mesh(geometry, material);
-        // _.group.add(cube);
-        window.grp = _.group;
     }
 
     function scale(obj) {
@@ -87,7 +79,7 @@ export default (threejs='three-js') => {
             timeout = setTimeout(function() {
                 _.renderer.render(_.scene, _.camera);
                 timeout = null;
-            },1);
+            }, 0);
         }
     }
 
@@ -98,15 +90,13 @@ export default (threejs='three-js') => {
         },
         onCreate() {
             _.group.children = [];
+            renderThree.call(this);
         },
         onRefresh() {
             rotate.call(this);
         },
         onResize() {
             scale.call(this);
-        },
-        addScene(obj) {
-            _.scene.add(obj);
         },
         group() {
             return _.group;
@@ -129,15 +119,5 @@ export default (threejs='three-js') => {
         renderThree() {
             renderThree.call(this);
         }
-        // toggleOption(obj, optName) {
-        //     delete this._.options[optName];
-        //     Object.defineProperty(this._.options, optName, {
-        //         get: () => obj.visible,
-        //         set: (x) => {
-        //             obj.visible = x;
-        //         },
-        //         configurable: true,
-        //     });
-        // }
     }
 }

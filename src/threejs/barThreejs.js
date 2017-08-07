@@ -54,7 +54,6 @@ export default (jsonUrl, height=2) => {
         }
         _.sphereObject.visible = o.showBars;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {

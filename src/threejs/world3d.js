@@ -32,7 +32,6 @@ export default (worldUrl='../d/world_geometry.json', landUrl='../d/gold.jpg', rt
         _.sphereObject.visible = this._.options.showWorld;
         const tj = this.threejsPlugin;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     const vertexShader = `
@@ -93,7 +92,6 @@ export default (worldUrl='../d/world_geometry.json', landUrl='../d/gold.jpg', rt
         },
         rotate(rtt) {
             _.sphereObject.rotation.y = rtt;
-            this.threejsPlugin.rotate();
         },
         data(data) {
             if (data) {

@@ -45,7 +45,6 @@ export default () => {
             _.sphereObject.visible = this._.options.showGraticule;
         }
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {

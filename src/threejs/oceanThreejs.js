@@ -27,7 +27,6 @@ export default () => {
         _.material.transparent = (o.transparent || o.transparentOcean);
         _.sphereObject.visible = o.showOcean;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {

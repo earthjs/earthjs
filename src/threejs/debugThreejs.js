@@ -3,6 +3,11 @@ export default () => {
 
     function init() {
         this._.options.showDebugSpahre = true;
+    }
+
+    function create() {
+        const o = this._.options;
+        const tj = this.threejsPlugin;
         if (!_.sphereObject) {
             const SCALE = this._.proj.scale();
             _.scale = d3.scaleLinear().domain([0,SCALE]).range([0,1]);
@@ -26,26 +31,9 @@ export default () => {
 
             _.sphereObject = new THREE.Object3D();
             _.sphereObject.add(sphereMesh, dot1Mesh, dot2Mesh, dot3Mesh);
-
-            refresh.call(this);
-            this.threejsPlugin.addScene(_.sphereObject);
         }
-    }
-
-    function resize() {
-        const sc = _.scale(this._.proj.scale());
-        const se = _.sphereObject;
-        se.scale.x = sc;
-        se.scale.y = sc;
-        se.scale.z = sc;
-    }
-
-    function refresh() {
-        const rt = this._.proj.rotate();
-        rt[0] -= 90;
-        const q1 = this._.versor(rt);
-        const q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
-        _.sphereObject.setRotationFromQuaternion(q2);
+        _.sphereObject.visible = o.showDebugSpahre;
+        tj.addGroup(_.sphereObject);
     }
 
     return {
@@ -53,13 +41,14 @@ export default () => {
         onInit() {
             init.call(this);
         },
-        onResize() {
-            resize.call(this);
+        onCreate() {
+            create.call(this);
         },
         onRefresh() {
-            if (_.sphereObject) {
-                refresh.call(this);
-            }
-        }
+            _.sphereObject.visible = this._.options.showDebugSpahre;
+        },
+        sphere() {
+            return _.sphereObject;
+        },
     }
 }

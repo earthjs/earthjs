@@ -3220,12 +3220,10 @@ var threejsPlugin = (function () {
     var threejs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'three-js';
 
     /*eslint no-console: 0 */
-    /*eslint no-debugger: 0 */
     var _ = { renderer: null, scene: null, camera: null };
     var SCALE = void 0;
 
     // Converts a point [longitude, latitude] in degrees to a THREE.Vector3.
-    // Axes have been rotated so Three's "y" axis is parallel to the North Pole
     function _vertex(point) {
         var lambda = point[0] * Math.PI / 180,
             phi = point[1] * Math.PI / 180,
@@ -3265,12 +3263,6 @@ var threejsPlugin = (function () {
         _.renderer.setSize(width, height);
         _.renderer.sortObjects = false;
         this.renderThree = _renderThree;
-
-        // var geometry = new THREE.SphereGeometry(3, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
-        // var material = new THREE.MeshNormalMaterial();
-        // var cube = new THREE.Mesh(geometry, material);
-        // _.group.add(cube);
-        window.grp = _.group;
     }
 
     function _scale(obj) {
@@ -3297,13 +3289,13 @@ var threejsPlugin = (function () {
         _renderThree.call(this);
     }
 
-    var timeout = null;
+    var animationFrame = null;
     function _renderThree() {
-        if (timeout === null) {
-            timeout = setTimeout(function () {
+        if (animationFrame === null) {
+            animationFrame = requestAnimationFrame(function () {
                 _.renderer.render(_.scene, _.camera);
-                timeout = null;
-            }, 1);
+                animationFrame = null;
+            });
         }
     }
 
@@ -3314,15 +3306,13 @@ var threejsPlugin = (function () {
         },
         onCreate: function onCreate() {
             _.group.children = [];
+            _renderThree.call(this);
         },
         onRefresh: function onRefresh() {
             _rotate.call(this);
         },
         onResize: function onResize() {
             _scale.call(this);
-        },
-        addScene: function addScene(obj) {
-            _.scene.add(obj);
         },
         group: function group() {
             return _.group;
@@ -3345,17 +3335,6 @@ var threejsPlugin = (function () {
         renderThree: function renderThree() {
             _renderThree.call(this);
         }
-        // toggleOption(obj, optName) {
-        //     delete this._.options[optName];
-        //     Object.defineProperty(this._.options, optName, {
-        //         get: () => obj.visible,
-        //         set: (x) => {
-        //             obj.visible = x;
-        //         },
-        //         configurable: true,
-        //     });
-        // }
-
     };
 });
 
@@ -3419,7 +3398,6 @@ var barThreejs = (function (jsonUrl) {
         }
         _.sphereObject.visible = o.showBars;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {
@@ -3539,7 +3517,6 @@ var hmapThreejs = (function (hmapUrl) {
         _.sphereObject.visible = this._.options.showHmap;
         _.texture.needsUpdate = true;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     function refresh() {
@@ -3613,7 +3590,6 @@ var dotsThreejs = (function (urlJson) {
         }
         _.dots.visible = this._.options.showDots;
         tj.addGroup(_.dots);
-        tj.rotate();
     }
 
     function create1() {
@@ -3746,12 +3722,12 @@ var iconsThreejs = (function (jsonUrl, iconUrl) {
             _.sphereObject.visible = this._.options.showIcons;
         }
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     function init() {
         var _this = this;
 
+        var tj = this.threejsPlugin;
         this._.options.showIcons = true;
         var loader = new THREE.TextureLoader();
         loader.load(iconUrl, function (map) {
@@ -3762,6 +3738,7 @@ var iconsThreejs = (function (jsonUrl, iconUrl) {
             });
             if (_.data && !_.loaded) {
                 loadIcons.call(_this);
+                tj.rotate();
             }
         });
     }
@@ -3868,7 +3845,6 @@ var canvasThreejs = (function (worldUrl) {
         _.texture.needsUpdate = true;
         _.sphereObject.visible = o.showTjCanvas;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {
@@ -3956,7 +3932,6 @@ var textureThreejs = (function () {
             _.texture.needsUpdate = false;
         }
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {
@@ -4041,7 +4016,6 @@ var graticuleThreejs = (function () {
             _.sphereObject.visible = this._.options.showGraticule;
         }
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {
@@ -4201,7 +4175,6 @@ var flightLineThreejs = (function (jsonUrl) {
         }
         _.sphereObject.visible = o.showFlightLine;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {
@@ -4593,7 +4566,6 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
 
         var tj = this.threejsPlugin;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     function init() {
@@ -4623,7 +4595,6 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
             _.sphereObject.visible = o.showFlightLine;
             var tj = this.threejsPlugin;
             tj.addGroup(_.sphereObject);
-            tj.rotate();
         }
     }
 
@@ -4672,6 +4643,11 @@ var debugThreejs = (function () {
 
     function init() {
         this._.options.showDebugSpahre = true;
+    }
+
+    function create() {
+        var o = this._.options;
+        var tj = this.threejsPlugin;
         if (!_.sphereObject) {
             var SCALE = this._.proj.scale();
             _.scale = d3.scaleLinear().domain([0, SCALE]).range([0, 1]);
@@ -4695,26 +4671,9 @@ var debugThreejs = (function () {
 
             _.sphereObject = new THREE.Object3D();
             _.sphereObject.add(sphereMesh, dot1Mesh, dot2Mesh, dot3Mesh);
-
-            refresh.call(this);
-            this.threejsPlugin.addScene(_.sphereObject);
         }
-    }
-
-    function resize() {
-        var sc = _.scale(this._.proj.scale());
-        var se = _.sphereObject;
-        se.scale.x = sc;
-        se.scale.y = sc;
-        se.scale.z = sc;
-    }
-
-    function refresh() {
-        var rt = this._.proj.rotate();
-        rt[0] -= 90;
-        var q1 = this._.versor(rt);
-        var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
-        _.sphereObject.setRotationFromQuaternion(q2);
+        _.sphereObject.visible = o.showDebugSpahre;
+        tj.addGroup(_.sphereObject);
     }
 
     return {
@@ -4722,13 +4681,14 @@ var debugThreejs = (function () {
         onInit: function onInit() {
             init.call(this);
         },
-        onResize: function onResize() {
-            resize.call(this);
+        onCreate: function onCreate() {
+            create.call(this);
         },
         onRefresh: function onRefresh() {
-            if (_.sphereObject) {
-                refresh.call(this);
-            }
+            _.sphereObject.visible = this._.options.showDebugSpahre;
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
         }
     };
 });
@@ -4762,7 +4722,6 @@ var oceanThreejs = (function () {
         _.material.transparent = o.transparent || o.transparentOcean;
         _.sphereObject.visible = o.showOcean;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {
@@ -4804,7 +4763,6 @@ var imageThreejs = (function () {
             });
         } else {
             tj.addGroup(_.sphereObject);
-            tj.rotate();
         }
     }
 
@@ -4864,7 +4822,6 @@ var worldThreejs = (function () {
         //     s.z = 1.03;
         // }
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {
@@ -4942,10 +4899,8 @@ var globeThreejs = (function () {
             tj.addGroup(light1);
             tj.addGroup(light2);
             tj.addGroup(_.sphereObject);
-            tj.rotate();
         } else {
             tj.addGroup(_.sphereObject);
-            tj.rotate();
         }
     }
 
@@ -5110,7 +5065,6 @@ var world3d = (function () {
         _.sphereObject.visible = this._.options.showWorld;
         var tj = this.threejsPlugin;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     var vertexShader = '\n    varying vec2 vN;\n    void main() {\n        vec4 p = vec4( position, 1. );\n        vec3 e = normalize( vec3( modelViewMatrix * p ) );\n        vec3 n = normalize( normalMatrix * normal );\n        vec3 r = reflect( e, n );\n        float m = 2. * length( vec3( r.xy, r.z + 1. ) );\n        vN = r.xy / m + .5;\n        gl_Position = projectionMatrix * modelViewMatrix * p;\n    }\n    ';
@@ -5153,7 +5107,6 @@ var world3d = (function () {
         },
         rotate: function rotate(rtt) {
             _.sphereObject.rotation.y = rtt;
-            this.threejsPlugin.rotate();
         },
         data: function data(_data) {
             if (_data) {
@@ -5269,7 +5222,6 @@ var world3d2 = (function () {
         _.sphereObject.visible = this._.options.showWorld;
         var tj = this.threejsPlugin;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     var vertexShader = '\n    varying vec2 vN;\n    void main() {\n        vec4 p = vec4( position, 1. );\n        vec3 e = normalize( vec3( modelViewMatrix * p ) );\n        vec3 n = normalize( normalMatrix * normal );\n        vec3 r = reflect( e, n );\n        float m = 2. * length( vec3( r.xy, r.z + 1. ) );\n        vN = r.xy / m + .5;\n        gl_Position = projectionMatrix * modelViewMatrix * p;\n    }\n    ';
@@ -5312,7 +5264,6 @@ var world3d2 = (function () {
         },
         rotate: function rotate(rtt) {
             _.sphereObject.rotation.y = rtt;
-            this.threejsPlugin.rotate();
         },
         data: function data(_data) {
             if (_data) {

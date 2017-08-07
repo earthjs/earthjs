@@ -156,7 +156,6 @@ export default (jsonUrl, num_decorators=15) => {
         }
         _.sphereObject.visible = o.showFlightLine;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {

@@ -18,7 +18,6 @@ export default (imgUrl='../d/world.png') => {
             });
         } else {
             tj.addGroup(_.sphereObject);
-            tj.rotate();
         }
     }
 

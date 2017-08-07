@@ -50,7 +50,6 @@ export default worldUrl => {
         _.texture.needsUpdate = true;
         _.sphereObject.visible = o.showTjCanvas;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {

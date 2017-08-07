@@ -48,7 +48,6 @@ export default () => {
             _.texture.needsUpdate = false;
         }
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {

@@ -75,7 +75,6 @@ export default hmapUrl => {
         _.sphereObject.visible = this._.options.showHmap;
         _.texture.needsUpdate = true;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     function refresh() {

@@ -29,7 +29,6 @@ export default (worldUrl='../d/world.png') => {
         //     s.z = 1.03;
         // }
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {

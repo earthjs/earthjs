@@ -364,7 +364,6 @@ export default (jsonUrl, imgUrl, height) => {
 
         const tj = this.threejsPlugin;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     function init() {
@@ -395,7 +394,6 @@ export default (jsonUrl, imgUrl, height) => {
             _.sphereObject.visible = o.showFlightLine;
             const tj = this.threejsPlugin;
             tj.addGroup(_.sphereObject);
-            tj.rotate();
         }
     }
 

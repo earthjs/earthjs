@@ -29,7 +29,6 @@ export default urlJson => {
         }
         _.dots.visible = this._.options.showDots;
         tj.addGroup(_.dots);
-        tj.rotate();
     }
 
     function create1() {

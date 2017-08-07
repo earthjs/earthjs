@@ -38,10 +38,8 @@ export default (
             tj.addGroup(light1);
             tj.addGroup(light2);
             tj.addGroup(_.sphereObject);
-            tj.rotate();
         } else {
             tj.addGroup(_.sphereObject);
-            tj.rotate();
         }
     }
 
