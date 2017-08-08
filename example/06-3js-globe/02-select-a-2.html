@@ -20,7 +20,8 @@
         var g = earthjs({scale:300})
         .register(earthjs.plugins.selectCountryMix())
         .register(earthjs.plugins.threejsPlugin())
-        .register(earthjs.plugins.globeThreejs());
+        .register(earthjs.plugins.globeThreejs('../d/world_c.png'));
+        g._.options.showBorder = false;
         g.ready(function(){
             g.create();
         })

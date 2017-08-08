@@ -399,10 +399,10 @@ export default (jsonUrl, imgUrl, height) => {
 
     var start = 0;
     function interval(timestamp) {
-        if ((timestamp - start)>30) {
+        if ((timestamp - start)>30 && !this._.drag) {
             start = timestamp;
             update_point_cloud();
-            this.threejsPlugin.renderThree();
+            this.threejsPlugin.renderThree(true);
         }
     }
 

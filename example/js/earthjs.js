@@ -460,7 +460,7 @@ var countryCanvas = (function (worldUrl) {
 
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
 var mousePlugin = (function () {
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { zoomScale: [0, 1000] },
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { zoomScale: [0, 50000] },
         zoomScale = _ref.zoomScale,
         iDrag = _ref.iDrag;
 
@@ -474,7 +474,7 @@ var mousePlugin = (function () {
         onDblClickVals: []
     };
     if (zoomScale === undefined) {
-        zoomScale = [0, 1000];
+        zoomScale = [0, 50000];
     }
 
     function onclick() {
@@ -522,7 +522,7 @@ var mousePlugin = (function () {
 
         _.svg.call(d3.drag().on('start', dragstarted).on('end', dragsended).on('drag', dragged));
 
-        _.svg.call(d3.zoom().on('zoom', zoom).scaleExtent([0.1, 5]).translateExtent([[0, 0], wh]));
+        _.svg.call(d3.zoom().on('zoom', zoom).scaleExtent([0.1, 160]).translateExtent([[0, 0], wh]));
 
         // todo: add zoom lifecycle to optimize plugins zoom-able
         // ex: barTooltipSvg, at the end of zoom, need to recreate
@@ -2128,10 +2128,10 @@ var worldCanvas = (function (worldUrl) {
                     context.fill();
                 }, _.drawTo, _.options);
             }
-            if (__.options.showBorder) {
-                canvasAddCountries.call(this, true);
-            } else {
+            if (__.options.showBorder === undefined) {
                 __.options.showCountries ? canvasAddCountries.call(this) : canvasAddWorld.call(this);
+            } else if (__.options.showBorder) {
+                canvasAddCountries.call(this, true);
             }
             if (!__.drag) {
                 __.options.showLakes && canvasAddLakes.call(this);
@@ -3251,10 +3251,10 @@ var threejsPlugin = (function () {
 
         var container = document.getElementById(threejs);
         _.scale = d3.scaleLinear().domain([0, SCALE]).range([0, 1]);
-        _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 10000);
+        _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 50000);
         _.scene = new THREE.Scene();
         _.group = new THREE.Group();
-        _.camera.position.z = 1010; // (higher than RADIUS + size of the bubble)
+        _.camera.position.z = 50010; // (higher than RADIUS + size of the bubble)
         _.scene.add(_.group);
         this._.camera = _.camera;
 
@@ -3265,37 +3265,37 @@ var threejsPlugin = (function () {
         this.renderThree = _renderThree;
     }
 
-    function _scale(obj) {
-        if (!obj) {
-            obj = _.group;
-        }
-        var sc = _.scale(this._.proj.scale());
-        obj.scale.x = sc;
-        obj.scale.y = sc;
-        obj.scale.z = sc;
-        _renderThree.call(this);
+    function _scale(direct) {
+        var obj = _.group;
+        var scl = _.scale(this._.proj.scale());
+        obj.scale.x = scl;
+        obj.scale.y = scl;
+        obj.scale.z = scl;
+        _renderThree.call(this, direct);
     }
 
-    function _rotate(obj) {
-        if (!obj) {
-            obj = _.group;
-        }
+    function _rotate(direct) {
         var __ = this._;
+        var obj = _.group;
         var rt = __.proj.rotate();
         rt[0] -= 90;
         var q1 = __.versor(rt);
         var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
         obj.setRotationFromQuaternion(q2);
-        _renderThree.call(this);
+        _renderThree.call(this, direct);
     }
 
-    var animationFrame = null;
+    var renderThreeX = null;
     function _renderThree() {
-        if (animationFrame === null) {
-            animationFrame = requestAnimationFrame(function () {
+        var direct = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+        if (direct) {
+            _.renderer.render(_.scene, _.camera);
+        } else if (renderThreeX === null) {
+            renderThreeX = setTimeout(function () {
                 _.renderer.render(_.scene, _.camera);
-                animationFrame = null;
-            });
+                renderThreeX = null;
+            }, 0);
         }
     }
 
@@ -3306,10 +3306,10 @@ var threejsPlugin = (function () {
         },
         onCreate: function onCreate() {
             _.group.children = [];
-            _renderThree.call(this);
+            _rotate.call(this, true);
         },
         onRefresh: function onRefresh() {
-            _rotate.call(this);
+            _rotate.call(this, true);
         },
         onResize: function onResize() {
             _scale.call(this);
@@ -3317,14 +3317,14 @@ var threejsPlugin = (function () {
         group: function group() {
             return _.group;
         },
-        addGroup: function addGroup(obj) {
-            _.group.add(obj);
+        addGroup: function addGroup(item) {
+            _.group.add(item);
         },
-        scale: function scale(obj) {
-            _scale.call(this, obj);
+        scale: function scale() {
+            _scale.call(this);
         },
-        rotate: function rotate(obj) {
-            _rotate.call(this, obj);
+        rotate: function rotate() {
+            _rotate.call(this);
         },
         vertex: function vertex(point) {
             return _vertex(point);
@@ -3332,8 +3332,8 @@ var threejsPlugin = (function () {
         wireframe: function wireframe(multilinestring, material) {
             return _wireframe(multilinestring, material);
         },
-        renderThree: function renderThree() {
-            _renderThree.call(this);
+        renderThree: function renderThree(direct) {
+            _renderThree.call(this, direct);
         }
     };
 });
@@ -3800,26 +3800,31 @@ var iconsThreejs = (function (jsonUrl, iconUrl) {
 
 // http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
 var canvasThreejs = (function (worldUrl) {
+    var scw = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 6.28;
+    var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2048;
+
     /*eslint no-console: 0 */
     var _ = {
         sphereObject: null,
+        style: {},
         onDraw: {},
         onDrawVals: [],
         material: new THREE.MeshBasicMaterial({ transparent: false })
     };
 
     function init() {
+        var width = height * 2;
         var o = this._.options;
         o.showTjCanvas = true;
         o.transparentLand = false;
         var SCALE = this._.proj.scale();
         _.geometry = new THREE.SphereGeometry(SCALE, 30, 30);
-        _.canvas = d3.select('body').append('canvas').style('position', 'absolute').style('display', 'none').style('top', '450px').attr('width', '1024').attr('height', '512').attr('id', 'tjs-canvas').node();
+        _.canvas = d3.select('body').append('canvas').style('position', 'absolute').style('display', 'none').style('top', '450px').attr('width', width).attr('height', height).attr('id', 'tjs-canvas').node();
         _.texture = new THREE.Texture(_.canvas);
         _.material.map = _.texture;
 
         _.context = _.canvas.getContext('2d');
-        _.proj = d3.geoEquirectangular().precision(0.5).translate([512, 256]).scale(163);
+        _.proj = d3.geoEquirectangular().scale(width / scw).translate([width / 2, height / 2]);
         _.path = d3.geoPath().projection(_.proj).context(_.context);
     }
 
@@ -3832,11 +3837,15 @@ var canvasThreejs = (function (worldUrl) {
             _.sphereObject = new THREE.Mesh(_.geometry, _.material);
         }
         _.material.transparent = o.transparent || o.transparentLand;
-        _.context.clearRect(0, 0, 1024, 512);
-        _.context.fillStyle = '#00ff00';
+        // _.context.clearRect(0, 0, 1024, 512);
+        _.context.fillStyle = "blue";
+        _.context.fillRect(0, 0, _.canvas.width, _.canvas.height);
         _.context.beginPath();
         _.path(_.countries);
+        _.context.fillStyle = '#00ff00';
+        _.context.strokeStyle = _.style.countries || 'rgb(0, 37, 34)';
         _.context.fill();
+        _.context.stroke();
 
         _.onDrawVals.forEach(function (v) {
             v.call(_this, _.context, _.path);
@@ -3875,6 +3884,12 @@ var canvasThreejs = (function (worldUrl) {
             } else {
                 return _.world;
             }
+        },
+        style: function style(s) {
+            if (s) {
+                _.style = s;
+            }
+            return _.style;
         },
         sphere: function sphere() {
             return _.sphereObject;
@@ -4600,10 +4615,10 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
 
     var start = 0;
     function interval(timestamp) {
-        if (timestamp - start > 30) {
+        if (timestamp - start > 30 && !this._.drag) {
             start = timestamp;
             update_point_cloud();
-            this.threejsPlugin.renderThree();
+            this.threejsPlugin.renderThree(true);
         }
     }
 

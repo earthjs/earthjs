@@ -1,5 +1,5 @@
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
-export default ({zoomScale,iDrag}={zoomScale:[0,1000]}) => {
+export default ({zoomScale,iDrag}={zoomScale:[0,50000]}) => {
     /*eslint no-console: 0 */
     const _ = {svg:null, q: null, sync: [], mouse: null, wait: null,
         onDrag: {},
@@ -10,7 +10,7 @@ export default ({zoomScale,iDrag}={zoomScale:[0,1000]}) => {
         onDblClickVals: []
     };
     if (zoomScale===undefined) {
-        zoomScale = [0,1000];
+        zoomScale = [0,50000];
     }
 
     function onclick() {
@@ -59,7 +59,7 @@ export default ({zoomScale,iDrag}={zoomScale:[0,1000]}) => {
 
         _.svg.call(d3.zoom()
             .on('zoom', zoom)
-            .scaleExtent([0.1, 5])
+            .scaleExtent([0.1,160])
             .translateExtent([[0,0], wh]));
 
         // todo: add zoom lifecycle to optimize plugins zoom-able

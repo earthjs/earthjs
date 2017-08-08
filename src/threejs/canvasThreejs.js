@@ -1,14 +1,16 @@
 // http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
-export default worldUrl => {
+export default (worldUrl,scw=6.28,height=2048) => {
     /*eslint no-console: 0 */
     const _ = {
         sphereObject:null,
+        style: {},
         onDraw: {},
         onDrawVals: [],
         material: new THREE.MeshBasicMaterial({transparent:false})
     };
 
     function init() {
+        const width = height * 2;
         const o = this._.options;
         o.showTjCanvas = true;
         o.transparentLand = false;
@@ -18,15 +20,15 @@ export default worldUrl => {
             .style('position','absolute')
             .style('display','none')
             .style('top','450px')
-            .attr('width','1024')
-            .attr('height','512')
+            .attr('width', width)
+            .attr('height',height)
             .attr('id','tjs-canvas')
             .node();
         _.texture = new THREE.Texture(_.canvas);
         _.material.map = _.texture;
 
         _.context = _.canvas.getContext('2d');
-        _.proj = d3.geoEquirectangular().precision(0.5).translate([512, 256]).scale(163);
+        _.proj = d3.geoEquirectangular().scale(width/scw).translate([width/2, height/2]);
         _.path = d3.geoPath().projection(_.proj).context(_.context);
     }
 
@@ -37,11 +39,15 @@ export default worldUrl => {
             _.sphereObject= new THREE.Mesh(_.geometry, _.material);
         }
         _.material.transparent = (o.transparent || o.transparentLand);
-        _.context.clearRect(0, 0, 1024, 512);
-        _.context.fillStyle = '#00ff00';
+        // _.context.clearRect(0, 0, 1024, 512);
+        _.context.fillStyle = "blue";
+        _.context.fillRect(0, 0, _.canvas.width, _.canvas.height);
         _.context.beginPath();
         _.path(_.countries);
+        _.context.fillStyle = '#00ff00';
+        _.context.strokeStyle = _.style.countries || 'rgb(0, 37, 34)';
         _.context.fill();
+        _.context.stroke();
 
         _.onDrawVals.forEach(v => {
             v.call(this, _.context, _.path);
@@ -78,6 +84,12 @@ export default worldUrl => {
             } else {
                 return  _.world;
             }
+        },
+        style(s) {
+            if (s) {
+                _.style = s;
+            }
+            return _.style;
         },
         sphere() {
             return _.sphereObject;

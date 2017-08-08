@@ -31,10 +31,12 @@ export default worldUrl => {
                     context.fill();
                 }, _.drawTo, _.options);
             }
-            if (__.options.showBorder) {
+            if (__.options.showBorder===undefined) {
+                __.options.showCountries ?
+                canvasAddCountries.call(this) :
+                canvasAddWorld.call(this);
+            } else if (__.options.showBorder) {
                 canvasAddCountries.call(this, true);
-            } else {
-                __.options.showCountries ? canvasAddCountries.call(this) : canvasAddWorld.call(this);
             }
             if (!__.drag) {
                 __.options.showLakes && canvasAddLakes.call(this);
