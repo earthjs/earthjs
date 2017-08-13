@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+    <style>body {background: #555;}</style>
+</head>
+<body>
+    <svg id="earth-js" width="1000" height="920"></svg>
+    <canvas id="three-js"></canvas>
+    <script>
+        var g = earthjs({scale:300})
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.hoverCanvas())
+        .register(earthjs.plugins.countryCanvas())
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.canvasThreejs())
+        .register(earthjs.plugins.autorotatePlugin());
+        g.canvasThreejs.ready = function(err, json) {
+            g.canvasThreejs.data(json);
+            g.countryCanvas.data(json);
+            g.hoverCanvas.data(json);
+        }
+        g._.options.showSelectedCountry = true;
+        g._.options.showBorder = true;
+        g.ready(function(){
+            g.create();
+        })
+    </script>
+</body>
+</html>

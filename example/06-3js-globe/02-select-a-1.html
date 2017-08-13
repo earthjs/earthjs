@@ -53,10 +53,10 @@
             }
         })
         g.ready(function(){
-            const world = g.worldCanvas.data();
-            g.countryCanvas.data(world);
-            g.hoverCanvas.data(world);
-            g.clickCanvas.data(world);
+            const data = g.worldCanvas.data();
+            g.countryCanvas.data(data);
+            g.hoverCanvas.data(data);
+            g.clickCanvas.data(data);
             g.create();
         })
 

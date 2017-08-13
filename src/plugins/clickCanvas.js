@@ -19,6 +19,7 @@ export default () => {
             }
         }
         const __ = this._;
+        const _this = this;
         const mouseClickHandler = function(event, mouse) {
             if (!event) {
                 return;
@@ -39,7 +40,11 @@ export default () => {
             }
             if (__.options.showLand && !_.dot) {
                 if (!__.drag) {
-                    _.country = findCountry(pos);
+                    if (_this.countryCanvas) {
+                        _.country = _this.countryCanvas.detectCountry(pos);
+                    } else {
+                        _.country = findCountry(pos);
+                    }
                 }
                 _.onCountryVals.forEach(v => {
                     v.call(this, event, _.country);

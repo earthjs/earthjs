@@ -88,7 +88,7 @@ export default (threejs='three-js') => {
         },
         onCreate() {
             _.group.children = [];
-            rotate.call(this, true);
+            rotate.call(this);
         },
         onRefresh() {
             rotate.call(this, true);

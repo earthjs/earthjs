@@ -4,6 +4,7 @@ export default () => {
     const _ = {
         mouse: null,
         country: null,
+        ocountry: null,
         countries: null,
         onCircle: {},
         onCircleVals: [],
@@ -47,6 +48,10 @@ export default () => {
                         _.country = _this.countryCanvas.detectCountry(pos);
                     } else {
                         _.country = findCountry(pos);
+                    }
+                    if (_.country && _.ocountry!==_.country && _this.canvasThreejs) {
+                        _this.canvasThreejs.refresh();
+                        _.ocountry= _.country;
                     }
                 }
                 _.onCountryVals.forEach(v => {
