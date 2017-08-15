@@ -82,6 +82,11 @@ export default () => {
         onInit() {
             init.call(this);
         },
+        onCreate() {
+            if (this.worldJson && !_.world) {
+                this.hoverCanvas.data(this.worldJson.data());
+            }
+        },
         onCircle(obj) {
             Object.assign(_.onCircle, obj);
             _.onCircleVals = Object.keys(_.onCircle).map(k => _.onCircle[k]);

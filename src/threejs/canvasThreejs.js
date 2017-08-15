@@ -1,7 +1,8 @@
 // http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
-export default (worldUrl='../d/world-110m.json',scw=6.279,height=2048) => {
+export default (worldUrl, scw=6.279, height=2048) => {
     /*eslint no-console: 0 */
     const _ = {
+        world: null,
         sphereObject:null,
         style: {},
         onDraw: {},
@@ -49,25 +50,7 @@ export default (worldUrl='../d/world-110m.json',scw=6.279,height=2048) => {
         const o = this._.options;
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
-            if (o.showBorder) {
-                _.context.clearRect(0, 0, _.canvas.width, _.canvas.height);
-            } else {
-                _.context.fillStyle = "blue";
-                _.context.fillRect(0, 0, _.canvas.width, _.canvas.height);
-            }
-            _.context.beginPath();
-            _.path(_.countries);
-            if (!o.showBorder) {
-                _.context.fillStyle = '#00ff00';
-                _.context.fill();
-            }
-            if (o.showBorder || o.showBorder===undefined) {
-                _.context.strokeStyle = _.style.countries || 'rgb(239, 237, 234)'; //'rgb(0, 37, 34)';
-                _.context.stroke();
-            }
-            //apply the old canvas to the new one
-            _.newContext.drawImage(_.canvas, 0, 0);
-            _.refresh = true;
+            resize.call(this);
             _.sphereObject= new THREE.Mesh(_.geometry, _.material);
         }
         _.material.transparent = (o.transparent || o.transparentLand);
@@ -78,6 +61,56 @@ export default (worldUrl='../d/world-110m.json',scw=6.279,height=2048) => {
         _.sphereObject.visible = o.showTjCanvas;
         _.texture.needsUpdate = true;
         tj.addGroup(_.sphereObject);
+    }
+
+    function choropleth() {
+        const o = this._.options;
+        if (o.choropleth) {
+            let i = _.countries.features.length;
+            while (i--) {
+                _.context.beginPath();
+                _.path(_.countries.features[i]);
+                _.context.fillStyle = "rgb(" + (i+1) + ",0,0)";
+                _.context.fill();
+            }
+            return true;
+        } else {
+            _.path(_.countries);
+            _.context.fillStyle = '#8f9fc1'; // '#00ff00';
+            _.context.fill();
+            return false;
+        }
+    }
+
+    // stroke adjustment when zooming
+    const scale10 = d3.scaleLinear().domain([30, 450]).range([10, 2]);
+    function resize() {
+        const o = this._.options;
+        if (_.style.ocean) {
+            _.context.fillStyle = _.style.ocean;
+            _.context.fillRect(0, 0, _.canvas.width, _.canvas.height);
+        } else {
+            _.context.clearRect(0, 0, _.canvas.width, _.canvas.height);
+        }
+        let crp = true;
+        _.context.beginPath();
+        if (!o.showBorder) {
+            crp = choropleth.call(this);
+        }
+        if (o.showBorder || o.showBorder===undefined) {
+            let sc = scale10(this._.proj.scale());
+            if (sc < 1)
+                sc = 1;
+            if (crp) {
+                _.path(_.countries);
+            }
+            _.context.lineWidth = sc;
+            _.context.strokeStyle = _.style.countries || 'rgb(239, 237, 234)'; //'rgb(0, 37, 34)';
+            _.context.stroke();
+        }
+        //apply the old canvas to the new one
+        _.newContext.drawImage(_.canvas, 0, 0);
+        _.refresh = true;
     }
 
     function refresh() {
@@ -115,7 +148,13 @@ export default (worldUrl='../d/world-110m.json',scw=6.279,height=2048) => {
             init.call(this);
         },
         onCreate() {
+            if (this.worldJson && !_.world) {
+                this.canvasThreejs.data(this.worldJson.data());
+            }
             create.call(this);
+        },
+        onResize() {
+            resize.call(this);
         },
         onRefresh() {
             refresh.call(this);

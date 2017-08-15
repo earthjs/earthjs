@@ -35,6 +35,9 @@ export default worldUrl => {
             init.call(this);
         },
         onCreate() {
+            if (this.worldJson && !_.world) {
+                this.countryCanvas.data(this.worldJson.data());
+            }
             create.call(this);
         },
         data(data) {

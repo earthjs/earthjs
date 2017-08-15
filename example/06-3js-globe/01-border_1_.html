@@ -10,23 +10,22 @@
 </head>
 <body>
     <svg id="earth-js" width="1000" height="920"></svg>
-    <canvas id="three-js"></canvas>
+    <canvas class="ej-canvas"></canvas>
     <script>
         var g = earthjs({scale:300})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.hoverCanvas())
+        .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.countryCanvas())
-        .register(earthjs.plugins.threejsPlugin())
-        .register(earthjs.plugins.globeThreejs())
-        .register(earthjs.plugins.canvasThreejs())
-        .register(earthjs.plugins.autorotatePlugin());
-        g.canvasThreejs.ready = function(err, json) {
-            g.canvasThreejs.data(json);
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
+        g.canvasPlugin.selectAll('.ej-canvas');
+        g.worldCanvas.ready = function(err, json) {
+            g.worldCanvas.data(json);
             g.countryCanvas.data(json);
             g.hoverCanvas.data(json);
         }
         g._.options.showSelectedCountry = true;
-        g._.options.transparent = true;
         g._.options.showBorder = true;
         g.ready(function(){
             g.create();

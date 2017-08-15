@@ -11,7 +11,17 @@ export default () => {
         onCountryVals: []
     }
 
-    function init() {
+    function findCountry(pos) {
+        return _.countries.features.find(function(f) {
+            return f.geometry.coordinates.find(function(c1) {
+                return d3.polygonContains(c1, pos) || c1.find(function(c2) {
+                    return d3.polygonContains(c2, pos)
+                })
+            })
+        });
+    }
+
+    function initmouseClickHandler() {
         if (this.worldCanvas) {
             const world = this.worldCanvas.data();
             if (world) {
@@ -20,7 +30,7 @@ export default () => {
         }
         const __ = this._;
         const _this = this;
-        const mouseClickHandler = function(event, mouse) {
+        const mouseDblClickHandler = function(event, mouse) {
             if (!event) {
                 return;
             }
@@ -52,26 +62,21 @@ export default () => {
             }
         }
         if (this.mousePlugin) {
-            this.mousePlugin.onClick({
-                clickCanvas: mouseClickHandler
+            this.mousePlugin.onDblClick({
+                dblClickCanvas: mouseDblClickHandler
             });
         }
     }
 
-    function findCountry(pos) {
-        return _.countries.features.find(function(f) {
-            return f.geometry.coordinates.find(function(c1) {
-                return d3.polygonContains(c1, pos) || c1.find(function(c2) {
-                    return d3.polygonContains(c2, pos)
-                })
-            })
-        });
-    }
-
     return {
-        name: 'clickCanvas',
+        name: 'dblClickCanvas',
         onInit() {
-            init.call(this);
+            initmouseClickHandler.call(this);
+        },
+        onCreate() {
+            if (this.worldJson && !_.world) {
+                this.hoverCanvas.data(this.worldJson.data());
+            }
         },
         onCircle(obj) {
             Object.assign(_.onCircle, obj);

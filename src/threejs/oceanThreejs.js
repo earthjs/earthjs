@@ -1,13 +1,18 @@
 // http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
-export default () => {
+export default (color) => {
     /*eslint no-console: 0 */
-    const _ = {
-        sphereObject: null,
-        material: new THREE.MeshNormalMaterial({
+    const _ = {sphereObject: null}
+    if (color) {
+        _.material = new THREE.MeshBasicMaterial({
+            transparent: true,
+            color: color, //'#555',
+        });
+    } else {
+        _.material = new THREE.MeshNormalMaterial({
             transparent: false,
             wireframe: false,
             opacity: 0.8,
-        })
+        });
     }
 
     function init() {

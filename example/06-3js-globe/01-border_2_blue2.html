@@ -13,22 +13,21 @@
     <canvas id="three-js"></canvas>
     <script>
         var g = earthjs({scale:300})
+        .register(earthjs.plugins.worldJson('../d/world-110m.json'))
+        .register(earthjs.plugins.countryNamesCsv('../d/world-110m-country-names.tsv'))
+        .register(earthjs.plugins.choroplethCsv('../d/2010_alcohol_consumption_by_country.csv'))
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.hoverCanvas())
         .register(earthjs.plugins.countryCanvas())
         .register(earthjs.plugins.threejsPlugin())
-        .register(earthjs.plugins.globeThreejs())
         .register(earthjs.plugins.canvasThreejs())
         .register(earthjs.plugins.autorotatePlugin());
-        g.canvasThreejs.ready = function(err, json) {
-            g.canvasThreejs.data(json);
-            g.countryCanvas.data(json);
-            g.hoverCanvas.data(json);
-        }
+        g.canvasThreejs.style({ocean: '#36496e'});
         g._.options.showSelectedCountry = true;
-        g._.options.transparent = true;
-        g._.options.showBorder = true;
+        // g._.options.choropleth = true;
         g.ready(function(){
+            g.countryNamesCsv.mergeData(g.worldJson.data(),['id:id','name:name']);
+            g.choroplethCsv.mergeData(g.worldJson.data(),['name:location','value:alcohol']);
             g.create();
         })
     </script>
