@@ -1384,6 +1384,19 @@ var autorotatePlugin = (function () {
         sync: []
     };
 
+    function create() {
+        var o = this._.options;
+        if (this.clickCanvas) {
+            this.clickCanvas.onCountry({
+                autorotatePlugin: function autorotatePlugin(e, country) {
+                    if (!country) {
+                        o.spin = !o.spin;
+                    }
+                }
+            });
+        }
+    }
+
     var start = 0;
     function interval(timestamp) {
         if (timestamp - start > 40) {
@@ -1410,6 +1423,9 @@ var autorotatePlugin = (function () {
         name: 'autorotatePlugin',
         onInit: function onInit() {
             this._.options.spin = true;
+        },
+        onCreate: function onCreate() {
+            create.call(this);
         },
         onInterval: function onInterval(t) {
             interval.call(this, t);

@@ -18,10 +18,12 @@
         .register(earthjs.plugins.countryNamesCsv('../d/world-110m-country-names.tsv'))
         .register(earthjs.plugins.choroplethCsv('../d/2010_alcohol_consumption_by_country.csv'))
         .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.clickCanvas())
         .register(earthjs.plugins.hoverCanvas())
         .register(earthjs.plugins.countryCanvas())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.canvasThreejs())
+        .register(earthjs.plugins.autorotatePlugin());
         g.canvasThreejs.style({ocean: '#36496e'});
         g._.options.showSelectedCountry = true;
         g._.options.choropleth = true;
@@ -32,6 +34,13 @@
             g.choroplethCsv  .mergeData(countries, ['name:location','color:color']);
             g.choroplethCsv  .mergeData(countries, ['name:location','value:alcohol']);
             g.create();
+        })
+        g.clickCanvas.onCountry({
+            app3(e, country) {
+                if (country) {
+                    console.log(country);
+                }
+            }
         })
     </script>
 </body>

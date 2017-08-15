@@ -6,7 +6,20 @@ export default (degPerSec=10) => {
         sync: []
     }
 
-    var start = 0;
+    function create() {
+        const o = this._.options;
+        if (this.clickCanvas) {
+            this.clickCanvas.onCountry({
+                autorotatePlugin(e, country) {
+                    if (!country) {
+                        o.spin = !o.spin;
+                    }
+                }
+            })
+        }
+    }
+
+    let start = 0;
     function interval(timestamp) {
         if ((timestamp - start) > 40) {
             start = timestamp;
@@ -30,6 +43,9 @@ export default (degPerSec=10) => {
         name: 'autorotatePlugin',
         onInit() {
             this._.options.spin = true;
+        },
+        onCreate() {
+            create.call(this);
         },
         onInterval(t) {
             interval.call(this, t);
