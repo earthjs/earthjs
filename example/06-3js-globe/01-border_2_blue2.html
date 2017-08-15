@@ -3,6 +3,7 @@
 <head>
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/d3-scale-chromatic.v1.min.js"></script>
     <script type='text/javascript' src='../js/three.min.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
@@ -21,13 +22,16 @@
         .register(earthjs.plugins.countryCanvas())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.canvasThreejs())
-        .register(earthjs.plugins.autorotatePlugin());
+        // .register(earthjs.plugins.autorotatePlugin());
         g.canvasThreejs.style({ocean: '#36496e'});
         g._.options.showSelectedCountry = true;
-        // g._.options.choropleth = true;
+        g._.options.choropleth = true;
         g.ready(function(){
-            g.countryNamesCsv.mergeData(g.worldJson.data(),['id:id','name:name']);
-            g.choroplethCsv.mergeData(g.worldJson.data(),['name:location','value:alcohol']);
+            const countries = g.worldJson.allData().countries;
+            g.choroplethCsv  .colorize('alcohol', 'schemeOranges'); //schemeReds, https://github.com/d3/d3-scale-chromatic
+            g.countryNamesCsv.mergeData(countries, ['id:id','name:name']);
+            g.choroplethCsv  .mergeData(countries, ['name:location','color:color']);
+            g.choroplethCsv  .mergeData(countries, ['name:location','value:alcohol']);
             g.create();
         })
     </script>

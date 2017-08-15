@@ -94,7 +94,7 @@ export default (threejs='three-js') => {
             rotate.call(this, true);
         },
         onResize() {
-            scale.call (this);
+            scale.call(this);
         },
         group() {
             return _.group;

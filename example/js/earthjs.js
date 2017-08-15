@@ -351,13 +351,38 @@ var worldJson = (function (jsonUrl) {
             } else {
                 return _.world;
             }
+        },
+        allData: function allData(all) {
+            if (all) {
+                _.world = all.world;
+                _.land = all.land;
+                _.lakes = all.lakes;
+                _.countries = all.countries;
+            } else {
+                var world = _.world,
+                    land = _.land,
+                    lakes = _.lakes,
+                    countries = _.countries;
+
+                return { world: world, land: land, lakes: lakes, countries: countries };
+            }
         }
     };
 });
 
+var toConsumableArray = function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
+};
+
 var choroplethCsv = (function (csvUrl) {
     /*eslint no-console: 0 */
-    var _ = { choropleth: null };
+    var _ = { choropleth: null, color: null };
 
     return {
         name: 'choroplethCsv',
@@ -376,13 +401,31 @@ var choroplethCsv = (function (csvUrl) {
             var cn = _.choropleth;
             var id = arr[0].split(':');
             var vl = arr[1].split(':');
-            json.objects.countries.geometries.forEach(function (obj) {
+            json.features.forEach(function (obj) {
                 var o = cn.find(function (x) {
                     return '' + obj[id[0]] === x[id[1]];
                 });
                 if (o) {
                     obj[vl[0]] = o[vl[1]];
                 }
+            });
+        },
+
+        // https://github.com/d3/d3-scale-chromatic
+        colorize: function colorize(key) {
+            var scheme = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'schemeReds';
+
+            var arr = _.choropleth.map(function (x) {
+                return +x[key];
+            });
+            arr = [].concat(toConsumableArray(new Set(arr)));
+            _.min = d3.min(arr);
+            _.max = d3.max(arr);
+            var c = d3[scheme] || d3.schemeReds;
+            var x = d3.scaleLinear().domain([1, 10]).rangeRound([_.min, _.max]);
+            var color = d3.scaleThreshold().domain(d3.range(2, 10)).range(c[9]);
+            _.choropleth.forEach(function (obj) {
+                obj.color = color(x(+obj[key]));
             });
         }
     };
@@ -409,7 +452,7 @@ var countryNamesCsv = (function (csvUrl) {
             var cn = _.countryNames;
             var id = arr[0].split(':');
             var vl = arr[1].split(':');
-            json.objects.countries.geometries.forEach(function (obj) {
+            json.features.forEach(function (obj) {
                 var o = cn.find(function (x) {
                     return '' + obj[id[0]] === x[id[1]];
                 });
@@ -509,7 +552,7 @@ var hoverCanvas = (function () {
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                this.hoverCanvas.data(this.worldJson.data());
+                this.hoverCanvas.allData(this.worldJson.allData());
             }
         },
         onCircle: function onCircle(obj) {
@@ -530,6 +573,17 @@ var hoverCanvas = (function () {
                 _.countries = topojson.feature(_data, _data.objects.countries);
             } else {
                 return _.world;
+            }
+        },
+        allData: function allData(all) {
+            if (all) {
+                _.world = all.world;
+                _.countries = all.countries;
+            } else {
+                var world = _.world,
+                    countries = _.countries;
+
+                return { world: world, countries: countries };
             }
         },
         country: function country() {
@@ -625,7 +679,7 @@ var clickCanvas = (function () {
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                this.hoverCanvas.data(this.worldJson.data());
+                this.clickCanvas.allData(this.worldJson.allData());
             }
         },
         onCircle: function onCircle(obj) {
@@ -646,6 +700,17 @@ var clickCanvas = (function () {
                 _.countries = topojson.feature(_data, _data.objects.countries);
             } else {
                 return _.world;
+            }
+        },
+        allData: function allData(all) {
+            if (all) {
+                _.world = all.world;
+                _.countries = all.countries;
+            } else {
+                var world = _.world,
+                    countries = _.countries;
+
+                return { world: world, countries: countries };
             }
         },
         state: function state() {
@@ -993,7 +1058,7 @@ var canvasPlugin = (function () {
 // http://bl.ocks.org/syntagmatic/6645345
 var countryCanvas = (function (worldUrl) {
     /*eslint no-console: 0 */
-    var _ = {};
+    var _ = { recreate: true };
 
     function init() {
         _.canvas = d3.select('body').append('canvas').attr('class', 'ej-hidden').attr('width', '1024').attr('height', '512').node();
@@ -1003,13 +1068,16 @@ var countryCanvas = (function (worldUrl) {
     }
 
     function create() {
-        _.context.clearRect(0, 0, 1024, 512);
-        var i = _.countries.features.length;
-        while (i--) {
-            _.context.beginPath();
-            _.path(_.countries.features[i]);
-            _.context.fillStyle = "rgb(" + (i + 1) + ",0,0)";
-            _.context.fill();
+        if (_.recreate) {
+            _.recreate = false;
+            _.context.clearRect(0, 0, 1024, 512);
+            var i = _.countries.features.length;
+            while (i--) {
+                _.context.beginPath();
+                _.path(_.countries.features[i]);
+                _.context.fillStyle = "rgb(" + (i + 1) + ",0,0)";
+                _.context.fill();
+            }
         }
     }
 
@@ -1024,7 +1092,7 @@ var countryCanvas = (function (worldUrl) {
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                this.countryCanvas.data(this.worldJson.data());
+                this.countryCanvas.allData(this.worldJson.allData());
             }
             create.call(this);
         },
@@ -1034,6 +1102,17 @@ var countryCanvas = (function (worldUrl) {
                 _.countries = topojson.feature(_data, _data.objects.countries);
             } else {
                 return _.world;
+            }
+        },
+        allData: function allData(all) {
+            if (all) {
+                _.world = all.world;
+                _.countries = all.countries;
+            } else {
+                var world = _.world,
+                    countries = _.countries;
+
+                return { world: world, countries: countries };
             }
         },
         detectCountry: function detectCountry(pos) {
@@ -1250,7 +1329,7 @@ var dblClickCanvas = (function () {
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                this.hoverCanvas.data(this.worldJson.data());
+                this.dblClickCanvas.allData(this.worldJson.allData());
             }
         },
         onCircle: function onCircle(obj) {
@@ -1271,6 +1350,17 @@ var dblClickCanvas = (function () {
                 _.countries = topojson.feature(_data, _data.objects.countries);
             } else {
                 return _.world;
+            }
+        },
+        allData: function allData(all) {
+            if (all) {
+                _.world = all.world;
+                _.countries = all.countries;
+            } else {
+                var world = _.world,
+                    countries = _.countries;
+
+                return { world: world, countries: countries };
             }
         },
         state: function state() {
@@ -2375,6 +2465,9 @@ var worldCanvas = (function (worldUrl) {
         onCreate: function onCreate() {
             var _this = this;
 
+            if (this.worldJson && !_.world) {
+                this.worldCanvas.allData(this.worldJson.allData());
+            }
             create.call(this);
             if (this.hoverCanvas) {
                 var worldCanvas = function worldCanvas() {
@@ -2406,6 +2499,21 @@ var worldCanvas = (function (worldUrl) {
                 _.countries = topojson.feature(_data, _data.objects.countries);
             } else {
                 return _.world;
+            }
+        },
+        allData: function allData(all) {
+            if (all) {
+                _.world = all.world;
+                _.land = all.land;
+                _.lakes = all.lakes;
+                _.countries = all.countries;
+            } else {
+                var world = _.world,
+                    land = _.land,
+                    lakes = _.lakes,
+                    countries = _.countries;
+
+                return { world: world, land: land, lakes: lakes, countries: countries };
             }
         },
         drawTo: function drawTo(arr) {
@@ -2659,6 +2767,9 @@ var worldSvg = (function (worldUrl) {
             _.svg = __.svg;
         },
         onCreate: function onCreate() {
+            if (this.worldJson && !_.world) {
+                this.worldSvg.allData(this.worldJson.allData());
+            }
             create.call(this);
         },
         onRefresh: function onRefresh() {
@@ -2675,6 +2786,21 @@ var worldSvg = (function (worldUrl) {
                 _.countries = topojson.feature(_data, _data.objects.countries);
             } else {
                 return _.world;
+            }
+        },
+        allData: function allData(all) {
+            if (all) {
+                _.world = all.world;
+                _.land = all.land;
+                _.lakes = all.lakes;
+                _.countries = all.countries;
+            } else {
+                var world = _.world,
+                    land = _.land,
+                    lakes = _.lakes,
+                    countries = _.countries;
+
+                return { world: world, land: land, lakes: lakes, countries: countries };
             }
         },
         selectAll: function selectAll(q) {
@@ -3988,9 +4114,10 @@ var canvasThreejs = (function (worldUrl) {
         if (o.choropleth) {
             var i = _.countries.features.length;
             while (i--) {
+                var obj = _.countries.features[i];
                 _.context.beginPath();
-                _.path(_.countries.features[i]);
-                _.context.fillStyle = "rgb(" + (i + 1) + ",0,0)";
+                _.path(obj);
+                _.context.fillStyle = obj.color || '#8f9fc1'; //"rgb(" + (i+1) + ",0,0)";
                 _.context.fill();
             }
             return true;
@@ -4068,7 +4195,7 @@ var canvasThreejs = (function (worldUrl) {
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                this.canvasThreejs.data(this.worldJson.data());
+                this.canvasThreejs.allData(this.worldJson.allData());
             }
             create.call(this);
         },
@@ -4097,6 +4224,17 @@ var canvasThreejs = (function (worldUrl) {
                 _.countries = topojson.feature(_data, _data.objects.countries);
             } else {
                 return _.world;
+            }
+        },
+        allData: function allData(all) {
+            if (all) {
+                _.world = all.world;
+                _.countries = all.countries;
+            } else {
+                var world = _.world,
+                    countries = _.countries;
+
+                return { world: world, countries: countries };
             }
         },
         style: function style(s) {

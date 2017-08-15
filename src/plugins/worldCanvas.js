@@ -119,6 +119,9 @@ export default worldUrl => {
             options.landColor = 0;
         },
         onCreate() {
+            if (this.worldJson && !_.world) {
+                this.worldCanvas.allData(this.worldJson.allData());
+            }
             create.call(this);
             if (this.hoverCanvas) {
                 const worldCanvas = () => {
@@ -150,6 +153,17 @@ export default worldUrl => {
                 _.countries = topojson.feature(data, data.objects.countries);
             } else {
                 return _.world;
+            }
+        },
+        allData(all) {
+            if (all) {
+                _.world     = all.world;
+                _.land      = all.land;
+                _.lakes     = all.lakes;
+                _.countries = all.countries;
+            } else {
+                const  {world, land, lakes, countries} = _;
+                return {world, land, lakes, countries};
             }
         },
         drawTo(arr) {

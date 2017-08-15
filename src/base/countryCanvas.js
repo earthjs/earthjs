@@ -1,7 +1,7 @@
 // http://bl.ocks.org/syntagmatic/6645345
 export default worldUrl => {
     /*eslint no-console: 0 */
-    const _ = {};
+    const _ = {recreate: true};
 
     function init() {
         _.canvas = d3.select('body').append('canvas')
@@ -15,13 +15,16 @@ export default worldUrl => {
     }
 
     function create() {
-        _.context.clearRect(0, 0, 1024, 512);
-        let i = _.countries.features.length;
-        while (i--) {
-            _.context.beginPath();
-            _.path(_.countries.features[i]);
-            _.context.fillStyle = "rgb(" + (i+1) + ",0,0)";
-            _.context.fill();
+        if (_.recreate) {
+            _.recreate = false;
+            _.context.clearRect(0, 0, 1024, 512);
+            let i = _.countries.features.length;
+            while (i--) {
+                _.context.beginPath();
+                _.path(_.countries.features[i]);
+                _.context.fillStyle = "rgb(" + (i+1) + ",0,0)";
+                _.context.fill();
+            }
         }
     }
 
@@ -36,7 +39,7 @@ export default worldUrl => {
         },
         onCreate() {
             if (this.worldJson && !_.world) {
-                this.countryCanvas.data(this.worldJson.data());
+                this.countryCanvas.allData(this.worldJson.allData());
             }
             create.call(this);
         },
@@ -46,6 +49,15 @@ export default worldUrl => {
                 _.countries = topojson.feature(data, data.objects.countries);
             } else {
                 return  _.world;
+            }
+        },
+        allData(all) {
+            if (all) {
+                _.world     = all.world;
+                _.countries = all.countries;
+            } else {
+                const  {world, countries} = _;
+                return {world, countries};
             }
         },
         detectCountry(pos) {

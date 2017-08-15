@@ -19,7 +19,7 @@ export default csvUrl => {
             const cn = _.countryNames;
             const id = arr[0].split(':');
             const vl = arr[1].split(':');
-            json.objects.countries.geometries.forEach(function(obj) {
+            json.features.forEach(function(obj) {
                 const o = cn.find(x=> ''+obj[id[0]]===x[id[1]] );
                 if (o) {
                     obj[vl[0]] = o[vl[1]];

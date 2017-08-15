@@ -68,9 +68,10 @@ export default (worldUrl, scw=6.279, height=2048) => {
         if (o.choropleth) {
             let i = _.countries.features.length;
             while (i--) {
+                var obj = _.countries.features[i];
                 _.context.beginPath();
-                _.path(_.countries.features[i]);
-                _.context.fillStyle = "rgb(" + (i+1) + ",0,0)";
+                _.path(obj);
+                _.context.fillStyle = obj.color || '#8f9fc1'; //"rgb(" + (i+1) + ",0,0)";
                 _.context.fill();
             }
             return true;
@@ -149,7 +150,7 @@ export default (worldUrl, scw=6.279, height=2048) => {
         },
         onCreate() {
             if (this.worldJson && !_.world) {
-                this.canvasThreejs.data(this.worldJson.data());
+                this.canvasThreejs.allData(this.worldJson.allData());
             }
             create.call(this);
         },
@@ -176,6 +177,15 @@ export default (worldUrl, scw=6.279, height=2048) => {
                 _.countries = topojson.feature(data, data.objects.countries);
             } else {
                 return  _.world;
+            }
+        },
+        allData(all) {
+            if (all) {
+                _.world     = all.world;
+                _.countries = all.countries;
+            } else {
+                const  {world, countries} = _;
+                return {world, countries};
             }
         },
         style(s) {

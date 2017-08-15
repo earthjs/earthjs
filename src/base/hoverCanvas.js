@@ -84,7 +84,7 @@ export default () => {
         },
         onCreate() {
             if (this.worldJson && !_.world) {
-                this.hoverCanvas.data(this.worldJson.data());
+                this.hoverCanvas.allData(this.worldJson.allData());
             }
         },
         onCircle(obj) {
@@ -101,6 +101,15 @@ export default () => {
                 _.countries = topojson.feature(data, data.objects.countries);
             } else {
                 return _.world;
+            }
+        },
+        allData(all) {
+            if (all) {
+                _.world     = all.world;
+                _.countries = all.countries;
+            } else {
+                const  {world, countries} = _;
+                return {world, countries};
             }
         },
         country() {
