@@ -127,7 +127,7 @@ export default (worldUrl, scw=6.279, height=2048) => {
                 _.newContext.fillStyle = _.style.selected || 'rgba(255, 235, 0, 0.4)'; // 'rgba(87, 255, 99, 0.4)';
                 _.newContext.fill();
             }
-            const country = this.hoverCanvas.country();
+            const {country} = this.hoverCanvas.states();
             if (country && !_.selected.features.find(obj=>obj.id===country.id)) {
                 _.newContext.beginPath();
                 _.path2(country);

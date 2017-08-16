@@ -50,7 +50,7 @@ export default worldUrl => {
                         context.fill();
                     }, _.drawTo, _.options);
                 }
-                const country = this.hoverCanvas.country();
+                const {country} = this.hoverCanvas.states();
                 if (country && !_.selected.features.find(obj=>obj.id===country.id)) {
                     this.canvasPlugin.render(function(context, path) {
                         context.beginPath();

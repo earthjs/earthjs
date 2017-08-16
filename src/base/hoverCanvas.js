@@ -49,14 +49,17 @@ export default () => {
                     } else {
                         _.country = findCountry(pos);
                     }
-                    if (_.country && _.ocountry!==_.country && _this.canvasThreejs) {
+                    if (_.ocountry!==_.country && _this.canvasThreejs) {
+                        _.ocountry = _.country;
                         _this.canvasThreejs.refresh();
-                        _.ocountry= _.country;
                     }
                 }
-                _.onCountryVals.forEach(v => {
-                    v.call(this, event, _.country);
-                });
+                if (_.ocountry2!==_.country) {
+                    _.ocountry2 = _.country;
+                    _.onCountryVals.forEach(v => {
+                        v.call(this, event, _.country);
+                    });
+                }
             }
         }
         __.svg.on('mousemove', mouseMoveHandler);
@@ -112,10 +115,7 @@ export default () => {
                 return {world, countries};
             }
         },
-        country() {
-            return _.country;
-        },
-        state() {
+        states() {
             return {
                 pos: _.pos,
                 dot: _.dot,

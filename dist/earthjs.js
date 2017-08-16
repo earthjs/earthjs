@@ -517,14 +517,17 @@ var hoverCanvas = (function () {
                     } else {
                         _.country = findCountry(pos);
                     }
-                    if (_.country && _.ocountry !== _.country && _this.canvasThreejs) {
-                        _this.canvasThreejs.refresh();
+                    if (_.ocountry !== _.country && _this.canvasThreejs) {
                         _.ocountry = _.country;
+                        _this.canvasThreejs.refresh();
                     }
                 }
-                _.onCountryVals.forEach(function (v) {
-                    v.call(_this2, event, _.country);
-                });
+                if (_.ocountry2 !== _.country) {
+                    _.ocountry2 = _.country;
+                    _.onCountryVals.forEach(function (v) {
+                        v.call(_this2, event, _.country);
+                    });
+                }
             }
         };
         __.svg.on('mousemove', mouseMoveHandler);
@@ -586,10 +589,7 @@ var hoverCanvas = (function () {
                 return { world: world, countries: countries };
             }
         },
-        country: function country() {
-            return _.country;
-        },
-        state: function state() {
+        states: function states() {
             return {
                 pos: _.pos,
                 dot: _.dot,
@@ -2404,7 +2404,10 @@ var worldCanvas = (function (worldUrl) {
                         context.fill();
                     }, _.drawTo, _.options);
                 }
-                var country = this.hoverCanvas.country();
+
+                var _hoverCanvas$states = this.hoverCanvas.states(),
+                    country = _hoverCanvas$states.country;
+
                 if (country && !_.selected.features.find(function (obj) {
                     return obj.id === country.id;
                 })) {
@@ -4186,7 +4189,10 @@ var canvasThreejs = (function (worldUrl) {
                 _.newContext.fillStyle = _.style.selected || 'rgba(255, 235, 0, 0.4)'; // 'rgba(87, 255, 99, 0.4)';
                 _.newContext.fill();
             }
-            var country = this.hoverCanvas.country();
+
+            var _hoverCanvas$states = this.hoverCanvas.states(),
+                country = _hoverCanvas$states.country;
+
             if (country && !_.selected.features.find(function (obj) {
                 return obj.id === country.id;
             })) {
