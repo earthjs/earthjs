@@ -3,15 +3,12 @@
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
-    <style>.ej-svg {position: inherit;}</style>
 </head>
 <body>
-    <svg class="ej-svg"></svg>
-    <svg class="ej-svg"></svg>
+    <svg id="earth-js" width="1400" height="1000"/>
     <script>
-        const g = earthjs({selector:'.ej-svg'})
+        const g = earthjs()
         .register(earthjs.plugins.mousePlugin())
-        .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.graticuleSvg())
         .create();
     </script>

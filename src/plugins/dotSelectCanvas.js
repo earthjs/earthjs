@@ -9,8 +9,9 @@ export default () => {
         onDblClickVals: [],
     };
 
-    function detect(mouse, pos) {
+    function detect(pos) {
         let dot = null;
+        const {mouse} = this.hoverCanvas.states();
         _.dots.forEach(function(d) {
             if (mouse && !dot) {
                 const geoDistance = d3.geoDistance(d.coordinates, pos);
@@ -24,10 +25,10 @@ export default () => {
 
     function initCircleHandler() {
         if (this.hoverCanvas) {
-            const hoverHandler = (mouse, pos) => {
-                const dot = detect(mouse, pos);
+            const hoverHandler = (event, pos) => {
+                const dot = detect.call(this, pos);
                 _.onHoverVals.forEach(v => {
-                    v.call(this, mouse, dot);
+                    v.call(this, event, dot);
                 });
                 return dot;
             }
@@ -37,10 +38,10 @@ export default () => {
         }
 
         if (this.clickCanvas) {
-            const clickHandler = (mouse, pos) => {
-                const dot = detect(mouse, pos);
+            const clickHandler = (event, pos) => {
+                const dot = detect.call(this, pos);
                 _.onClickVals.forEach(v => {
-                    v.call(this, mouse, dot);
+                    v.call(this, event, dot);
                 });
                 return dot;
             }
@@ -50,10 +51,10 @@ export default () => {
         }
 
         if (this.dblClickCanvas) {
-            const dblClickHandler = (mouse, pos) => {
-                const dot = detect(mouse, pos);
+            const dblClickHandler = (event, pos) => {
+                const dot = detect(event, pos);
                 _.onDblClickVals.forEach(v => {
-                    v.call(this, mouse, dot);
+                    v.call(this, event, dot);
                 });
                 return dot;
             }

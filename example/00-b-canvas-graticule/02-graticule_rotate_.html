@@ -12,8 +12,8 @@
         const g = earthjs({transparent:true})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.canvasPlugin())
-        .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.graticuleCanvas());
+        .register(earthjs.plugins.graticuleCanvas())
+        .register(earthjs.plugins.autorotatePlugin());
         g.canvasPlugin.selectAll('.ej-canvas');
         g.create();
     </script>

@@ -728,7 +728,7 @@ var clickCanvas = (function () {
 var mousePlugin = (function () {
     var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { zoomScale: [0, 50000] },
         zoomScale = _ref.zoomScale,
-        iDrag = _ref.iDrag;
+        intervalDrag = _ref.intervalDrag;
 
     /*eslint no-console: 0 */
     var _ = { svg: null, q: null, sync: [], mouse: null, wait: null,
@@ -828,7 +828,7 @@ var mousePlugin = (function () {
             __.drag = true;
             _._this = this;
             _.mouse = d3.mouse(this);
-            !iDrag && drag(__);
+            !intervalDrag && drag(__);
             // _.t1+=1; // twice call compare to onInterval
         }
 
@@ -865,7 +865,7 @@ var mousePlugin = (function () {
 
     function interval() {
         var __ = this._;
-        if (__.drag && iDrag) {
+        if (__.drag && intervalDrag) {
             if (_.oMouse[0] !== _.mouse[0] && _.oMouse[1] !== _.mouse[1]) {
                 _.oMouse = _.mouse;
                 drag(__);
@@ -1867,8 +1867,12 @@ var dotSelectCanvas = (function () {
         onDblClickVals: []
     };
 
-    function detect(mouse, pos) {
+    function detect(pos) {
         var dot = null;
+
+        var _hoverCanvas$states = this.hoverCanvas.states(),
+            mouse = _hoverCanvas$states.mouse;
+
         _.dots.forEach(function (d) {
             if (mouse && !dot) {
                 var geoDistance = d3.geoDistance(d.coordinates, pos);
@@ -1884,10 +1888,10 @@ var dotSelectCanvas = (function () {
         var _this = this;
 
         if (this.hoverCanvas) {
-            var hoverHandler = function hoverHandler(mouse, pos) {
-                var dot = detect(mouse, pos);
+            var hoverHandler = function hoverHandler(event, pos) {
+                var dot = detect.call(_this, pos);
                 _.onHoverVals.forEach(function (v) {
-                    v.call(_this, mouse, dot);
+                    v.call(_this, event, dot);
                 });
                 return dot;
             };
@@ -1897,10 +1901,10 @@ var dotSelectCanvas = (function () {
         }
 
         if (this.clickCanvas) {
-            var clickHandler = function clickHandler(mouse, pos) {
-                var dot = detect(mouse, pos);
+            var clickHandler = function clickHandler(event, pos) {
+                var dot = detect.call(_this, pos);
                 _.onClickVals.forEach(function (v) {
-                    v.call(_this, mouse, dot);
+                    v.call(_this, event, dot);
                 });
                 return dot;
             };
@@ -1910,10 +1914,10 @@ var dotSelectCanvas = (function () {
         }
 
         if (this.dblClickCanvas) {
-            var dblClickHandler = function dblClickHandler(mouse, pos) {
-                var dot = detect(mouse, pos);
+            var dblClickHandler = function dblClickHandler(event, pos) {
+                var dot = detect(event, pos);
                 _.onDblClickVals.forEach(function (v) {
-                    v.call(_this, mouse, dot);
+                    v.call(_this, event, dot);
                 });
                 return dot;
             };
@@ -2016,11 +2020,15 @@ var dotTooltipCanvas = (function () {
     function init() {
         var _this = this;
 
-        var hoverHandler = function hoverHandler(mouse, d) {
+        var hoverHandler = function hoverHandler(event, d) {
             if (d) {
                 if (_this.dotTooltipCanvas.onShow) {
                     d = _this.dotTooltipCanvas.onShow.call(_this, d, dotTooltip);
                 }
+
+                var _hoverCanvas$states = _this.hoverCanvas.states(),
+                    mouse = _hoverCanvas$states.mouse;
+
                 _this.dotTooltipCanvas.show(d.properties).style('display', 'block').style('opacity', 1).style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
             } else {
                 dotTooltip.style('opacity', 0).style('display', 'none');
@@ -2378,7 +2386,7 @@ var worldCanvas = (function (worldUrl) {
 
     function create() {
         var __ = this._;
-        if (_.world && __.options.showLand) {
+        if (_.world) {
             if (__.options.transparent || __.options.transparentLand) {
                 this.canvasPlugin.flipRender(function (context, path) {
                     context.beginPath();
@@ -2387,13 +2395,15 @@ var worldCanvas = (function (worldUrl) {
                     context.fill();
                 }, _.drawTo, _.options);
             }
-            if (__.options.showBorder === undefined) {
-                __.options.showCountries ? canvasAddCountries.call(this) : canvasAddWorld.call(this);
+            if (__.options.showLand) {
+                if (!__.options.showCountries || __.drag) {
+                    canvasAddWorld.call(this);
+                } else if (!__.drag) {
+                    canvasAddCountries.call(this);
+                    __.options.showLakes && canvasAddLakes.call(this);
+                }
             } else if (__.options.showBorder) {
                 canvasAddCountries.call(this, true);
-            }
-            if (!__.drag) {
-                __.options.showLakes && canvasAddLakes.call(this);
             }
             if (this.hoverCanvas && __.options.showSelectedCountry) {
                 if (_.selected.features.length > 0) {
@@ -2731,19 +2741,21 @@ var worldSvg = (function (worldUrl) {
 
     function refresh() {
         var __ = this._;
-        if (_.world && __.options.showLand) {
+        if (_.world) {
             if (__.options.transparent || __.options.transparentLand) {
                 __.proj.clipAngle(180);
                 $.worldBg.attr('d', __.path);
                 __.proj.clipAngle(90);
             }
-            if (__.options.showCountries) {
-                $.countries.attr('d', __.path);
-            } else {
-                $.world.attr('d', __.path);
-            }
-            if (__.options.showLakes) {
-                $.lakes.attr('d', __.path);
+            if (__.options.showLand) {
+                if (__.options.showCountries) {
+                    $.countries.attr('d', __.path);
+                } else {
+                    $.world.attr('d', __.path);
+                }
+                if (__.options.showLakes) {
+                    $.lakes.attr('d', __.path);
+                }
             }
         }
     }

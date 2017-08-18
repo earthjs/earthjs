@@ -1,0 +1,17 @@
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+</head>
+<body>
+    <svg id="earth-js"/>
+    <script>
+        const g = earthjs()
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.graticuleSvg())
+        .register(earthjs.plugins.autorotatePlugin())
+        .create();
+    </script>
+</body>
+</html>

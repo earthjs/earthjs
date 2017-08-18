@@ -8,12 +8,13 @@
 <body>
     <svg id="earth-js"></svg>
     <script>
-        const g = earthjs();
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.configPlugin());
-        g.register(earthjs.plugins.autorotatePlugin());
-        g.register(earthjs.plugins.oceanSvg());
-        g.register(earthjs.plugins.worldSvg('../d/world-110m.json'));
+        const g = earthjs()
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.configPlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.oceanSvg())
+        .register(earthjs.plugins.worldCanvas('../d/world-110m.json'))
         g.ready(function(){
             g.create();
         })

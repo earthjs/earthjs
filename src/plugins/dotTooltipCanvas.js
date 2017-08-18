@@ -3,11 +3,12 @@ export default () => {
     const dotTooltip = d3.select('body').append('div').attr('class', 'ej-dot-tooltip');
 
     function init() {
-        const hoverHandler = (mouse, d) => {
+        const hoverHandler = (event, d) => {
             if (d) {
                 if (this.dotTooltipCanvas.onShow) {
                     d = this.dotTooltipCanvas.onShow.call(this, d, dotTooltip);
                 }
+                const {mouse} = this.hoverCanvas.states();
                 this.dotTooltipCanvas.show(d.properties)
                 .style('display', 'block')
                 .style('opacity', 1)

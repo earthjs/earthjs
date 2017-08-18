@@ -22,7 +22,7 @@ export default worldUrl => {
 
     function create() {
         const __ = this._;
-        if (_.world && __.options.showLand) {
+        if (_.world) {
             if (__.options.transparent || __.options.transparentLand) {
                 this.canvasPlugin.flipRender(function(context, path) {
                     context.beginPath();
@@ -31,15 +31,15 @@ export default worldUrl => {
                     context.fill();
                 }, _.drawTo, _.options);
             }
-            if (__.options.showBorder===undefined) {
-                __.options.showCountries ?
-                canvasAddCountries.call(this) :
-                canvasAddWorld.call(this);
+            if (__.options.showLand) {
+                if (!__.options.showCountries || __.drag) {
+                    canvasAddWorld.call(this);
+                } else if (!__.drag) {
+                    canvasAddCountries.call(this);
+                    __.options.showLakes && canvasAddLakes.call(this);
+                }
             } else if (__.options.showBorder) {
                 canvasAddCountries.call(this, true);
-            }
-            if (!__.drag) {
-                __.options.showLakes && canvasAddLakes.call(this);
             }
             if (this.hoverCanvas && __.options.showSelectedCountry) {
                 if (_.selected.features.length>0) {

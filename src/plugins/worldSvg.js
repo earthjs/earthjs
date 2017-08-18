@@ -26,19 +26,21 @@ export default worldUrl => {
 
     function refresh() {
         const __ = this._;
-        if (_.world && __.options.showLand) {
+        if (_.world) {
             if (__.options.transparent || __.options.transparentLand) {
                 __.proj.clipAngle(180);
                 $.worldBg.attr('d', __.path);
                 __.proj.clipAngle(90);
             }
-            if (__.options.showCountries) {
-                $.countries.attr('d', __.path);
-            } else {
-                $.world.attr('d', __.path);
-            }
-            if (__.options.showLakes) {
-                $.lakes.attr('d', __.path);
+            if (__.options.showLand) {
+                if (__.options.showCountries) {
+                    $.countries.attr('d', __.path);
+                } else {
+                    $.world.attr('d', __.path);
+                }
+                if (__.options.showLakes) {
+                    $.lakes.attr('d', __.path);
+                }                
             }
         }
     }

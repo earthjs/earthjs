@@ -1,5 +1,5 @@
 // Mike Bostock’s Block https://bl.ocks.org/mbostock/7ea1dde508cec6d2d95306f92642bc42
-export default ({zoomScale,iDrag}={zoomScale:[0,50000]}) => {
+export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
     /*eslint no-console: 0 */
     const _ = {svg:null, q: null, sync: [], mouse: null, wait: null,
         onDrag: {},
@@ -98,7 +98,7 @@ export default ({zoomScale,iDrag}={zoomScale:[0,50000]}) => {
             __.drag = true;
             _._this = this;
             _.mouse = d3.mouse(this);
-            !iDrag && drag(__);
+            !intervalDrag && drag(__);
             // _.t1+=1; // twice call compare to onInterval
         }
 
@@ -133,7 +133,7 @@ export default ({zoomScale,iDrag}={zoomScale:[0,50000]}) => {
 
     function interval() {
         const __ = this._;
-        if (__.drag && iDrag) {
+        if (__.drag && intervalDrag) {
             if (_.oMouse[0]!==_.mouse[0] &&
                 _.oMouse[1]!==_.mouse[1]) {
                 _.oMouse = _.mouse;

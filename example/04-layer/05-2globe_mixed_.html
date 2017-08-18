@@ -23,7 +23,7 @@
         const g = earthjs();
         g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.autorotatePlugin());
-        g.register(earthjs.plugins.mousePlugin({iDrag:true}));
+        g.register(earthjs.plugins.mousePlugin({intervalDrag:true}));
         g.register(earthjs.plugins.oceanSvg());
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
