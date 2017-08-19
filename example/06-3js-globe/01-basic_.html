@@ -12,7 +12,7 @@
     <svg id="earth-js" class="ej-center" width="1000" height="920"></svg>
     <canvas id="three-js" class="ej-center"></canvas>
     <script>
-        earthjs({scale:300})
+        var g = earthjs({scale:300})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.dropShadowSvg())

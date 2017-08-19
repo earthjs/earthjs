@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+    <style>body {background: #555;}</style>
+</head>
+<body>
+    <svg id="earth-js" class="ej-center" width="1000" height="920"></svg>
+    <canvas id="three-js" class="ej-center"></canvas>
+    <script>
+        var g = earthjs({scale:300})
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.dropShadowSvg())
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.sphereThreejs('../d/world4.jpg'))
+        .create();
+    </script>
+</body>
+</html>
