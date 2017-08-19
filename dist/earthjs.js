@@ -1163,10 +1163,10 @@ var threejsPlugin = (function () {
 
         var container = document.getElementById(threejs);
         _.scale = d3.scaleLinear().domain([0, SCALE]).range([0, 1]);
-        _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 10000);
+        _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 30000);
         _.scene = new THREE.Scene();
         _.group = new THREE.Group();
-        _.camera.position.z = 1010; // (higher than RADIUS + size of the bubble)
+        _.camera.position.z = 3010; // (higher than RADIUS + size of the bubble)
         _.scene.add(_.group);
         this._.camera = _.camera;
 
@@ -4617,6 +4617,7 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
         sphereObject: null,
         track_lines_object: null,
         track_points_object: null,
+        point_size: 150, //scale:30/40 - 300/150
         texture: null
     };
 
@@ -4626,9 +4627,9 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
     var point_spacing = 100;
     var point_opacity = 0.5;
     var point_speed = 1.0;
-    var point_size = 40;
     var point_cache = [];
     var all_tracks = [];
+    var scalePoint = d3.scaleLinear().domain([30, 300]).range([40, _.point_size]);
 
     var PI180 = Math.PI / 180.0;
 
@@ -4765,7 +4766,7 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
                 colors[3 * index + 1] = color.g;
                 colors[3 * index + 2] = color.b;
 
-                sizes[index] = point_size;
+                sizes[index] = _.point_size;
 
                 ++index;
             }
@@ -5012,6 +5013,11 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
         }
     }
 
+    function resize() {
+        var sz = scalePoint(this._.proj.scale());
+        this.flightLine2Threejs.pointSize(sz);
+    }
+
     return {
         name: 'flightLine2Threejs',
         urls: jsonUrl && [jsonUrl],
@@ -5020,6 +5026,9 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
         },
         onInit: function onInit() {
             init.call(this);
+        },
+        onResize: function onResize() {
+            resize.call(this);
         },
         onInterval: function onInterval(t) {
             interval.call(this, t);
@@ -5039,6 +5048,17 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
         },
         sphere: function sphere() {
             return _.sphereObject;
+        },
+        pointSize: function pointSize() {
+            var sz = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _.point_size;
+
+            var pt = _.sphereObject.children[1];
+            var size = pt.geometry.attributes.size;
+
+            size.array = size.array.map(function () {
+                return sz;
+            });
+            size.needsUpdate = true;
         }
     };
 });

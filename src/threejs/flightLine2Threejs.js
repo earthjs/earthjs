@@ -5,7 +5,8 @@ export default (jsonUrl, imgUrl, height) => {
         sphereObject: null,
         track_lines_object: null,
         track_points_object: null,
-        texture: null
+        point_size: 150, //scale:30/40 - 300/150
+        texture: null,
     };
 
     var min_arc_distance = +Infinity;
@@ -14,9 +15,9 @@ export default (jsonUrl, imgUrl, height) => {
     var point_spacing = 100;
     var point_opacity = 0.5;
     var point_speed = 1.0;
-    var point_size  = 40;
     var point_cache = [];
     var all_tracks = [];
+    var scalePoint = d3.scaleLinear().domain([30, 300]).range([40, _.point_size]);
 
     var PI180 = Math.PI / 180.0;
 
@@ -176,7 +177,7 @@ export default (jsonUrl, imgUrl, height) => {
                 colors[3 * index + 1] = color.g;
                 colors[3 * index + 2] = color.b;
 
-                sizes[index] = point_size;
+                sizes[index] = _.point_size;
 
                 ++index;
             }
@@ -406,6 +407,11 @@ export default (jsonUrl, imgUrl, height) => {
         }
     }
 
+    function resize() {
+        const sz = scalePoint(this._.proj.scale());
+        this.flightLine2Threejs.pointSize(sz);
+    }
+
     return {
         name: 'flightLine2Threejs',
         urls: jsonUrl && [jsonUrl],
@@ -414,6 +420,9 @@ export default (jsonUrl, imgUrl, height) => {
         },
         onInit() {
             init.call(this);
+        },
+        onResize() {
+            resize.call(this);
         },
         onInterval(t) {
             interval.call(this, t);
@@ -434,5 +443,11 @@ export default (jsonUrl, imgUrl, height) => {
         sphere() {
             return _.sphereObject;
         },
+        pointSize(sz=_.point_size) {
+            const pt = _.sphereObject.children[1];
+            const {size} = pt.geometry.attributes;
+            size.array = size.array.map(()=>sz);
+            size.needsUpdate = true;
+        }
     }
 }
