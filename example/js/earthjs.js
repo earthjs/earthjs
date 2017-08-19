@@ -1163,10 +1163,10 @@ var threejsPlugin = (function () {
 
         var container = document.getElementById(threejs);
         _.scale = d3.scaleLinear().domain([0, SCALE]).range([0, 1]);
-        _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 50000);
+        _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 10000);
         _.scene = new THREE.Scene();
         _.group = new THREE.Group();
-        _.camera.position.z = 50010; // (higher than RADIUS + size of the bubble)
+        _.camera.position.z = 1010; // (higher than RADIUS + size of the bubble)
         _.scene.add(_.group);
         this._.camera = _.camera;
 
@@ -1177,36 +1177,36 @@ var threejsPlugin = (function () {
         this.renderThree = _renderThree;
     }
 
-    function _scale(direct) {
-        var obj = _.group;
-        var scl = _.scale(this._.proj.scale());
-        obj.scale.x = scl;
-        obj.scale.y = scl;
-        obj.scale.z = scl;
-        _renderThree.call(this, direct);
+    function _scale(obj) {
+        if (!obj) {
+            obj = _.group;
+        }
+        var sc = _.scale(this._.proj.scale());
+        obj.scale.x = sc;
+        obj.scale.y = sc;
+        obj.scale.z = sc;
+        _renderThree.call(this);
     }
 
-    function _rotate(direct) {
+    function _rotate(obj) {
+        if (!obj) {
+            obj = _.group;
+        }
         var __ = this._;
-        var obj = _.group;
         var rt = __.proj.rotate();
         rt[0] -= 90;
         var q1 = __.versor(rt);
         var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
         obj.setRotationFromQuaternion(q2);
-        _renderThree.call(this, direct);
+        _renderThree.call(this);
     }
 
-    var renderThreeX = null;
+    var timeout = null;
     function _renderThree() {
-        var direct = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-
-        if (direct) {
-            _.renderer.render(_.scene, _.camera);
-        } else if (renderThreeX === null) {
-            renderThreeX = setTimeout(function () {
+        if (timeout === null) {
+            timeout = setTimeout(function () {
                 _.renderer.render(_.scene, _.camera);
-                renderThreeX = null;
+                timeout = null;
             }, 0);
         }
     }
@@ -1218,10 +1218,10 @@ var threejsPlugin = (function () {
         },
         onCreate: function onCreate() {
             _.group.children = [];
-            _rotate.call(this);
+            _renderThree.call(this);
         },
         onRefresh: function onRefresh() {
-            _rotate.call(this, true);
+            _rotate.call(this);
         },
         onResize: function onResize() {
             _scale.call(this);
@@ -1229,14 +1229,14 @@ var threejsPlugin = (function () {
         group: function group() {
             return _.group;
         },
-        addGroup: function addGroup(item) {
-            _.group.add(item);
+        addGroup: function addGroup(obj) {
+            _.group.add(obj);
         },
-        scale: function scale() {
-            _scale.call(this);
+        scale: function scale(obj) {
+            _scale.call(this, obj);
         },
-        rotate: function rotate() {
-            _rotate.call(this);
+        rotate: function rotate(obj) {
+            _rotate.call(this, obj);
         },
         vertex: function vertex(point) {
             return _vertex(point);
@@ -1244,8 +1244,8 @@ var threejsPlugin = (function () {
         wireframe: function wireframe(multilinestring, material) {
             return _wireframe(multilinestring, material);
         },
-        renderThree: function renderThree(direct) {
-            _renderThree.call(this, direct);
+        renderThree: function renderThree() {
+            _renderThree.call(this);
         }
     };
 });
