@@ -69,7 +69,7 @@ export default () => {
     }
 
     return {
-        name: 'flattenPlugin',
+        name: 'flattenSvg',
         onInit() {
             init.call(this);
         },

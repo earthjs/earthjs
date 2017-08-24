@@ -4,6 +4,7 @@ import worldJson       from './src/data/worldJson';
 import choroplethCsv   from './src/data/choroplethCsv';
 import countryNamesCsv from './src/data/countryNamesCsv';
 
+import zoomPlugin       from './src/base/zoomPlugin';
 import hoverCanvas      from './src/base/hoverCanvas';
 import clickCanvas      from './src/base/clickCanvas';
 import mousePlugin      from './src/base/mousePlugin';
@@ -22,6 +23,7 @@ import oceanSvg         from './src/svg/oceanSvg';
 import sphereSvg        from './src/svg/sphereSvg';
 import centerSvg        from './src/svg/centerSvg';
 import placesSvg        from './src/svg/placesSvg';
+import flattenSvg       from './src/svg/flattenSvg';
 import fauxGlobeSvg     from './src/svg/fauxGlobeSvg';
 import graticuleSvg     from './src/svg/graticuleSvg';
 import dropShadowSvg    from './src/svg/dropShadowSvg';
@@ -40,8 +42,6 @@ import dotTooltipCanvas     from './src/canvas/dotTooltipCanvas';
 import countrySelectCanvas  from './src/canvas/countrySelectCanvas';
 import countryTooltipCanvas from './src/canvas/countryTooltipCanvas';
 
-import zoomPlugin           from './src/plugins/zoomPlugin';
-import flattenPlugin        from './src/plugins/flattenPlugin';
 
 import barThreejs         from './src/threejs/barThreejs';
 import hmapThreejs        from './src/threejs/hmapThreejs';
@@ -105,7 +105,7 @@ earthjs.plugins= {
     dotsCanvas,
     pingsCanvas,
     centerCanvas,
-    flattenPlugin,
+    flattenSvg,
 
     barThreejs,
     hmapThreejs,

@@ -23,14 +23,14 @@
         g.register(earthjs.plugins.graticuleSvg());
         g.register(earthjs.plugins.worldSvg('../d/world-110m.json'));
         g.register(earthjs.plugins.countryTooltipSvg('../d/world-110m-country-names.tsv'));
-        g.register(earthjs.plugins.flattenPlugin());
+        g.register(earthjs.plugins.flattenSvg());
         g.register(earthjs.plugins.centerSvg());
         g.ready(function(){
             g.create();
         })
 
-        function toMap() {g.flattenPlugin.toMap();}
-        function toGlobe() {g.flattenPlugin.toGlobe();}
+        function toMap() {g.flattenSvg.toMap();}
+        function toGlobe() {g.flattenSvg.toGlobe();}
     </script>
 </body>
 </html>

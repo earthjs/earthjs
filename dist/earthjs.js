@@ -464,6 +464,30 @@ var countryNamesCsv = (function (csvUrl) {
     };
 });
 
+var zoomPlugin = (function () {
+    function init() {
+        var __ = this._;
+        var s0 = __.proj.scale();
+        var wh = [__.options.width, __.options.height];
+
+        __.svg.call(d3.zoom().on('zoom start end', zoom).scaleExtent([0.1, 5]).translateExtent([[0, 0], wh]));
+
+        function zoom() {
+            var t = d3.event.transform;
+            __.proj.scale(s0 * t.k);
+            __.resize();
+            __.refresh();
+        }
+    }
+
+    return {
+        name: 'zoomPlugin',
+        onInit: function onInit() {
+            init.call(this);
+        }
+    };
+});
+
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var hoverCanvas = (function () {
     /*eslint no-console: 0 */
@@ -2210,6 +2234,97 @@ var placesSvg = (function (urlPlaces) {
     };
 });
 
+var flattenSvg = (function () {
+    /*eslint no-console: 0 */
+    var _ = {};
+
+    function init() {
+        var g1 = this._.proj;
+        var g2 = d3.geoEquirectangular().scale(this._.options.width / 6.3).translate(this._.center);
+        _.g1 = g1;
+        _.g2 = g2;
+    }
+
+    function animation() {
+        var _this = this;
+        return _this._.svg.transition().duration(10500).tween('projection', function () {
+            return function (_x) {
+                animation.alpha(_x);
+                _this._.refresh();
+            };
+        });
+    }
+
+    function interpolatedProjection(a, b) {
+        var px = d3.geoProjection(raw).scale(1);
+        var alpha = void 0;
+
+        function raw(lamda, pi) {
+            var pa = a([lamda *= 180 / Math.PI, pi *= 180 / Math.PI]),
+                pb = b([lamda, pi]);
+            return [(1 - alpha) * pa[0] + alpha * pb[0], (alpha - 1) * pa[1] - alpha * pb[1]];
+        }
+
+        animation.alpha = function (_x) {
+            if (!arguments.length) {
+                return alpha;
+            }
+            alpha = +_x;
+            var ca = a.center(),
+                cb = b.center(),
+                ta = a.translate(),
+                tb = b.translate();
+            px.center([(1 - alpha) * ca[0] + alpha * cb[0], (1 - alpha) * ca[1] + alpha * cb[1]]);
+            px.translate([(1 - alpha) * ta[0] + alpha * tb[0], (1 - alpha) * ta[1] + alpha * tb[1]]);
+            return px;
+        };
+        animation.alpha(0);
+        return px;
+    }
+
+    //Rotate to default before animation
+    function defaultRotate() {
+        var __ = this._;
+        return d3.transition().duration(1500).tween('rotate', function () {
+            __.rotate(__.proj.rotate());
+            var r = d3.interpolate(__.proj.rotate(), [0, 0, 0]);
+            return function (t) {
+                __.rotate(r(t));
+            };
+        });
+    }
+
+    return {
+        name: 'flattenSvg',
+        onInit: function onInit() {
+            init.call(this);
+        },
+        toMap: function toMap() {
+            var _this2 = this;
+
+            defaultRotate.call(this).on('end', function () {
+                var proj = interpolatedProjection(_.g1, _.g2);
+                _this2._.path = d3.geoPath().projection(proj);
+                animation.call(_this2).on('end', function () {
+                    _this2._.options.enableCenter = false;
+                });
+            });
+        },
+        toGlobe: function toGlobe() {
+            var _this3 = this;
+
+            this._.rotate([0, 0, 0]);
+            var proj = interpolatedProjection(_.g2, _.g1);
+            this._.path = d3.geoPath().projection(proj);
+            animation.call(this).on('end', function () {
+                _this3._.path = d3.geoPath().projection(_this3._.proj);
+                _this3._.options.enableCenter = true;
+                _this3._.refresh();
+            });
+        }
+    };
+});
+
 // Derek Watkins’s Block http://bl.ocks.org/dwtkns/4686432
 var fauxGlobeSvg = (function () {
     /*eslint no-console: 0 */
@@ -3498,121 +3613,6 @@ var countryTooltipCanvas = (function (countryNameUrl) {
             } else {
                 return _.countryNames;
             }
-        }
-    };
-});
-
-var zoomPlugin = (function () {
-    function init() {
-        var __ = this._;
-        var s0 = __.proj.scale();
-        var wh = [__.options.width, __.options.height];
-
-        __.svg.call(d3.zoom().on('zoom start end', zoom).scaleExtent([0.1, 5]).translateExtent([[0, 0], wh]));
-
-        function zoom() {
-            var t = d3.event.transform;
-            __.proj.scale(s0 * t.k);
-            __.resize();
-            __.refresh();
-        }
-    }
-
-    return {
-        name: 'zoomPlugin',
-        onInit: function onInit() {
-            init.call(this);
-        }
-    };
-});
-
-var flattenPlugin = (function () {
-    /*eslint no-console: 0 */
-    var _ = {};
-
-    function init() {
-        var g1 = this._.proj;
-        var g2 = d3.geoEquirectangular().scale(this._.options.width / 6.3).translate(this._.center);
-        _.g1 = g1;
-        _.g2 = g2;
-    }
-
-    function animation() {
-        var _this = this;
-        return _this._.svg.transition().duration(10500).tween('projection', function () {
-            return function (_x) {
-                animation.alpha(_x);
-                _this._.refresh();
-            };
-        });
-    }
-
-    function interpolatedProjection(a, b) {
-        var px = d3.geoProjection(raw).scale(1);
-        var alpha = void 0;
-
-        function raw(lamda, pi) {
-            var pa = a([lamda *= 180 / Math.PI, pi *= 180 / Math.PI]),
-                pb = b([lamda, pi]);
-            return [(1 - alpha) * pa[0] + alpha * pb[0], (alpha - 1) * pa[1] - alpha * pb[1]];
-        }
-
-        animation.alpha = function (_x) {
-            if (!arguments.length) {
-                return alpha;
-            }
-            alpha = +_x;
-            var ca = a.center(),
-                cb = b.center(),
-                ta = a.translate(),
-                tb = b.translate();
-            px.center([(1 - alpha) * ca[0] + alpha * cb[0], (1 - alpha) * ca[1] + alpha * cb[1]]);
-            px.translate([(1 - alpha) * ta[0] + alpha * tb[0], (1 - alpha) * ta[1] + alpha * tb[1]]);
-            return px;
-        };
-        animation.alpha(0);
-        return px;
-    }
-
-    //Rotate to default before animation
-    function defaultRotate() {
-        var __ = this._;
-        return d3.transition().duration(1500).tween('rotate', function () {
-            __.rotate(__.proj.rotate());
-            var r = d3.interpolate(__.proj.rotate(), [0, 0, 0]);
-            return function (t) {
-                __.rotate(r(t));
-            };
-        });
-    }
-
-    return {
-        name: 'flattenPlugin',
-        onInit: function onInit() {
-            init.call(this);
-        },
-        toMap: function toMap() {
-            var _this2 = this;
-
-            defaultRotate.call(this).on('end', function () {
-                var proj = interpolatedProjection(_.g1, _.g2);
-                _this2._.path = d3.geoPath().projection(proj);
-                animation.call(_this2).on('end', function () {
-                    _this2._.options.enableCenter = false;
-                });
-            });
-        },
-        toGlobe: function toGlobe() {
-            var _this3 = this;
-
-            this._.rotate([0, 0, 0]);
-            var proj = interpolatedProjection(_.g2, _.g1);
-            this._.path = d3.geoPath().projection(proj);
-            animation.call(this).on('end', function () {
-                _this3._.path = d3.geoPath().projection(_this3._.proj);
-                _this3._.options.enableCenter = true;
-                _this3._.refresh();
-            });
         }
     };
 });
@@ -6021,7 +6021,7 @@ earthjs$2.plugins = {
     dotsCanvas: dotsCanvas,
     pingsCanvas: pingsCanvas,
     centerCanvas: centerCanvas,
-    flattenPlugin: flattenPlugin,
+    flattenSvg: flattenSvg,
 
     barThreejs: barThreejs,
     hmapThreejs: hmapThreejs,
