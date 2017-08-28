@@ -1225,12 +1225,16 @@ var threejsPlugin = (function () {
         _renderThree.call(this);
     }
 
-    var timeout = null;
+    var renderThreeX = null;
     function _renderThree() {
-        if (timeout === null) {
-            timeout = setTimeout(function () {
+        var direct = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+        if (direct) {
+            _.renderer.render(_.scene, _.camera);
+        } else if (renderThreeX === null) {
+            renderThreeX = setTimeout(function () {
                 _.renderer.render(_.scene, _.camera);
-                timeout = null;
+                renderThreeX = null;
             }, 0);
         }
     }

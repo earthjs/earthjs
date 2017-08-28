@@ -73,12 +73,14 @@ export default (threejs='three-js') => {
         renderThree.call(this);
     }
 
-    let timeout = null;
-    function renderThree() {
-        if (timeout===null) {
-            timeout = setTimeout(function() {
-                _.renderer.render(_.scene, _.camera);
-                timeout = null;
+    let renderThreeX = null;
+    function renderThree(direct=false) {
+        if (direct) {
+            _.renderer.render(_.scene, _.camera);
+        } else if (renderThreeX===null) {
+            renderThreeX = setTimeout(function() {
+                 _.renderer.render(_.scene, _.camera);
+                renderThreeX = null;
             }, 0);
         }
     }
