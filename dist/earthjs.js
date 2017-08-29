@@ -790,6 +790,10 @@ var mousePlugin = (function () {
     var _ = { svg: null, q: null, sync: [], mouse: null, wait: null,
         onDrag: {},
         onDragVals: [],
+        onDragStart: {},
+        onDragStartVals: [],
+        onDragEnd: {},
+        onDragEndVals: [],
         onClick: {},
         onClickVals: [],
         onDblClick: {},
@@ -867,11 +871,16 @@ var mousePlugin = (function () {
         }
 
         function dragstarted() {
+            var _this2 = this;
+
             var mouse = d3.mouse(this);
             v0 = versor.cartesian(__.proj.invert(mouse));
             r0 = __.proj.rotate();
             q0 = versor(r0);
             __.drag = null;
+            _.onDragStartVals.forEach(function (v) {
+                v.call(_this2, mouse);
+            });
             __.refresh();
             _.mouse = mouse;
             _._this = this;
@@ -889,6 +898,8 @@ var mousePlugin = (function () {
         }
 
         function dragsended() {
+            var _this3 = this;
+
             if (__.drag === null) {
                 _.event = d3.event;
                 if (__.options.spin) {
@@ -914,6 +925,9 @@ var mousePlugin = (function () {
                 });
             }
             __.drag = false;
+            _.onDragEndVals.forEach(function (v) {
+                v.call(_this3, _.mouse);
+            });
             __.refresh();
             // console.log('ttl:',_.t1,_.t2);
         }
@@ -964,6 +978,18 @@ var mousePlugin = (function () {
             Object.assign(_.onDrag, obj);
             _.onDragVals = Object.keys(_.onDrag).map(function (k) {
                 return _.onDrag[k];
+            });
+        },
+        onDragStart: function onDragStart(obj) {
+            Object.assign(_.onDragStart, obj);
+            _.onDragStartVals = Object.keys(_.onDragStart).map(function (k) {
+                return _.onDragStart[k];
+            });
+        },
+        onDragEnd: function onDragEnd(obj) {
+            Object.assign(_.onDragEnd, obj);
+            _.onDragEndVals = Object.keys(_.onDragEnd).map(function (k) {
+                return _.onDragEnd[k];
             });
         },
         onClick: function onClick(obj) {
@@ -4659,7 +4685,7 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
         sphereObject: null,
         track_lines_object: null,
         track_points_object: null,
-        point_size: 250, //scale:30/40 - 300/150
+        point_size: 150, //scale:30/40 - 300/150
         linewidth: 3,
         texture: null
     };
@@ -5185,7 +5211,8 @@ var oceanThreejs = (function (color) {
     if (color) {
         _.material = new THREE.MeshBasicMaterial({
             transparent: true,
-            color: color });
+            color: color //'#555',
+        });
     } else {
         _.material = new THREE.MeshNormalMaterial({
             transparent: false,
@@ -5290,7 +5317,9 @@ var worldThreejs = (function () {
             var mesh = topojson.mesh(_.world, _.world.objects.countries);
             var material = new THREE.MeshBasicMaterial({
                 // side: THREE.DoubleSide,
-                color: 0x707070 });
+                color: 0x707070 //0xefedea,
+                // overdraw: 0.25,
+            });
             // material
             // var material = new THREE.MeshPhongMaterial( {
             //     color: 0xff0000,

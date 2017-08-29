@@ -4,6 +4,10 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
     const _ = {svg:null, q: null, sync: [], mouse: null, wait: null,
         onDrag: {},
         onDragVals: [],
+        onDragStart: {},
+        onDragStartVals: [],
+        onDragEnd: {},
+        onDragEndVals: [],
         onClick: {},
         onClickVals: [],
         onDblClick: {},
@@ -87,6 +91,9 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
             r0 = __.proj.rotate();
             q0 = versor(r0);
             __.drag = null;
+            _.onDragStartVals.forEach(v => {
+                v.call(this, mouse);
+            });
             __.refresh();
             _.mouse = mouse;
             _._this = this;
@@ -126,6 +133,9 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
                 _.sync.forEach(g=>rotate.call(g, _.r));
             }
             __.drag = false;
+            _.onDragEndVals.forEach(v => {
+                v.call(this, _.mouse);
+            });
             __.refresh();
             // console.log('ttl:',_.t1,_.t2);
         }
@@ -180,6 +190,14 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
         onDrag(obj) {
             Object.assign(_.onDrag, obj);
             _.onDragVals = Object.keys(_.onDrag).map(k => _.onDrag[k]);
+        },
+        onDragStart(obj) {
+            Object.assign(_.onDragStart, obj);
+            _.onDragStartVals = Object.keys(_.onDragStart).map(k => _.onDragStart[k]);
+        },
+        onDragEnd(obj) {
+            Object.assign(_.onDragEnd, obj);
+            _.onDragEndVals = Object.keys(_.onDragEnd).map(k => _.onDragEnd[k]);
         },
         onClick(obj) {
             Object.assign(_.onClick, obj);
