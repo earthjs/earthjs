@@ -4659,7 +4659,8 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
         sphereObject: null,
         track_lines_object: null,
         track_points_object: null,
-        point_size: 150, //scale:30/40 - 300/150
+        point_size: 250, //scale:30/40 - 300/150
+        linewidth: 3,
         texture: null
     };
 
@@ -4891,7 +4892,7 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
         depthWrite: false,
         depthTest: true,
         color: 0xffffff,
-        linewidth: 0.2
+        linewidth: _.linewidth
     });
     function generate_track_lines() {
         var geometry = new THREE.BufferGeometry();
@@ -5009,11 +5010,9 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
         generateControlPoints(_.SCALE + 5);
         group.add(generate_track_lines());
         group.add(generate_point_cloud());
+        group.name = 'flightLine2Threejs';
         _.sphereObject = group;
         _.loaded = true;
-
-        var tj = this.threejsPlugin;
-        tj.addGroup(_.sphereObject);
     }
 
     function init() {
@@ -5041,9 +5040,25 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
             loadFlights.call(this);
         } else if (_.sphereObject) {
             _.sphereObject.visible = o.showFlightLine;
-            var tj = this.threejsPlugin;
-            tj.addGroup(_.sphereObject);
         }
+        var tj = this.threejsPlugin;
+        tj.addGroup(_.sphereObject);
+    }
+
+    function _reload() {
+        all_tracks = [];
+        point_cache = [];
+        console.log('done reload');
+        var tj = this.threejsPlugin;
+        loadFlights.call(this);
+        var grp = tj.group();
+        var arr = grp.children;
+        var idx = arr.findIndex(function (obj) {
+            return obj.name === 'flightLine2Threejs';
+        });
+        grp.remove(arr[idx]);
+        grp.add(_.sphereObject);
+        tj.renderThree();
     }
 
     var start = 0;
@@ -5080,6 +5095,9 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
         },
         onRefresh: function onRefresh() {
             _.sphereObject.visible = this._.options.showFlightLine;
+        },
+        reload: function reload() {
+            _reload.call(this);
         },
         data: function data(_data) {
             if (_data) {

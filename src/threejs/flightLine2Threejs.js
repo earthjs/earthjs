@@ -6,6 +6,7 @@ export default (jsonUrl, imgUrl, height) => {
         track_lines_object: null,
         track_points_object: null,
         point_size: 150, //scale:30/40 - 300/150
+        linewidth: 3,
         texture: null,
     };
 
@@ -256,7 +257,7 @@ export default (jsonUrl, imgUrl, height) => {
         depthWrite: false,
         depthTest: true,
         color: 0xffffff,
-        linewidth: 0.2
+        linewidth: _.linewidth
     });
     function generate_track_lines() {
         var geometry = new THREE.BufferGeometry();
@@ -360,11 +361,9 @@ export default (jsonUrl, imgUrl, height) => {
         generateControlPoints(_.SCALE+5);
         group.add(generate_track_lines());
         group.add(generate_point_cloud());
+        group.name = 'flightLine2Threejs';
         _.sphereObject = group;
         _.loaded = true;
-
-        const tj = this.threejsPlugin;
-        tj.addGroup(_.sphereObject);
     }
 
     function init() {
@@ -393,9 +392,23 @@ export default (jsonUrl, imgUrl, height) => {
             loadFlights.call(this);
         } else if (_.sphereObject) {
             _.sphereObject.visible = o.showFlightLine;
-            const tj = this.threejsPlugin;
-            tj.addGroup(_.sphereObject);
         }
+        const tj = this.threejsPlugin;
+        tj.addGroup(_.sphereObject);
+    }
+
+    function reload() {
+        all_tracks = [];
+        point_cache = [];
+        console.log('done reload');
+        const tj = this.threejsPlugin;
+        loadFlights.call(this);
+        var grp = tj.group();
+        var arr = grp.children;
+        var idx = arr.findIndex(obj=>obj.name==='flightLine2Threejs');
+        grp.remove(arr[idx]);
+        grp.add(_.sphereObject);
+        tj.renderThree();
     }
 
     var start = 0;
@@ -432,6 +445,9 @@ export default (jsonUrl, imgUrl, height) => {
         },
         onRefresh() {
             _.sphereObject.visible = this._.options.showFlightLine;
+        },
+        reload() {
+            reload.call(this);
         },
         data(data) {
             if (data) {
