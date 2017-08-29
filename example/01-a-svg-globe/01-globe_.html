@@ -14,6 +14,9 @@
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.oceanSvg())
         .register(earthjs.plugins.worldSvg('../d/world-110m.json'));
+        var o = g._.options;
+        g.mousePlugin.onDragStart({app() {o.showCountries = false;}});
+        g.mousePlugin.onDragEnd(  {app() {o.showCountries = true; }});
         g.ready(function(){
             g.create();
         })

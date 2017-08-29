@@ -18,6 +18,19 @@
         .register(earthjs.plugins.graticuleCanvas())
         .register(earthjs.plugins.worldCanvas('../d/world-110m.json'))
         .register(earthjs.plugins.fauxGlobeSvg());
+        var o = g._.options;
+        g.mousePlugin.onDragStart({
+            app() {
+                o.showCountries = false;
+                o.transparent = false;
+            }
+        });
+        g.mousePlugin.onDragEnd({
+            app() {
+                o.showCountries = true;
+                o.transparent = true;
+            }
+        });
         g.ready(function(){
             g.create();
         })

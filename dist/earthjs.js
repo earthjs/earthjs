@@ -1823,8 +1823,18 @@ var worldSvg = (function (worldUrl) {
             }
             if (__.options.showLand) {
                 if (__.options.showCountries) {
+                    if (!$.countries) {
+                        $.world.remove();
+                        $.world = null;
+                        svgAddCountries();
+                    }
                     $.countries.attr('d', __.path);
                 } else {
+                    if (!$.world) {
+                        $.countries.remove();
+                        $.countries = null;
+                        svgAddWorld();
+                    }
                     $.world.attr('d', __.path);
                 }
                 if (__.options.showLakes) {
