@@ -32,11 +32,13 @@ export default worldUrl => {
                 }, _.drawTo, _.options);
             }
             if (__.options.showLand) {
-                if (!__.options.showCountries || __.drag) {
-                    canvasAddWorld.call(this);
-                } else if (!__.drag) {
+                if (__.options.showCountries) {
                     canvasAddCountries.call(this);
-                    __.options.showLakes && canvasAddLakes.call(this);
+                } else  {
+                    canvasAddWorld.call(this);
+                }
+                if (!__.drag && __.options.showLakes) {
+                    canvasAddLakes.call(this);
                 }
             } else if (__.options.showBorder) {
                 canvasAddCountries.call(this, true);
@@ -79,11 +81,11 @@ export default worldUrl => {
             context.beginPath();
             path(_.countries);
             if (!border) {
-                context.fillStyle = _.style.land || (typeof(c)==='number' ? color[c] : c);
+                context.fillStyle =  _.style.countries || _.style.land || (typeof(c)==='number' ? color[c] : c);
                 context.fill();
             }
             context.lineWidth = 0.1;
-            context.strokeStyle = _.style.countries || 'rgb(239, 237, 234)';
+            context.strokeStyle = _.style.border || 'rgb(239, 237, 234)';
             context.stroke();
         }, _.drawTo, _.options);
     }
@@ -135,8 +137,12 @@ export default worldUrl => {
         onRefresh() {
             create.call(this);
         },
-        countries() {
-            return _.countries.features;
+        countries(arr) {
+            if (arr) {
+                _.countries.features = arr;
+            } else {
+                return _.countries.features;
+            }
         },
         selectedCountries(arr) {
             if (arr) {

@@ -332,6 +332,38 @@ if (window.d3 === undefined) {
 }
 window.d3.earthjs = earthjs$2;
 
+var baseCsv = (function (csvUrl) {
+    /*eslint no-console: 0 */
+    var _ = { data: null };
+
+    return {
+        name: 'baseCsv',
+        urls: csvUrl && [csvUrl],
+        onReady: function onReady(err, csv) {
+            this.baseCsv.data(csv);
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.data = _data;
+            } else {
+                return _.data;
+            }
+        },
+        message: function message(fn) {
+            _.data = _.data.map(fn);
+        },
+        allData: function allData(all) {
+            if (all) {
+                _.data = all.data;
+            } else {
+                var data = _.data;
+
+                return { data: data };
+            }
+        }
+    };
+});
+
 var worldJson = (function (jsonUrl) {
     /*eslint no-console: 0 */
     var _ = { world: null };
@@ -1742,7 +1774,7 @@ var worldSvg = (function (worldUrl) {
                 if (__.options.transparent || __.options.transparentLand) {
                     _.svgAddWorldBg.call(this);
                 }
-                if (!__.drag && __.options.showCountries) {
+                if (__.options.showCountries) {
                     _.svgAddCountries.call(this);
                 } else {
                     _.svgAddWorld.call(this);
@@ -2960,11 +2992,13 @@ var worldCanvas = (function (worldUrl) {
                 }, _.drawTo, _.options);
             }
             if (__.options.showLand) {
-                if (!__.options.showCountries || __.drag) {
-                    canvasAddWorld.call(this);
-                } else if (!__.drag) {
+                if (__.options.showCountries) {
                     canvasAddCountries.call(this);
-                    __.options.showLakes && canvasAddLakes.call(this);
+                } else {
+                    canvasAddWorld.call(this);
+                }
+                if (!__.drag && __.options.showLakes) {
+                    canvasAddLakes.call(this);
                 }
             } else if (__.options.showBorder) {
                 canvasAddCountries.call(this, true);
@@ -3014,11 +3048,11 @@ var worldCanvas = (function (worldUrl) {
             context.beginPath();
             path(_.countries);
             if (!border) {
-                context.fillStyle = _.style.land || (typeof c === 'number' ? color[c] : c);
+                context.fillStyle = _.style.countries || _.style.land || (typeof c === 'number' ? color[c] : c);
                 context.fill();
             }
             context.lineWidth = 0.1;
-            context.strokeStyle = _.style.countries || 'rgb(239, 237, 234)';
+            context.strokeStyle = _.style.border || 'rgb(239, 237, 234)';
             context.stroke();
         }, _.drawTo, _.options);
     }
@@ -3074,8 +3108,12 @@ var worldCanvas = (function (worldUrl) {
         onRefresh: function onRefresh() {
             create.call(this);
         },
-        countries: function countries() {
-            return _.countries.features;
+        countries: function countries(arr) {
+            if (arr) {
+                _.countries.features = arr;
+            } else {
+                return _.countries.features;
+            }
         },
         selectedCountries: function selectedCountries(arr) {
             if (arr) {
@@ -5129,8 +5167,7 @@ var oceanThreejs = (function (color) {
     if (color) {
         _.material = new THREE.MeshBasicMaterial({
             transparent: true,
-            color: color //'#555',
-        });
+            color: color });
     } else {
         _.material = new THREE.MeshNormalMaterial({
             transparent: false,
@@ -5235,9 +5272,7 @@ var worldThreejs = (function () {
             var mesh = topojson.mesh(_.world, _.world.objects.countries);
             var material = new THREE.MeshBasicMaterial({
                 // side: THREE.DoubleSide,
-                color: 0x707070 //0xefedea,
-                // overdraw: 0.25,
-            });
+                color: 0x707070 });
             // material
             // var material = new THREE.MeshPhongMaterial( {
             //     color: 0xff0000,
@@ -5986,6 +6021,7 @@ var selectCountryMix = (function () {
 });
 
 earthjs$2.plugins = {
+    baseCsv: baseCsv,
     worldJson: worldJson,
     choroplethCsv: choroplethCsv,
     countryNamesCsv: countryNamesCsv,

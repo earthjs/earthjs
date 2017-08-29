@@ -1,5 +1,6 @@
 import earthjs from './src/earthjs';
 
+import baseCsv         from './src/data/baseCsv';
 import worldJson       from './src/data/worldJson';
 import choroplethCsv   from './src/data/choroplethCsv';
 import countryNamesCsv from './src/data/countryNamesCsv';
@@ -66,6 +67,7 @@ import commonPlugins    from './src/mixed/commonPlugins';
 import selectCountryMix from './src/mixed/selectCountryMix';
 
 earthjs.plugins= {
+    baseCsv,
     worldJson,
     choroplethCsv,
     countryNamesCsv,

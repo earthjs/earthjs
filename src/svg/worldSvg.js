@@ -11,7 +11,7 @@ export default worldUrl => {
                 if (__.options.transparent || __.options.transparentLand) {
                     _.svgAddWorldBg.call(this);
                 }
-                if (!__.drag && __.options.showCountries) {
+                if (__.options.showCountries) {
                     _.svgAddCountries.call(this);
                 } else {
                     _.svgAddWorld.call(this);
@@ -40,7 +40,7 @@ export default worldUrl => {
                 }
                 if (__.options.showLakes) {
                     $.lakes.attr('d', __.path);
-                }                
+                }
             }
         }
     }
