@@ -1,6 +1,12 @@
 export default jsonUrl => {
     /*eslint no-console: 0 */
-    const _ = {world: null};
+    const _ = {
+        world:  null,
+        land:   null,
+        lakes:     {type: 'FeatureCollection', features:[]},
+        selected:  {type: 'FeatureCollection', features:[]},
+        countries: {type: 'FeatureCollection', features:[]},
+    };
 
     return {
         name: 'worldJson',
@@ -10,10 +16,10 @@ export default jsonUrl => {
         },
         data(data) {
             if (data) {
-                _.world     = data;
-                _.land      = topojson.feature(data, data.objects.land);
-                _.lakes     = topojson.feature(data, data.objects.ne_110m_lakes);
-                _.countries = topojson.feature(data, data.objects.countries);
+                _.world = data;
+                _.land  = topojson.feature(data, data.objects.land);
+                _.lakes.features = topojson.feature(data, data.objects.ne_110m_lakes).features;
+                _.countries.features = topojson.feature(data, data.objects.countries).features;
             } else {
                 return _.world;
             }

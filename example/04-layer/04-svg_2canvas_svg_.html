@@ -42,6 +42,7 @@
 
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.graticuleCanvas());
+        g.graticuleCanvas.style({line:'rgb(10,10,10)'});
 
         // g.register(earthjs.plugins.placesSvg('../d/places.json'));
         g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
@@ -54,19 +55,16 @@
         g.fauxGlobeSvg.selectAll('.ej-svg');
 
         g.register(earthjs.plugins.barSvg('../d/bars.json'));
-        g.barSvg.selectAll('#earth-js2');
+        g.barSvg.selectAll('.ej-svg');
         g.barSvg.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
             g.barSvg.data(json);
         };
-
         // g.placesSvg.selectAll('#earth-js2');
+        g._.options.showCountries = false;
+        g._.options.showLakes = false;
         g.ready(function(){
-            // g.create();
-            g.configPlugin.set({
-                showCountries: false,
-                showLakes: false
-            });
+            g.create();
         });
 
         const canvas = d3.selectAll('canvas').nodes();

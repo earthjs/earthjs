@@ -177,9 +177,9 @@ var earthjs$2 = function earthjs() {
                 return _.loadingData;
             }
         },
-        register: function register(obj) {
-            var ar = {};
-            globe[obj.name] = ar;
+        register: function register(obj, name) {
+            var ar = { name: name || obj.name };
+            globe[ar.name] = ar;
             Object.keys(obj).forEach(function (fn) {
                 if (['urls', 'onReady', 'onInit', 'onCreate', 'onRefresh', 'onResize', 'onInterval'].indexOf(fn) === -1) {
                     if (typeof obj[fn] === 'function') {
@@ -190,15 +190,15 @@ var earthjs$2 = function earthjs() {
                 }
             });
             if (obj.onInit) {
-                obj.onInit.call(globe);
+                obj.onInit.call(globe, ar);
             }
-            qEvent(obj, 'onCreate');
-            qEvent(obj, 'onResize');
-            qEvent(obj, 'onRefresh');
-            qEvent(obj, 'onInterval');
+            qEvent(obj, 'onCreate', ar.name);
+            qEvent(obj, 'onResize', ar.name);
+            qEvent(obj, 'onRefresh', ar.name);
+            qEvent(obj, 'onInterval', ar.name);
             if (obj.urls && obj.onReady) {
                 _.promeses.push({
-                    name: obj.name,
+                    name: ar.name,
                     urls: obj.urls,
                     onReady: obj.onReady
                 });
@@ -317,9 +317,9 @@ var earthjs$2 = function earthjs() {
     __.path = d3.geoPath().projection(__.proj);
     return globe;
     //----------------------------------------
-    function qEvent(obj, qname) {
+    function qEvent(obj, qname, name) {
         if (obj[qname]) {
-            _[qname][obj.name] = obj[qname];
+            _[qname][name || obj.name] = obj[qname];
             _[qname + 'Keys'] = Object.keys(_[qname]);
             _[qname + 'Vals'] = _[qname + 'Keys'].map(function (k) {
                 return _[qname][k];
@@ -366,7 +366,13 @@ var baseCsv = (function (csvUrl) {
 
 var worldJson = (function (jsonUrl) {
     /*eslint no-console: 0 */
-    var _ = { world: null };
+    var _ = {
+        world: null,
+        land: null,
+        lakes: { type: 'FeatureCollection', features: [] },
+        selected: { type: 'FeatureCollection', features: [] },
+        countries: { type: 'FeatureCollection', features: [] }
+    };
 
     return {
         name: 'worldJson',
@@ -378,8 +384,8 @@ var worldJson = (function (jsonUrl) {
             if (_data) {
                 _.world = _data;
                 _.land = topojson.feature(_data, _data.objects.land);
-                _.lakes = topojson.feature(_data, _data.objects.ne_110m_lakes);
-                _.countries = topojson.feature(_data, _data.objects.countries);
+                _.lakes.features = topojson.feature(_data, _data.objects.ne_110m_lakes).features;
+                _.countries.features = topojson.feature(_data, _data.objects.countries).features;
             } else {
                 return _.world;
             }
@@ -1817,9 +1823,15 @@ var worldSvg = (function (worldUrl) {
         var __ = this._;
         if (_.world) {
             if (__.options.transparent || __.options.transparentLand) {
+                if (!$.worldBg) {
+                    svgAddWorldBg();
+                }
                 __.proj.clipAngle(180);
                 $.worldBg.attr('d', __.path);
                 __.proj.clipAngle(90);
+            } else if ($.worldBg) {
+                $.worldBg.remove();
+                $.worldBg = null;
             }
             if (__.options.showLand) {
                 if (__.options.showCountries) {
@@ -3005,15 +3017,15 @@ var worldCanvas = (function (worldUrl) {
         4: 'rgba(153,126, 87, 0.6)',
         5: 'rgba(155,141,115, 0.6)' };
     var _ = {
-        world: null,
         style: {},
         options: {},
-        drawTo: null,
         landColor: 0,
-        selected: {
-            type: 'FeatureCollection',
-            features: []
-        }
+        drawTo: null,
+        world: null,
+        land: null,
+        lakes: { type: 'FeatureCollection', features: [] },
+        selected: { type: 'FeatureCollection', features: [] },
+        countries: { type: 'FeatureCollection', features: [] }
     };
 
     function create() {
@@ -3028,7 +3040,7 @@ var worldCanvas = (function (worldUrl) {
                 }, _.drawTo, _.options);
             }
             if (__.options.showLand) {
-                if (__.options.showCountries) {
+                if (__.options.showCountries || _.me.showCountries) {
                     canvasAddCountries.call(this);
                 } else {
                     canvasAddWorld.call(this);
@@ -3106,7 +3118,7 @@ var worldCanvas = (function (worldUrl) {
         name: 'worldCanvas',
         urls: worldUrl && [worldUrl],
         onReady: function onReady(err, data) {
-            this.worldCanvas.data(data);
+            _.me.data(data);
             Object.defineProperty(this._.options, 'landColor', {
                 get: function get() {
                     return _.landColor;
@@ -3116,7 +3128,8 @@ var worldCanvas = (function (worldUrl) {
                 }
             });
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             var options = this._.options;
             options.showLand = true;
             options.showLakes = true;
@@ -3129,16 +3142,17 @@ var worldCanvas = (function (worldUrl) {
             var _this = this;
 
             if (this.worldJson && !_.world) {
-                this.worldCanvas.allData(this.worldJson.allData());
+                _.me.allData(this.worldJson.allData());
             }
             create.call(this);
             if (this.hoverCanvas) {
-                var worldCanvas = function worldCanvas() {
+                var hover = {};
+                hover[_.me.name] = function () {
                     if (!_this._.options.spin) {
                         _this._.refresh();
                     }
                 };
-                this.hoverCanvas.onCountry({ worldCanvas: worldCanvas });
+                this.hoverCanvas.onCountry(hover);
             }
         },
         onRefresh: function onRefresh() {
@@ -3162,8 +3176,8 @@ var worldCanvas = (function (worldUrl) {
             if (_data) {
                 _.world = _data;
                 _.land = topojson.feature(_data, _data.objects.land);
-                _.lakes = topojson.feature(_data, _data.objects.ne_110m_lakes);
-                _.countries = topojson.feature(_data, _data.objects.countries);
+                _.lakes.features = topojson.feature(_data, _data.objects.ne_110m_lakes).features;
+                _.countries.features = topojson.feature(_data, _data.objects.countries).features;
             } else {
                 return _.world;
             }

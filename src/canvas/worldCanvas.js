@@ -9,15 +9,15 @@ export default worldUrl => {
         4:'rgba(153,126, 87, 0.6)',
         5:'rgba(155,141,115, 0.6)'}
     const _ = {
-        world: null,
-        style: {},
+        style:   {},
         options: {},
-        drawTo: null,
         landColor: 0,
-        selected: {
-            type: 'FeatureCollection',
-            features:[]
-        },
+        drawTo: null,
+        world:  null,
+        land:   null,
+        lakes:     {type: 'FeatureCollection', features:[]},
+        selected:  {type: 'FeatureCollection', features:[]},
+        countries: {type: 'FeatureCollection', features:[]},
     };
 
     function create() {
@@ -32,7 +32,7 @@ export default worldUrl => {
                 }, _.drawTo, _.options);
             }
             if (__.options.showLand) {
-                if (__.options.showCountries) {
+                if (__.options.showCountries || _.me.showCountries) {
                     canvasAddCountries.call(this);
                 } else  {
                     canvasAddWorld.call(this);
@@ -103,7 +103,7 @@ export default worldUrl => {
         name: 'worldCanvas',
         urls: worldUrl && [worldUrl],
         onReady(err, data) {
-            this.worldCanvas.data(data);
+            _.me.data(data);
             Object.defineProperty(this._.options, 'landColor', {
                 get: () => _.landColor,
                 set: (x) => {
@@ -111,7 +111,8 @@ export default worldUrl => {
                 }
             });
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             const options = this._.options;
             options.showLand = true;
             options.showLakes = true;
@@ -122,16 +123,17 @@ export default worldUrl => {
         },
         onCreate() {
             if (this.worldJson && !_.world) {
-                this.worldCanvas.allData(this.worldJson.allData());
+                _.me.allData(this.worldJson.allData());
             }
             create.call(this);
             if (this.hoverCanvas) {
-                const worldCanvas = () => {
+                const hover = {};
+                hover[_.me.name] = () => {
                     if (!this._.options.spin) {
                         this._.refresh()
                     }
                 };
-                this.hoverCanvas.onCountry({worldCanvas});
+                this.hoverCanvas.onCountry(hover);
             }
         },
         onRefresh() {
@@ -154,9 +156,9 @@ export default worldUrl => {
         data(data) {
             if (data) {
                 _.world = data;
-                _.land = topojson.feature(data, data.objects.land);
-                _.lakes = topojson.feature(data, data.objects.ne_110m_lakes);
-                _.countries = topojson.feature(data, data.objects.countries);
+                _.land  = topojson.feature(data, data.objects.land);
+                _.lakes.features = topojson.feature(data, data.objects.ne_110m_lakes).features;
+                _.countries.features = topojson.feature(data, data.objects.countries).features;
             } else {
                 return _.world;
             }

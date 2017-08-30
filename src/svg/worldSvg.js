@@ -28,9 +28,15 @@ export default worldUrl => {
         const __ = this._;
         if (_.world) {
             if (__.options.transparent || __.options.transparentLand) {
+                if (!$.worldBg) {
+                    svgAddWorldBg();
+                }
                 __.proj.clipAngle(180);
                 $.worldBg.attr('d', __.path);
                 __.proj.clipAngle(90);
+            } else if ($.worldBg) {
+                $.worldBg.remove();
+                $.worldBg = null;
             }
             if (__.options.showLand) {
                 if (__.options.showCountries) {

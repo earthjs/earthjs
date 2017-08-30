@@ -100,9 +100,9 @@ const earthjs = (options={}) => {
                 return _.loadingData;
             }
         },
-        register(obj) {
-            const ar = {};
-            globe[obj.name] = ar;
+        register(obj, name) {
+            const ar = {name: name || obj.name};
+            globe[ar.name] = ar;
             Object.keys(obj).forEach(function(fn) {
                 if ([
                     'urls',
@@ -120,15 +120,15 @@ const earthjs = (options={}) => {
                 }
             });
             if (obj.onInit) {
-                obj.onInit.call(globe);
+                obj.onInit.call(globe, ar);
             }
-            qEvent(obj,'onCreate');
-            qEvent(obj,'onResize');
-            qEvent(obj,'onRefresh');
-            qEvent(obj,'onInterval');
+            qEvent(obj,'onCreate', ar.name);
+            qEvent(obj,'onResize', ar.name);
+            qEvent(obj,'onRefresh', ar.name);
+            qEvent(obj,'onInterval', ar.name);
             if (obj.urls && obj.onReady) {
                 _.promeses.push({
-                    name: obj.name,
+                    name: ar.name,
                     urls: obj.urls,
                     onReady: obj.onReady
                 });
@@ -247,9 +247,9 @@ const earthjs = (options={}) => {
     __.path = d3.geoPath().projection(__.proj);
     return globe;
     //----------------------------------------
-    function qEvent(obj, qname) {
+    function qEvent(obj, qname, name) {
         if (obj[qname]) {
-            _[qname][obj.name] = obj[qname];
+            _[qname][name || obj.name] = obj[qname];
             _[qname+'Keys'] = Object.keys(_[qname]);
             _[qname+'Vals'] = _[qname+'Keys'].map(k => _[qname][k]);
         }
