@@ -503,6 +503,9 @@ var countryNamesCsv = (function (csvUrl) {
 });
 
 var zoomPlugin = (function () {
+    /*eslint no-console: 0 */
+    var _ = {};
+
     function init() {
         var __ = this._;
         var s0 = __.proj.scale();
@@ -520,7 +523,8 @@ var zoomPlugin = (function () {
 
     return {
         name: 'zoomPlugin',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         }
     };
@@ -612,12 +616,13 @@ var hoverCanvas = (function () {
 
     return {
         name: 'hoverCanvas',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                this.hoverCanvas.allData(this.worldJson.allData());
+                _.me.allData(this.worldJson.allData());
             }
         },
         onCircle: function onCircle(obj) {
@@ -736,12 +741,13 @@ var clickCanvas = (function () {
 
     return {
         name: 'clickCanvas',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                this.clickCanvas.allData(this.worldJson.allData());
+                _.me.allData(this.worldJson.allData());
             }
         },
         onCircle: function onCircle(obj) {
@@ -955,7 +961,8 @@ var mousePlugin = (function () {
 
     return {
         name: 'mousePlugin',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             _.oMouse = [];
             var __ = this._;
             _.svg = __.svg;
@@ -1073,7 +1080,8 @@ var canvasPlugin = (function () {
 
     return {
         name: 'canvasPlugin',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -1122,14 +1130,14 @@ var canvasPlugin = (function () {
             var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
             // __.proj.clipAngle(180);
-            // this.canvasPlugin.render(function(context, path) {
+            // _.me.render(function(context, path) {
             //     fn.call(this, context, path);
             // }, _.drawTo, _.options);
             // __.proj.clipAngle(90);
             var __ = this._;
             var w = __.center[0];
             var r = __.proj.rotate();
-            this.canvasPlugin.render(function (context, path) {
+            _.me.render(function (context, path) {
                 context.save();
                 context.translate(w, 0);
                 context.scale(-1, 1);
@@ -1173,14 +1181,15 @@ var countryCanvas = (function (worldUrl) {
         name: 'countryCanvas',
         urls: worldUrl && [worldUrl],
         onReady: function onReady(err, data) {
-            this.countryCanvas.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                this.countryCanvas.allData(this.worldJson.allData());
+                _.me.allData(this.worldJson.allData());
             }
             create.call(this);
         },
@@ -1305,7 +1314,8 @@ var threejsPlugin = (function () {
 
     return {
         name: 'threejsPlugin',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -1416,12 +1426,13 @@ var dblClickCanvas = (function () {
 
     return {
         name: 'dblClickCanvas',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             initmouseClickHandler.call(this);
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                this.dblClickCanvas.allData(this.worldJson.allData());
+                _.me.allData(this.worldJson.allData());
             }
         },
         onCircle: function onCircle(obj) {
@@ -1513,7 +1524,8 @@ var autorotatePlugin = (function () {
 
     return {
         name: 'autorotatePlugin',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             this._.options.spin = true;
         },
         onCreate: function onCreate() {
@@ -1603,9 +1615,10 @@ var barSvg = (function (urlBars) {
         name: 'barSvg',
         urls: urlBars && [urlBars],
         onReady: function onReady(err, bars) {
-            this.barSvg.data(bars);
+            _.me.data(bars);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -1735,9 +1748,10 @@ var dotsSvg = (function (urlDots) {
         name: 'dotsSvg',
         urls: urlDots && [urlDots],
         onReady: function onReady(err, dots) {
-            this.dotsSvg.data(dots);
+            _.me.data(dots);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -2019,7 +2033,8 @@ var pingsSvg = (function () {
 
     return {
         name: 'pingsSvg',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -2098,7 +2113,8 @@ var oceanSvg = (function () {
 
     return {
         name: 'oceanSvg',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -2156,7 +2172,8 @@ var sphereSvg = (function () {
 
     return {
         name: 'sphereSvg',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -2219,7 +2236,8 @@ var centerSvg = (function () {
 
     return {
         name: 'centerSvg',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             this._.options.enableCenter = true;
         },
         onCreate: function onCreate() {
@@ -2299,7 +2317,8 @@ var placesSvg = (function (urlPlaces) {
         onReady: function onReady(err, places) {
             _.places = places;
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -2393,7 +2412,8 @@ var flattenSvg = (function () {
 
     return {
         name: 'flattenSvg',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         toMap: function toMap() {
@@ -2477,7 +2497,8 @@ var fauxGlobeSvg = (function () {
 
     return {
         name: 'fauxGlobeSvg',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -2536,7 +2557,8 @@ var graticuleSvg = (function () {
 
     return {
         name: 'graticuleSvg',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -2589,7 +2611,8 @@ var dropShadowSvg = (function () {
 
     return {
         name: 'dropShadowSvg',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -2627,10 +2650,10 @@ var dotTooltipSvg = (function () {
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
                 var i = +this.dataset.index;
                 var d = _this.dotsSvg.data().features[i];
-                if (_this.dotTooltipSvg.onShow) {
-                    d = _this.dotTooltipSvg.onShow.call(this, d, dotTooltip);
+                if (_.me.onShow) {
+                    d = _.me.onShow.call(this, d, dotTooltip);
                 }
-                _this.dotTooltipSvg.show(d.properties).style('display', 'block').style('opacity', 1);
+                _.me.show(d.properties).style('display', 'block').style('opacity', 1);
                 refresh();
             }
         }).on('mouseout', function () {
@@ -2655,7 +2678,8 @@ var dotTooltipSvg = (function () {
 
     return {
         name: 'dotTooltipSvg',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             this._.options.showBarTooltip = true;
         },
         onCreate: function onCreate() {
@@ -2693,10 +2717,10 @@ var barTooltipSvg = (function () {
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
                 var i = +this.dataset.index;
                 var d = _this.barSvg.data().features[i];
-                if (_this.barTooltipSvg.onShow) {
-                    d = _this.barTooltipSvg.onShow.call(this, d, barTooltip);
+                if (_.me.onShow) {
+                    d = _.me.onShow.call(this, d, barTooltip);
                 }
-                _this.barTooltipSvg.show(d).style('display', 'block').style('opacity', 1);
+                _.me.show(d).style('display', 'block').style('opacity', 1);
                 refresh();
             }
         }).on('mouseout', function () {
@@ -2721,7 +2745,8 @@ var barTooltipSvg = (function () {
 
     return {
         name: 'barTooltipSvg',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             this._.options.showBarTooltip = true;
         },
         onCreate: function onCreate() {
@@ -2793,7 +2818,8 @@ var countryTooltipSvg = (function (countryNameUrl) {
         onReady: function onReady(err, countryNames) {
             _.countryNames = countryNames;
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             this._.options.showCountryTooltip = true;
         },
         onCreate: function onCreate() {
@@ -2859,9 +2885,10 @@ var pinCanvas = (function (urlJson, urlImage) {
         name: 'pinCanvas',
         urls: urlJson && [urlJson],
         onReady: function onReady(err, json) {
-            this.pinCanvas.data(json);
+            _.me.data(json);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this, wh);
         },
         onCreate: function onCreate() {
@@ -2961,9 +2988,10 @@ var dotsCanvas = (function (urlJson) {
         name: 'dotsCanvas',
         urls: urlJson && [urlJson],
         onReady: function onReady(err, json) {
-            this.dotsCanvas.data(json);
+            _.me.data(json);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             this._.options.transparentDots = false;
             this._.options.showDots = true;
         },
@@ -3271,7 +3299,8 @@ var pingsCanvas = (function () {
 
     return {
         name: 'pingsCanvas',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             this._.options.showPings = true;
         },
         onInterval: function onInterval(t) {
@@ -3333,7 +3362,8 @@ var centerCanvas = (function () {
 
     return {
         name: 'centerCanvas',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             this._.options.enableCenter = true;
         },
         onCreate: function onCreate() {
@@ -3424,12 +3454,13 @@ var dotSelectCanvas = (function () {
 
     return {
         name: 'dotSelectCanvas',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             initCircleHandler.call(this);
         },
         onCreate: function onCreate() {
             if (this.dotsCanvas && !_.dots) {
-                this.dotSelectCanvas.dots(this.dotsCanvas.dots());
+                _.me.dots(this.dotsCanvas.dots());
             }
         },
         onHover: function onHover(obj) {
@@ -3487,7 +3518,8 @@ var graticuleCanvas = (function () {
 
     return {
         name: 'graticuleCanvas',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -3510,6 +3542,7 @@ var graticuleCanvas = (function () {
 
 var dotTooltipCanvas = (function () {
     /*eslint no-console: 0 */
+    var _ = {};
     var dotTooltip = d3.select('body').append('div').attr('class', 'ej-dot-tooltip');
 
     function init() {
@@ -3517,14 +3550,14 @@ var dotTooltipCanvas = (function () {
 
         var hoverHandler = function hoverHandler(event, d) {
             if (d) {
-                if (_this.dotTooltipCanvas.onShow) {
-                    d = _this.dotTooltipCanvas.onShow.call(_this, d, dotTooltip);
+                if (_.me.onShow) {
+                    d = _.me.onShow.call(_this, d, dotTooltip);
                 }
 
                 var _hoverCanvas$states = _this.hoverCanvas.states(),
                     mouse = _hoverCanvas$states.mouse;
 
-                _this.dotTooltipCanvas.show(d.properties).style('display', 'block').style('opacity', 1).style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
+                _.me.show(d.properties).style('display', 'block').style('opacity', 1).style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
             } else {
                 dotTooltip.style('opacity', 0).style('display', 'none');
             }
@@ -3536,7 +3569,8 @@ var dotTooltipCanvas = (function () {
 
     return {
         name: 'dotTooltipCanvas',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         show: function show(props) {
@@ -3612,7 +3646,8 @@ var countrySelectCanvas = (function () {
 
     return {
         name: 'countrySelectCanvas',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -3704,7 +3739,8 @@ var countryTooltipCanvas = (function (countryNameUrl) {
         onReady: function onReady(err, countryNames) {
             _.countryNames = countryNames;
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onRefresh: function onRefresh() {
@@ -3788,9 +3824,10 @@ var barThreejs = (function (jsonUrl) {
         name: 'barThreejs',
         urls: jsonUrl && [jsonUrl],
         onReady: function onReady(err, data) {
-            this.barThreejs.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -3913,9 +3950,10 @@ var hmapThreejs = (function (hmapUrl) {
         name: 'hmapThreejs',
         urls: hmapUrl && [hmapUrl],
         onReady: function onReady(err, data) {
-            this.hmapThreejs.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onInterval: function onInterval() {
@@ -3985,16 +4023,14 @@ var dotsThreejs = (function (urlJson) {
         });
     }
 
-    // function create2() {
-    // }
-
     return {
         name: 'dotsThreejs',
         urls: urlJson && [urlJson],
         onReady: function onReady(err, data) {
-            this.dotsThreejs.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -4059,9 +4095,10 @@ var dotsCThreejs = (function (urlDots) {
         name: 'dotsCThreejs',
         urls: urlDots && [urlDots],
         onReady: function onReady(err, dots) {
-            this.dotsCThreejs.data(dots);
+            _.me.data(dots);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         data: function data(_data) {
@@ -4143,9 +4180,10 @@ var iconsThreejs = (function (jsonUrl, iconUrl) {
         name: 'iconsThreejs',
         urls: jsonUrl && [jsonUrl],
         onReady: function onReady(err, data) {
-            this.iconsThreejs.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -4327,14 +4365,15 @@ var canvasThreejs = (function (worldUrl) {
         name: 'canvasThreejs',
         urls: worldUrl && [worldUrl],
         onReady: function onReady(err, data) {
-            this.canvasThreejs.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                this.canvasThreejs.allData(this.worldJson.allData());
+                _.me.allData(this.worldJson.allData());
             }
             create.call(this);
         },
@@ -4446,7 +4485,8 @@ var textureThreejs = (function () {
 
     return {
         name: 'textureThreejs',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -4530,7 +4570,8 @@ var graticuleThreejs = (function () {
 
     return {
         name: 'graticuleThreejs',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -4691,9 +4732,10 @@ var flightLineThreejs = (function (jsonUrl) {
         name: 'flightLineThreejs',
         urls: jsonUrl && [jsonUrl],
         onReady: function onReady(err, data) {
-            this.flightLineThreejs.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -5135,16 +5177,17 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
 
     function resize() {
         var sz = scalePoint(this._.proj.scale());
-        this.flightLine2Threejs.pointSize(sz);
+        _.me.pointSize(sz);
     }
 
     return {
         name: 'flightLine2Threejs',
         urls: jsonUrl && [jsonUrl],
         onReady: function onReady(err, data) {
-            this.flightLine2Threejs.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onResize: function onResize() {
@@ -5226,7 +5269,8 @@ var debugThreejs = (function () {
 
     return {
         name: 'debugThreejs',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -5279,7 +5323,8 @@ var oceanThreejs = (function (color) {
 
     return {
         name: 'oceanThreejs',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -5327,7 +5372,8 @@ var imageThreejs = (function () {
 
     return {
         name: 'imageThreejs',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             this._.options.showImage = true;
         },
         onCreate: function onCreate() {
@@ -5381,9 +5427,10 @@ var worldThreejs = (function () {
         name: 'worldThreejs',
         urls: worldUrl && [worldUrl],
         onReady: function onReady(err, data) {
-            this.worldThreejs.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             this._.options.showLand = true;
         },
         onCreate: function onCreate() {
@@ -5465,7 +5512,8 @@ var globeThreejs = (function () {
 
     return {
         name: 'globeThreejs',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -5549,7 +5597,8 @@ var sphereThreejs = (function () {
 
     return {
         name: 'sphereThreejs',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             this._.options.showSphere = true;
         },
         onCreate: function onCreate() {
@@ -5562,7 +5611,7 @@ var sphereThreejs = (function () {
             return _.sphereObject;
         },
         imgSrc: function imgSrc(umgUrl) {
-            var material = this.sphereThreejs.sphere().children[0].material;
+            var material = _.me.sphere().children[0].material;
 
             material.uniforms.texture.value = loader.load(umgUrl, function (image) {
                 return image;
@@ -5739,9 +5788,10 @@ var world3d = (function () {
         name: 'world3d',
         urls: worldUrl && [worldUrl],
         onReady: function onReady(err, data) {
-            this.world3d.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -5896,9 +5946,10 @@ var world3d2 = (function () {
         name: 'world3d2',
         urls: worldUrl && [worldUrl],
         onReady: function onReady(err, data) {
-            this.world3d2.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
@@ -6031,7 +6082,8 @@ var commonPlugins = (function (worldUrl) {
 
     return {
         name: 'commonPlugins',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             addPlugins.call(this);
             this._.options.showControll = true;
         },
@@ -6050,6 +6102,7 @@ var selectCountryMix = (function () {
     var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world-110m.json';
 
     /*eslint no-console: 0 */
+    var _ = {};
 
     function init() {
         var g = this.register(earthjs.plugins.mousePlugin()).register(earthjs.plugins.hoverCanvas()).register(earthjs.plugins.clickCanvas()).register(earthjs.plugins.centerCanvas()).register(earthjs.plugins.canvasPlugin()).register(earthjs.plugins.dropShadowSvg()).register(earthjs.plugins.countryCanvas()).register(earthjs.plugins.autorotatePlugin()).register(earthjs.plugins.worldCanvas(worldUrl));
@@ -6086,7 +6139,8 @@ var selectCountryMix = (function () {
 
     return {
         name: 'selectCountryMix',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         region: function region(arr, centeroid) {
