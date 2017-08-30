@@ -1,6 +1,14 @@
 export default worldUrl => {
     /*eslint no-console: 0 */
-    const _ = {svg:null, q: null, world: null};
+    const _ = {
+        q: null,
+        svg:null,
+        world: null,
+        land:   null,
+        lakes:     {type: 'FeatureCollection', features:[]},
+        selected:  {type: 'FeatureCollection', features:[]},
+        countries: {type: 'FeatureCollection', features:[]},
+    };
     const $ = {};
 
     function create() {
@@ -11,7 +19,7 @@ export default worldUrl => {
                 if (__.options.transparent || __.options.transparentLand) {
                     _.svgAddWorldBg.call(this);
                 }
-                if (__.options.showCountries) {
+                if (__.options.showCountries || _.me.showCountries) {
                     _.svgAddCountries.call(this);
                 } else {
                     _.svgAddWorld.call(this);
@@ -84,9 +92,10 @@ export default worldUrl => {
         name: 'worldSvg',
         urls: worldUrl && [worldUrl],
         onReady(err, data) {
-            this.worldSvg.data(data);
+            _.me.data(data);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             const __ = this._;
             const options = __.options;
             options.showLand = true;
@@ -101,22 +110,26 @@ export default worldUrl => {
         },
         onCreate() {
             if (this.worldJson && !_.world) {
-                this.worldSvg.allData(this.worldJson.allData());
+                _.me.allData(this.worldJson.allData());
             }
             create.call(this);
         },
         onRefresh() {
             refresh.call(this);
         },
-        countries() {
-            return _.countries.features;
+        countries(arr) {
+            if (arr) {
+                _.countries.features = arr;
+            } else {
+                return _.countries.features;
+            }
         },
         data(data) {
             if (data) {
                 _.world = data;
                 _.land = topojson.feature(data, data.objects.land);
-                _.lakes = topojson.feature(data, data.objects.ne_110m_lakes);
-                _.countries = topojson.feature(data, data.objects.countries);
+                _.lakes.features = topojson.feature(data, data.objects.ne_110m_lakes).features;
+                _.countries.features = topojson.feature(data, data.objects.countries).features;
             } else {
                 return  _.world;
             }

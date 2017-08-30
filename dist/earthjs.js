@@ -1795,7 +1795,15 @@ var dotsSvg = (function (urlDots) {
 
 var worldSvg = (function (worldUrl) {
     /*eslint no-console: 0 */
-    var _ = { svg: null, q: null, world: null };
+    var _ = {
+        q: null,
+        svg: null,
+        world: null,
+        land: null,
+        lakes: { type: 'FeatureCollection', features: [] },
+        selected: { type: 'FeatureCollection', features: [] },
+        countries: { type: 'FeatureCollection', features: [] }
+    };
     var $ = {};
 
     function create() {
@@ -1806,7 +1814,7 @@ var worldSvg = (function (worldUrl) {
                 if (__.options.transparent || __.options.transparentLand) {
                     _.svgAddWorldBg.call(this);
                 }
-                if (__.options.showCountries) {
+                if (__.options.showCountries || _.me.showCountries) {
                     _.svgAddCountries.call(this);
                 } else {
                     _.svgAddWorld.call(this);
@@ -1878,9 +1886,10 @@ var worldSvg = (function (worldUrl) {
         name: 'worldSvg',
         urls: worldUrl && [worldUrl],
         onReady: function onReady(err, data) {
-            this.worldSvg.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             var __ = this._;
             var options = __.options;
             options.showLand = true;
@@ -1895,22 +1904,26 @@ var worldSvg = (function (worldUrl) {
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                this.worldSvg.allData(this.worldJson.allData());
+                _.me.allData(this.worldJson.allData());
             }
             create.call(this);
         },
         onRefresh: function onRefresh() {
             refresh.call(this);
         },
-        countries: function countries() {
-            return _.countries.features;
+        countries: function countries(arr) {
+            if (arr) {
+                _.countries.features = arr;
+            } else {
+                return _.countries.features;
+            }
         },
         data: function data(_data) {
             if (_data) {
                 _.world = _data;
                 _.land = topojson.feature(_data, _data.objects.land);
-                _.lakes = topojson.feature(_data, _data.objects.ne_110m_lakes);
-                _.countries = topojson.feature(_data, _data.objects.countries);
+                _.lakes.features = topojson.feature(_data, _data.objects.ne_110m_lakes).features;
+                _.countries.features = topojson.feature(_data, _data.objects.countries).features;
             } else {
                 return _.world;
             }

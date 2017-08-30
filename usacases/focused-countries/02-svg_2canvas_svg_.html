@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <style media="screen">
+            .input-area {
+                position: absolute;
+                z-index: 5;
+            }
+        </style>
+        <link type="text/css" rel="stylesheet" href="../../example/css/earthjs.css">
+        <script type='text/javascript' src='../../example/js/d3.min.js'></script>
+        <script type='text/javascript' src='../../example/js/topojson.min.js'></script>
+        <script type='text/javascript' src='../../example/js/earthjs.js'></script>
+        <style>
+            #earth-js, #earth-js2 {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+            }
+            #earth-js2 {
+                z-index: 4;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="input-area">
+            <input id="pan" type="range" min="0" max="400" step="1" value="0"/><br/>
+        </div>
+        <svg id="earth-js"></svg>
+        <canvas class="ej-canvas"></canvas>
+        <svg class="ej-svg" width="700" height="500"></svg>
+        <script>
+            const g = earthjs({rotate: -40})
+            .register(earthjs.plugins.mousePlugin())
+            .register(earthjs.plugins.canvasPlugin())
+            .register(earthjs.plugins.autorotatePlugin())
+            .register(earthjs.plugins.worldJson('../../example/d/world-110m.json'))
+            .register(earthjs.plugins.oceanSvg())
+            .register(earthjs.plugins.worldCanvas(), 'world1')
+            .register(earthjs.plugins.worldSvg()   , 'world2')
+            .register(earthjs.plugins.fauxGlobeSvg());
+
+            g.mousePlugin.selectAll('.ej-svg');
+            g.fauxGlobeSvg.selectAll('.ej-svg');
+            g.canvasPlugin.selectAll('.ej-canvas');
+            g.world1.style({land: 'rgba(100,100,100,0.1)'});
+            g.world1.drawTo([0]);
+            g.world2.selectAll('.ej-svg');
+
+            g._.options.showLakes = false;
+            g.worldJson.ready = function(err, json) {
+                const top = topojson.feature(json, json.objects.countries);
+                const arr = [840,124,392,250,826,616,276,380]; // G7
+                const sl1 = [];
+                const sl2 = [];
+                top.features.map(function(x){
+                    if (arr.indexOf(x.id)===-1) {
+                        sl1.push(x);
+                    } else {
+                        sl2.push(x);
+                    }
+                });
+                g.world1.data(json);
+                g.world2.data(json);
+                g.world1.countries(sl1);
+                g.world2.countries(sl2);
+                g.world2.showCountries = true;
+            }
+            g.ready(function(){
+                g.create();
+            });
+
+            const canvas = d3.selectAll('canvas').nodes();
+            const svg = d3.selectAll('.ej-svg').nodes();
+            d3.select('#pan').on('input', function() {
+                canvas[0].style.left = this.value;
+                   svg[0].style.left = this.value*2;
+            })
+        </script>
+    </body>
+</html>
