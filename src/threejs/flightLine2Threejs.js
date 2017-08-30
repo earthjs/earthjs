@@ -1,28 +1,29 @@
 // http://callumprentice.github.io/apps/flight_stream/index.html
+// https://stackoverflow.com/questions/9695687/javascript-converting-colors-numbers-strings-vice-versa
 export default (jsonUrl, imgUrl, height) => {
     /*eslint no-console: 0 */
     const _ = {
         sphereObject: null,
         track_lines_object: null,
         track_points_object: null,
-        point_size: 150, //scale:30/40 - 300/150
         linewidth: 3,
         texture: null,
+        maxVal: 1
     };
+    var colorRange = [d3.rgb('#FFAAFF'),d3.rgb("#FF0000")];
 
     var min_arc_distance = +Infinity;
     var max_arc_distance = -Infinity;
     var cur_arc_distance = 0;
     var point_spacing = 100;
-    var point_opacity = 0.5;
+    var point_opacity = 0.8;
     var point_speed = 1.0;
     var point_cache = [];
     var all_tracks = [];
-    var scalePoint = d3.scaleLinear().domain([30, 300]).range([40, _.point_size]);
 
     var PI180 = Math.PI / 180.0;
 
-    let positions, colors, sizes, ttl_num_points = 0;
+    let positions, values, colors, sizes, ttl_num_points = 0;
     function generateControlPoints(radius) {
 
         for (var f = 0; f < _.data.length; ++f) {
@@ -30,6 +31,7 @@ export default (jsonUrl, imgUrl, height) => {
             var start_lng = _.data[f][1];
             var end_lat   = _.data[f][2];
             var end_lng   = _.data[f][3];
+            var value     = _.data[f][4];
 
             if (start_lat === end_lat && start_lng === end_lng) {
                 continue;
@@ -40,7 +42,7 @@ export default (jsonUrl, imgUrl, height) => {
             var max_height = Math.random() * (height || _.SCALE) + 0.05;
             for (var i = 0; i < spline_control_points + 1; i++) {
                 var arc_angle = i * 180.0 / spline_control_points;
-                var arc_radius = radius + (Math.sin(arc_angle * PI180)) * max_height;  //PI180 = PI180.0
+                var arc_radius = radius + (Math.sin(arc_angle * PI180)) * max_height;
                 var latlng = lat_lng_inter_point(start_lat, start_lng, end_lat, end_lng, i / spline_control_points);
                 var pos = xyz_from_lat_lng(latlng.lat, latlng.lng, arc_radius);
 
@@ -65,7 +67,7 @@ export default (jsonUrl, imgUrl, height) => {
                 max_arc_distance = parseInt(Math.ceil(arc_distance_miles / 1000.0) * 1000);
                 cur_arc_distance = max_arc_distance;
             }
-
+            var color = value ? _.color(value) : 'rgb(255,255,255)';
             var default_speed = Math.random()*600+400;
             var speed = default_speed * point_speed;
             var num_points = parseInt(arc_distance / point_spacing) + 1;
@@ -80,6 +82,8 @@ export default (jsonUrl, imgUrl, height) => {
                 arc_distance_miles,
                 point_positions,
                 default_speed,
+                value,
+                color,
                 speed
             };
             all_tracks.push(track);
@@ -162,23 +166,25 @@ export default (jsonUrl, imgUrl, height) => {
     function generate_point_cloud() {
         positions = new Float32Array(ttl_num_points * 3);
         colors = new Float32Array(ttl_num_points * 3);
+        values = new Float32Array(ttl_num_points);
         sizes = new Float32Array(ttl_num_points);
 
         var index = 0;
         for (var i = 0; i < all_tracks.length; ++i) {
-            var color = new THREE.Color(0xffffff).setHSL(i / all_tracks.length, 0.6, 0.6);
-
-            for (var j = 0; j < all_tracks[i].point_positions.length; ++j) {
+            var {value, point_positions} = all_tracks[i];
+            var c = new THREE.Color(0xFFFFFF).setHSL(1-value/_.maxVal, 0.4, 0.8);
+            var pSize = _.point(value || 1);
+            for (var j = 0; j < point_positions.length; ++j) {
 
                 positions[3 * index + 0] = 0;
                 positions[3 * index + 1] = 0;
                 positions[3 * index + 2] = 0;
 
-                colors[3 * index + 0] = color.r;
-                colors[3 * index + 1] = color.g;
-                colors[3 * index + 2] = color.b;
-
-                sizes[index] = _.point_size;
+                colors[3 * index + 0] = c.r;
+                colors[3 * index + 1] = c.g;
+                colors[3 * index + 2] = c.b;
+                values[index] = value || 1;
+                sizes[index] = pSize; //_.point_size;
 
                 ++index;
             }
@@ -187,6 +193,7 @@ export default (jsonUrl, imgUrl, height) => {
         var point_cloud_geom = new THREE.BufferGeometry();
         point_cloud_geom.addAttribute('position',    new THREE.BufferAttribute(positions, 3));
         point_cloud_geom.addAttribute('customColor', new THREE.BufferAttribute(colors, 3));
+        point_cloud_geom.addAttribute('value',       new THREE.BufferAttribute(values, 1));
         point_cloud_geom.addAttribute('size',        new THREE.BufferAttribute(sizes, 1));
         point_cloud_geom.computeBoundingBox();
 
@@ -248,7 +255,7 @@ export default (jsonUrl, imgUrl, height) => {
     }
 
     var line_positions;
-    var line_opacity = 0.2;
+    var line_opacity = 0.4;
     var curve_points =  24;
     var material = new THREE.LineBasicMaterial({
         vertexColors: THREE.VertexColors,
@@ -264,10 +271,12 @@ export default (jsonUrl, imgUrl, height) => {
         var total_arr = all_tracks.length * 3 * 2 * curve_points;
         line_positions= new Float32Array(total_arr);
         var colors    = new Float32Array(total_arr);
+        var {length}  = all_tracks;
 
-        for (var i = 0; i < all_tracks.length; ++i) {
-            var {spline} = all_tracks[i];
-            var {r,g,b} = new THREE.Color(0xffffff).setHSL(i / all_tracks.length, 0.9, 0.8);
+        for (var i = 0; i < length; ++i) {
+            var {spline, color} = all_tracks[i];
+            // var {r,g,b} = new THREE.Color(0xffffff).setHSL(i / all_tracks.length, 0.9, 0.8);
+            var {r,g,b} = new THREE.Color(color);
             for (var j = 0; j < curve_points - 1; ++j) {
                 /*eslint no-redeclare:0*/
                 var i_curve = (i * curve_points + j) * 6;
@@ -371,14 +380,6 @@ export default (jsonUrl, imgUrl, height) => {
         const manager = new THREE.LoadingManager();
         const loader = new THREE.TextureLoader(manager);
         this._.options.showFlightLine = true;
-        // const loader = new THREE.TextureLoader();
-        // loader.load(imgUrl, texture => {
-        //     _.texture = texture
-        //     if (_.data && !_.loaded) {
-        //         console.log('done add:1');
-        //         loadFlights.call(this);
-        //     }
-        // });
         _.texture = loader.load(imgUrl,
             function(point_texture) {
                 return point_texture;
@@ -421,8 +422,13 @@ export default (jsonUrl, imgUrl, height) => {
     }
 
     function resize() {
-        const sz = scalePoint(this._.proj.scale());
-        _.me.pointSize(sz);
+        const sc = _.resize(this._.proj.scale());
+        const pt = _.sphereObject.children[1];
+        const {size,value} = pt.geometry.attributes;
+        console.log(size.array);
+        size.array = value.array.map((v)=>_.point(v)*sc);
+        console.log(size.array);
+        size.needsUpdate = true;
     }
 
     return {
@@ -450,9 +456,21 @@ export default (jsonUrl, imgUrl, height) => {
         reload() {
             reload.call(this);
         },
-        data(data) {
+        data(data, color) {
             if (data) {
                 _.data = data;
+                if (color) {
+                    const d = d3.extent(data.map(x=>x[4]));
+                    _.color = d3.scaleLinear().domain(d).interpolate(d3.interpolateHcl).range(colorRange);
+                    _.point = d3.scaleLinear().domain(d).range([50, 500]);
+                    _.maxVal= d[1];
+                    console.log(d);
+                } else {
+                    _.color = () => 'rgb(255, 255, 255)';
+                    _.point = () => 150;
+                    _.maxVal= 1;
+                }
+                _.resize= d3.scaleLinear().domain([30,this._.proj.scale()]).range([0.1, 1]);
             } else {
                 return _.data;
             }
@@ -460,10 +478,10 @@ export default (jsonUrl, imgUrl, height) => {
         sphere() {
             return _.sphereObject;
         },
-        pointSize(sz=_.point_size) {
+        pointSize(one) {
             const pt = _.sphereObject.children[1];
             const {size} = pt.geometry.attributes;
-            size.array = size.array.map(()=>sz);
+            size.array = size.array.map((v)=>v*one);
             size.needsUpdate = true;
         }
     }

@@ -5,6 +5,8 @@ import worldJson       from './src/data/worldJson';
 import choroplethCsv   from './src/data/choroplethCsv';
 import countryNamesCsv from './src/data/countryNamesCsv';
 
+import colorScale      from './src/scale/colorScale';
+
 import zoomPlugin       from './src/base/zoomPlugin';
 import hoverCanvas      from './src/base/hoverCanvas';
 import clickCanvas      from './src/base/clickCanvas';
@@ -71,6 +73,8 @@ earthjs.plugins= {
     worldJson,
     choroplethCsv,
     countryNamesCsv,
+
+    colorScale,
 
     hoverCanvas,
     clickCanvas,
