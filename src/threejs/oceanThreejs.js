@@ -36,7 +36,8 @@ export default (color) => {
 
     return {
         name: 'oceanThreejs',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

@@ -66,12 +66,13 @@ export default () => {
 
     return {
         name: 'dotSelectCanvas',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             initCircleHandler.call(this);
         },
         onCreate() {
             if (this.dotsCanvas && !_.dots) {
-                this.dotSelectCanvas.dots(this.dotsCanvas.dots());
+                _.me.dots(this.dotsCanvas.dots());
             }
         },
         onHover(obj) {

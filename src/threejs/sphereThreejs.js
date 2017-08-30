@@ -93,7 +93,8 @@ export default (imgUrl='../d/world.png') => {
 
     return {
         name: 'sphereThreejs',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             this._.options.showSphere = true;
         },
         onCreate() {
@@ -106,7 +107,7 @@ export default (imgUrl='../d/world.png') => {
             return _.sphereObject;
         },
         imgSrc(umgUrl) {
-            const {material} = this.sphereThreejs.sphere().children[0];
+            const {material} = _.me.sphere().children[0];
             material.uniforms.texture.value = loader.load(umgUrl, image=>image);
             material.needsUpdate = true;
         }

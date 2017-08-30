@@ -29,7 +29,8 @@ export default () => {
 
     return {
         name: 'graticuleCanvas',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

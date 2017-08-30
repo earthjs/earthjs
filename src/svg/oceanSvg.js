@@ -55,7 +55,8 @@ export default () => {
 
     return {
         name: 'oceanSvg',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

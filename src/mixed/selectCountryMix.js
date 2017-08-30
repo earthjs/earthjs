@@ -1,5 +1,6 @@
 export default (worldUrl='../d/world-110m.json') => {
     /*eslint no-console: 0 */
+    const _ = {};
 
     function init() {
         var g = this
@@ -45,7 +46,8 @@ export default (worldUrl='../d/world-110m.json') => {
 
     return {
         name: 'selectCountryMix',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         region(arr, centeroid) {

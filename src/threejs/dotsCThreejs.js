@@ -42,9 +42,10 @@ export default urlDots => {
         name: 'dotsCThreejs',
         urls: urlDots && [urlDots],
         onReady(err, dots) {
-            this.dotsCThreejs.data(dots);
+            _.me.data(dots);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         data(data) {

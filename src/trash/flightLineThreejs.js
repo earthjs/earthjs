@@ -251,9 +251,10 @@ export default (jsonUrl) => {
         urls: jsonUrl && [jsonUrl],
         onReady(err, data) {
             _.end_flight_idx = data.length;
-            this.flightLineThreejs.data(data);
+            _.me.data(data);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

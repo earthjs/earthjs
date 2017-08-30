@@ -68,7 +68,8 @@ export default urlPlaces => {
         onReady(err, places) {
             _.places = places;
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

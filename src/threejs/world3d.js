@@ -79,9 +79,10 @@ export default (worldUrl='../d/world_geometry.json', landUrl='../d/gold.jpg', rt
         name: 'world3d',
         urls: worldUrl && [worldUrl],
         onReady(err, data) {
-            this.world3d.data(data);
+            _.me.data(data);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

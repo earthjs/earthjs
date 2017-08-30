@@ -46,7 +46,8 @@ export default () => {
 
     return {
         name: 'pingsCanvas',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             this._.options.showPings = true;
         },
         onInterval(t) {

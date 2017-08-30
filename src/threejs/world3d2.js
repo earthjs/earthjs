@@ -134,9 +134,10 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../d/gold.jpg', inn
         name: 'world3d2',
         urls: worldUrl && [worldUrl],
         onReady(err, data) {
-            this.world3d2.data(data);
+            _.me.data(data);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

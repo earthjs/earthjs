@@ -39,7 +39,8 @@ export default () => {
 
     return {
         name: 'sphereSvg',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

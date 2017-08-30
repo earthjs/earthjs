@@ -106,7 +106,8 @@ export default worldUrl => {
 
     return {
         name: 'commonPlugins',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             addPlugins.call(this);
             this._.options.showControll = true;
         },

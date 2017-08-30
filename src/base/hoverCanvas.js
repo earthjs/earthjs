@@ -82,12 +82,13 @@ export default () => {
 
     return {
         name: 'hoverCanvas',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {
             if (this.worldJson && !_.world) {
-                this.hoverCanvas.allData(this.worldJson.allData());
+                _.me.allData(this.worldJson.allData());
             }
         },
         onCircle(obj) {

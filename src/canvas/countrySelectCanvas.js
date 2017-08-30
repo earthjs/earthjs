@@ -60,7 +60,8 @@ export default () => {
 
     return {
         name: 'countrySelectCanvas',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

@@ -1,4 +1,7 @@
 export default () => {
+    /*eslint no-console: 0 */
+    const _ = {}
+
     function init() {
         const __ = this._;
         const s0 = __.proj.scale();
@@ -19,7 +22,8 @@ export default () => {
 
     return {
         name: 'zoomPlugin',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         }
     }

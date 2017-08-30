@@ -81,9 +81,10 @@ export default urlBars => {
         name: 'barSvg',
         urls: urlBars && [urlBars],
         onReady(err, bars) {
-            this.barSvg.data(bars);
+            _.me.data(bars);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

@@ -51,9 +51,10 @@ export default (urlJson, urlImage, wh=[15,25]) => {
         name: 'pinCanvas',
         urls: urlJson && [urlJson],
         onReady(err, json) {
-            this.pinCanvas.data(json);
+            _.me.data(json);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this, wh);
         },
         onCreate() {

@@ -16,7 +16,8 @@ export default selector => {
 
     return {
         name: 'wheelZoomPlugin',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             _.svg = selector ? d3.selectAll(selector) : this._.svg;
         },
         selectAll(q) {

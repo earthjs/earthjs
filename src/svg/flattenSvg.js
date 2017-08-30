@@ -70,7 +70,8 @@ export default () => {
 
     return {
         name: 'flattenSvg',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         toMap() {

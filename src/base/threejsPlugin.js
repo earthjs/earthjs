@@ -87,7 +87,8 @@ export default (threejs='three-js') => {
 
     return {
         name: 'threejsPlugin',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

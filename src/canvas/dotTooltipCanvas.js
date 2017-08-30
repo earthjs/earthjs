@@ -1,15 +1,16 @@
 export default () => {
     /*eslint no-console: 0 */
+    const _ = {}
     const dotTooltip = d3.select('body').append('div').attr('class', 'ej-dot-tooltip');
 
     function init() {
         const hoverHandler = (event, d) => {
             if (d) {
-                if (this.dotTooltipCanvas.onShow) {
-                    d = this.dotTooltipCanvas.onShow.call(this, d, dotTooltip);
+                if (_.me.onShow) {
+                    d = _.me.onShow.call(this, d, dotTooltip);
                 }
                 const {mouse} = this.hoverCanvas.states();
-                this.dotTooltipCanvas.show(d.properties)
+                _.me.show(d.properties)
                 .style('display', 'block')
                 .style('opacity', 1)
                 .style('left', mouse[0] + 7 + 'px')
@@ -26,7 +27,8 @@ export default () => {
 
     return {
         name: 'dotTooltipCanvas',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         show(props) {

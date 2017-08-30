@@ -64,9 +64,10 @@ export default (jsonUrl, iconUrl) => {
         name: 'iconsThreejs',
         urls: jsonUrl && [jsonUrl],
         onReady(err, data) {
-            this.iconsThreejs.data(data);
+            _.me.data(data);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

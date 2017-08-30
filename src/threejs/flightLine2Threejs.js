@@ -422,16 +422,17 @@ export default (jsonUrl, imgUrl, height) => {
 
     function resize() {
         const sz = scalePoint(this._.proj.scale());
-        this.flightLine2Threejs.pointSize(sz);
+        _.me.pointSize(sz);
     }
 
     return {
         name: 'flightLine2Threejs',
         urls: jsonUrl && [jsonUrl],
         onReady(err, data) {
-            this.flightLine2Threejs.data(data);
+            _.me.data(data);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onResize() {

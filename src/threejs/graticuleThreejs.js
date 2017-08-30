@@ -49,7 +49,8 @@ export default () => {
 
     return {
         name: 'graticuleThreejs',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

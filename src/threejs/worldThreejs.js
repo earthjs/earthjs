@@ -35,9 +35,10 @@ export default (worldUrl='../d/world.png') => {
         name: 'worldThreejs',
         urls: worldUrl && [worldUrl],
         onReady(err, data) {
-            this.worldThreejs.data(data);
+            _.me.data(data);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             this._.options.showLand = true;
         },
         onCreate() {

@@ -162,9 +162,10 @@ export default (jsonUrl, num_decorators=15) => {
         name: 'flightLineThreejs',
         urls: jsonUrl && [jsonUrl],
         onReady(err, data) {
-            this.flightLineThreejs.data(data);
+            _.me.data(data);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

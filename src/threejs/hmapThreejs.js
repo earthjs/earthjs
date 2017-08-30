@@ -87,9 +87,10 @@ export default hmapUrl => {
         name: 'hmapThreejs',
         urls: hmapUrl && [hmapUrl],
         onReady(err, data) {
-            this.hmapThreejs.data(data);
+            _.me.data(data);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onInterval() {

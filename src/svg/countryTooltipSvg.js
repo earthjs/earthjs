@@ -54,7 +54,8 @@ export default countryNameUrl => {
         onReady(err, countryNames) {
             _.countryNames = countryNames;
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             this._.options.showCountryTooltip = true;
         },
         onCreate() {

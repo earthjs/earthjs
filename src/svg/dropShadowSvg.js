@@ -42,7 +42,8 @@ export default () => {
 
     return {
         name: 'dropShadowSvg',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

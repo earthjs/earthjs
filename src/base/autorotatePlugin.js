@@ -41,7 +41,8 @@ export default (degPerSec=10) => {
 
     return {
         name: 'autorotatePlugin',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             this._.options.spin = true;
         },
         onCreate() {

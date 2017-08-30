@@ -40,16 +40,14 @@ export default urlJson => {
         });
     }
 
-    // function create2() {
-    // }
-
     return {
         name: 'dotsThreejs',
         urls: urlJson && [urlJson],
         onReady(err, data) {
-            this.dotsThreejs.data(data);
+            _.me.data(data);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

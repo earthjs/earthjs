@@ -52,7 +52,8 @@ export default () => {
 
     return {
         name: 'textureThreejs',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

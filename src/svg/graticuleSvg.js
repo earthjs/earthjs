@@ -33,7 +33,8 @@ export default () => {
 
     return {
         name: 'graticuleSvg',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

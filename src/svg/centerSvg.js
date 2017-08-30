@@ -36,7 +36,8 @@ export default () => {
 
     return {
         name: 'centerSvg',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             this._.options.enableCenter = true;
         },
         onCreate() {

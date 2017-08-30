@@ -158,7 +158,8 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
 
     return {
         name: 'mousePlugin',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             _.oMouse = [];
             const __ = this._;
             _.svg = __.svg;

@@ -50,11 +50,12 @@ export default () => {
 
     return {
         name: 'canvasPlugin',
-        onInit()    {
-            init   .call(this);
+        onInit(me) {
+            _.me = me;
+            init.call(this);
         },
         onCreate()  {
-            create .call(this);
+            create.call(this);
         },
         onRefresh() {
             refresh.call(this);
@@ -95,14 +96,14 @@ export default () => {
         },
         flipRender(fn, drawTo, options=[]) {
             // __.proj.clipAngle(180);
-            // this.canvasPlugin.render(function(context, path) {
+            // _.me.render(function(context, path) {
             //     fn.call(this, context, path);
             // }, _.drawTo, _.options);
             // __.proj.clipAngle(90);
             const __ = this._;
             const w = __.center[0];
             const r = __.proj.rotate();
-            this.canvasPlugin.render(function(context, path) {
+            _.me.render(function(context, path) {
                 context.save();
                 context.translate(w, 0);
                 context.scale(-1, 1);

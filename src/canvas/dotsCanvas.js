@@ -55,9 +55,10 @@ export default (urlJson, {important}={}) => {
         name: 'dotsCanvas',
         urls: urlJson && [urlJson],
         onReady(err, json) {
-            this.dotsCanvas.data(json);
+            _.me.data(json);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             this._.options.transparentDots = false;
             this._.options.showDots = true;
         },

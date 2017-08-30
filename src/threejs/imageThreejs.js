@@ -29,7 +29,8 @@ export default (imgUrl='../d/world.png') => {
 
     return {
         name: 'imageThreejs',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             this._.options.showImage = true;
         },
         onCreate() {

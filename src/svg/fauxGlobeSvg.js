@@ -74,7 +74,8 @@ export default () => {
 
     return {
         name: 'fauxGlobeSvg',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

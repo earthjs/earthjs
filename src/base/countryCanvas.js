@@ -32,14 +32,15 @@ export default worldUrl => {
         name: 'countryCanvas',
         urls: worldUrl && [worldUrl],
         onReady(err, data) {
-            this.countryCanvas.data(data);
+            _.me.data(data);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {
             if (this.worldJson && !_.world) {
-                this.countryCanvas.allData(this.worldJson.allData());
+                _.me.allData(this.worldJson.allData());
             }
             create.call(this);
         },

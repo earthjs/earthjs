@@ -143,14 +143,15 @@ export default (worldUrl, scw=6.279, height=2048) => {
         name: 'canvasThreejs',
         urls: worldUrl && [worldUrl],
         onReady(err, data) {
-            this.canvasThreejs.data(data);
+            _.me.data(data);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {
             if (this.worldJson && !_.world) {
-                this.canvasThreejs.allData(this.worldJson.allData());
+                _.me.allData(this.worldJson.allData());
             }
             create.call(this);
         },

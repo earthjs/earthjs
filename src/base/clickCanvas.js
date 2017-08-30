@@ -70,12 +70,13 @@ export default () => {
 
     return {
         name: 'clickCanvas',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {
             if (this.worldJson && !_.world) {
-                this.clickCanvas.allData(this.worldJson.allData());
+                _.me.allData(this.worldJson.allData());
             }
         },
         onCircle(obj) {

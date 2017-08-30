@@ -77,9 +77,10 @@ export default (urlDots, {important}={}) => {
         name: 'dotsSvg',
         urls: urlDots && [urlDots],
         onReady(err, dots) {
-            this.dotsSvg.data(dots);
+            _.me.data(dots);
         },
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

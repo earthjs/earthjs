@@ -13,10 +13,10 @@ export default () => {
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
                 const i = +this.dataset.index;
                 var d = _this.barSvg.data().features[i];
-                if (_this.barTooltipSvg.onShow) {
-                    d = _this.barTooltipSvg.onShow.call(this, d, barTooltip);
+                if (_.me.onShow) {
+                    d = _.me.onShow.call(this, d, barTooltip);
                 }
-                _this.barTooltipSvg.show(d)
+                _.me.show(d)
                 .style('display', 'block')
                 .style('opacity', 1);
                 refresh();
@@ -49,7 +49,8 @@ export default () => {
 
     return {
         name: 'barTooltipSvg',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             this._.options.showBarTooltip = true;
         },
         onCreate() {

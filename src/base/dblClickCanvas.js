@@ -70,12 +70,13 @@ export default () => {
 
     return {
         name: 'dblClickCanvas',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             initmouseClickHandler.call(this);
         },
         onCreate() {
             if (this.worldJson && !_.world) {
-                this.dblClickCanvas.allData(this.worldJson.allData());
+                _.me.allData(this.worldJson.allData());
             }
         },
         onCircle(obj) {

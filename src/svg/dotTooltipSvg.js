@@ -13,10 +13,10 @@ export default () => {
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
                 const i = +this.dataset.index;
                 var d = _this.dotsSvg.data().features[i];
-                if (_this.dotTooltipSvg.onShow) {
-                    d = _this.dotTooltipSvg.onShow.call(this, d, dotTooltip);
+                if (_.me.onShow) {
+                    d = _.me.onShow.call(this, d, dotTooltip);
                 }
-                _this.dotTooltipSvg.show(d.properties)
+                _.me.show(d.properties)
                 .style('display', 'block')
                 .style('opacity', 1);
                 refresh();
@@ -49,7 +49,8 @@ export default () => {
 
     return {
         name: 'dotTooltipSvg',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             this._.options.showBarTooltip = true;
         },
         onCreate() {

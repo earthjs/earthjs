@@ -51,7 +51,8 @@ export default (
 
     return {
         name: 'globeThreejs',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {

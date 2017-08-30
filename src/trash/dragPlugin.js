@@ -38,7 +38,8 @@ export default () => {
 
     return {
         name: 'dragPlugin',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
     }

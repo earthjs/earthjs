@@ -58,7 +58,8 @@ export default () => {
 
     return {
         name: 'pingsSvg',
-        onInit() {
+        onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate() {
