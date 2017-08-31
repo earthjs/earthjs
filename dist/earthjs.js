@@ -512,7 +512,10 @@ var colorScale = (function (data) {
         name: 'colorScale',
         onInit: function onInit(me) {
             _.me = me;
-            _.mnMax = d3.extent(data);
+            _.me.data(data);
+        },
+        data: function data(_data) {
+            _.mnMax = d3.extent(_data);
             _.color = d3.scaleLinear().domain(_.mnMax).interpolate(d3.interpolateHcl).range(_colorRange);
         },
         color: function color(value) {

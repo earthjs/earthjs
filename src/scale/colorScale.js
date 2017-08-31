@@ -6,6 +6,9 @@ export default (data, colorRange=[d3.rgb('#FFAAFF'),d3.rgb("#FF0000")]) => {
         name: 'colorScale',
         onInit(me) {
             _.me = me;
+            _.me.data(data);
+        },
+        data(data) {
             _.mnMax = d3.extent(data);
             _.color = d3.scaleLinear().domain(_.mnMax)
             .interpolate(d3.interpolateHcl).range(colorRange);
