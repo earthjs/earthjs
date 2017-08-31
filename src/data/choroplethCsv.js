@@ -6,7 +6,10 @@ export default csvUrl => {
         name: 'choroplethCsv',
         urls: csvUrl && [csvUrl],
         onReady(err, csv) {
-            this.choroplethCsv.data(csv)
+            _.me.data(csv)
+        },
+        onInit(me) {
+            _.me = me;
         },
         data(data) {
             if (data) {

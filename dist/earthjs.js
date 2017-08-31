@@ -340,7 +340,10 @@ var baseCsv = (function (csvUrl) {
         name: 'baseCsv',
         urls: csvUrl && [csvUrl],
         onReady: function onReady(err, csv) {
-            this.baseCsv.data(csv);
+            _.me.data(csv);
+        },
+        onInit: function onInit(me) {
+            _.me = me;
         },
         data: function data(_data) {
             if (_data) {
@@ -378,7 +381,10 @@ var worldJson = (function (jsonUrl) {
         name: 'worldJson',
         urls: jsonUrl && [jsonUrl],
         onReady: function onReady(err, json) {
-            this.worldJson.data(json);
+            _.me.data(json);
+        },
+        onInit: function onInit(me) {
+            _.me = me;
         },
         data: function data(_data) {
             if (_data) {
@@ -426,7 +432,10 @@ var choroplethCsv = (function (csvUrl) {
         name: 'choroplethCsv',
         urls: csvUrl && [csvUrl],
         onReady: function onReady(err, csv) {
-            this.choroplethCsv.data(csv);
+            _.me.data(csv);
+        },
+        onInit: function onInit(me) {
+            _.me = me;
         },
         data: function data(_data) {
             if (_data) {
@@ -477,7 +486,10 @@ var countryNamesCsv = (function (csvUrl) {
         name: 'countryNamesCsv',
         urls: csvUrl && [csvUrl],
         onReady: function onReady(err, csv) {
-            this.countryNamesCsv.data(csv);
+            _.me.data(csv);
+        },
+        onInit: function onInit(me) {
+            _.me = me;
         },
         data: function data(_data) {
             if (_data) {

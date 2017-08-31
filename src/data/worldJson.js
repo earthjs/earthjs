@@ -12,7 +12,10 @@ export default jsonUrl => {
         name: 'worldJson',
         urls: jsonUrl && [jsonUrl],
         onReady(err, json) {
-            this.worldJson.data(json);
+            _.me.data(json);
+        },
+        onInit(me) {
+            _.me = me;
         },
         data(data) {
             if (data) {

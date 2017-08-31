@@ -6,7 +6,10 @@ export default csvUrl => {
         name: 'countryNamesCsv',
         urls: csvUrl && [csvUrl],
         onReady(err, csv) {
-            this.countryNamesCsv.data(csv)
+            _.me.data(csv)
+        },
+        onInit(me) {
+            _.me = me;
         },
         data(data) {
             if (data) {
