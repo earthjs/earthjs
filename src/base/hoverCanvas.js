@@ -54,12 +54,14 @@ export default () => {
                         _this.canvasThreejs.refresh();
                     }
                 }
-                if (_.ocountry2!==_.country) {
-                    _.ocountry2 = _.country;
-                    _.onCountryVals.forEach(v => {
-                        v.call(this, event, _.country);
-                    });
-                }
+                _.onCountryVals.forEach(v => {
+                    if ( v.tooltips) {
+                         v.call(this, event, _.country);
+                    } else if (_.ocountry2!==_.country) {
+                         v.call(this, event, _.country);
+                    }
+                });
+                _.ocountry2 = _.country;
             }
         }
         __.svg.on('mousemove', mouseMoveHandler);

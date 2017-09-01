@@ -644,12 +644,14 @@ var hoverCanvas = (function () {
                         _this.canvasThreejs.refresh();
                     }
                 }
-                if (_.ocountry2 !== _.country) {
-                    _.ocountry2 = _.country;
-                    _.onCountryVals.forEach(function (v) {
+                _.onCountryVals.forEach(function (v) {
+                    if (v.tooltips) {
                         v.call(_this2, event, _.country);
-                    });
-                }
+                    } else if (_.ocountry2 !== _.country) {
+                        v.call(_this2, event, _.country);
+                    }
+                });
+                _.ocountry2 = _.country;
             }
         };
         __.svg.on('mousemove', mouseMoveHandler);
@@ -3770,6 +3772,7 @@ var countryTooltipCanvas = (function (countryNameUrl) {
                 hideTooltip();
             }
         };
+        toolTipsHandler.tooltips = true; //always receive hover event
         this.hoverCanvas.onCountry({
             countryTooltipCanvas: toolTipsHandler
         });

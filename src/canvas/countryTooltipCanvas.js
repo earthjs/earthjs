@@ -30,6 +30,8 @@ export default countryNameUrl => {
                 hideTooltip()
             }
         }
+        // always receive hover event
+        toolTipsHandler.tooltips = true;
         this.hoverCanvas.onCountry({
             countryTooltipCanvas: toolTipsHandler
         });
