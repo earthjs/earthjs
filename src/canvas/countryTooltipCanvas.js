@@ -14,15 +14,31 @@ export default countryNameUrl => {
         return cname;
     }
 
+    function refresh(mouse) {
+        return countryTooltip
+        .style('left', (mouse[0] + 7) + 'px')
+        .style('top', (mouse[1] - 15) + 'px')
+    }
+
+    function showTooltip(event, country) {
+        refresh([event.clientX, event.clientY])
+        .style('display', 'block')
+        .style('opacity', 1)
+        .text(country.name);
+    }
+
+    function hideTooltip() {
+        countryTooltip
+        .style('opacity', 0)
+        .style('display', 'none');
+    }
+
     function init() {
-        const toolTipsHandler = (event, d) => { // fn with  current context
-            if (!this._.drag && d && this._.options.showCountryTooltip) {
-                const country = countryName(d);
+        const toolTipsHandler = (event, data) => { // fn with  current context
+            if (this._.drag!==null && data && this._.options.showCountryTooltip) {
+                const country = countryName(data);
                 if (country && !(this.barTooltipSvg && this.barTooltipSvg.visible())) {
-                    refresh([event.clientX, event.clientY])
-                    .style('display', 'block')
-                    .style('opacity', 1)
-                    .text(country.name);
+                    showTooltip(event, country);
                 } else {
                     hideTooltip()
                 }
@@ -35,24 +51,7 @@ export default countryNameUrl => {
         this.hoverCanvas.onCountry({
             countryTooltipCanvas: toolTipsHandler
         });
-        if (this.mousePlugin) {
-            this.mousePlugin.onDrag({
-                countryTooltipCanvas: toolTipsHandler
-            });
-        }
         this._.options.showCountryTooltip = true;
-    }
-
-    function refresh(mouse) {
-        return countryTooltip
-        .style('left', (mouse[0] + 7) + 'px')
-        .style('top', (mouse[1] - 15) + 'px')
-    }
-
-    function hideTooltip() {
-        countryTooltip
-        .style('opacity', 0)
-        .style('display', 'none');
     }
 
     return {
@@ -69,6 +68,10 @@ export default countryNameUrl => {
             if (this._.drag) {
                 refresh(this.mousePlugin.mouse());
             }
+        },
+        show(props) {
+            const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+            return countryTooltip.html(title)
         },
         data(data) {
             if (data) {

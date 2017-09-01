@@ -91,9 +91,8 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
             r0 = __.proj.rotate();
             q0 = versor(r0);
             __.drag = null;
-            _.onDragStartVals.forEach(v => {
-                v.call(this, mouse);
-            });
+            _.onDragStartVals.forEach(v => v.call(this, mouse));
+            _.onDragVals.forEach(     v => v.call(this, mouse));
             __.refresh();
             _.mouse = mouse;
             _._this = this;
@@ -110,7 +109,9 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
         }
 
         function dragsended() {
-            if (__.drag===null) {
+            var drag = __.drag;
+            __.drag = false;
+            if (drag===null) {
                 _.event = d3.event;
                 if (__.options.spin) {
                     onclick();
@@ -124,18 +125,13 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
                         }
                     }, 250);
                 }
-            } else if (__.drag) {
+            } else if (drag) {
                 r(__);
                 __.rotate(_.r);
-                _.onDragVals.forEach(v => {
-                    v.call(_._this, _.mouse);
-                });
+                _.onDragVals.forEach(v => v.call(_._this, _.mouse));
                 _.sync.forEach(g=>rotate.call(g, _.r));
             }
-            __.drag = false;
-            _.onDragEndVals.forEach(v => {
-                v.call(this, _.mouse);
-            });
+            _.onDragEndVals.forEach(v => v.call(this, _.mouse));
             __.refresh();
             // console.log('ttl:',_.t1,_.t2);
         }

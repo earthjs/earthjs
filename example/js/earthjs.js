@@ -949,7 +949,10 @@ var mousePlugin = (function () {
             q0 = versor(r0);
             __.drag = null;
             _.onDragStartVals.forEach(function (v) {
-                v.call(_this2, mouse);
+                return v.call(_this2, mouse);
+            });
+            _.onDragVals.forEach(function (v) {
+                return v.call(_this2, mouse);
             });
             __.refresh();
             _.mouse = mouse;
@@ -970,7 +973,9 @@ var mousePlugin = (function () {
         function dragsended() {
             var _this3 = this;
 
-            if (__.drag === null) {
+            var drag = __.drag;
+            __.drag = false;
+            if (drag === null) {
                 _.event = d3.event;
                 if (__.options.spin) {
                     onclick();
@@ -984,19 +989,18 @@ var mousePlugin = (function () {
                         }
                     }, 250);
                 }
-            } else if (__.drag) {
+            } else if (drag) {
                 r(__);
                 __.rotate(_.r);
                 _.onDragVals.forEach(function (v) {
-                    v.call(_._this, _.mouse);
+                    return v.call(_._this, _.mouse);
                 });
                 _.sync.forEach(function (g) {
                     return rotate.call(g, _.r);
                 });
             }
-            __.drag = false;
             _.onDragEndVals.forEach(function (v) {
-                v.call(_this3, _.mouse);
+                return v.call(_this3, _.mouse);
             });
             __.refresh();
             // console.log('ttl:',_.t1,_.t2);
@@ -3603,21 +3607,27 @@ var dotTooltipCanvas = (function () {
     var _ = {};
     var dotTooltip = d3.select('body').append('div').attr('class', 'ej-dot-tooltip');
 
+    function showTooltip(event, data) {
+        if (_.me.onShow) {
+            data = _.me.onShow.call(this, data, dotTooltip);
+        }
+        var mouse = [event.clientX, event.clientY];
+        _.me.show(data.properties).style('display', 'block').style('opacity', 1).style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
+        _.oldData = data;
+    }
+
+    function hideTooltip() {
+        dotTooltip.style('opacity', 0).style('display', 'none');
+    }
+
     function init() {
         var _this = this;
 
-        var hoverHandler = function hoverHandler(event, d) {
-            if (d) {
-                if (_.me.onShow) {
-                    d = _.me.onShow.call(_this, d, dotTooltip);
-                }
-
-                var _hoverCanvas$states = _this.hoverCanvas.states(),
-                    mouse = _hoverCanvas$states.mouse;
-
-                _.me.show(d.properties).style('display', 'block').style('opacity', 1).style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
+        var hoverHandler = function hoverHandler(event, data) {
+            if (data && _this._.drag !== null) {
+                showTooltip(event, data);
             } else {
-                dotTooltip.style('opacity', 0).style('display', 'none');
+                hideTooltip();
             }
         };
         this.dotSelectCanvas.onHover({
@@ -3756,15 +3766,27 @@ var countryTooltipCanvas = (function (countryNameUrl) {
         return cname;
     }
 
+    function refresh(mouse) {
+        return countryTooltip.style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
+    }
+
+    function showTooltip(event, country) {
+        refresh([event.clientX, event.clientY]).style('display', 'block').style('opacity', 1).text(country.name);
+    }
+
+    function hideTooltip() {
+        countryTooltip.style('opacity', 0).style('display', 'none');
+    }
+
     function init() {
         var _this = this;
 
-        var toolTipsHandler = function toolTipsHandler(event, d) {
+        var toolTipsHandler = function toolTipsHandler(event, data) {
             // fn with  current context
-            if (!_this._.drag && d && _this._.options.showCountryTooltip) {
-                var country = countryName(d);
+            if (_this._.drag !== null && data && _this._.options.showCountryTooltip) {
+                var country = countryName(data);
                 if (country && !(_this.barTooltipSvg && _this.barTooltipSvg.visible())) {
-                    refresh([event.clientX, event.clientY]).style('display', 'block').style('opacity', 1).text(country.name);
+                    showTooltip(event, country);
                 } else {
                     hideTooltip();
                 }
@@ -3772,24 +3794,12 @@ var countryTooltipCanvas = (function (countryNameUrl) {
                 hideTooltip();
             }
         };
-        toolTipsHandler.tooltips = true; //always receive hover event
+        // always receive hover event
+        toolTipsHandler.tooltips = true;
         this.hoverCanvas.onCountry({
             countryTooltipCanvas: toolTipsHandler
         });
-        if (this.mousePlugin) {
-            this.mousePlugin.onDrag({
-                countryTooltipCanvas: toolTipsHandler
-            });
-        }
         this._.options.showCountryTooltip = true;
-    }
-
-    function refresh(mouse) {
-        return countryTooltip.style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
-    }
-
-    function hideTooltip() {
-        countryTooltip.style('opacity', 0).style('display', 'none');
     }
 
     return {
@@ -3806,6 +3816,12 @@ var countryTooltipCanvas = (function (countryNameUrl) {
             if (this._.drag) {
                 refresh(this.mousePlugin.mouse());
             }
+        },
+        show: function show(props) {
+            var title = Object.keys(props).map(function (k) {
+                return k + ': ' + props[k];
+            }).join('<br/>');
+            return countryTooltip.html(title);
         },
         data: function data(_data) {
             if (_data) {

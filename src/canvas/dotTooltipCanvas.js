@@ -1,23 +1,32 @@
 export default () => {
     /*eslint no-console: 0 */
-    const _ = {}
+    const _ = {};
     const dotTooltip = d3.select('body').append('div').attr('class', 'ej-dot-tooltip');
 
+    function showTooltip(event, data) {
+        if (_.me.onShow) {
+            data = _.me.onShow.call(this, data, dotTooltip);
+        }
+        const mouse = [event.clientX, event.clientY];
+        _.me.show(data.properties)
+        .style('display', 'block')
+        .style('opacity', 1)
+        .style('left', mouse[0] + 7 + 'px')
+        .style('top', mouse[1] - 15 + 'px');
+        _.oldData = data;
+    }
+
+    function hideTooltip() {
+        dotTooltip.style('opacity', 0)
+        .style('display', 'none');
+    }
+
     function init() {
-        const hoverHandler = (event, d) => {
-            if (d) {
-                if (_.me.onShow) {
-                    d = _.me.onShow.call(this, d, dotTooltip);
-                }
-                const {mouse} = this.hoverCanvas.states();
-                _.me.show(d.properties)
-                .style('display', 'block')
-                .style('opacity', 1)
-                .style('left', mouse[0] + 7 + 'px')
-                .style('top', mouse[1] - 15 + 'px');
+        const hoverHandler = (event, data) => {
+            if (data && this._.drag!==null) {
+                showTooltip(event, data);
             } else {
-                dotTooltip.style('opacity', 0)
-                .style('display', 'none');
+                hideTooltip();
             }
         }
         this.dotSelectCanvas.onHover({
