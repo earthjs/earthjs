@@ -21,10 +21,10 @@ export default countryNameUrl => {
             if (_this._.options.showCountryTooltip) {
                 _.show = true;
                 const country = countryName(d);
-                refresh()
+                refresh();
+                _.me.show(country, countryTooltip)
                 .style('display', 'block')
-                .style('opacity', 1)
-                .text(country.name);
+                .style('opacity', 1);
             }
         })
         .on('mouseout', function() {
@@ -65,6 +65,10 @@ export default countryNameUrl => {
             if (this._.drag && _.show) {
                 refresh(this.mousePlugin.mouse());
             }
+        },
+        show(props, tooltip) {
+            const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+            return tooltip.html(title)
         },
         data(data) {
             if (data) {

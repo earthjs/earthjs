@@ -2861,7 +2861,8 @@ var countryTooltipSvg = (function (countryNameUrl) {
             if (_this._.options.showCountryTooltip) {
                 _.show = true;
                 var country = countryName(d);
-                refresh().style('display', 'block').style('opacity', 1).text(country.name);
+                refresh();
+                _.me.show(country, countryTooltip).style('display', 'block').style('opacity', 1);
             }
         }).on('mouseout', function () {
             _.show = false;
@@ -2897,6 +2898,12 @@ var countryTooltipSvg = (function (countryNameUrl) {
             if (this._.drag && _.show) {
                 refresh(this.mousePlugin.mouse());
             }
+        },
+        show: function show(props, tooltip) {
+            var title = Object.keys(props).map(function (k) {
+                return k + ': ' + props[k];
+            }).join('<br/>');
+            return tooltip.html(title);
         },
         data: function data(_data) {
             if (_data) {
@@ -3621,7 +3628,7 @@ var dotTooltipCanvas = (function () {
             data = _.me.onShow.call(this, data, dotTooltip);
         }
         var mouse = [event.clientX, event.clientY];
-        _.me.show(data.properties).style('display', 'block').style('opacity', 1).style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
+        _.me.show(data.properties, dotTooltip).style('display', 'block').style('opacity', 1).style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
         _.oldData = data;
         _.hidden = false;
     }
@@ -3654,11 +3661,11 @@ var dotTooltipCanvas = (function () {
             _.me = me;
             init.call(this);
         },
-        show: function show(props) {
+        show: function show(props, tooltip) {
             var title = Object.keys(props).map(function (k) {
                 return k + ': ' + props[k];
             }).join('<br/>');
-            return dotTooltip.html(title);
+            return tooltip.html(title);
         }
     };
 });
@@ -3784,7 +3791,8 @@ var countryTooltipCanvas = (function (countryNameUrl) {
     }
 
     function showTooltip(event, country) {
-        refresh([event.clientX, event.clientY]).style('display', 'block').style('opacity', 1).text(country.name);
+        refresh([event.clientX, event.clientY]);
+        _.me.show(country, countryTooltip).style('display', 'block').style('opacity', 1);
         _.hidden = false;
     }
 
@@ -3834,11 +3842,11 @@ var countryTooltipCanvas = (function (countryNameUrl) {
                 refresh(this.mousePlugin.mouse());
             }
         },
-        show: function show(props) {
+        show: function show(props, tooltip) {
             var title = Object.keys(props).map(function (k) {
                 return k + ': ' + props[k];
             }).join('<br/>');
-            return countryTooltip.html(title);
+            return tooltip.html(title);
         },
         data: function data(_data) {
             if (_data) {

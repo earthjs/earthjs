@@ -21,10 +21,10 @@ export default countryNameUrl => {
     }
 
     function showTooltip(event, country) {
-        refresh([event.clientX, event.clientY])
+        refresh([event.clientX, event.clientY]);
+        _.me.show(country, countryTooltip)
         .style('display', 'block')
-        .style('opacity', 1)
-        .text(country.name);
+        .style('opacity', 1);
         _.hidden = false;
     }
 
@@ -73,9 +73,9 @@ export default countryNameUrl => {
                 refresh(this.mousePlugin.mouse());
             }
         },
-        show(props) {
+        show(props, tooltip) {
             const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
-            return countryTooltip.html(title)
+            return tooltip.html(title)
         },
         data(data) {
             if (data) {

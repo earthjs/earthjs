@@ -8,7 +8,7 @@ export default () => {
             data = _.me.onShow.call(this, data, dotTooltip);
         }
         const mouse = [event.clientX, event.clientY];
-        _.me.show(data.properties)
+        _.me.show(data.properties, dotTooltip)
         .style('display', 'block')
         .style('opacity', 1)
         .style('left', mouse[0] + 7 + 'px')
@@ -44,9 +44,9 @@ export default () => {
             _.me = me;
             init.call(this);
         },
-        show(props) {
+        show(props, tooltip) {
             const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
-            return dotTooltip.html(title)
+            return tooltip.html(title)
         },
     }
 }
