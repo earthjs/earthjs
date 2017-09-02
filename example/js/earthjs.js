@@ -594,6 +594,7 @@ var hoverCanvas = (function () {
         country: null,
         ocountry: null,
         countries: null,
+        hoverHandler: null,
         onCircle: {},
         onCircleVals: [],
         onCountry: {},
@@ -611,7 +612,7 @@ var hoverCanvas = (function () {
         }
         var __ = this._;
         var _this = this;
-        var mouseMoveHandler = function mouseMoveHandler() {
+        _.hoverHandler = function () {
             var _this2 = this;
 
             var event = d3.event;
@@ -654,10 +655,10 @@ var hoverCanvas = (function () {
                 _.ocountry2 = _.country;
             }
         };
-        __.svg.on('mousemove', mouseMoveHandler);
+        __.svg.on('mousemove', _.hoverHandler);
         if (this.mousePlugin) {
             this.mousePlugin.onDrag({
-                hoverCanvas: mouseMoveHandler
+                hoverCanvas: _.hoverHandler
             });
         }
     }
@@ -721,6 +722,11 @@ var hoverCanvas = (function () {
                 mouse: _.mouse,
                 country: _.country
             };
+        },
+        registerMouseDrag: function registerMouseDrag() {
+            this.mousePlugin.onDrag({
+                hoverCanvas: _.hoverHandler
+            });
         }
     };
 });
@@ -3456,18 +3462,19 @@ var dotSelectCanvas = (function () {
 
     function detect(pos) {
         var dot = null;
+        if (_.dots) {
+            var _hoverCanvas$states = this.hoverCanvas.states(),
+                mouse = _hoverCanvas$states.mouse;
 
-        var _hoverCanvas$states = this.hoverCanvas.states(),
-            mouse = _hoverCanvas$states.mouse;
-
-        _.dots.forEach(function (d) {
-            if (mouse && !dot) {
-                var geoDistance = d3.geoDistance(d.coordinates, pos);
-                if (geoDistance <= 0.02) {
-                    dot = d;
+            _.dots.forEach(function (d) {
+                if (mouse && !dot) {
+                    var geoDistance = d3.geoDistance(d.coordinates, pos);
+                    if (geoDistance <= 0.02) {
+                        dot = d;
+                    }
                 }
-            }
-        });
+            });
+        }
         return dot;
     }
 
@@ -3482,6 +3489,8 @@ var dotSelectCanvas = (function () {
                 });
                 return dot;
             };
+            // always receive hover event
+            hoverHandler.tooltips = true;
             this.hoverCanvas.onCircle({
                 dotsCanvas: hoverHandler
             });
@@ -3781,7 +3790,7 @@ var countryTooltipCanvas = (function (countryNameUrl) {
     function init() {
         var _this = this;
 
-        var toolTipsHandler = function toolTipsHandler(event, data) {
+        var hoverHandler = function hoverHandler(event, data) {
             // fn with  current context
             if (_this._.drag !== null && data && _this._.options.showCountryTooltip) {
                 var country = countryName(data);
@@ -3795,9 +3804,9 @@ var countryTooltipCanvas = (function (countryNameUrl) {
             }
         };
         // always receive hover event
-        toolTipsHandler.tooltips = true;
+        hoverHandler.tooltips = true;
         this.hoverCanvas.onCountry({
-            countryTooltipCanvas: toolTipsHandler
+            countryTooltipCanvas: hoverHandler
         });
         this._.options.showCountryTooltip = true;
     }

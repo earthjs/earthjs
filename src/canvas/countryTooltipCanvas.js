@@ -34,7 +34,7 @@ export default countryNameUrl => {
     }
 
     function init() {
-        const toolTipsHandler = (event, data) => { // fn with  current context
+        const hoverHandler = (event, data) => { // fn with  current context
             if (this._.drag!==null && data && this._.options.showCountryTooltip) {
                 const country = countryName(data);
                 if (country && !(this.barTooltipSvg && this.barTooltipSvg.visible())) {
@@ -47,9 +47,9 @@ export default countryNameUrl => {
             }
         }
         // always receive hover event
-        toolTipsHandler.tooltips = true;
+        hoverHandler.tooltips = true;
         this.hoverCanvas.onCountry({
-            countryTooltipCanvas: toolTipsHandler
+            countryTooltipCanvas: hoverHandler
         });
         this._.options.showCountryTooltip = true;
     }

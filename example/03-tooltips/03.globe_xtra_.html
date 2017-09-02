@@ -82,6 +82,7 @@
                 coordinates: d.coordinates.join(', ')}};
         }
         g1.register(earthjs.plugins.mousePlugin());
+        g1.hoverCanvas.registerMouseDrag();
         // g1.register(earthjs.plugins.autorotatePlugin());
         // g1.autorotatePlugin.sync([g2]);
         g1.mousePlugin.sync([g2]);

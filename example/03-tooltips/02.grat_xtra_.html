@@ -67,6 +67,7 @@
         const g2 = factory('.s2', '.c2', '../d/cities.geojson');
         g1.register(earthjs.plugins.autorotatePlugin());
         g1.register(earthjs.plugins.mousePlugin());
+        g1.hoverCanvas.registerMouseDrag();
         g1.autorotatePlugin.sync([g2]);
         g1.mousePlugin.sync([g2]);
         // g2._.options.showPin = false;

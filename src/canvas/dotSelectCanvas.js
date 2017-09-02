@@ -11,15 +11,17 @@ export default () => {
 
     function detect(pos) {
         let dot = null;
-        const {mouse} = this.hoverCanvas.states();
-        _.dots.forEach(function(d) {
-            if (mouse && !dot) {
-                const geoDistance = d3.geoDistance(d.coordinates, pos);
-                if (geoDistance <= 0.02) {
-                    dot = d;
+        if (_.dots) {
+            const {mouse} = this.hoverCanvas.states();
+            _.dots.forEach(function(d) {
+                if (mouse && !dot) {
+                    const geoDistance = d3.geoDistance(d.coordinates, pos);
+                    if (geoDistance <= 0.02) {
+                        dot = d;
+                    }
                 }
-            }
-        });
+            });            
+        }
         return dot;
     }
 
@@ -32,6 +34,8 @@ export default () => {
                 });
                 return dot;
             }
+            // always receive hover event
+            hoverHandler.tooltips = true;
             this.hoverCanvas.onCircle({
                 dotsCanvas: hoverHandler
             });

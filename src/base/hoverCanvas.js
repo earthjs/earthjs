@@ -6,6 +6,7 @@ export default () => {
         country: null,
         ocountry: null,
         countries: null,
+        hoverHandler: null,
         onCircle: {},
         onCircleVals: [],
         onCountry: {},
@@ -23,7 +24,7 @@ export default () => {
         }
         const __ = this._;
         const _this = this;
-        const mouseMoveHandler = function() {
+        _.hoverHandler = function() {
             let event = d3.event;
             if (__.drag || !event) {
                 return;
@@ -64,10 +65,10 @@ export default () => {
                 _.ocountry2 = _.country;
             }
         }
-        __.svg.on('mousemove', mouseMoveHandler);
+        __.svg.on('mousemove', _.hoverHandler);
         if (this.mousePlugin) {
             this.mousePlugin.onDrag({
-                hoverCanvas: mouseMoveHandler
+                hoverCanvas: _.hoverHandler
             });
         }
     }
@@ -125,6 +126,11 @@ export default () => {
                 mouse: _.mouse,
                 country: _.country,
             };
+        },
+        registerMouseDrag() {
+            this.mousePlugin.onDrag({
+                hoverCanvas: _.hoverHandler
+            });
         },
     }
 }
