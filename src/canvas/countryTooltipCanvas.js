@@ -1,8 +1,8 @@
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 export default countryNameUrl => {
     /*eslint no-console: 0 */
+    const _ = {hidden: null};
     const countryTooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
-    const _ = {};
 
     function countryName(d) {
         let cname = '';
@@ -25,12 +25,16 @@ export default countryNameUrl => {
         .style('display', 'block')
         .style('opacity', 1)
         .text(country.name);
+        _.hidden = false;
     }
 
     function hideTooltip() {
-        countryTooltip
-        .style('opacity', 0)
-        .style('display', 'none');
+        if (!_.hidden) {
+            _.hidden = true;
+            countryTooltip
+            .style('opacity', 0)
+            .style('display', 'none');
+        }
     }
 
     function init() {

@@ -3613,7 +3613,7 @@ var graticuleCanvas = (function () {
 
 var dotTooltipCanvas = (function () {
     /*eslint no-console: 0 */
-    var _ = {};
+    var _ = { hidden: null };
     var dotTooltip = d3.select('body').append('div').attr('class', 'ej-dot-tooltip');
 
     function showTooltip(event, data) {
@@ -3623,10 +3623,14 @@ var dotTooltipCanvas = (function () {
         var mouse = [event.clientX, event.clientY];
         _.me.show(data.properties).style('display', 'block').style('opacity', 1).style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
         _.oldData = data;
+        _.hidden = false;
     }
 
     function hideTooltip() {
-        dotTooltip.style('opacity', 0).style('display', 'none');
+        if (!_.hidden) {
+            _.hidden = true;
+            dotTooltip.style('opacity', 0).style('display', 'none');
+        }
     }
 
     function init() {
@@ -3762,8 +3766,8 @@ var countrySelectCanvas = (function () {
 // KoGor’s Block http://bl.ocks.org/KoGor/5994804
 var countryTooltipCanvas = (function (countryNameUrl) {
     /*eslint no-console: 0 */
+    var _ = { hidden: null };
     var countryTooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
-    var _ = {};
 
     function countryName(d) {
         var cname = '';
@@ -3781,10 +3785,14 @@ var countryTooltipCanvas = (function (countryNameUrl) {
 
     function showTooltip(event, country) {
         refresh([event.clientX, event.clientY]).style('display', 'block').style('opacity', 1).text(country.name);
+        _.hidden = false;
     }
 
     function hideTooltip() {
-        countryTooltip.style('opacity', 0).style('display', 'none');
+        if (!_.hidden) {
+            _.hidden = true;
+            countryTooltip.style('opacity', 0).style('display', 'none');
+        }
     }
 
     function init() {

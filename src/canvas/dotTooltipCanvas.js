@@ -1,6 +1,6 @@
 export default () => {
     /*eslint no-console: 0 */
-    const _ = {};
+    const _ = {hidden: null};
     const dotTooltip = d3.select('body').append('div').attr('class', 'ej-dot-tooltip');
 
     function showTooltip(event, data) {
@@ -14,11 +14,15 @@ export default () => {
         .style('left', mouse[0] + 7 + 'px')
         .style('top', mouse[1] - 15 + 'px');
         _.oldData = data;
+        _.hidden = false;
     }
 
     function hideTooltip() {
-        dotTooltip.style('opacity', 0)
-        .style('display', 'none');
+        if (!_.hidden) {
+            _.hidden = true;
+            dotTooltip.style('opacity', 0)
+            .style('display', 'none');
+        }
     }
 
     function init() {
