@@ -7,21 +7,21 @@
 </head>
 <body>
     <svg id="earth-js"></svg>
-    <canvas class="ej-canvas"></canvas>
     <script>
         const g = earthjs({transparent:true});
         g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.hoverCanvas());
-        g.register(earthjs.plugins.canvasPlugin());
-        g.register(earthjs.plugins.graticuleCanvas());
-        g.register(earthjs.plugins.dotsCanvas('../d/bars.json',{important:true}));
-        g.register(earthjs.plugins.dotSelectCanvas());
-        g.register(earthjs.plugins.dotTooltipCanvas());
-        g.canvasPlugin.selectAll('.ej-canvas');
-        g.dotsCanvas.ready = function(err, json) {
+        g.register(earthjs.plugins.graticuleSvg());
+        g.register(earthjs.plugins.dotsSvg('../d/bars.json',{important:true}));
+        g.register(earthjs.plugins.dotTooltipSvg());
+        g.dotsSvg.ready = function(err, json) {
             json.geometry = {radius: 2}
-            g.dotsCanvas.data(json);
+            g.dotsSvg.data(json);
         };
+        g.dotTooltipSvg.show = function(data, tooltip) {
+            const props = data.properties;
+            const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+            return tooltip.html('<h3>Dot:</h3>'+title)
+        },
         g.ready(function(){
             g.create();
         })

@@ -1,0 +1,33 @@
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+</head>
+<body>
+    <svg id="earth-js"/>
+    <canvas class="ej-canvas"></canvas>
+    <script>
+        const g = earthjs();
+        g.register(earthjs.plugins.mousePlugin());
+        g.register(earthjs.plugins.hoverCanvas());
+        g.register(earthjs.plugins.canvasPlugin());
+        g.register(earthjs.plugins.oceanSvg());
+        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
+        g.register(earthjs.plugins.countryTooltipCanvas('../d/world-110m-country-names.tsv'));
+        g.canvasPlugin.selectAll('.ej-canvas');
+        g._.options.showSelectedCountry = true;
+        g.countryTooltipCanvas.show = function(props, tooltip) {
+            const title = '<h3>Country:</h3>'+
+            Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+            return tooltip.html(title);
+        };
+        g.ready(function() {
+            const world = g.worldCanvas.data();
+            g.hoverCanvas.data(world);
+            g.create();
+        })
+    </script>
+</body>
+</html>

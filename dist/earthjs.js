@@ -883,14 +883,12 @@ var mousePlugin = (function () {
         _.onClickVals.forEach(function (v) {
             v.call(_._this, _.event, _.mouse);
         });
-        // console.log('onClick');
     }
 
     function ondblclick() {
         _.onDblClickVals.forEach(function (v) {
             v.call(_._this, _.event, _.mouse);
         });
-        // console.log('onDblClick');
     }
 
     var v0 = void 0,
@@ -1368,12 +1366,16 @@ var threejsPlugin = (function () {
 
     var renderThreeX = null;
     function _renderThree() {
+        var _this = this;
+
         var direct = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+        var fn = arguments[1];
 
         if (direct) {
             _.renderer.render(_.scene, _.camera);
         } else if (renderThreeX === null) {
             renderThreeX = setTimeout(function () {
+                fn && fn.call(_this, _.group);
                 _.renderer.render(_.scene, _.camera);
                 renderThreeX = null;
             }, 0);
@@ -1388,7 +1390,7 @@ var threejsPlugin = (function () {
         },
         onCreate: function onCreate() {
             _.group.children = [];
-            _renderThree.call(this);
+            _renderThree.call(this, false, _rotate);
         },
         onRefresh: function onRefresh() {
             _rotate.call(this);
@@ -2710,6 +2712,14 @@ var dotTooltipSvg = (function () {
     var _ = { mouseXY: [0, 0], visible: false };
     var dotTooltip = d3.select('body').append('div').attr('class', 'ej-dot-tooltip');
 
+    function show(data, tooltip) {
+        var props = data.properties;
+        var title = Object.keys(props).map(function (k) {
+            return k + ': ' + props[k];
+        }).join('<br/>');
+        return tooltip.html(title);
+    }
+
     function create() {
         var _this = this;
         this.dotsSvg.$dots().on('mouseover', function () {
@@ -2717,11 +2727,8 @@ var dotTooltipSvg = (function () {
                 _.visible = true;
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
                 var i = +this.dataset.index;
-                var d = _this.dotsSvg.data().features[i];
-                if (_.me.onShow) {
-                    d = _.me.onShow.call(this, d, dotTooltip);
-                }
-                _.me.show(d.properties).style('display', 'block').style('opacity', 1);
+                var data = _this.dotsSvg.data().features[i];
+                (_.me.show || show)(data, dotTooltip).style('display', 'block').style('opacity', 1);
                 refresh();
             }
         }).on('mouseout', function () {
@@ -2759,12 +2766,6 @@ var dotTooltipSvg = (function () {
         onResize: function onResize() {
             resize.call(this);
         },
-        show: function show(props) {
-            var title = Object.keys(props).map(function (k) {
-                return k + ': ' + props[k];
-            }).join('<br/>');
-            return dotTooltip.html(title);
-        },
         visible: function visible() {
             return _.visible;
         }
@@ -2777,6 +2778,14 @@ var barTooltipSvg = (function () {
     var _ = { mouseXY: [0, 0], visible: false };
     var barTooltip = d3.select('body').append('div').attr('class', 'ej-bar-tooltip');
 
+    function show(data, tooltip) {
+        var props = data.properties;
+        var title = Object.keys(props).map(function (k) {
+            return k + ': ' + props[k];
+        }).join('<br/>');
+        return tooltip.html(title);
+    }
+
     function create() {
         var _this = this;
         this.barSvg.$bar().on('mouseover', function () {
@@ -2784,11 +2793,8 @@ var barTooltipSvg = (function () {
                 _.visible = true;
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
                 var i = +this.dataset.index;
-                var d = _this.barSvg.data().features[i];
-                if (_.me.onShow) {
-                    d = _.me.onShow.call(this, d, barTooltip);
-                }
-                _.me.show(d).style('display', 'block').style('opacity', 1);
+                var data = _this.barSvg.data().features[i];
+                (_.me.show || show)(data, barTooltip).style('display', 'block').style('opacity', 1);
                 refresh();
             }
         }).on('mouseout', function () {
@@ -2826,13 +2832,6 @@ var barTooltipSvg = (function () {
         onResize: function onResize() {
             resize.call(this);
         },
-        show: function show(d) {
-            var props = d.properties;
-            var title = Object.keys(props).map(function (k) {
-                return k + ': ' + props[k];
-            }).join('<br/>');
-            return barTooltip.html(title);
-        },
         visible: function visible() {
             return _.visible;
         }
@@ -2855,6 +2854,13 @@ var countryTooltipSvg = (function (countryNameUrl) {
         return cname;
     }
 
+    function show(data, tooltip) {
+        var title = Object.keys(data).map(function (k) {
+            return k + ': ' + data[k];
+        }).join('<br/>');
+        return tooltip.html(title);
+    }
+
     function create() {
         var _this = this;
         this.worldSvg.$countries().on('mouseover', function (d) {
@@ -2862,7 +2868,7 @@ var countryTooltipSvg = (function (countryNameUrl) {
                 _.show = true;
                 var country = countryName(d);
                 refresh();
-                _.me.show(country, countryTooltip).style('display', 'block').style('opacity', 1);
+                (_.me.show || show)(country, countryTooltip).style('display', 'block').style('opacity', 1);
             }
         }).on('mouseout', function () {
             _.show = false;
@@ -2898,12 +2904,6 @@ var countryTooltipSvg = (function (countryNameUrl) {
             if (this._.drag && _.show) {
                 refresh(this.mousePlugin.mouse());
             }
-        },
-        show: function show(props, tooltip) {
-            var title = Object.keys(props).map(function (k) {
-                return k + ': ' + props[k];
-            }).join('<br/>');
-            return tooltip.html(title);
         },
         data: function data(_data) {
             if (_data) {
@@ -3623,12 +3623,17 @@ var dotTooltipCanvas = (function () {
     var _ = { hidden: null };
     var dotTooltip = d3.select('body').append('div').attr('class', 'ej-dot-tooltip');
 
+    function show(data, tooltip) {
+        var props = data.properties;
+        var title = Object.keys(props).map(function (k) {
+            return k + ': ' + props[k];
+        }).join('<br/>');
+        return tooltip.html(title);
+    }
+
     function showTooltip(event, data) {
-        if (_.me.onShow) {
-            data = _.me.onShow.call(this, data, dotTooltip);
-        }
         var mouse = [event.clientX, event.clientY];
-        _.me.show(data.properties, dotTooltip).style('display', 'block').style('opacity', 1).style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
+        (_.me.show || show)(data, dotTooltip).style('display', 'block').style('opacity', 1).style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
         _.oldData = data;
         _.hidden = false;
     }
@@ -3660,12 +3665,6 @@ var dotTooltipCanvas = (function () {
         onInit: function onInit(me) {
             _.me = me;
             init.call(this);
-        },
-        show: function show(props, tooltip) {
-            var title = Object.keys(props).map(function (k) {
-                return k + ': ' + props[k];
-            }).join('<br/>');
-            return tooltip.html(title);
         }
     };
 });
@@ -3790,9 +3789,16 @@ var countryTooltipCanvas = (function (countryNameUrl) {
         return countryTooltip.style('left', mouse[0] + 7 + 'px').style('top', mouse[1] - 15 + 'px');
     }
 
+    function show(data, tooltip) {
+        var title = Object.keys(data).map(function (k) {
+            return k + ': ' + data[k];
+        }).join('<br/>');
+        return tooltip.html(title);
+    }
+
     function showTooltip(event, country) {
         refresh([event.clientX, event.clientY]);
-        _.me.show(country, countryTooltip).style('display', 'block').style('opacity', 1);
+        (_.me.show || show)(country, countryTooltip).style('display', 'block').style('opacity', 1);
         _.hidden = false;
     }
 
@@ -3841,12 +3847,6 @@ var countryTooltipCanvas = (function (countryNameUrl) {
             if (this._.drag) {
                 refresh(this.mousePlugin.mouse());
             }
-        },
-        show: function show(props, tooltip) {
-            var title = Object.keys(props).map(function (k) {
-                return k + ': ' + props[k];
-            }).join('<br/>');
-            return tooltip.html(title);
         },
         data: function data(_data) {
             if (_data) {
@@ -3962,6 +3962,11 @@ var barThreejs = (function (jsonUrl) {
         },
         sphere: function sphere() {
             return _.sphereObject;
+        },
+        color: function color(c) {
+            material.color.set(c);
+            material.needsUpdate = true;
+            this.threejsPlugin.renderThree();
         }
     };
 });
@@ -4087,40 +4092,39 @@ var hmapThreejs = (function (hmapUrl) {
 var dotsThreejs = (function (urlJson) {
     /*eslint no-console: 0 */
     var _ = { dataDots: null };
+    var material = new THREE.MeshBasicMaterial({
+        side: THREE.DoubleSide,
+        color: 0xC19999 //F0C400,
+    });
 
     function init() {
         this._.options.showDots = true;
     }
 
     function createDot(feature) {
-        if (feature) {
-            var tj = this.threejsPlugin;
-            // var dc = [-77.0369, 38.9072];
-            // var position = tj.vertex(feature ? feature.geometry.coordinates : dc);
-            var position = tj.vertex(feature.geometry.coordinates);
-            var material = new THREE.SpriteMaterial({ color: 0x0000ff });
-            var dot = new THREE.Sprite(material);
-            dot.position.set(position.x, position.y, position.z);
-            return dot;
-        }
+        var tj = this.threejsPlugin,
+            radius = 10,
+            geometry = new THREE.CircleGeometry(radius, 30),
+            mesh = new THREE.Mesh(geometry, material),
+            position = tj.vertex(feature.geometry.coordinates);
+        mesh.position.set(position.x, position.y, position.z);
+        mesh.lookAt({ x: 0, y: 0, z: 0 });
+        return mesh;
     }
 
     function create() {
-        var tj = this.threejsPlugin;
-        if (!_.dots) {
-            create1.call(this);
-        }
-        _.dots.visible = this._.options.showDots;
-        tj.addGroup(_.dots);
-    }
-
-    function create1() {
         var _this = this;
-        _.dots = new THREE.Group();
-        _.dataDots.features.forEach(function (d) {
-            var dot = createDot.call(_this, d);
-            dot && _.dots.add(dot);
-        });
+
+        var tj = this.threejsPlugin;
+        if (!_.sphereObject) {
+            _.sphereObject = new THREE.Group();
+            _.dataDots.features.forEach(function (d) {
+                var dot = createDot.call(_this, d);
+                _.sphereObject.add(dot);
+            });
+        }
+        _.sphereObject.visible = this._.options.showDots;
+        tj.addGroup(_.sphereObject);
     }
 
     return {
@@ -4137,7 +4141,7 @@ var dotsThreejs = (function (urlJson) {
             create.call(this);
         },
         onRefresh: function onRefresh() {
-            _.dots.visible = this._.options.showDots;
+            _.sphereObject.visible = this._.options.showDots;
         },
         data: function data(_data) {
             if (_data) {
@@ -4145,6 +4149,14 @@ var dotsThreejs = (function (urlJson) {
             } else {
                 return _.dataDots;
             }
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
+        },
+        color: function color(c) {
+            material.color.set(c);
+            material.needsUpdate = true;
+            this.threejsPlugin.renderThree();
         }
     };
 });
@@ -4822,7 +4834,6 @@ var flightLineThreejs = (function (jsonUrl) {
                 addTrack(start_lat, start_lng, end_lat, end_lng, SCALE, group);
             }
             _.sphereObject = group;
-            console.log('done add');
         }
         _.sphereObject.visible = o.showFlightLine;
         tj.addGroup(_.sphereObject);
@@ -5250,7 +5261,6 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
     function create() {
         var o = this._.options;
         if (_.texture && !_.sphereObject && !_.loaded) {
-            console.log('done add:2');
             loadFlights.call(this);
         } else if (_.sphereObject) {
             _.sphereObject.visible = o.showFlightLine;
@@ -5262,7 +5272,6 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
     function _reload() {
         all_tracks = [];
         point_cache = [];
-        console.log('done reload');
         var tj = this.threejsPlugin;
         loadFlights.call(this);
         var grp = tj.group();
@@ -5291,11 +5300,9 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
             size = _pt$geometry$attribut.size,
             value = _pt$geometry$attribut.value;
 
-        console.log(size.array);
         size.array = value.array.map(function (v) {
             return _.point(v) * sc;
         });
-        console.log(size.array);
         size.needsUpdate = true;
     }
 
@@ -5334,7 +5341,6 @@ var flightLine2Threejs = (function (jsonUrl, imgUrl, height) {
                     _.color = d3.scaleLinear().domain(d).interpolate(d3.interpolateHcl).range(colorRange);
                     _.point = d3.scaleLinear().domain(d).range([50, 500]);
                     _.maxVal = d[1];
-                    console.log(d);
                 } else {
                     _.color = function () {
                         return 'rgb(255, 255, 255)';

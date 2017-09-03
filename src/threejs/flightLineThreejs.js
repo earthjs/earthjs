@@ -152,7 +152,6 @@ export default (jsonUrl, num_decorators=15) => {
                 addTrack(start_lat, start_lng, end_lat, end_lng, SCALE, group);
             }
             _.sphereObject = group;
-            console.log('done add');
         }
         _.sphereObject.visible = o.showFlightLine;
         tj.addGroup(_.sphereObject);

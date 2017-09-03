@@ -97,5 +97,10 @@ export default (jsonUrl, height=2) => {
         sphere() {
             return _.sphereObject;
         },
+        color(c) {
+            material.color.set(c);
+            material.needsUpdate = true;
+            this.threejsPlugin.renderThree();
+        }
     }
 }

@@ -3,12 +3,15 @@ export default () => {
     const _ = {hidden: null};
     const dotTooltip = d3.select('body').append('div').attr('class', 'ej-dot-tooltip');
 
+    function show(data, tooltip) {
+        const props = data.properties;
+        const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+        return tooltip.html(title)
+    }
+
     function showTooltip(event, data) {
-        if (_.me.onShow) {
-            data = _.me.onShow.call(this, data, dotTooltip);
-        }
         const mouse = [event.clientX, event.clientY];
-        _.me.show(data.properties, dotTooltip)
+        (_.me.show || show)(data, dotTooltip)
         .style('display', 'block')
         .style('opacity', 1)
         .style('left', mouse[0] + 7 + 'px')
@@ -43,10 +46,6 @@ export default () => {
         onInit(me) {
             _.me = me;
             init.call(this);
-        },
-        show(props, tooltip) {
-            const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
-            return tooltip.html(title)
         },
     }
 }

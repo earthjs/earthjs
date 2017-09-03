@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style media="screen">
+        .input-area {
+            position: absolute;
+            z-index: 5;
+        }
+    </style>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+</head>
+<body>
+    <svg id="earth-js"></svg>
+    <canvas id="three-js"></canvas>
+    <svg class="ej-svg" width="700" height="500"></svg>
+    <script>
+        const g = earthjs()
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.dropShadowSvg())
+        .register(earthjs.plugins.worldThreejs('../d/world-110m.json')) //../d/world.png
+        .register(earthjs.plugins.imageThreejs('../d/graticule.svg'))
+        .register(earthjs.plugins.dotsThreejs('../d/bars.json'))
+        .register(earthjs.plugins.oceanSvg())
+        .register(earthjs.plugins.barSvg())
+        .register(earthjs.plugins.barTooltipSvg());
+        g.mousePlugin.selectAll('.ej-svg');
+        g.barSvg.selectAll('.ej-svg');
+        g.dotsThreejs.ready = function(err, json) {
+            json.features.forEach(function(d) {
+                d.geometry.value = d.properties.mag;
+            });
+            json.geometry = {radius: 2}
+            g.dotsThreejs.data(json);
+            g.barSvg.data(json);
+        };
+        g.barTooltipSvg.show = function(data, tooltip) {
+            const props = data.properties;
+            const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+            return tooltip.html('<h3>Bar:</h3>'+title);
+        };
+
+        g.ready(function(){
+            g.create();
+        })
+
+        const canvas = d3.selectAll('canvas').nodes();
+        const svg = d3.selectAll('.ej-svg').nodes();
+    </script>
+</body>
+</html>

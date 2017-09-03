@@ -57,10 +57,6 @@
                 g.dotsCanvas.data(json);
                 g.pinCanvas.data(json);
             };
-            g.dotTooltipCanvas.onShow = function(d) {
-                const {mag, place} = d.properties;
-                return {properties: {mag, place}};
-            }
             g.ready(function(){
                 g.create();
             });
@@ -69,9 +65,9 @@
         const g1 = factory('.s1', '.c1','../d/cities.geojson');
         const g2 = factory('.s2', '.c2');
         g1._.options.showPin = false;
-        g1.dotTooltipCanvas.onShow = function(d) {
-            const {tld, area, region, name, capital, currency, callingCode} = d.properties;
-            return {properties: {
+        g1.dotTooltipCanvas.show = function(data, tooltip) {
+            const {tld, area, region, name, capital, currency, callingCode} = data.properties;
+            const props = {
                 name,
                 capital,
                 callingCode,
@@ -79,7 +75,10 @@
                 currency,
                 area,
                 tld,
-                coordinates: d.coordinates.join(', ')}};
+                coordinates: data.coordinates.join(', ')
+            };
+            const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+            return tooltip.html('<h3>Dot:</h3>'+title)
         }
         g1.register(earthjs.plugins.mousePlugin());
         g1.hoverCanvas.registerMouseDrag();

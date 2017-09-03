@@ -239,7 +239,6 @@ export default (jsonUrl) => {
             group.add(flightPathLines());
             // group.add(flightPointCloud());
             _.sphereObject = group;
-            console.log('done add');
         }
         _.sphereObject.visible = o.showFlightLine;
         tj.addGroup(_.sphereObject);

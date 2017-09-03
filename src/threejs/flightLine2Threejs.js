@@ -389,7 +389,6 @@ export default (jsonUrl, imgUrl, height) => {
     function create() {
         const o = this._.options;
         if (_.texture && !_.sphereObject && !_.loaded) {
-            console.log('done add:2');
             loadFlights.call(this);
         } else if (_.sphereObject) {
             _.sphereObject.visible = o.showFlightLine;
@@ -401,7 +400,6 @@ export default (jsonUrl, imgUrl, height) => {
     function reload() {
         all_tracks = [];
         point_cache = [];
-        console.log('done reload');
         const tj = this.threejsPlugin;
         loadFlights.call(this);
         var grp = tj.group();
@@ -425,9 +423,7 @@ export default (jsonUrl, imgUrl, height) => {
         const sc = _.resize(this._.proj.scale());
         const pt = _.sphereObject.children[1];
         const {size,value} = pt.geometry.attributes;
-        console.log(size.array);
         size.array = value.array.map((v)=>_.point(v)*sc);
-        console.log(size.array);
         size.needsUpdate = true;
     }
 
@@ -464,7 +460,6 @@ export default (jsonUrl, imgUrl, height) => {
                     _.color = d3.scaleLinear().domain(d).interpolate(d3.interpolateHcl).range(colorRange);
                     _.point = d3.scaleLinear().domain(d).range([50, 500]);
                     _.maxVal= d[1];
-                    console.log(d);
                 } else {
                     _.color = () => 'rgb(255, 255, 255)';
                     _.point = () => 150;

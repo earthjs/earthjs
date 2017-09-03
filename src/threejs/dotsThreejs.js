@@ -4,40 +4,36 @@
 export default urlJson => {
     /*eslint no-console: 0 */
     const _ = {dataDots: null};
+    const material = new THREE.MeshBasicMaterial({
+        side: THREE.DoubleSide,
+        color: 0xC19999, //F0C400,
+    });
 
     function init() {
         this._.options.showDots = true;
     }
 
     function createDot(feature) {
-        if (feature) {
-            const tj = this.threejsPlugin;
-            // var dc = [-77.0369, 38.9072];
-            // var position = tj.vertex(feature ? feature.geometry.coordinates : dc);
-            var position = tj.vertex(feature.geometry.coordinates);
-            var material = new THREE.SpriteMaterial({ color: 0x0000ff });
-            var dot = new THREE.Sprite(material);
-            dot.position.set(position.x, position.y, position.z);
-            return dot;
-        }
+        const tj = this.threejsPlugin, radius = 10,
+        geometry = new THREE.CircleGeometry(radius, 30),
+        mesh     = new THREE.Mesh(geometry, material),
+        position = tj.vertex(feature.geometry.coordinates);
+        mesh.position.set(position.x, position.y, position.z);
+        mesh.lookAt({x:0,y:0,z:0});
+        return mesh;
     }
 
     function create() {
         const tj = this.threejsPlugin;
-        if (!_.dots) {
-            create1.call(this);
+        if (!_.sphereObject) {
+            _.sphereObject = new THREE.Group();
+            _.dataDots.features.forEach((d) => {
+                const dot = createDot.call(this, d);
+                _.sphereObject.add(dot);
+            });
         }
-        _.dots.visible = this._.options.showDots;
-        tj.addGroup(_.dots);
-    }
-
-    function create1() {
-        const _this = this;
-        _.dots = new THREE.Group();
-        _.dataDots.features.forEach(function(d) {
-            const dot = createDot.call(_this, d);
-            dot && _.dots.add(dot);
-        });
+        _.sphereObject.visible = this._.options.showDots;
+        tj.addGroup(_.sphereObject);
     }
 
     return {
@@ -54,7 +50,7 @@ export default urlJson => {
             create.call(this);
         },
         onRefresh() {
-            _.dots.visible = this._.options.showDots;
+            _.sphereObject.visible = this._.options.showDots;
         },
         data(data) {
             if (data) {
@@ -62,6 +58,14 @@ export default urlJson => {
             } else {
                 return _.dataDots;
             }
+        },
+        sphere() {
+            return _.sphereObject;
+        },
+        color(c) {
+            material.color.set(c);
+            material.needsUpdate = true;
+            this.threejsPlugin.renderThree();
         }
     }
 }

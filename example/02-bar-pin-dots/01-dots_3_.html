@@ -2,20 +2,23 @@
 <head>
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../js/three.min.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
     <svg id="earth-js"></svg>
+    <canvas id="three-js"></canvas>
     <script>
-        const g = earthjs({transparent:true});
-        g.register(earthjs.plugins.mousePlugin());
+        const g = earthjs();
+        g.register(earthjs.plugins.threejsPlugin())
         g.register(earthjs.plugins.autorotatePlugin());
-        g.register(earthjs.plugins.graticuleSvg());
-        g.register(earthjs.plugins.dotsSvg('../d/bars.json',{important:true}));
-        g.dotsSvg.ready = function(err, json) {
+        g.register(earthjs.plugins.mousePlugin());
+        g.register(earthjs.plugins.graticuleThreejs())
+        g.register(earthjs.plugins.dotsThreejs('../d/bars.json'))
+        g.dotsThreejs.ready = function(err, json) {
             json.geometry = {radius: 2}
-            g.dotsSvg.data(json);
+            g.dotsThreejs.data(json);
         };
         g.ready(function(){
             g.create();

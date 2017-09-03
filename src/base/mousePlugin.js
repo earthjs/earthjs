@@ -21,14 +21,12 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
         _.onClickVals.forEach(v => {
             v.call(_._this, _.event, _.mouse);
         });
-        // console.log('onClick');
     }
 
     function ondblclick() {
         _.onDblClickVals.forEach(v => {
             v.call(_._this, _.event, _.mouse);
         });
-        // console.log('onDblClick');
     }
 
     let v0, // Mouse position in Cartesian coordinates at start of drag gesture.

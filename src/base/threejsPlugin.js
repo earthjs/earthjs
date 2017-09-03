@@ -74,11 +74,12 @@ export default (threejs='three-js') => {
     }
 
     let renderThreeX = null;
-    function renderThree(direct=false) {
+    function renderThree(direct=false, fn) {
         if (direct) {
             _.renderer.render(_.scene, _.camera);
         } else if (renderThreeX===null) {
-            renderThreeX = setTimeout(function() {
+            renderThreeX = setTimeout(() => {
+                fn && fn.call(this, _.group);
                  _.renderer.render(_.scene, _.camera);
                 renderThreeX = null;
             }, 0);
@@ -93,7 +94,7 @@ export default (threejs='three-js') => {
         },
         onCreate() {
             _.group.children = [];
-            renderThree.call(this);
+            renderThree.call(this, false, rotate);
         },
         onRefresh() {
             rotate.call(this);

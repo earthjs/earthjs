@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+    <style>body {background: #555;}</style>
+</head>
+<body>
+    <svg id="earth-js" class="ej-center" width="1000" height="920"></svg>
+    <canvas id="three-js" class="ej-center"></canvas>
+    <script>
+        const g = earthjs({scale:300})
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.flightLine2Threejs('../d/flights2.json','../images/point.png',170))
+        g.flightLine2Threejs.ready = function(err, csv) {
+            g.flightLine2Threejs.data(csv, true);
+        }
+        g.ready(function(){
+            g.create();
+        })
+    </script>
+</body>
+</html>

@@ -12,14 +12,9 @@
     <script type='text/javascript' src='../js/three.min.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
-    <style>
-        #earth-js, #earth-js2 {
-            position: absolute;
-            top: 0px;
-            left: 0px;
-        }
-        #earth-js2 {
-            z-index: 4;
+    <style media="screen">
+        .ej-svg {
+            pointer-events: none;
         }
     </style>
 </head>
@@ -33,10 +28,10 @@
     <canvas class="ej-canvas"></canvas>
     <script>
         const g = earthjs()
-        .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.hoverCanvas())
+        .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.dropShadowSvg())
         .register(earthjs.plugins.graticuleThreejs())
@@ -48,7 +43,6 @@
         .register(earthjs.plugins.fauxGlobeSvg());
         g.canvasPlugin.selectAll('.ej-canvas');
         g.fauxGlobeSvg.selectAll('.ej-svg');
-        g.mousePlugin.selectAll('.ej-svg');
         g.pinCanvas.ready = function(err, json) {
             json.features.forEach(function(d) {
                 d.geometry.value = d.properties.mag;
@@ -57,14 +51,11 @@
             g.dotsCanvas.data(json);
             g.pinCanvas.data(json);
         };
-        g.dotTooltipCanvas.onShow = function(d) {
-            const p = d.properties;
-            return {properties: {
-                place: p.place,
-                mag: p.mag,
-            }};
-        }
-
+        g.dotTooltipCanvas.show = function(data, tooltip) {
+            const props = data.properties;
+            const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+            return tooltip.html('<h3>Dot:</h3>'+title);
+        };
         g.ready(function(){
             g.create();
         })

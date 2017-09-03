@@ -50,9 +50,10 @@
             g.dotsCanvas.data(json);
             g.pinCanvas.data(json);
         };
-        g.dotTooltipCanvas.onShow = function(d) {
-            const {mag, place} = d.properties;
-            return {properties: {mag, place}};
+        g.dotTooltipCanvas.show = function(data, tooltip) {
+            const props = data.properties;
+            const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+            return tooltip.html('<h3>Dot:</h3>'+title)
         }
         g.ready(function(){
             g.create();

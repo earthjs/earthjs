@@ -9,18 +9,14 @@
     <svg id="earth-js"></svg>
     <script>
         const g = earthjs({transparent:true});
+        g.register(earthjs.plugins.autorotatePlugin());
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.graticuleSvg());
         g.register(earthjs.plugins.dotsSvg('../d/bars.json',{important:true}));
-        g.register(earthjs.plugins.dotTooltipSvg());
         g.dotsSvg.ready = function(err, json) {
             json.geometry = {radius: 2}
             g.dotsSvg.data(json);
         };
-        g.dotTooltipSvg.onShow = function(d) {
-            const {mag, place} = d.properties;
-            return {properties: {mag, place}};
-        }
         g.ready(function(){
             g.create();
         })

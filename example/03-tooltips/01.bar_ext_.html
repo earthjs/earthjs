@@ -17,6 +17,11 @@
             json.features.forEach(d => d.geometry.value = d.properties.mag);
             g.barSvg.data(json);
         };
+        g.barTooltipSvg.show = function(data, tooltip) {
+            const props = data.properties;
+            const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+            return tooltip.html('<h3>Bar:</h3>'+title);
+        };
         g.ready(function(){
             g.create();
         })

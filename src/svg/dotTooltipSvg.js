@@ -4,6 +4,12 @@ export default () => {
     const _ = { mouseXY: [0,0], visible: false }
     const dotTooltip = d3.select('body').append('div').attr('class', 'ej-dot-tooltip');
 
+    function show(data, tooltip) {
+        const props = data.properties;
+        const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+        return tooltip.html(title)
+    }
+
     function create() {
         const _this = this;
         this.dotsSvg.$dots()
@@ -12,11 +18,8 @@ export default () => {
                 _.visible = true;
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
                 const i = +this.dataset.index;
-                var d = _this.dotsSvg.data().features[i];
-                if (_.me.onShow) {
-                    d = _.me.onShow.call(this, d, dotTooltip);
-                }
-                _.me.show(d.properties)
+                var data = _this.dotsSvg.data().features[i];
+                (_.me.show || show)(data, dotTooltip)
                 .style('display', 'block')
                 .style('opacity', 1);
                 refresh();
@@ -61,10 +64,6 @@ export default () => {
         },
         onResize() {
             resize.call(this);
-        },
-        show(props) {
-            const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
-            return dotTooltip.html(title)
         },
         visible() {
             return _.visible;

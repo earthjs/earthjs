@@ -54,10 +54,6 @@
                 g.dotsCanvas.data(json);
                 g.pinCanvas.data(json);
             };
-            g.dotTooltipCanvas.onShow = function(d) {
-                const {mag, place} = d.properties;
-                return {properties: {mag, place}};
-            }
             g.ready(function(){
                 g.create();
             });
@@ -71,9 +67,9 @@
         g1.autorotatePlugin.sync([g2]);
         g1.mousePlugin.sync([g2]);
         // g2._.options.showPin = false;
-        g2.dotTooltipCanvas.onShow = function(d) {
-            const {tld, area, region, name, capital, currency, callingCode} = d.properties;
-            return {properties: {
+        g2.dotTooltipCanvas.show = function(data, tooltip) {
+            const {tld, area, region, name, capital, currency, callingCode} = data.properties;
+            const props = {
                 name,
                 capital,
                 callingCode,
@@ -81,7 +77,10 @@
                 currency,
                 area,
                 tld,
-                coordinates: d.coordinates.join(', ')}};
+                coordinates: data.coordinates.join(', ')
+            };
+            const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+            return tooltip.html('<h3>Dot:</h3>'+title)
         }
     </script>
 </body>
