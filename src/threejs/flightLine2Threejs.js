@@ -387,11 +387,8 @@ export default (jsonUrl, imgUrl, height) => {
     }
 
     function create() {
-        const o = this._.options;
         if (_.texture && !_.sphereObject && !_.loaded) {
             loadFlights.call(this);
-        } else if (_.sphereObject) {
-            _.sphereObject.visible = o.showFlightLine;
         }
         const tj = this.threejsPlugin;
         tj.addGroup(_.sphereObject);
@@ -445,9 +442,6 @@ export default (jsonUrl, imgUrl, height) => {
         },
         onCreate() {
             create.call(this);
-        },
-        onRefresh() {
-            _.sphereObject.visible = this._.options.showFlightLine;
         },
         reload() {
             reload.call(this);

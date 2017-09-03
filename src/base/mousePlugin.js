@@ -155,8 +155,7 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
         onInit(me) {
             _.me = me;
             _.oMouse = [];
-            const __ = this._;
-            _.svg = __.svg;
+            _.svg = this._.svg;
             init.call(this);
         },
         onInterval() {
@@ -173,6 +172,9 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
                     .on('drag', null));
                 _.svg = d3.selectAll(q);
                 init.call(this);
+                if (this.hoverCanvas) {
+                    this.hoverCanvas.selectAll(q);
+                }
             }
             return _.svg;
         },

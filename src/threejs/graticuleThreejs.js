@@ -42,7 +42,6 @@ export default () => {
         if (!_.sphereObject) {
             const material = new THREE.LineBasicMaterial({color: 0xaaaaaa});
             _.sphereObject = tj.wireframe(_.graticule10, material); //0x800000
-            _.sphereObject.visible = this._.options.showGraticule;
         }
         tj.addGroup(_.sphereObject);
     }
@@ -55,9 +54,6 @@ export default () => {
         },
         onCreate() {
             create.call(this);
-        },
-        onRefresh() {
-            _.sphereObject.visible = this._.options.showGraticule;
         },
         sphere() {
             return _.sphereObject;

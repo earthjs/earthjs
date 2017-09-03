@@ -6,7 +6,6 @@ export default () => {
     }
 
     function create() {
-        const o = this._.options;
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
             const SCALE = this._.proj.scale();
@@ -32,7 +31,6 @@ export default () => {
             _.sphereObject = new THREE.Object3D();
             _.sphereObject.add(sphereMesh, dot1Mesh, dot2Mesh, dot3Mesh);
         }
-        _.sphereObject.visible = o.showDebugSpahre;
         tj.addGroup(_.sphereObject);
     }
 
@@ -44,9 +42,6 @@ export default () => {
         },
         onCreate() {
             create.call(this);
-        },
-        onRefresh() {
-            _.sphereObject.visible = this._.options.showDebugSpahre;
         },
         sphere() {
             return _.sphereObject;

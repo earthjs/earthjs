@@ -33,7 +33,6 @@ export default (jsonUrl, height=2) => {
     }
 
     function create() {
-        const o = this._.options;
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
             const group = new THREE.Group();
@@ -52,7 +51,6 @@ export default (jsonUrl, height=2) => {
             })
             _.sphereObject = group;
         }
-        _.sphereObject.visible = o.showBars;
         tj.addGroup(_.sphereObject);
     }
 
@@ -68,9 +66,6 @@ export default (jsonUrl, height=2) => {
         },
         onCreate() {
             create.call(this);
-        },
-        onRefresh() {
-            _.sphereObject.visible = this._.options.showBars;
         },
         data(data) {
             if (data) {

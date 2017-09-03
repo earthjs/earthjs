@@ -20,7 +20,6 @@ export default (worldUrl='../d/world.png') => {
             //     polygonOffsetUnits: 1
             // });
             _.sphereObject = tj.wireframe(mesh, material);
-            _.sphereObject.visible = this._.options.showLand;
         }
         // if (this.world3d) {
         //     const s = _.sphereObject.scale;
@@ -43,9 +42,6 @@ export default (worldUrl='../d/world.png') => {
         },
         onCreate() {
             create.call(this);
-        },
-        onRefresh() {
-            _.sphereObject.visible = this._.options.showLand;
         },
         data(data) {
             if (data) {

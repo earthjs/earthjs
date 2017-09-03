@@ -51,7 +51,6 @@ export default (imgUrl='../d/world.png') => {
     function create() {
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
-            const _this = this;
             const SCALE = this._.proj.scale();
             const geometry  = new THREE.SphereGeometry(SCALE, 30, 30);
             const uniforms1 = THREE.UniformsUtils.clone(Shaders.earth.uniforms);
@@ -77,17 +76,10 @@ export default (imgUrl='../d/world.png') => {
             group.add(mesh1);
             group.add(mesh2);
             _.sphereObject = group;
-            _.sphereObject.visible = _this._.options.showSphere;
             tj.addGroup(_.sphereObject);
             tj.rotate();
         } else {
             tj.addGroup(_.sphereObject);
-        }
-    }
-
-    function refresh() {
-        if (_.sphereObject) {
-            _.sphereObject.visible = this._.options.showSphere;
         }
     }
 
@@ -99,9 +91,6 @@ export default (imgUrl='../d/world.png') => {
         },
         onCreate() {
             create.call(this);
-        },
-        onRefresh() {
-            refresh.call(this);
         },
         sphere() {
             return _.sphereObject;

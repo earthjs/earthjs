@@ -72,7 +72,6 @@ export default hmapUrl => {
         if (!_.sphereObject) {
             _.sphereObject= new THREE.Mesh(_.geometry, _.material);
         }
-        _.sphereObject.visible = this._.options.showHmap;
         _.texture.needsUpdate = true;
         tj.addGroup(_.sphereObject);
     }
@@ -80,7 +79,6 @@ export default hmapUrl => {
     function refresh() {
         _.heatmap.update();
         _.heatmap.display();
-        _.sphereObject.visible = this._.options.showHmap;
     }
 
     return {

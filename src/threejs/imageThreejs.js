@@ -5,25 +5,17 @@ export default (imgUrl='../d/world.png') => {
     function create() {
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
-            const _this = this;
             const SCALE = this._.proj.scale();
             const loader = new THREE.TextureLoader();
             loader.load(imgUrl, function(map) {
                 const geometry = new THREE.SphereGeometry(SCALE, 30, 30);
                 const material = new THREE.MeshBasicMaterial({map});
                 _.sphereObject = new THREE.Mesh(geometry, material);
-                _.sphereObject.visible = _this._.options.showImage;
                 tj.addGroup(_.sphereObject);
                 tj.rotate();
             });
         } else {
             tj.addGroup(_.sphereObject);
-        }
-    }
-
-    function refresh() {
-        if (_.sphereObject) {
-            _.sphereObject.visible = this._.options.showImage;
         }
     }
 
@@ -35,9 +27,6 @@ export default (imgUrl='../d/world.png') => {
         },
         onCreate() {
             create.call(this);
-        },
-        onRefresh() {
-            refresh.call(this);
         },
         sphere() {
             return _.sphereObject;

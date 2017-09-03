@@ -2,6 +2,7 @@
 export default () => {
     /*eslint no-console: 0 */
     const _ = {
+        svg: null,
         mouse: null,
         country: null,
         ocountry: null,
@@ -65,7 +66,7 @@ export default () => {
                 _.ocountry2 = _.country;
             }
         }
-        __.svg.on('mousemove', _.hoverHandler);
+        _.svg.on('mousemove', _.hoverHandler);
         if (this.mousePlugin) {
             this.mousePlugin.onDrag({
                 hoverCanvas: _.hoverHandler
@@ -87,7 +88,17 @@ export default () => {
         name: 'hoverCanvas',
         onInit(me) {
             _.me = me;
+            _.svg = this._.svg;
             init.call(this);
+        },
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg.on('mousemove', null);
+                _.svg = d3.selectAll(q);
+                init.call(this);
+            }
+            return _.svg;
         },
         onCreate() {
             if (this.worldJson && !_.world) {

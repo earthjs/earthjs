@@ -32,7 +32,6 @@ export default urlJson => {
                 _.sphereObject.add(dot);
             });
         }
-        _.sphereObject.visible = this._.options.showDots;
         tj.addGroup(_.sphereObject);
     }
 
@@ -48,9 +47,6 @@ export default urlJson => {
         },
         onCreate() {
             create.call(this);
-        },
-        onRefresh() {
-            _.sphereObject.visible = this._.options.showDots;
         },
         data(data) {
             if (data) {

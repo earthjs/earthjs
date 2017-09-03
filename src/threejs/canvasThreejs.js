@@ -58,7 +58,6 @@ export default (worldUrl, scw=6.279, height=2048) => {
             v.call(this, _.newContext, _.path);
         });
 
-        _.sphereObject.visible = o.showTjCanvas;
         _.texture.needsUpdate = true;
         tj.addGroup(_.sphereObject);
     }

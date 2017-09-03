@@ -84,7 +84,6 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../d/gold.jpg', inn
         if (_.material && !_.loaded) {
             loadCountry()
         }
-        _.sphereObject.visible = this._.options.showWorld;
         const tj = this.threejsPlugin;
         tj.addGroup(_.sphereObject);
     }
@@ -124,12 +123,6 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../d/gold.jpg', inn
         });
     }
 
-    function refresh() {
-        if (_.sphereObject) {
-            _.sphereObject.visible = this._.options.showWorld;
-        }
-    }
-
     return {
         name: 'world3d2',
         urls: worldUrl && [worldUrl],
@@ -142,9 +135,6 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../d/gold.jpg', inn
         },
         onCreate() {
             create.call(this);
-        },
-        onRefresh() {
-            refresh.call(this);
         },
         rotate(rtt) {
             _.sphereObject.rotation.y = rtt;

@@ -18,7 +18,7 @@
         .register(earthjs.plugins.countryCanvas())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.globeThreejs())
-        .register(earthjs.plugins.canvasThreejs())
+        .register(earthjs.plugins.canvasThreejs('../d/world-110m.json'))
         .register(earthjs.plugins.autorotatePlugin());
         g.canvasThreejs.ready = function(err, json) {
             g.canvasThreejs.data(json);

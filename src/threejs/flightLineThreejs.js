@@ -135,7 +135,6 @@ export default (jsonUrl, num_decorators=15) => {
     }
 
     function create() {
-        const o = this._.options;
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
             const group = new THREE.Group();
@@ -153,7 +152,6 @@ export default (jsonUrl, num_decorators=15) => {
             }
             _.sphereObject = group;
         }
-        _.sphereObject.visible = o.showFlightLine;
         tj.addGroup(_.sphereObject);
     }
 
@@ -169,9 +167,6 @@ export default (jsonUrl, num_decorators=15) => {
         },
         onCreate() {
             create.call(this);
-        },
-        onRefresh() {
-            _.sphereObject.visible = this._.options.showFlightLine;
         },
         data(data) {
             if (data) {

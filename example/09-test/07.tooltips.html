@@ -10,7 +10,6 @@
     <svg class="ej-svg" width="700" height="500"></svg>
     <script>
         const g = earthjs({transparent:true});
-        g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.autorotatePlugin());
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.dropShadowSvg());
@@ -43,13 +42,11 @@
             g.barSvg.data(json);
             g.dotsCanvas.data(json);
         };
+        g._.options.showCountries = false;
+        g._.options.showLakes = false;
         g.ready(function(){
             g.hoverCanvas.data(g.worldCanvas.data());
-            // g.create();
-            g.configPlugin.set({
-                showCountries: false,
-                showLakes: false
-            });
+            g.create();
         })
     </script>
 </body>

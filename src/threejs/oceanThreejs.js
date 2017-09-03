@@ -30,7 +30,6 @@ export default (color) => {
             _.sphereObject = new THREE.Mesh(geometry, _.material);
         }
         _.material.transparent = (o.transparent || o.transparentOcean);
-        _.sphereObject.visible = o.showOcean;
         tj.addGroup(_.sphereObject);
     }
 
@@ -42,9 +41,6 @@ export default (color) => {
         },
         onCreate() {
             create.call(this);
-        },
-        onRefresh() {
-            _.sphereObject.visible = this._.options.showOcean;
         },
         sphere() {
             return _.sphereObject;

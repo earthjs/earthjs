@@ -44,7 +44,6 @@ export default () => {
             _.context.strokeStyle = 'rgba(119,119,119,0.6)';
             _.context.stroke();
             _.sphereObject = new THREE.Mesh( geometry, material );
-            _.sphereObject.visible = this._.options.showLand;
             _.texture.needsUpdate = false;
         }
         tj.addGroup(_.sphereObject);
@@ -59,8 +58,8 @@ export default () => {
         onCreate() {
             create.call(this);
         },
-        onRefresh() {
-            _.graticule.visible = this._.options.showDrawing;
+        sphere() {
+            return _.sphereObject;
         }
     }
 }

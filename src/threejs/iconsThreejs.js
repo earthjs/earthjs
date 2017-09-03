@@ -26,7 +26,6 @@ export default (jsonUrl, iconUrl) => {
                 group.add(mesh);
             })
             _.sphereObject = group;
-            _.sphereObject.visible = this._.options.showIcons;
         }
         tj.addGroup(_.sphereObject);
     }
@@ -54,12 +53,6 @@ export default (jsonUrl, iconUrl) => {
         }
     }
 
-    function refresh() {
-        if (_.sphereObject) {
-            _.sphereObject.visible = this._.options.showIcons;
-        }
-    }
-
     return {
         name: 'iconsThreejs',
         urls: jsonUrl && [jsonUrl],
@@ -72,9 +65,6 @@ export default (jsonUrl, iconUrl) => {
         },
         onCreate() {
             create.call(this);
-        },
-        onRefresh() {
-            refresh.call(this);
         },
         data(data) {
             if (data) {

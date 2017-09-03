@@ -27,7 +27,6 @@ export default (
                 specular: new THREE.Color('grey')
             })
             _.sphereObject = new THREE.Mesh(geometry, material);
-            _.sphereObject.visible = this._.options.showGlobe;
 
             var ambient= new THREE.AmbientLight(0x777777);
             var light1 = new THREE.DirectionalLight(0xffffff, 0.2);
@@ -43,12 +42,6 @@ export default (
         }
     }
 
-    function refresh() {
-        if (_.sphereObject) {
-            _.sphereObject.visible = this._.options.showGlobe;
-        }
-    }
-
     return {
         name: 'globeThreejs',
         onInit(me) {
@@ -57,9 +50,6 @@ export default (
         },
         onCreate() {
             create.call(this);
-        },
-        onRefresh() {
-            refresh.call(this);
         },
         sphere() {
             return _.sphereObject;
