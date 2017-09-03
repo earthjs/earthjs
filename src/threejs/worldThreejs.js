@@ -1,32 +1,20 @@
 export default (worldUrl='../d/world.png') => {
     /*eslint no-console: 0 */
-    const _ = {sphereObject: null};
+    const _ = {
+        world: null,
+        land:  null,
+        lakes:     {type: 'FeatureCollection', features:[]},
+        selected:  {type: 'FeatureCollection', features:[]},
+        countries: {type: 'FeatureCollection', features:[]},
+    };
 
     function create() {
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
             const mesh = topojson.mesh(_.world, _.world.objects.countries);
-            const material = new THREE.MeshBasicMaterial({
-                // side: THREE.DoubleSide,
-                color: 0x707070, //0xefedea,
-                // overdraw: 0.25,
-            });
-            // material
-            // var material = new THREE.MeshPhongMaterial( {
-            //     color: 0xff0000,
-            //     shading: THREE.FlatShading,
-            //     polygonOffset: true,
-            //     polygonOffsetFactor: 1, // positive value pushes polygon further away
-            //     polygonOffsetUnits: 1
-            // });
+            const material = new THREE.MeshBasicMaterial({color: 0x707070});
             _.sphereObject = tj.wireframe(mesh, material);
         }
-        // if (this.world3d) {
-        //     const s = _.sphereObject.scale;
-        //     s.x = 1.03;
-        //     s.y = 1.03;
-        //     s.z = 1.03;
-        // }
         tj.addGroup(_.sphereObject);
     }
 
@@ -46,6 +34,9 @@ export default (worldUrl='../d/world.png') => {
         data(data) {
             if (data) {
                 _.world = data;
+                _.land  = topojson.feature(data, data.objects.land);
+                _.lakes.features = topojson.feature(data, data.objects.ne_110m_lakes).features;
+                _.countries.features = topojson.feature(data, data.objects.countries).features;
             } else {
                 return  _.world;
             }

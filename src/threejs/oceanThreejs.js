@@ -1,11 +1,10 @@
 // http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
-export default (color) => {
+export default (color, color2=0xAAAAAA) => {
     /*eslint no-console: 0 */
     const _ = {sphereObject: null}
     if (color) {
-        _.material = new THREE.MeshBasicMaterial({
-            transparent: true,
-            color: color, //'#555',
+        _.material = new THREE.MeshPhongMaterial({
+            color: color
         });
     } else {
         _.material = new THREE.MeshNormalMaterial({
@@ -16,20 +15,24 @@ export default (color) => {
     }
 
     function init() {
-        const o = this._.options;
-        o.showOcean = true;
-        o.transparentOcean = false;
+        this._.options.transparentOcean = false;
     }
 
     function create() {
-        const o = this._.options;
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
             const SCALE = this._.proj.scale();
             const geometry = new THREE.SphereGeometry(SCALE, 30, 30);
-            _.sphereObject = new THREE.Mesh(geometry, _.material);
+            if (color) {
+                const ambient= new THREE.AmbientLight(color2);
+                const mesh   = new THREE.Mesh(geometry, _.material);
+                _.sphereObject = new THREE.Group();
+                _.sphereObject.add( ambient );
+                _.sphereObject.add(mesh);
+            } else {
+                _.sphereObject = new THREE.Mesh(geometry, _.material);
+            }
         }
-        _.material.transparent = (o.transparent || o.transparentOcean);
         tj.addGroup(_.sphereObject);
     }
 
@@ -44,6 +47,6 @@ export default (color) => {
         },
         sphere() {
             return _.sphereObject;
-        },
+        }
     }
 }

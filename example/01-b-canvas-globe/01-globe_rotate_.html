@@ -1,26 +1,27 @@
-<!DOCTYPE html>
 <html>
 <head>
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
-    <script type='text/javascript' src='../js/three.min.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
     <svg id="earth-js"></svg>
-    <canvas id="three-js"></canvas>
-    <canvas class="ej-canvas"></canvas>
     <script>
         const g = earthjs()
         .register(earthjs.plugins.mousePlugin())
-        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.clickCanvas())
+        .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.oceanThreejs('#fff'))
-        .register(earthjs.plugins.worldThreejs('../d/world-110m.json'));
-        const light = g.threejsPlugin.light();
-        light.intensity = 0.5;
-        light.color.set(0x777777);
+        .register(earthjs.plugins.oceanSvg())
+        .register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
+        var o = g._.options;
+        g.mousePlugin.onDragStart({app() {o.showCountries = false;}});
+        g.mousePlugin.onDragEnd(  {app() {o.showCountries = true; }});
+        g.worldCanvas.ready = function(err, json) {
+            g.worldCanvas.data(json);
+            g.clickCanvas.data(json);
+        }
         g.ready(function(){
             g.create();
         })

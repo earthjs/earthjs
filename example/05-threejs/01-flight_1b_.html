@@ -17,12 +17,16 @@
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
 
+        .register(earthjs.plugins.graticuleThreejs())
         .register(earthjs.plugins.flightLine2Threejs('../d/flights2.json','../images/point.png',170))
 
         g.flightLine2Threejs.ready = function(err, csv) {
             g.flightLine2Threejs.data(csv, true);
         }
 
+        const light = g.threejsPlugin.light();
+        light.intensity = 0.5;
+        light.color.set(0x777777);
         g.ready(function(){
             g.create();
         })

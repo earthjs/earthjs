@@ -15,6 +15,7 @@ export default () => {
         if (this.worldCanvas) {
             const world = this.worldCanvas.data();
             if (world) {
+                _.world = world;
                 _.countries = topojson.feature(world, world.objects.countries);
             }
         }
@@ -56,6 +57,7 @@ export default () => {
                 clickCanvas: mouseClickHandler
             });
         }
+        __.options.showLand = true;
     }
 
     function findCountry(pos) {

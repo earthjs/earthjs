@@ -759,6 +759,7 @@ var clickCanvas = (function () {
         if (this.worldCanvas) {
             var world = this.worldCanvas.data();
             if (world) {
+                _.world = world;
                 _.countries = topojson.feature(world, world.objects.countries);
             }
         }
@@ -802,6 +803,7 @@ var clickCanvas = (function () {
                 clickCanvas: mouseClickHandler
             });
         }
+        __.options.showLand = true;
     }
 
     function findCountry(pos) {
@@ -1340,10 +1342,13 @@ var threejsPlugin = (function () {
         var container = document.getElementById(threejs);
         _.scale = d3.scaleLinear().domain([0, SCALE]).range([0, 1]);
         _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 30000);
+        _.light = new THREE.PointLight(0xffffff, 0);
         _.scene = new THREE.Scene();
         _.group = new THREE.Group();
         _.camera.position.z = 3010; // (higher than RADIUS + size of the bubble)
+        _.scene.add(_.camera);
         _.scene.add(_.group);
+        _.camera.add(_.light);
         this._.camera = _.camera;
 
         _.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, canvas: container });
@@ -1431,6 +1436,9 @@ var threejsPlugin = (function () {
         },
         renderThree: function renderThree() {
             _renderThree.call(this);
+        },
+        light: function light() {
+            return _.camera.children[0];
         }
     };
 });
@@ -5398,12 +5406,13 @@ var debugThreejs = (function () {
 
 // http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
 var oceanThreejs = (function (color) {
+    var color2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0xAAAAAA;
+
     /*eslint no-console: 0 */
     var _ = { sphereObject: null };
     if (color) {
-        _.material = new THREE.MeshBasicMaterial({
-            transparent: true,
-            color: color //'#555',
+        _.material = new THREE.MeshPhongMaterial({
+            color: color
         });
     } else {
         _.material = new THREE.MeshNormalMaterial({
@@ -5414,20 +5423,24 @@ var oceanThreejs = (function (color) {
     }
 
     function init() {
-        var o = this._.options;
-        o.showOcean = true;
-        o.transparentOcean = false;
+        this._.options.transparentOcean = false;
     }
 
     function create() {
-        var o = this._.options;
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
             var SCALE = this._.proj.scale();
             var geometry = new THREE.SphereGeometry(SCALE, 30, 30);
-            _.sphereObject = new THREE.Mesh(geometry, _.material);
+            if (color) {
+                var ambient = new THREE.AmbientLight(color2);
+                var mesh = new THREE.Mesh(geometry, _.material);
+                _.sphereObject = new THREE.Group();
+                _.sphereObject.add(ambient);
+                _.sphereObject.add(mesh);
+            } else {
+                _.sphereObject = new THREE.Mesh(geometry, _.material);
+            }
         }
-        _.material.transparent = o.transparent || o.transparentOcean;
         tj.addGroup(_.sphereObject);
     }
 
@@ -5488,33 +5501,21 @@ var worldThreejs = (function () {
     var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.png';
 
     /*eslint no-console: 0 */
-    var _ = { sphereObject: null };
+    var _ = {
+        world: null,
+        land: null,
+        lakes: { type: 'FeatureCollection', features: [] },
+        selected: { type: 'FeatureCollection', features: [] },
+        countries: { type: 'FeatureCollection', features: [] }
+    };
 
     function create() {
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
             var mesh = topojson.mesh(_.world, _.world.objects.countries);
-            var material = new THREE.MeshBasicMaterial({
-                // side: THREE.DoubleSide,
-                color: 0x707070 //0xefedea,
-                // overdraw: 0.25,
-            });
-            // material
-            // var material = new THREE.MeshPhongMaterial( {
-            //     color: 0xff0000,
-            //     shading: THREE.FlatShading,
-            //     polygonOffset: true,
-            //     polygonOffsetFactor: 1, // positive value pushes polygon further away
-            //     polygonOffsetUnits: 1
-            // });
+            var material = new THREE.MeshBasicMaterial({ color: 0x707070 });
             _.sphereObject = tj.wireframe(mesh, material);
         }
-        // if (this.world3d) {
-        //     const s = _.sphereObject.scale;
-        //     s.x = 1.03;
-        //     s.y = 1.03;
-        //     s.z = 1.03;
-        // }
         tj.addGroup(_.sphereObject);
     }
 
@@ -5534,6 +5535,9 @@ var worldThreejs = (function () {
         data: function data(_data) {
             if (_data) {
                 _.world = _data;
+                _.land = topojson.feature(_data, _data.objects.land);
+                _.lakes.features = topojson.feature(_data, _data.objects.ne_110m_lakes).features;
+                _.countries.features = topojson.feature(_data, _data.objects.countries).features;
             } else {
                 return _.world;
             }

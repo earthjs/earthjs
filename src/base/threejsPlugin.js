@@ -36,10 +36,13 @@ export default (threejs='three-js') => {
         const container = document.getElementById(threejs);
         _.scale  = d3.scaleLinear().domain([0,SCALE]).range([0,1]);
         _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 30000)
+        _.light  = new THREE.PointLight(0xffffff, 0);
         _.scene  = new THREE.Scene();
         _.group  = new THREE.Group();
         _.camera.position.z = 3010; // (higher than RADIUS + size of the bubble)
+        _.scene.add(_.camera);
         _.scene.add(_.group);
+        _.camera.add(_.light);
         this._.camera = _.camera;
 
         _.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true, canvas: container});
@@ -122,6 +125,9 @@ export default (threejs='three-js') => {
         },
         renderThree() {
             renderThree.call(this);
+        },
+        light() {
+            return _.camera.children[0];
         }
     }
 }
