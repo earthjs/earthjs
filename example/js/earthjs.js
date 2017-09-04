@@ -876,7 +876,13 @@ var mousePlugin = (function () {
         intervalDrag = _ref.intervalDrag;
 
     /*eslint no-console: 0 */
-    var _ = { svg: null, q: null, sync: [], mouse: null, wait: null,
+    var _ = {
+        svg: null,
+        wait: null,
+        zoom: null,
+        mouse: null,
+        q: null,
+        sync: [],
         onDrag: {},
         onDragVals: [],
         onDragStart: {},
@@ -888,6 +894,8 @@ var mousePlugin = (function () {
         onDblClick: {},
         onDblClickVals: []
     };
+    var scale = d3.scaleLinear().domain([30, 300]).range([0.1, 1]);
+
     if (zoomScale === undefined) {
         zoomScale = [0, 50000];
     }
@@ -932,10 +940,10 @@ var mousePlugin = (function () {
         var versor = __.versor;
         var s0 = __.proj.scale();
         var wh = [__.options.width, __.options.height];
+        _.zoom = d3.zoom().on('zoom', zoom).scaleExtent([0.1, 160]).translateExtent([[0, 0], wh]);
 
         _.svg.call(d3.drag().on('start', dragstarted).on('end', dragsended).on('drag', dragged));
-
-        _.svg.call(d3.zoom().on('zoom', zoom).scaleExtent([0.1, 160]).translateExtent([[0, 0], wh]));
+        _.svg.call(_.zoom);
 
         // todo: add zoom lifecycle to optimize plugins zoom-able
         // ex: barTooltipSvg, at the end of zoom, need to recreate
@@ -1064,6 +1072,13 @@ var mousePlugin = (function () {
         },
         sync: function sync(arr) {
             _.sync = arr;
+        },
+        zoom: function zoom(k) {
+            if (k) {
+                _.zoom.scaleTo(_.svg, scale(k));
+            } else {
+                return this._.proj.scale();
+            }
         },
         mouse: function mouse() {
             return _.mouse;
