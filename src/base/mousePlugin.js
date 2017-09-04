@@ -19,7 +19,6 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
         onDblClick: {},
         onDblClickVals: []
     };
-    const scale = d3.scaleLinear().domain([30,300]).range([0.1,1]);
 
     if (zoomScale===undefined) {
         zoomScale = [0,50000];
@@ -61,6 +60,8 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
         const versor = __.versor;
         const s0 = __.proj.scale();
         const wh = [__.options.width, __.options.height];
+        _.scale  = d3.scaleLinear().domain([30,__.proj.scale()]).range([0.1,1]);
+
         _.zoom = d3.zoom()
             .on('zoom', zoom)
             .scaleExtent([0.1,160])
@@ -190,11 +191,7 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
             _.sync = arr;
         },
         zoom(k) {
-            if (k) {
-                _.zoom.scaleTo(_.svg, scale(k));
-            } else {
-                return this._.proj.scale();
-            }
+            _.zoom.scaleTo(_.svg, (k ? _.scale(k) : 1));
         },
         mouse() {
             return _.mouse;

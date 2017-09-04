@@ -11,21 +11,21 @@ export default (worldUrl, scw=6.279, height=2048) => {
             type: 'FeatureCollection',
             features:[]
         },
-        material: new THREE.MeshBasicMaterial({transparent:false})
+        material: new THREE.MeshBasicMaterial({
+            side: THREE.DoubleSide,
+            alphaTest: 0.5
+        })
     };
 
     function init() {
         const width = height * 2;
-        const o = this._.options;
-        o.showLand = true;
-        o.showTjCanvas = true;
-        o.transparentLand = false;
         const SCALE = this._.proj.scale();
         _.geometry = new THREE.SphereGeometry(SCALE, 30, 30);
         _.newCanvas = document.createElement('canvas');
         _.newContext = _.newCanvas.getContext('2d');
 
         _.texture = new THREE.Texture(_.newCanvas);
+        _.texture.transparent = true;
         _.material.map = _.texture;
 
         _.canvas = d3.select('body').append('canvas')
@@ -47,13 +47,11 @@ export default (worldUrl, scw=6.279, height=2048) => {
     }
 
     function create() {
-        const o = this._.options;
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
             resize.call(this);
             _.sphereObject= new THREE.Mesh(_.geometry, _.material);
         }
-        _.material.transparent = (o.transparent || o.transparentLand);
         _.onDrawVals.forEach(v => {
             v.call(this, _.newContext, _.path);
         });

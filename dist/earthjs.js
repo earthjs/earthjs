@@ -894,7 +894,6 @@ var mousePlugin = (function () {
         onDblClick: {},
         onDblClickVals: []
     };
-    var scale = d3.scaleLinear().domain([30, 300]).range([0.1, 1]);
 
     if (zoomScale === undefined) {
         zoomScale = [0, 50000];
@@ -940,6 +939,8 @@ var mousePlugin = (function () {
         var versor = __.versor;
         var s0 = __.proj.scale();
         var wh = [__.options.width, __.options.height];
+        _.scale = d3.scaleLinear().domain([30, __.proj.scale()]).range([0.1, 1]);
+
         _.zoom = d3.zoom().on('zoom', zoom).scaleExtent([0.1, 160]).translateExtent([[0, 0], wh]);
 
         _.svg.call(d3.drag().on('start', dragstarted).on('end', dragsended).on('drag', dragged));
@@ -1074,11 +1075,7 @@ var mousePlugin = (function () {
             _.sync = arr;
         },
         zoom: function zoom(k) {
-            if (k) {
-                _.zoom.scaleTo(_.svg, scale(k));
-            } else {
-                return this._.proj.scale();
-            }
+            _.zoom.scaleTo(_.svg, k ? _.scale(k) : 1);
         },
         mouse: function mouse() {
             return _.mouse;
@@ -4363,21 +4360,22 @@ var canvasThreejs = (function (worldUrl) {
             type: 'FeatureCollection',
             features: []
         },
-        material: new THREE.MeshBasicMaterial({ transparent: false })
+        material: new THREE.MeshBasicMaterial({
+            side: THREE.DoubleSide,
+            // transparent:false,
+            alphaTest: 0.5
+        })
     };
 
     function init() {
         var width = height * 2;
-        var o = this._.options;
-        o.showLand = true;
-        o.showTjCanvas = true;
-        o.transparentLand = false;
         var SCALE = this._.proj.scale();
         _.geometry = new THREE.SphereGeometry(SCALE, 30, 30);
         _.newCanvas = document.createElement('canvas');
         _.newContext = _.newCanvas.getContext('2d');
 
         _.texture = new THREE.Texture(_.newCanvas);
+        _.texture.transparent = true;
         _.material.map = _.texture;
 
         _.canvas = d3.select('body').append('canvas').style('position', 'absolute').style('display', 'none').style('top', '450px').attr('width', width).attr('height', height).attr('id', 'tjs-canvas').node();
@@ -4394,13 +4392,11 @@ var canvasThreejs = (function (worldUrl) {
     function create() {
         var _this = this;
 
-        var o = this._.options;
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
             resize.call(this);
             _.sphereObject = new THREE.Mesh(_.geometry, _.material);
         }
-        _.material.transparent = o.transparent || o.transparentLand;
         _.onDrawVals.forEach(function (v) {
             v.call(_this, _.newContext, _.path);
         });
