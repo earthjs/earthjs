@@ -4704,17 +4704,20 @@ var graticuleThreejs = (function () {
 
 // http://callumprentice.github.io/apps/flight_stream/index.html
 // https://stackoverflow.com/questions/9695687/javascript-converting-colors-numbers-strings-vice-versa
-var flightLineThreejs = (function (jsonUrl, imgUrl, height) {
+var flightLineThreejs = (function (jsonUrl, imgUrl) {
+    var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 150;
+
     /*eslint no-console: 0 */
     var _ = {
         sphereObject: null,
         track_lines_object: null,
         track_points_object: null,
+        lightFlow: true,
         linewidth: 3,
         texture: null,
         maxVal: 1
     };
-    var colorRange = [d3.rgb('#FFAAFF'), d3.rgb("#FF0000")];
+    var colorRange = [d3.rgb('#ff0000'), d3.rgb("#aaffff")];
 
     var min_arc_distance = +Infinity;
     var max_arc_distance = -Infinity;
@@ -4841,10 +4844,6 @@ var flightLineThreejs = (function (jsonUrl, imgUrl, height) {
         };
     }
 
-    var vertexshader = '\n    attribute float size;\n    attribute vec3 customColor;\n    varying vec3 vColor;\n\n    void main() {\n        vColor = customColor;\n        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );\n        gl_PointSize = size * ( 300.0 / length( mvPosition.xyz ) );\n        gl_Position = projectionMatrix * mvPosition;\n    }';
-
-    var fragmentshader = '\n    uniform vec3 color;\n    uniform sampler2D texture;\n    uniform float opacity;\n\n    varying vec3 vColor;\n\n    void main() {\n        gl_FragColor = vec4( color * vColor, opacity );\n        gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );\n    }';
-
     function generate_point_cloud() {
         positions = new Float32Array(ttl_num_points * 3);
         colors = new Float32Array(ttl_num_points * 3);
@@ -4855,9 +4854,10 @@ var flightLineThreejs = (function (jsonUrl, imgUrl, height) {
         for (var i = 0; i < all_tracks.length; ++i) {
             var _all_tracks$i = all_tracks[i],
                 value = _all_tracks$i.value,
+                color = _all_tracks$i.color,
                 point_positions = _all_tracks$i.point_positions;
 
-            var c = new THREE.Color(0xFFFFFF).setHSL(1 - value / _.maxVal, 0.4, 0.8);
+            var c = new THREE.Color(color); //.setHSL(1-value/_.maxVal, 0.4, 0.8);
             var pSize = _.point(value || 1);
             for (var j = 0; j < point_positions.length; ++j) {
 
@@ -5048,11 +5048,15 @@ var flightLineThreejs = (function (jsonUrl, imgUrl, height) {
     //     _.track_lines_object.geometry.attributes.position.needsUpdate = true;
     // }
 
+    var vertexshader = '\n    attribute float size;\n    attribute vec3 customColor;\n    varying vec3 vColor;\n\n    void main() {\n        vColor = customColor;\n        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );\n        gl_PointSize = size * ( 300.0 / length( mvPosition.xyz ) );\n        gl_Position = projectionMatrix * mvPosition;\n    }';
+
+    var fragmentshader = '\n    uniform vec3 color;\n    uniform sampler2D texture;\n    uniform float opacity;\n\n    varying vec3 vColor;\n\n    void main() {\n        gl_FragColor = vec4( color * vColor, opacity );\n        gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );\n    }';
+
     function loadFlights() {
         var uniforms = {
             color: {
                 type: "c",
-                value: new THREE.Color(0x00ff00)
+                value: new THREE.Color(0xaaaaaa)
             },
             texture: {
                 type: "t",
@@ -5151,7 +5155,7 @@ var flightLineThreejs = (function (jsonUrl, imgUrl, height) {
             resize.call(this);
         },
         onInterval: function onInterval(t) {
-            interval.call(this, t);
+            _.lightFlow && interval.call(this, t);
         },
         onCreate: function onCreate() {
             create.call(this);
@@ -5159,15 +5163,23 @@ var flightLineThreejs = (function (jsonUrl, imgUrl, height) {
         reload: function reload() {
             _reload.call(this);
         },
-        data: function data(_data, color) {
+        data: function data(_data, colorR) {
+            var pointR = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [50, 500];
+            var h = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 150;
+            var o = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0.8;
+
             if (_data) {
                 _.data = _data;
-                if (color) {
+                if (colorR) {
+                    if (!Array.isArray(colorR)) {
+                        colorR = ['#ff0000', '#aaffff'];
+                    }
                     var d = d3.extent(_data.map(function (x) {
                         return x[4];
                     }));
+                    colorRange = [d3.rgb(colorR[0]), d3.rgb(colorR[1])];
                     _.color = d3.scaleLinear().domain(d).interpolate(d3.interpolateHcl).range(colorRange);
-                    _.point = d3.scaleLinear().domain(d).range([50, 500]);
+                    _.point = d3.scaleLinear().domain(d).range(pointR);
                     _.maxVal = d[1];
                 } else {
                     _.color = function () {
@@ -5178,6 +5190,8 @@ var flightLineThreejs = (function (jsonUrl, imgUrl, height) {
                     };
                     _.maxVal = 1;
                 }
+                height = h;
+                point_opacity = o;
                 _.resize = d3.scaleLinear().domain([30, this._.proj.scale()]).range([0.1, 1]);
             } else {
                 return _.data;
@@ -5194,6 +5208,13 @@ var flightLineThreejs = (function (jsonUrl, imgUrl, height) {
                 return v * one;
             });
             size.needsUpdate = true;
+        },
+        lightFlow: function lightFlow(forceState) {
+            if (forceState !== undefined) {
+                _.lightFlow = forceState;
+            } else {
+                return _.lightFlow;
+            }
         }
     };
 });

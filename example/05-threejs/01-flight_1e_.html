@@ -6,7 +6,10 @@
     <script type='text/javascript' src='../js/three.min.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
-    <style>body {background: #555;}</style>
+    <style>body {
+        background-image: url("../d/tiles.jpg");
+    }
+    </style>
 </head>
 <body>
     <svg id="earth-js" class="ej-center" width="1000" height="920"></svg>
@@ -19,7 +22,7 @@
         .register(earthjs.plugins.autorotatePlugin())
 
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
-        .register(earthjs.plugins.flightLineThreejs('../d/flights2.json','../images/point.png',170))
+        .register(earthjs.plugins.flightLineThreejs('../d/flights2.json','../images/point.png'))
 
         g.flightLineThreejs.ready = function(err, csv) {
             g.flightLineThreejs.data(csv, true);

@@ -7,7 +7,6 @@
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
     <style>body {
-        /*background: #555;*/
         background-image: url("../d/tiles.jpg");
     }
     </style>
@@ -22,7 +21,7 @@
         .register(earthjs.plugins.autorotatePlugin())
 
         .register(earthjs.plugins.canvasThreejs('../d/world-110m.json'))
-        .register(earthjs.plugins.flightLineThreejs('../d/flights2.json','../images/point.png',170))
+        .register(earthjs.plugins.flightLineThreejs('../d/flights2.json','../images/point.png'))
 
         // g.canvasThreejs.style({ocean: 'rgba(54,73,110,1)'});
         g.flightLineThreejs.ready = function(err, csv) {

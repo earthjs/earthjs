@@ -1,16 +1,17 @@
 // http://callumprentice.github.io/apps/flight_stream/index.html
 // https://stackoverflow.com/questions/9695687/javascript-converting-colors-numbers-strings-vice-versa
-export default (jsonUrl, imgUrl, height) => {
+export default (jsonUrl, imgUrl, height=150) => {
     /*eslint no-console: 0 */
     const _ = {
         sphereObject: null,
         track_lines_object: null,
         track_points_object: null,
-        linewidth: 3,
+        lightFlow: true,
+        linewidth:  3,
         texture: null,
         maxVal: 1
     };
-    var colorRange = [d3.rgb('#FFAAFF'),d3.rgb("#FF0000")];
+    var colorRange = [d3.rgb('#ff0000'),d3.rgb("#aaffff")];
 
     var min_arc_distance = +Infinity;
     var max_arc_distance = -Infinity;
@@ -139,30 +140,6 @@ export default (jsonUrl, imgUrl, height) => {
         };
     }
 
-    var vertexshader = `
-    attribute float size;
-    attribute vec3 customColor;
-    varying vec3 vColor;
-
-    void main() {
-        vColor = customColor;
-        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-        gl_PointSize = size * ( 300.0 / length( mvPosition.xyz ) );
-        gl_Position = projectionMatrix * mvPosition;
-    }`;
-
-    var fragmentshader = `
-    uniform vec3 color;
-    uniform sampler2D texture;
-    uniform float opacity;
-
-    varying vec3 vColor;
-
-    void main() {
-        gl_FragColor = vec4( color * vColor, opacity );
-        gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
-    }`;
-
     function generate_point_cloud() {
         positions = new Float32Array(ttl_num_points * 3);
         colors = new Float32Array(ttl_num_points * 3);
@@ -171,8 +148,8 @@ export default (jsonUrl, imgUrl, height) => {
 
         var index = 0;
         for (var i = 0; i < all_tracks.length; ++i) {
-            var {value, point_positions} = all_tracks[i];
-            var c = new THREE.Color(0xFFFFFF).setHSL(1-value/_.maxVal, 0.4, 0.8);
+            var {value, color, point_positions} = all_tracks[i];
+            var c = new THREE.Color(color); //.setHSL(1-value/_.maxVal, 0.4, 0.8);
             var pSize = _.point(value || 1);
             for (var j = 0; j < point_positions.length; ++j) {
 
@@ -341,11 +318,35 @@ export default (jsonUrl, imgUrl, height) => {
     //     _.track_lines_object.geometry.attributes.position.needsUpdate = true;
     // }
 
+    var vertexshader = `
+    attribute float size;
+    attribute vec3 customColor;
+    varying vec3 vColor;
+
+    void main() {
+        vColor = customColor;
+        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+        gl_PointSize = size * ( 300.0 / length( mvPosition.xyz ) );
+        gl_Position = projectionMatrix * mvPosition;
+    }`;
+
+    var fragmentshader = `
+    uniform vec3 color;
+    uniform sampler2D texture;
+    uniform float opacity;
+
+    varying vec3 vColor;
+
+    void main() {
+        gl_FragColor = vec4( color * vColor, opacity );
+        gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
+    }`;
+
     function loadFlights() {
         const uniforms = {
             color: {
                 type: "c",
-                value: new THREE.Color(0x00ff00)
+                value: new THREE.Color(0xaaaaaa)
             },
             texture: {
                 type: "t",
@@ -438,7 +439,7 @@ export default (jsonUrl, imgUrl, height) => {
             resize.call(this);
         },
         onInterval(t) {
-            interval.call(this, t);
+            _.lightFlow && interval.call(this, t);
         },
         onCreate() {
             create.call(this);
@@ -446,19 +447,25 @@ export default (jsonUrl, imgUrl, height) => {
         reload() {
             reload.call(this);
         },
-        data(data, color) {
+        data(data, colorR, pointR=[50,500], h=150, o=0.8) {
             if (data) {
                 _.data = data;
-                if (color) {
+                if (colorR) {
+                    if (!Array.isArray(colorR)) {
+                        colorR = ['#ff0000','#aaffff'];
+                    }
                     const d = d3.extent(data.map(x=>x[4]));
+                    colorRange = [d3.rgb(colorR[0]),d3.rgb(colorR[1])];
                     _.color = d3.scaleLinear().domain(d).interpolate(d3.interpolateHcl).range(colorRange);
-                    _.point = d3.scaleLinear().domain(d).range([50, 500]);
+                    _.point = d3.scaleLinear().domain(d).range(pointR);
                     _.maxVal= d[1];
                 } else {
                     _.color = () => 'rgb(255, 255, 255)';
                     _.point = () => 150;
                     _.maxVal= 1;
                 }
+                height  = h;
+                point_opacity = o;
                 _.resize= d3.scaleLinear().domain([30,this._.proj.scale()]).range([0.1, 1]);
             } else {
                 return _.data;
@@ -472,6 +479,13 @@ export default (jsonUrl, imgUrl, height) => {
             const {size} = pt.geometry.attributes;
             size.array = size.array.map((v)=>v*one);
             size.needsUpdate = true;
+        },
+        lightFlow(forceState) {
+            if (forceState!==undefined) {
+                _.lightFlow = forceState;
+            } else {
+                return _.lightFlow;
+            }
         }
     }
 }
