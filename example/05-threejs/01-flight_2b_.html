@@ -24,7 +24,7 @@
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.globeThreejs())
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
-        .register(earthjs.plugins.flightLine2Threejs('../d/flights2.json','../images/point.png',170))
+        .register(earthjs.plugins.flightLineThreejs('../d/flights2.json','../images/point.png',170))
         .register(earthjs.plugins.iconsThreejs('../d/bars.json','../d/check.svg'))
         .register(earthjs.plugins.barThreejs());
         g.iconsThreejs.ready = function(err, json) {
@@ -34,8 +34,8 @@
             g.iconsThreejs.data(json);
             g.barThreejs.data(json);
         };
-        g.flightLine2Threejs.ready = function(err, csv) {
-            g.flightLine2Threejs.data(csv, true);
+        g.flightLineThreejs.ready = function(err, csv) {
+            g.flightLineThreejs.data(csv, true);
         }
         g.worldJson.ready = function(err, json) {
             g.clickCanvas.data(json);

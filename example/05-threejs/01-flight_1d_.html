@@ -23,10 +23,10 @@
         .register(earthjs.plugins.oceanThreejs('#abc'))
         .register(earthjs.plugins.graticuleThreejs())
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
-        .register(earthjs.plugins.flightLine2Threejs('../d/flights2.json','../images/point.png',170))
+        .register(earthjs.plugins.flightLineThreejs('../d/flights2.json','../images/point.png',170))
 
-        g.flightLine2Threejs.ready = function(err, csv) {
-            g.flightLine2Threejs.data(csv, true);
+        g.flightLineThreejs.ready = function(err, csv) {
+            g.flightLineThreejs.data(csv, true);
         }
         g.worldJson.ready = function(err, json) {
             g.clickCanvas.data(json);

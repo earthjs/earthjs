@@ -55,7 +55,6 @@ import canvasThreejs      from './src/threejs/canvasThreejs';
 import textureThreejs     from './src/threejs/textureThreejs';
 import graticuleThreejs   from './src/threejs/graticuleThreejs';
 import flightLineThreejs  from './src/threejs/flightLineThreejs';
-import flightLine2Threejs from './src/threejs/flightLine2Threejs';
 import debugThreejs       from './src/threejs/debugThreejs';
 import oceanThreejs       from './src/threejs/oceanThreejs';
 import imageThreejs       from './src/threejs/imageThreejs';
@@ -122,7 +121,6 @@ earthjs.plugins= {
     textureThreejs,
     graticuleThreejs,
     flightLineThreejs,
-    flightLine2Threejs,
     debugThreejs,
     oceanThreejs,
     imageThreejs,
