@@ -1368,6 +1368,10 @@ var threejsPlugin = (function () {
         _.renderer.setSize(width, height);
         _.renderer.sortObjects = false;
         this.renderThree = _renderThree;
+        if (window.THREEx && window.THREEx.DomEvents) {
+            _.domEvents = new window.THREEx.DomEvents(_.camera, _.renderer.domElement);
+        }
+        this._.domEvents = _.domEvents;
     }
 
     function _scale(obj) {
@@ -4715,7 +4719,9 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
         lightFlow: true,
         linewidth: 3,
         texture: null,
-        maxVal: 1
+        maxVal: 1,
+        onHover: {},
+        onHoverVals: []
     };
     var colorRange = [d3.rgb('#ff0000'), d3.rgb("#aaffff")];
 
@@ -5082,6 +5088,13 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
         group.add(generate_track_lines());
         group.add(generate_point_cloud());
         group.name = 'flightLineThreejs';
+        if (this._.domEvents) {
+            this._.domEvents.addEventListener(_.track_lines_object, 'mousemove', function (event) {
+                _.onHoverVals.forEach(function (v) {
+                    v.call(event.target, event);
+                });
+            }, false);
+        }
         _.sphereObject = group;
         _.loaded = true;
     }
@@ -5159,6 +5172,12 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
         },
         onCreate: function onCreate() {
             create.call(this);
+        },
+        onHover: function onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverVals = Object.keys(_.onHover).map(function (k) {
+                return _.onHover[k];
+            });
         },
         reload: function reload() {
             _reload.call(this);
@@ -5420,7 +5439,11 @@ var globeThreejs = (function () {
     var wtrUrl = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '../d/water.png';
 
     /*eslint no-console: 0 */
-    var _ = { sphereObject: null };
+    var _ = {
+        sphereObject: null,
+        onHover: {},
+        onHoverVals: []
+    };
     var manager = new THREE.LoadingManager();
     var loader = new THREE.TextureLoader(manager);
 
@@ -5450,7 +5473,13 @@ var globeThreejs = (function () {
                 specular: new THREE.Color('grey')
             });
             _.sphereObject = new THREE.Mesh(geometry, material);
-
+            if (this._.domEvents) {
+                this._.domEvents.addEventListener(_.sphereObject, 'mousemove', function (event) {
+                    _.onHoverVals.forEach(function (v) {
+                        v.call(event.target, event);
+                    });
+                }, false);
+            }
             var ambient = new THREE.AmbientLight(0x777777);
             var light1 = new THREE.DirectionalLight(0xffffff, 0.2);
             var light2 = new THREE.DirectionalLight(0xffffff, 0.2);
@@ -5473,6 +5502,12 @@ var globeThreejs = (function () {
         },
         onCreate: function onCreate() {
             create.call(this);
+        },
+        onHover: function onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverVals = Object.keys(_.onHover).map(function (k) {
+                return _.onHover[k];
+            });
         },
         sphere: function sphere() {
             return _.sphereObject;

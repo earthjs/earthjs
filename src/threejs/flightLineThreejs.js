@@ -9,7 +9,9 @@ export default (jsonUrl, imgUrl, height=150) => {
         lightFlow: true,
         linewidth:  3,
         texture: null,
-        maxVal: 1
+        maxVal: 1,
+        onHover: {},
+        onHoverVals: [],
     };
     var colorRange = [d3.rgb('#ff0000'),d3.rgb("#aaffff")];
 
@@ -372,6 +374,13 @@ export default (jsonUrl, imgUrl, height=150) => {
         group.add(generate_track_lines());
         group.add(generate_point_cloud());
         group.name = 'flightLineThreejs';
+        if (this._.domEvents) {
+            this._.domEvents.addEventListener(_.track_lines_object, 'mousemove', function(event){
+                _.onHoverVals.forEach(v => {
+                    v.call(event.target, event);
+                });
+            }, false);
+        }
         _.sphereObject = group;
         _.loaded = true;
     }
@@ -443,6 +452,10 @@ export default (jsonUrl, imgUrl, height=150) => {
         },
         onCreate() {
             create.call(this);
+        },
+        onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverVals = Object.keys(_.onHover).map(k => _.onHover[k]);
         },
         reload() {
             reload.call(this);

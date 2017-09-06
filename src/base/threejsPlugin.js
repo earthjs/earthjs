@@ -50,6 +50,10 @@ export default (threejs='three-js') => {
         _.renderer.setSize(width, height);
         _.renderer.sortObjects = false;
         this.renderThree = renderThree;
+        if (window.THREEx &&  window.THREEx.DomEvents) {
+            _.domEvents	= new window.THREEx.DomEvents(_.camera, _.renderer.domElement);
+        }
+        this._.domEvents = _.domEvents;
     }
 
     function scale(obj) {

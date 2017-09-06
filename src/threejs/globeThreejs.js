@@ -3,7 +3,11 @@ export default (
     elvUrl='../d/elevation.jpg',
     wtrUrl='../d/water.png') => {
     /*eslint no-console: 0 */
-    const _ = {sphereObject: null};
+    const _ = {
+        sphereObject: null,
+        onHover: {},
+        onHoverVals: [],
+    };
     const manager = new THREE.LoadingManager();
     const loader = new THREE.TextureLoader(manager);
 
@@ -27,7 +31,13 @@ export default (
                 specular: new THREE.Color('grey')
             })
             _.sphereObject = new THREE.Mesh(geometry, material);
-
+            if (this._.domEvents) {
+                this._.domEvents.addEventListener(_.sphereObject, 'mousemove', function(event){
+                    _.onHoverVals.forEach(v => {
+                        v.call(event.target, event);
+                    });
+                }, false);
+            }
             var ambient= new THREE.AmbientLight(0x777777);
             var light1 = new THREE.DirectionalLight(0xffffff, 0.2);
             var light2 = new THREE.DirectionalLight(0xffffff, 0.2);
@@ -50,6 +60,10 @@ export default (
         },
         onCreate() {
             create.call(this);
+        },
+        onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverVals = Object.keys(_.onHover).map(k => _.onHover[k]);
         },
         sphere() {
             return _.sphereObject;
