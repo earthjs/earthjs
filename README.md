@@ -87,7 +87,9 @@ Selected plugins bundled into library:
 ## Requirements
 * [D3 version 4](http://d3js.org/)
 * [topojson version 3](https://github.com/topojson/topojson)
-* [threejs reveion 8x](https://threejs.org/) for Threejs type of globe
+
+##### Optional
+* [threejs revision 8x](https://threejs.org/) for Threejs type of globe
 
 ## Quick Start
 This sample need to run on the webserver, you can use [nodejs web-server](https://www.npmjs.com/package/http-server) or [python simple http server](http://2ality.com/2014/06/simple-http-server.html).
@@ -116,10 +118,10 @@ This sample need to run on the webserver, you can use [nodejs web-server](https:
 <body>
   <svg id="earth"></svg>
   <script>
-    const g = earthjs();
-    g.register(earthjs.plugins.graticuleSvg());
-    g.register(earthjs.plugins.autorotatePlugin(10));
-    g.register(earthjs.plugins.worldSvg('./d/world-110m.json'));
+    const g = earthjs()
+    .register(earthjs.plugins.graticuleSvg())
+    .register(earthjs.plugins.autorotatePlugin(10))
+    .register(earthjs.plugins.worldSvg('./d/world-110m.json'));
     g.ready(function(){
         g.create();
     })
