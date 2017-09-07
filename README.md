@@ -11,60 +11,83 @@ Earthjs is a javascript library for easy building orthographic globe. Originally
 
 Earthjs is created using D3-v4, design as pluggable modules.
 
-Awesome interactive globe can be created, dragging to rotate globe to any direction, zooming using scroll mouse or tap, multiple layer of globe with ocean (oceanSvg) & skinned globe like [Faux-3d Shaded Globe](http://bl.ocks.org/dwtkns/4686432) (fauxGlobeSvg), area of world can be plain one svg path or using canvas plugin, toggle with hide/show countries border or lakes for optimized rendering, auto rotate with adjustable speed and ticker, balancing between smooth and cpu utilization, point of places, bar chart in globe, country tooltip, point of location (dots) tooltip, bar chart in globe tooltip, graticules, etc (see below list of the plugins). All of this can be configured on the fly, switching to activate / deactivate, adjust speed and ticker.
+Awesome interactive globe can be created, drag to rotate the globe, zooming using scroll mouse. Multi layer of globe, combination between SVG, Canvas and Threejs. Multi globe created as a twin globe with similar layer or different layer. Solid globe or transparent globe in SVG, Canvas or Threejs, hide/show some features balancing between smooth rendering and cpu utilization. point of location, bar chart, tooltips on country, point of location (dots) & bar chart.
 
-Support Canvas in or outside SVG! Canvas mouse detection is included with hover, click and doubleclick event are supported.
+SVG is a way to create prototype of globe quickly as it used standard SVG DOM element so event & css can be applied to each element. the downside will come when the need to create so much SVG element, the responsiveness or jaggering drag will show.
 
-## Internal Plugins
+Canvas is a way to create if more data point that need to be rendered increased. Interactivity or mouse detection are available for hovering, click & double click. detect country or point of location.
+
+WebGL/Threejs is a way to go if eye catchy of globe is needed or want to be better CPU utilization by moving some intensive calculation to GPU.
+
+Interesting Data Visualization can be created by combining SVG, Canvas & Threejs(WebGL) like: choropleth globe using Canvas or Threejs, heatmap globe by rendering heatmap on Canvas and use that canvas as a texture in Threejs, flightLine to connect two datapoint using Threejs and coloring target location (usually country) using Canvas. flashy bullet that travel along the way of flightLine is there including the mouse event using Threejs.
+
+## Internal Plugins (more than 50)
 Selected plugins bundled into library:
 
-* configPlugin,
-* autorotatePlugin,
-* mousePlugin,
-* zoomPlugin,
-* centerCanvas,
-* centerSvg,
-* flattenPlugin,
-* canvasPlugin,
-* threejsPlugin,
-* dropShadowSvg,
-* canvasThreejs,
-* oceanThreejs,
-* oceanSvg,
-* sphereSvg,
+* baseCsv,
+* worldJson,
+* choroplethCsv,
+* countryNamesCsv,
+* colorScale,
 * hoverCanvas,
 * clickCanvas,
+* mousePlugin,
+* configPlugin,
+* canvasPlugin,
+* countryCanvas,
+* threejsPlugin,
 * dblClickCanvas,
-* graticuleSvg,
+* autorotatePlugin,
+* oceanSvg,
+* sphereSvg,
+* zoomPlugin,
 * fauxGlobeSvg,
-* graticuleCanvas,
-* graticuleThreejs,
-* countrySelectCanvas,
-* barTooltipSvg,
+* graticuleSvg,
+* dropShadowSvg,
 * dotTooltipSvg,
-* worldSvg,
-* placesSvg,
+* dotSelectCanvas,
+* graticuleCanvas,
+* dotTooltipCanvas,
+* countrySelectCanvas,
+* countryTooltipCanvas,
+* countryTooltipSvg,
+* barTooltipSvg,
 * worldCanvas,
-* worldThreejs,
-* imageThreejs,
+* centerSvg,
+* placesSvg,
+* worldSvg,
 * barSvg,
 * dotsSvg,
 * pingsSvg,
 * pinCanvas,
 * dotsCanvas,
+* pingsCanvas,
+* centerCanvas,
+* flattenSvg,
+* barThreejs,
+* hmapThreejs,
 * dotsThreejs,
 * dotsCThreejs,
-* dotSelectCanvas,
-* dotTooltipCanvas,
-* countryTooltipSvg,
-* countryTooltipCanvas,
-* pingsCanvas,
+* iconsThreejs,
+* canvasThreejs,
+* textureThreejs,
+* graticuleThreejs,
+* flightLineThreejs,
 * debugThreejs,
+* oceanThreejs,
+* imageThreejs,
+* worldThreejs,
+* globeThreejs,
+* sphereThreejs,
+* world3d,
+* world3d2,
 * commonPlugins,
+* selectCountryMix,
 
 ## Requirements
 * [D3 version 4](http://d3js.org/)
 * [topojson version 3](https://github.com/topojson/topojson)
+* [threejs reveion 8x](https://threejs.org/) for Threejs type of globe
 
 ## Quick Start
 This sample need to run on the webserver, you can use [nodejs web-server](https://www.npmjs.com/package/http-server) or [python simple http server](http://2ality.com/2014/06/simple-http-server.html).
@@ -164,12 +187,38 @@ For SVG create function:
 * when removing element, it should be removing same element that created from same plugin.
 * attributes are often get update (ex:"d"), it should be placed in refresh function and at the end of create function, it should call the refresh function.
 
-in general, return value should be a simple object where by body of functions are kept in the private place with same name, and the execution is using **.call(this,...)**
+in general, return value should be a simple object where by body of functions are kept in the private place with same name, and use **.call(this,...)** to execute the private function.
 
-For Canvas, it always recreate the whole canvas, mean that onCreate & onRefresh should be using same logic of drawing.  
+For Canvas, it always recreate the whole canvas, mean that onCreate & onRefresh should be using same (logic of drawing) function.
+
+For Threejs, the concept of refresh is different compare with SVG or Canvas, when globe rotate the internal state of projection is changed, to reflect the changes in UI, SVG or Canvas need to refresh or redraw the path, as for Threejs the projection state change need to transfer from D3 to threejs main container object, so less need to create onRefresh function.   
 
 ## Building
 Building the project requires [Node.js](https://nodejs.org/en/). Once you've installed the project's dependencies with npm install, you can build the JavaScript to the dist directory with npm run build.
 
 ## License
 earthjs.js is licensed under the **MIT license**. See the LICENSE file for more information.
+
+```
+MIT License
+
+Copyright (c) 2017 Widi Harsojo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
