@@ -10,8 +10,6 @@ export default worldUrl => {
         ':Country:showCountries',
         ':Lakes:showLakes',
         ':Transparent:transparent',
-        // ':TGraticule:transparentGraticule',
-        // ':TLand:transparentLand',
         ':Canvas:showCanvas',
         ':Spin:spin',
     ].map(d => d.split(':'));
@@ -27,7 +25,6 @@ export default worldUrl => {
         r(p.canvasPlugin());
         r(p.graticuleCanvas());
         r(p.worldCanvas(worldUrl));
-        this._.options.oceanColor = 2;
         this._.options.transparent = true;
         this.canvasPlugin.selectAll('.ej-canvas');
         this.graticuleCanvas.drawTo([1]);
@@ -85,7 +82,6 @@ export default worldUrl => {
             rangeInput(opt2, 'pan', 0, 400, 1, _.pan, function() {
                 _.pan = +this.value;
                 for(let i=1;i<nodes.length;i++) {
-                    // nodes[i].style.top = (_.pan * i)+'px';
                     nodes[i].style.left = (_.pan* i)+'px';
                 }
             })
@@ -96,11 +92,6 @@ export default worldUrl => {
                 _.spd = this.value;_this.autorotatePlugin.speed(_.spd);
             })
             const nodes = d3.selectAll('.ea-layer').nodes();
-            window.nodes = nodes;
-            rangeInput(opt2, 'clr', 0, 5, 1, _this._.options.oceanColor, function() {
-                _this._.options.oceanColor = +this.value;
-                _this.oceanSvg.recreate();
-            })
         }
     }
 

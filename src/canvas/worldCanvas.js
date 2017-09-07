@@ -1,17 +1,10 @@
 // John J Czaplewski’s Block http://bl.ocks.org/jczaplew/6798471
 export default worldUrl => {
     /*eslint no-console: 0 */
-    const color = {
-        0:'rgba(117, 87, 57, 0.6)',
-        1:'rgba(138, 96, 56, 0.6)',
-        2:'rgba(140,104, 63, 0.6)',
-        3:'rgba(149,114, 74, 0.6)',
-        4:'rgba(153,126, 87, 0.6)',
-        5:'rgba(155,141,115, 0.6)'}
     const _ = {
         style:   {},
         options: {},
-        landColor: 0,
+        landColor: null,
         drawTo: null,
         world:  null,
         land:   null,
@@ -67,21 +60,19 @@ export default worldUrl => {
 
     function canvasAddWorld() {
         this.canvasPlugin.render(function(context, path) {
-            const c = _.landColor;
             context.beginPath();
             path(_.land);
-            context.fillStyle = _.style.land || (typeof(c)==='number' ? color[c] : c);
+            context.fillStyle = _.style.land || _.landColor;
             context.fill();
         }, _.drawTo, _.options);
     }
 
     function canvasAddCountries(border=false) {
         this.canvasPlugin.render(function(context, path) {
-            const c = _.landColor;
             context.beginPath();
             path(_.countries);
             if (!border) {
-                context.fillStyle =  _.style.countries || _.style.land || (typeof(c)==='number' ? color[c] : c);
+                context.fillStyle =  _.style.countries || _.style.land || _.landColor;
                 context.fill();
             }
             context.lineWidth = 0.1;
@@ -119,7 +110,7 @@ export default worldUrl => {
             options.showBorder = false;
             options.showCountries = true;
             options.transparentLand = false;
-            options.landColor = 0;
+            options.landColor = 'rgba(117, 87, 57, 0.6)';
         },
         onCreate() {
             if (this.worldJson && !_.world) {

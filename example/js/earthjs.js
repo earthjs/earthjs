@@ -2171,14 +2171,11 @@ var pingsSvg = (function () {
 });
 
 var oceanSvg = (function () {
-    var color = {
-        0: ['rgba(221, 221, 255, 0.6)', 'rgba(153, 170, 187,0.8)'],
-        1: ['rgba(159, 240, 232, 0.6)', 'rgba(  5, 242, 219,0.8)'],
-        2: ['rgba(152, 234, 242, 0.6)', 'rgba(  5, 219, 242,0.8)'],
-        3: ['rgba(114, 162, 181, 0.6)', 'rgba(  4, 138, 191,0.8)'],
-        4: ['rgba( 96, 123, 148, 0.6)', 'rgba( 10,  93, 166,0.8)'],
-        5: ['rgba( 87, 102, 131, 0.6)', 'rgba(  8,  52, 140,0.8)'] };
-    var _ = { svg: null, q: null, scale: 0, oceanColor: 0 };
+    var _ = {
+        svg: null,
+        q: null,
+        scale: 0,
+        oceanColor: ['rgba(221, 221, 255, 0.6)', 'rgba(153, 170, 187,0.8)'] };
     var $ = {};
 
     function init() {
@@ -2200,10 +2197,7 @@ var oceanSvg = (function () {
         if (this._.options.showOcean) {
             var c = _.oceanColor;
             var ocean_fill = this.$slc.defs.append('radialGradient').attr('id', 'ocean').attr('cx', '75%').attr('cy', '25%');
-            if (typeof c === 'number') {
-                c = color[c];
-                ocean_fill.append('stop').attr('offset', '5%').attr('stop-color', c[0]);
-            } else if (typeof c === 'string') {
+            if (typeof c === 'string') {
                 c = [c, c];
             }
             ocean_fill.append('stop').attr('offset', '100%').attr('stop-color', c[1]);
@@ -3162,17 +3156,10 @@ var dotsCanvas = (function (urlJson) {
 // John J Czaplewski’s Block http://bl.ocks.org/jczaplew/6798471
 var worldCanvas = (function (worldUrl) {
     /*eslint no-console: 0 */
-    var color = {
-        0: 'rgba(117, 87, 57, 0.6)',
-        1: 'rgba(138, 96, 56, 0.6)',
-        2: 'rgba(140,104, 63, 0.6)',
-        3: 'rgba(149,114, 74, 0.6)',
-        4: 'rgba(153,126, 87, 0.6)',
-        5: 'rgba(155,141,115, 0.6)' };
     var _ = {
         style: {},
         options: {},
-        landColor: 0,
+        landColor: null,
         drawTo: null,
         world: null,
         land: null,
@@ -3233,10 +3220,9 @@ var worldCanvas = (function (worldUrl) {
 
     function canvasAddWorld() {
         this.canvasPlugin.render(function (context, path) {
-            var c = _.landColor;
             context.beginPath();
             path(_.land);
-            context.fillStyle = _.style.land || (typeof c === 'number' ? color[c] : c);
+            context.fillStyle = _.style.land || _.landColor;
             context.fill();
         }, _.drawTo, _.options);
     }
@@ -3245,11 +3231,10 @@ var worldCanvas = (function (worldUrl) {
         var border = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
         this.canvasPlugin.render(function (context, path) {
-            var c = _.landColor;
             context.beginPath();
             path(_.countries);
             if (!border) {
-                context.fillStyle = _.style.countries || _.style.land || (typeof c === 'number' ? color[c] : c);
+                context.fillStyle = _.style.countries || _.style.land || _.landColor;
                 context.fill();
             }
             context.lineWidth = 0.1;
@@ -3289,7 +3274,7 @@ var worldCanvas = (function (worldUrl) {
             options.showBorder = false;
             options.showCountries = true;
             options.transparentLand = false;
-            options.landColor = 0;
+            options.landColor = 'rgba(117, 87, 57, 0.6)';
         },
         onCreate: function onCreate() {
             var _this = this;
@@ -5962,7 +5947,7 @@ var commonPlugins = (function (worldUrl) {
         r(p.canvasPlugin());
         r(p.graticuleCanvas());
         r(p.worldCanvas(worldUrl));
-        this._.options.oceanColor = 2;
+        // this._.options.oceanColor = 2;
         this._.options.transparent = true;
         this.canvasPlugin.selectAll('.ej-canvas');
         this.graticuleCanvas.drawTo([1]);
@@ -6028,11 +6013,11 @@ var commonPlugins = (function (worldUrl) {
                 _.spd = this.value;_this.autorotatePlugin.speed(_.spd);
             });
             var nodes = d3.selectAll('.ea-layer').nodes();
-            window.nodes = nodes;
-            rangeInput(opt2, 'clr', 0, 5, 1, _this._.options.oceanColor, function () {
-                _this._.options.oceanColor = +this.value;
-                _this.oceanSvg.recreate();
-            });
+            // window.nodes = nodes;
+            // rangeInput(opt2, 'clr', 0, 5, 1, _this._.options.oceanColor, function() {
+            //     _this._.options.oceanColor = +this.value;
+            //     _this.oceanSvg.recreate();
+            // })
         }
     }
 
