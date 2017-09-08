@@ -35,7 +35,6 @@ export default function (jsonUrl, height) {
     }
 
     function create() {
-        var o = this._.options;
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
             var group = new THREE.Group();
@@ -48,30 +47,27 @@ export default function (jsonUrl, height) {
                 var geometry = createGeometry(h);
                 var mesh = new THREE.Mesh(geometry, material);
                 mesh.coordinates = data.geometry.coordinates;
-                meshCoordinate(mesh, SCALE+(h/2));
+                meshCoordinate(mesh, h/2+SCALE);
+                mesh.ov = h;
                 group.add(mesh);
             })
             _.sphereObject = group;
         }
-        _.sphereObject.visible = o.showBars;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {
         name: 'barThreejs',
         urls: jsonUrl && [jsonUrl],
         onReady: function onReady(err, data) {
-            this.barThreejs.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
             create.call(this);
-        },
-        onRefresh: function onRefresh() {
-            _.sphereObject.visible = this._.options.showBars;
         },
         data: function data(data$1) {
             if (data$1) {
@@ -88,8 +84,20 @@ export default function (jsonUrl, height) {
                 return _.data;
             }
         },
+        scale: function scale(sc) {
+            _.sphereObject.children.forEach(function (mesh){
+                mesh.scale.x = sc;
+                mesh.scale.y = sc;
+                mesh.scale.z = sc;
+            });
+        },
         sphere: function sphere() {
             return _.sphereObject;
         },
+        color: function color(c) {
+            material.color.set(c);
+            material.needsUpdate = true;
+            this.threejsPlugin.renderThree();
+        }
     }
 }

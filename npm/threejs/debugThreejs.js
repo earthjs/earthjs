@@ -1,11 +1,15 @@
 export default function () {
     var _ = {sphereObject: null, scale: null};
-    _.scale = d3.scaleLinear().domain([0,200]).range([0,1]);
 
     function init() {
         this._.options.showDebugSpahre = true;
+    }
+
+    function create() {
+        var tj = this.threejsPlugin;
         if (!_.sphereObject) {
             var SCALE = this._.proj.scale();
+            _.scale = d3.scaleLinear().domain([0,SCALE]).range([0,1]);
             var sphere         = new THREE.SphereGeometry(SCALE, 100, 100);
             var sphereMaterial = new THREE.MeshNormalMaterial({wireframe: false});
             var sphereMesh     = new THREE.Mesh(sphere, sphereMaterial);
@@ -26,40 +30,21 @@ export default function () {
 
             _.sphereObject = new THREE.Object3D();
             _.sphereObject.add(sphereMesh, dot1Mesh, dot2Mesh, dot3Mesh);
-
-            refresh.call(this);
-            this.threejsPlugin.addScene(_.sphereObject);
         }
-    }
-
-    function resize() {
-        var sc = _.scale(this._.proj.scale());
-        var se = _.sphereObject;
-        se.scale.x = sc;
-        se.scale.y = sc;
-        se.scale.z = sc;
-    }
-
-    function refresh() {
-        var rt = this._.proj.rotate();
-        rt[0] -= 90;
-        var q1 = this._.versor(rt);
-        var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
-        _.sphereObject.setRotationFromQuaternion(q2);
+        tj.addGroup(_.sphereObject);
     }
 
     return {
         name: 'debugThreejs',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
-        onResize: function onResize() {
-            resize.call(this);
+        onCreate: function onCreate() {
+            create.call(this);
         },
-        onRefresh: function onRefresh() {
-            if (_.sphereObject) {
-                refresh.call(this);
-            }
-        }
+        sphere: function sphere() {
+            return _.sphereObject;
+        },
     }
 }

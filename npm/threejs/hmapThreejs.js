@@ -72,25 +72,23 @@ export default function (hmapUrl) {
         if (!_.sphereObject) {
             _.sphereObject= new THREE.Mesh(_.geometry, _.material);
         }
-        _.sphereObject.visible = this._.options.showHmap;
         _.texture.needsUpdate = true;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     function refresh() {
         _.heatmap.update();
         _.heatmap.display();
-        _.sphereObject.visible = this._.options.showHmap;
     }
 
     return {
         name: 'hmapThreejs',
         urls: hmapUrl && [hmapUrl],
         onReady: function onReady(err, data) {
-            this.hmapThreejs.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onInterval: function onInterval() {

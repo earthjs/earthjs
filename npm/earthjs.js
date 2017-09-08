@@ -5,7 +5,7 @@ var earthjs = function (options) {
     if ( options === void 0 ) options={};
 
     /*eslint no-console: 0 */
-    clearInterval(earthjs.ticker);
+    cancelAnimationFrame(earthjs.ticker);
     options = Object.assign({
         selector: '#earth-js',
         rotate: [130,-33,-11],
@@ -102,9 +102,9 @@ var earthjs = function (options) {
                 return _.loadingData;
             }
         },
-        register: function register(obj) {
-            var ar = {};
-            globe[obj.name] = ar;
+        register: function register(obj, name) {
+            var ar = {name: name || obj.name};
+            globe[ar.name] = ar;
             Object.keys(obj).forEach(function(fn) {
                 if ([
                     'urls',
@@ -122,15 +122,15 @@ var earthjs = function (options) {
                 }
             });
             if (obj.onInit) {
-                obj.onInit.call(globe);
+                obj.onInit.call(globe, ar);
             }
-            qEvent(obj,'onCreate');
-            qEvent(obj,'onResize');
-            qEvent(obj,'onRefresh');
-            qEvent(obj,'onInterval');
+            qEvent(obj,'onCreate', ar.name);
+            qEvent(obj,'onResize', ar.name);
+            qEvent(obj,'onRefresh', ar.name);
+            qEvent(obj,'onInterval', ar.name);
             if (obj.urls && obj.onReady) {
                 _.promeses.push({
-                    name: obj.name,
+                    name: ar.name,
                     urls: obj.urls,
                     onReady: obj.onReady
                 });
@@ -162,16 +162,26 @@ var earthjs = function (options) {
     globe.$slc.defs = __.svg.append('defs');
     __.ticker = function(intervalTicker) {
         var interval = __.interval;
-        intervalTicker = intervalTicker || 50;
-        ticker = setInterval(function () { // 33% less CPU compare with d3.timer
-            if (!_.loadingData) {
-                interval.call(globe);
-                earths.forEach(function(p) {
-                    p._.interval.call(p);
-                });
+        intervalTicker = intervalTicker || 10;
+
+        var start1 = 0;
+        var start2 = 0;
+        function step(timestamp) {
+            if ((timestamp - start1) > intervalTicker) {
+                start1 = timestamp;
+                if (!_.loadingData) {
+                    interval.call(globe, timestamp);
+                    if ((timestamp - start2) > intervalTicker+30) {
+                        start2 = timestamp;
+                        earths.forEach(function(p) {
+                            p._.interval.call(p, timestamp);
+                        });
+                    }
+                }
             }
-        }, intervalTicker);
-        earthjs.ticker = ticker;
+            earthjs.ticker = requestAnimationFrame(step);
+        }
+        earthjs.ticker = requestAnimationFrame(step);
         return globe;
     }
 
@@ -190,9 +200,9 @@ var earthjs = function (options) {
         return globe;
     }
 
-    __.interval = function() {
+    __.interval = function(t) {
         _.onIntervalVals.forEach(function(fn) {
-            fn.call(globe);
+            fn.call(globe, t);
         });
         return globe;
     }
@@ -223,21 +233,26 @@ var earthjs = function (options) {
         if (typeof(r)==='number') {
             __.options.rotate = [r,-33,-11];
         }
+        var ref = __.options;
+        var scale = ref.scale;
+        if (!scale) {
+             scale =  __.options.width/3.5;
+        }
         return d3.geoOrthographic()
             .rotate(__.options.rotate)
-            .scale(__.options.width/3.5)
             .translate(__.center)
             .precision(0.1)
-            .clipAngle(90);
+            .clipAngle(90)
+            .scale(scale);
     }
 
     __.proj = __.orthoGraphic();
     __.path = d3.geoPath().projection(__.proj);
     return globe;
     //----------------------------------------
-    function qEvent(obj, qname) {
+    function qEvent(obj, qname, name) {
         if (obj[qname]) {
-            _[qname][obj.name] = obj[qname];
+            _[qname][name || obj.name] = obj[qname];
             _[qname+'Keys'] = Object.keys(_[qname]);
             _[qname+'Vals'] = _[qname+'Keys'].map(function (k) { return _[qname][k]; });
         }

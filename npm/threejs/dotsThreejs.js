@@ -4,60 +4,51 @@
 export default function (urlJson) {
     /*eslint no-console: 0 */
     var _ = {dataDots: null};
+    var material = new THREE.MeshBasicMaterial({
+        side: THREE.DoubleSide,
+        color: 0xC19999, //F0C400,
+    });
 
     function init() {
         this._.options.showDots = true;
     }
 
     function createDot(feature) {
-        if (feature) {
-            var tj = this.threejsPlugin;
-            // var dc = [-77.0369, 38.9072];
-            // var position = tj.vertex(feature ? feature.geometry.coordinates : dc);
-            var position = tj.vertex(feature.geometry.coordinates);
-            var material = new THREE.SpriteMaterial({ color: 0x0000ff });
-            var dot = new THREE.Sprite(material);
-            dot.position.set(position.x, position.y, position.z);
-            return dot;
-        }
+        var tj = this.threejsPlugin, radius = 10,
+        geometry = new THREE.CircleGeometry(radius, 30),
+        mesh     = new THREE.Mesh(geometry, material),
+        position = tj.vertex(feature.geometry.coordinates);
+        mesh.position.set(position.x, position.y, position.z);
+        mesh.lookAt({x:0,y:0,z:0});
+        return mesh;
     }
 
     function create() {
+        var this$1 = this;
+
         var tj = this.threejsPlugin;
-        if (!_.dots) {
-            create1.call(this);
+        if (!_.sphereObject) {
+            _.sphereObject = new THREE.Group();
+            _.dataDots.features.forEach(function (d) {
+                var dot = createDot.call(this$1, d);
+                _.sphereObject.add(dot);
+            });
         }
-        _.dots.visible = this._.options.showDots;
-        tj.addGroup(_.dots);
-        tj.rotate();
+        tj.addGroup(_.sphereObject);
     }
-
-    function create1() {
-        var _this = this;
-        _.dots = new THREE.Group();
-        _.dataDots.features.forEach(function(d) {
-            var dot = createDot.call(_this, d);
-            dot && _.dots.add(dot);
-        });
-    }
-
-    // function create2() {
-    // }
 
     return {
         name: 'dotsThreejs',
         urls: urlJson && [urlJson],
         onReady: function onReady(err, data) {
-            this.dotsThreejs.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
             create.call(this);
-        },
-        onRefresh: function onRefresh() {
-            _.dots.visible = this._.options.showDots;
         },
         data: function data(data$1) {
             if (data$1) {
@@ -65,6 +56,14 @@ export default function (urlJson) {
             } else {
                 return _.dataDots;
             }
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
+        },
+        color: function color(c) {
+            material.color.set(c);
+            material.needsUpdate = true;
+            this.threejsPlugin.renderThree();
         }
     }
 }

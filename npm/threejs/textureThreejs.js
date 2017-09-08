@@ -1,19 +1,20 @@
 // https://bl.ocks.org/mbostock/2b85250396c17a79155302f91ec21224
 // https://bl.ocks.org/pbogden/2f8d2409f1b3746a1c90305a1a80d183
 // http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
+// http://bl.ocks.org/MAKIO135/eab7b74e85ed2be48eeb
 export default function () {
     /*eslint no-console: 0 */
-    var _ = {};
-    var geometry = new THREE.SphereGeometry( 200, 30, 30 );
+    var _ = {}, datumGraticule = d3.geoGraticule()();
     var material = new THREE.MeshBasicMaterial();
-    var datumGraticule = d3.geoGraticule()();
+    var geometry;
 
     function init() {
-        this._.options.showDrawing = true;
-        //http://bl.ocks.org/MAKIO135/eab7b74e85ed2be48eeb
         var __ = this._;
+        var SCALE  = __.proj.scale();
         var width  = __.options.width;
         var height = __.options.height;
+        this._.options.showDrawing = true;
+        geometry = new THREE.SphereGeometry(SCALE, 30, 30);
         var canvas = d3.select('body').append('canvas');
         canvas.attr('height', height).attr('width', width);
         _.canvas = canvas.node();
@@ -27,19 +28,6 @@ export default function () {
             .translate([width/2, height/2]).precision(0.5);
 
         _.path = d3.geoPath(projection, _.context);
-
-        // var geometry = new THREE.BoxGeometry( 200, 200, 200 );
-        // _.context.clearRect(0, 0, width, height);
-
-        // _.context.font = '20pt Arial';
-        // _.context.fillStyle = 'red';
-        // _.context.fillRect(0, 0, _.canvas.width, _.canvas.height);
-        // _.context.fillStyle = 'white';
-        // _.context.fillRect(10, 10, _.canvas.width - 20, _.canvas.height - 20);
-        // _.context.fillStyle = 'black';
-        // _.context.textAlign = "center";
-        // _.context.textBaseline = "middle";
-        // _.context.fillText(new Date().getTime(), _.canvas.width / 2, _.canvas.height / 2);
     }
 
     function create() {
@@ -56,26 +44,22 @@ export default function () {
             _.context.strokeStyle = 'rgba(119,119,119,0.6)';
             _.context.stroke();
             _.sphereObject = new THREE.Mesh( geometry, material );
-            _.sphereObject.visible = this._.options.showLand;
             _.texture.needsUpdate = false;
-            // const material = new THREE.LineBasicMaterial({color: 0xaaaaaa});
-            // _.sphereObject = tj.wireframe(_.graticule10, material); //0x800000
-            // _.sphereObject.visible = this._.options.showDrawing;
         }
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {
         name: 'textureThreejs',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
             create.call(this);
         },
-        onRefresh: function onRefresh() {
-            _.graticule.visible = this._.options.showDrawing;
+        sphere: function sphere() {
+            return _.sphereObject;
         }
     }
 }

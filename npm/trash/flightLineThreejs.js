@@ -239,7 +239,6 @@ export default function (jsonUrl) {
             group.add(flightPathLines());
             // group.add(flightPointCloud());
             _.sphereObject = group;
-            console.log('done add');
         }
         _.sphereObject.visible = o.showFlightLine;
         tj.addGroup(_.sphereObject);
@@ -251,9 +250,10 @@ export default function (jsonUrl) {
         urls: jsonUrl && [jsonUrl],
         onReady: function onReady(err, data) {
             _.end_flight_idx = data.length;
-            this.flightLineThreejs.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {

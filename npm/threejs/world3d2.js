@@ -79,7 +79,7 @@ export default function (worldUrl, landUrl, inner,outer, rtt) {
     }
 
     function init() {
-        var r = 200;
+        var r = this._.proj.scale();
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r,r,r);
@@ -95,10 +95,8 @@ export default function (worldUrl, landUrl, inner,outer, rtt) {
         if (_.material && !_.loaded) {
             loadCountry()
         }
-        _.sphereObject.visible = this._.options.showWorld;
         var tj = this.threejsPlugin;
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     var vertexShader = "\n    varying vec2 vN;\n    void main() {\n        vec4 p = vec4( position, 1. );\n        vec3 e = normalize( vec3( modelViewMatrix * p ) );\n        vec3 n = normalize( normalMatrix * normal );\n        vec3 r = reflect( e, n );\n        float m = 2. * length( vec3( r.xy, r.z + 1. ) );\n        vN = r.xy / m + .5;\n        gl_Position = projectionMatrix * modelViewMatrix * p;\n    }\n    "
@@ -118,30 +116,21 @@ export default function (worldUrl, landUrl, inner,outer, rtt) {
         });
     }
 
-    function refresh() {
-        if (_.sphereObject) {
-            _.sphereObject.visible = this._.options.showWorld;
-        }
-    }
-
     return {
         name: 'world3d2',
         urls: worldUrl && [worldUrl],
         onReady: function onReady(err, data) {
-            this.world3d2.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
             create.call(this);
         },
-        onRefresh: function onRefresh() {
-            refresh.call(this);
-        },
         rotate: function rotate(rtt) {
             _.sphereObject.rotation.y = rtt;
-            this.threejsPlugin.rotate();
         },
         data: function data(data$1) {
             if (data$1) {

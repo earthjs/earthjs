@@ -26,15 +26,14 @@ export default function (jsonUrl, iconUrl) {
                 group.add(mesh);
             })
             _.sphereObject = group;
-            _.sphereObject.visible = this._.options.showIcons;
         }
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     function init() {
         var this$1 = this;
 
+        var tj = this.threejsPlugin;
         this._.options.showIcons = true;
         var loader = new THREE.TextureLoader();
         loader.load(iconUrl, function (map) {
@@ -45,6 +44,7 @@ export default function (jsonUrl, iconUrl) {
             });
             if (_.data && !_.loaded) {
                 loadIcons.call(this$1);
+                tj.rotate();
             }
         });
     }
@@ -55,26 +55,18 @@ export default function (jsonUrl, iconUrl) {
         }
     }
 
-    function refresh() {
-        if (_.sphereObject) {
-            _.sphereObject.visible = this._.options.showIcons;
-        }
-    }
-
     return {
         name: 'iconsThreejs',
         urls: jsonUrl && [jsonUrl],
         onReady: function onReady(err, data) {
-            this.iconsThreejs.data(data);
+            _.me.data(data);
         },
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
             create.call(this);
-        },
-        onRefresh: function onRefresh() {
-            refresh.call(this);
         },
         data: function data(data$1) {
             if (data$1) {
@@ -90,6 +82,11 @@ export default function (jsonUrl, iconUrl) {
             } else {
                 return _.data;
             }
+        },
+        scale: function scale(sc) {
+            _.sphereObject.children.forEach(function (mesh){
+                mesh.scale.set(sc+2,sc+2,1);
+            });
         },
         sphere: function sphere() {
             return _.sphereObject;

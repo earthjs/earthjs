@@ -42,22 +42,18 @@ export default function () {
         if (!_.sphereObject) {
             var material = new THREE.LineBasicMaterial({color: 0xaaaaaa});
             _.sphereObject = tj.wireframe(_.graticule10, material); //0x800000
-            _.sphereObject.visible = this._.options.showGraticule;
         }
         tj.addGroup(_.sphereObject);
-        tj.rotate();
     }
 
     return {
         name: 'graticuleThreejs',
-        onInit: function onInit() {
+        onInit: function onInit(me) {
+            _.me = me;
             init.call(this);
         },
         onCreate: function onCreate() {
             create.call(this);
-        },
-        onRefresh: function onRefresh() {
-            _.sphereObject.visible = this._.options.showGraticule;
         },
         sphere: function sphere() {
             return _.sphereObject;
