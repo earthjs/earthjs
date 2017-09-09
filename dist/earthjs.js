@@ -243,9 +243,30 @@ var earthjs$2 = function earthjs() {
                     interval.call(globe, timestamp);
                     if (timestamp - start2 > intervalTicker + 30) {
                         start2 = timestamp;
-                        earths.forEach(function (p) {
-                            p._.interval.call(p, timestamp);
-                        });
+                        var _iteratorNormalCompletion = true;
+                        var _didIteratorError = false;
+                        var _iteratorError = undefined;
+
+                        try {
+                            for (var _iterator = earths[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                var p = _step.value;
+
+                                p._.interval.call(p, timestamp);
+                            }
+                        } catch (err) {
+                            _didIteratorError = true;
+                            _iteratorError = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion && _iterator.return) {
+                                    _iterator.return();
+                                }
+                            } finally {
+                                if (_didIteratorError) {
+                                    throw _iteratorError;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -271,9 +292,31 @@ var earthjs$2 = function earthjs() {
     };
 
     __.interval = function (t) {
-        _.onIntervalVals.forEach(function (fn) {
-            fn.call(globe, t);
-        });
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
+
+        try {
+            for (var _iterator2 = _.onIntervalVals[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                var fn = _step2.value;
+
+                fn.call(globe, t);
+            }
+        } catch (err) {
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                    _iterator2.return();
+                }
+            } finally {
+                if (_didIteratorError2) {
+                    throw _iteratorError2;
+                }
+            }
+        }
+
         return globe;
     };
 
@@ -286,17 +329,60 @@ var earthjs$2 = function earthjs() {
                 _.onRefresh[fn].call(globe);
             });
         } else {
-            _.onRefreshVals.forEach(function (fn) {
-                fn.call(globe);
-            });
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
+            try {
+                for (var _iterator3 = _.onRefreshVals[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var fn = _step3.value;
+
+                    fn.call(globe);
+                }
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
+                    }
+                }
+            }
         }
         return globe;
     };
 
     __.resize = function () {
-        _.onResizeVals.forEach(function (fn) {
-            fn.call(globe);
-        });
+        var _iteratorNormalCompletion4 = true;
+        var _didIteratorError4 = false;
+        var _iteratorError4 = undefined;
+
+        try {
+            for (var _iterator4 = _.onResizeVals[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                var fn = _step4.value;
+
+                fn.call(globe);
+            }
+        } catch (err) {
+            _didIteratorError4 = true;
+            _iteratorError4 = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                    _iterator4.return();
+                }
+            } finally {
+                if (_didIteratorError4) {
+                    throw _iteratorError4;
+                }
+            }
+        }
+
         return globe;
     };
 
@@ -603,7 +689,6 @@ var hoverCanvas = (function () {
     };
 
     function init() {
-        this._.options.showSelectedCountry = false;
         if (this.worldCanvas) {
             var world = this.worldCanvas.data();
             if (world) {
@@ -679,6 +764,8 @@ var hoverCanvas = (function () {
         onInit: function onInit(me) {
             _.me = me;
             _.svg = this._.svg;
+            // need to be call once as init() used in 2 places
+            this._.options.showSelectedCountry = false;
             init.call(this);
         },
         selectAll: function selectAll(q) {
@@ -1386,6 +1473,8 @@ var threejsPlugin = (function () {
     }
 
     function _rotate(obj) {
+        var direct = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
         if (!obj) {
             obj = _.group;
         }
@@ -1395,7 +1484,7 @@ var threejsPlugin = (function () {
         var q1 = __.versor(rt);
         var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
         obj.setRotationFromQuaternion(q2);
-        _renderThree.call(this);
+        _renderThree.call(this, direct);
     }
 
     var renderThreeX = null;
@@ -1427,7 +1516,7 @@ var threejsPlugin = (function () {
             _renderThree.call(this, false, _rotate);
         },
         onRefresh: function onRefresh() {
-            _rotate.call(this);
+            _rotate.call(this, null, true);
         },
         onResize: function onResize() {
             _scale.call(this);
@@ -1644,14 +1733,21 @@ var autorotatePlugin = (function () {
         speed: function speed(degPerSec) {
             _.degree = degPerSec / 1000;
         },
+        sync: function sync(arr) {
+            _.sync = arr;
+        },
         start: function start() {
             this._.options.spin = true;
         },
         stop: function stop() {
             this._.options.spin = false;
         },
-        sync: function sync(arr) {
-            _.sync = arr;
+        spin: function spin(rotate) {
+            if (rotate !== undefined) {
+                this._.options.spin = rotate;
+            } else {
+                return this._.options.spin;
+            }
         }
     };
 });
@@ -3181,7 +3277,7 @@ var worldCanvas = (function (worldUrl) {
             }
             if (__.options.showLand) {
                 if (__.options.showCountries || _.me.showCountries) {
-                    canvasAddCountries.call(this);
+                    canvasAddCountries.call(this, __.options.showBorder);
                 } else {
                     canvasAddWorld.call(this);
                 }
@@ -4708,7 +4804,7 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
         onHover: {},
         onHoverVals: []
     };
-    var lineScale = d3.scaleLinear().domain([30, 2500]).range([0.001, 0.1]);
+    var lineScale = d3.scaleLinear().domain([30, 2500]).range([0.001, 0.02]);
     var PI180 = Math.PI / 180.0;
 
     var colorRange = [d3.rgb('#ff0000'), d3.rgb("#aaffff")];
@@ -4857,6 +4953,7 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
 
                 ++index;
             }
+            point_cache[i] = [];
         }
 
         var point_cloud_geom = new THREE.BufferGeometry();
@@ -4916,11 +5013,9 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
     }
 
     function fast_get_spline_point(i, t, spline) {
-        if (point_cache[i] === undefined) {
-            point_cache[i] = [];
-        }
-        var tc = parseInt(t * 1000);
+        // point_cache set in generate_point_cloud()
         var pcache = point_cache[i];
+        var tc = parseInt(t * 1000);
         if (pcache[tc] === undefined) {
             pcache[tc] = spline.getPoint(t);
         }
@@ -5067,9 +5162,30 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
         group.name = 'flightLineThreejs';
         if (this._.domEvents) {
             this._.domEvents.addEventListener(_.track_lines_object, 'mousemove', function (event) {
-                _.onHoverVals.forEach(function (v) {
-                    v.call(event.target, event);
-                });
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = _.onHoverVals[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var v = _step.value;
+
+                        v.call(event.target, event);
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
             }, false);
         }
         _.sphereObject = group;
@@ -5114,7 +5230,7 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
         if (timestamp - start > 30 && !this._.drag) {
             start = timestamp;
             update_point_cloud();
-            this.threejsPlugin.renderThree(true);
+            this.threejsPlugin.renderThree();
         }
     }
 
@@ -5345,7 +5461,6 @@ var imageThreejs = (function () {
                 var material = new THREE.MeshBasicMaterial({ map: map });
                 _.sphereObject = new THREE.Mesh(geometry, material);
                 tj.addGroup(_.sphereObject);
-                tj.rotate();
             });
         } else {
             tj.addGroup(_.sphereObject);
@@ -5460,9 +5575,30 @@ var globeThreejs = (function () {
             _.sphereObject = new THREE.Mesh(geometry, material);
             if (this._.domEvents) {
                 this._.domEvents.addEventListener(_.sphereObject, 'mousemove', function (event) {
-                    _.onHoverVals.forEach(function (v) {
-                        v.call(event.target, event);
-                    });
+                    var _iteratorNormalCompletion = true;
+                    var _didIteratorError = false;
+                    var _iteratorError = undefined;
+
+                    try {
+                        for (var _iterator = _.onHoverVals[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                            var v = _step.value;
+
+                            v.call(event.target, event);
+                        }
+                    } catch (err) {
+                        _didIteratorError = true;
+                        _iteratorError = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion && _iterator.return) {
+                                _iterator.return();
+                            }
+                        } finally {
+                            if (_didIteratorError) {
+                                throw _iteratorError;
+                            }
+                        }
+                    }
                 }, false);
             }
             var ambient = new THREE.AmbientLight(0x777777);
@@ -6036,7 +6172,7 @@ var selectCountryMix = (function () {
     var _ = {};
 
     function init() {
-        var g = this.register(earthjs.plugins.mousePlugin()).register(earthjs.plugins.hoverCanvas()).register(earthjs.plugins.clickCanvas()).register(earthjs.plugins.centerCanvas()).register(earthjs.plugins.canvasPlugin()).register(earthjs.plugins.dropShadowSvg()).register(earthjs.plugins.countryCanvas()).register(earthjs.plugins.autorotatePlugin()).register(earthjs.plugins.worldCanvas(worldUrl));
+        var g = this.register(earthjs.plugins.mousePlugin()).register(earthjs.plugins.hoverCanvas()).register(earthjs.plugins.clickCanvas()).register(earthjs.plugins.centerCanvas()).register(earthjs.plugins.canvasPlugin()).register(earthjs.plugins.countryCanvas()).register(earthjs.plugins.autorotatePlugin()).register(earthjs.plugins.worldCanvas(worldUrl)).register(earthjs.plugins.threejsPlugin());
         g.canvasPlugin.selectAll('.ej-canvas');
         g._.options.showSelectedCountry = true;
         g._.options.showBorder = true;

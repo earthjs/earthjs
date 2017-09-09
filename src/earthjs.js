@@ -171,9 +171,9 @@ const earthjs = (options={}) => {
                     interval.call(globe, timestamp);
                     if ((timestamp - start2) > intervalTicker+30) {
                         start2 = timestamp;
-                        earths.forEach(function(p) {
+                        for (var p of earths) {
                             p._.interval.call(p, timestamp);
-                        });
+                        }
                     }
                 }
             }
@@ -199,9 +199,9 @@ const earthjs = (options={}) => {
     }
 
     __.interval = function(t) {
-        _.onIntervalVals.forEach(function(fn) {
+        for (var fn of _.onIntervalVals) {
             fn.call(globe, t);
-        });
+        }
         return globe;
     }
 
@@ -212,17 +212,17 @@ const earthjs = (options={}) => {
                 _.onRefresh[fn].call(globe);
             });
         } else {
-            _.onRefreshVals.forEach(function(fn) {
+            for (var fn of _.onRefreshVals) {
                 fn.call(globe);
-            });
+            }
         }
         return globe;
     }
 
     __.resize = function() {
-        _.onResizeVals.forEach(function(fn) {
+        for (var fn of _.onResizeVals) {
             fn.call(globe);
-        });
+        }
         return globe;
     }
 

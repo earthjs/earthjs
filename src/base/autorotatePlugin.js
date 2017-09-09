@@ -54,14 +54,21 @@ export default (degPerSec=10) => {
         speed(degPerSec) {
             _.degree = degPerSec/1000;
         },
+        sync(arr) {
+            _.sync = arr;
+        },
         start() {
             this._.options.spin = true;
         },
         stop() {
             this._.options.spin = false;
         },
-        sync(arr) {
-            _.sync = arr;
+        spin(rotate) {
+            if (rotate!==undefined) {
+                this._.options.spin = rotate;
+            } else {
+                return this._.options.spin;
+            }
         }
     };
 }

@@ -33,9 +33,9 @@ export default (
             _.sphereObject = new THREE.Mesh(geometry, material);
             if (this._.domEvents) {
                 this._.domEvents.addEventListener(_.sphereObject, 'mousemove', function(event){
-                    _.onHoverVals.forEach(v => {
+                    for (var v of _.onHoverVals) {
                         v.call(event.target, event);
-                    });
+                    }
                 }, false);
             }
             var ambient= new THREE.AmbientLight(0x777777);

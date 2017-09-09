@@ -26,7 +26,7 @@ export default worldUrl => {
             }
             if (__.options.showLand) {
                 if (__.options.showCountries || _.me.showCountries) {
-                    canvasAddCountries.call(this);
+                    canvasAddCountries.call(this, __.options.showBorder);
                 } else  {
                     canvasAddWorld.call(this);
                 }

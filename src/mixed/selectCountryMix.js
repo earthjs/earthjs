@@ -9,10 +9,10 @@ export default (worldUrl='../d/world-110m.json') => {
         .register(earthjs.plugins.clickCanvas())
         .register(earthjs.plugins.centerCanvas())
         .register(earthjs.plugins.canvasPlugin())
-        .register(earthjs.plugins.dropShadowSvg())
         .register(earthjs.plugins.countryCanvas())
         .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.worldCanvas(worldUrl));
+        .register(earthjs.plugins.worldCanvas(worldUrl))
+        .register(earthjs.plugins.threejsPlugin());
         g.canvasPlugin.selectAll('.ej-canvas');
         g._.options.showSelectedCountry = true;
         g._.options.showBorder = true;

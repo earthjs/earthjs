@@ -15,7 +15,6 @@ export default () => {
     }
 
     function init() {
-        this._.options.showSelectedCountry = false;
         if (this.worldCanvas) {
             const world = this.worldCanvas.data();
             if (world) {
@@ -89,6 +88,8 @@ export default () => {
         onInit(me) {
             _.me = me;
             _.svg = this._.svg;
+            // need to be call once as init() used in 2 places
+            this._.options.showSelectedCountry = false;
             init.call(this);
         },
         selectAll(q) {

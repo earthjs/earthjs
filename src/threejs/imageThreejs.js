@@ -12,7 +12,6 @@ export default (imgUrl='../d/world.png') => {
                 const material = new THREE.MeshBasicMaterial({map});
                 _.sphereObject = new THREE.Mesh(geometry, material);
                 tj.addGroup(_.sphereObject);
-                tj.rotate();
             });
         } else {
             tj.addGroup(_.sphereObject);
