@@ -26,7 +26,7 @@ export default (jsonUrl, imgUrl, height=150) => {
     let point_cache = [];
     let all_tracks = [];
 
-    let positions, ttl_num_points = 0;
+    let ttl_num_points = 0;
     function generateControlPoints(radius) {
         for (let f = 0; f < _.data.length; ++f) {
             const start_lat = _.data[f][0];
@@ -88,7 +88,6 @@ export default (jsonUrl, imgUrl, height=150) => {
                 speed
             });
         }
-        positions = new Float32Array(ttl_num_points * 3);
     }
 
     function xyz_from_lat_lng(lat, lng, radius) {
@@ -134,7 +133,9 @@ export default (jsonUrl, imgUrl, height=150) => {
         };
     }
 
+    let positions;
     function generate_point_cloud() {
+        positions = new Float32Array(ttl_num_points * 3);
         const colors = new Float32Array(ttl_num_points * 3);
         const values = new Float32Array(ttl_num_points);
         const sizes = new Float32Array(ttl_num_points);
@@ -244,19 +245,21 @@ export default (jsonUrl, imgUrl, height=150) => {
         const line_positions = new Float32Array(total_arr);
 
         for (let i = 0; i < length; ++i) {
+            const l = i * curve_points;
             const {spline, color} = all_tracks[i];
             const {r,g,b} = new THREE.Color(color);
             for (let j = 0; j < curve_length; ++j) {
-                const i_curve    = (i * curve_points + j) * 6;
-                const {x1,y1,z1} = spline.getPoint(j / curve_length);
-                const {x2,y2,z2} = spline.getPoint((j + 1) / curve_length);
-                line_positions[i_curve + 0] = x1;
-                line_positions[i_curve + 1] = y1;
-                line_positions[i_curve + 2] = z1;
-                line_positions[i_curve + 3] = x2;
-                line_positions[i_curve + 4] = y2;
-                line_positions[i_curve + 5] = z2;
+                const k = j+1;
+                const c1 = spline.getPoint(j / curve_length);
+                const c2 = spline.getPoint(k / curve_length);
+                line_positions[i_curve + 0] = c1.x;
+                line_positions[i_curve + 1] = c1.y;
+                line_positions[i_curve + 2] = c1.z;
+                line_positions[i_curve + 3] = c2.x;
+                line_positions[i_curve + 4] = c2.y;
+                line_positions[i_curve + 5] = c2.z;
 
+                const i_curve = (j + l) * 6;
                 colors[i_curve + 0] = r;
                 colors[i_curve + 1] = g;
                 colors[i_curve + 2] = b;

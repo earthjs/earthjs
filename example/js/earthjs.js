@@ -4721,8 +4721,7 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
     var point_cache = [];
     var all_tracks = [];
 
-    var positions = void 0,
-        ttl_num_points = 0;
+    var ttl_num_points = 0;
     function generateControlPoints(radius) {
         for (var f = 0; f < _.data.length; ++f) {
             var start_lat = _.data[f][0];
@@ -4784,7 +4783,6 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
                 speed: speed
             });
         }
-        positions = new Float32Array(ttl_num_points * 3);
     }
 
     function xyz_from_lat_lng(lat, lng, radius) {
@@ -4824,7 +4822,9 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
         };
     }
 
+    var positions = void 0;
     function generate_point_cloud() {
+        positions = new Float32Array(ttl_num_points * 3);
         var colors = new Float32Array(ttl_num_points * 3);
         var values = new Float32Array(ttl_num_points);
         var sizes = new Float32Array(ttl_num_points);
@@ -4949,6 +4949,7 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
         var line_positions = new Float32Array(total_arr);
 
         for (var i = 0; i < length; ++i) {
+            var l = i * curve_points;
             var _all_tracks$i3 = all_tracks[i],
                 spline = _all_tracks$i3.spline,
                 color = _all_tracks$i3.color;
@@ -4959,25 +4960,17 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
                 b = _ref2.b;
 
             for (var j = 0; j < curve_length; ++j) {
-                var i_curve = (i * curve_points + j) * 6;
+                var k = j + 1;
+                var c1 = spline.getPoint(j / curve_length);
+                var c2 = spline.getPoint(k / curve_length);
+                line_positions[i_curve + 0] = c1.x;
+                line_positions[i_curve + 1] = c1.y;
+                line_positions[i_curve + 2] = c1.z;
+                line_positions[i_curve + 3] = c2.x;
+                line_positions[i_curve + 4] = c2.y;
+                line_positions[i_curve + 5] = c2.z;
 
-                var _spline$getPoint = spline.getPoint(j / curve_length),
-                    x1 = _spline$getPoint.x1,
-                    y1 = _spline$getPoint.y1,
-                    z1 = _spline$getPoint.z1;
-
-                var _spline$getPoint2 = spline.getPoint((j + 1) / curve_length),
-                    x2 = _spline$getPoint2.x2,
-                    y2 = _spline$getPoint2.y2,
-                    z2 = _spline$getPoint2.z2;
-
-                line_positions[i_curve + 0] = x1;
-                line_positions[i_curve + 1] = y1;
-                line_positions[i_curve + 2] = z1;
-                line_positions[i_curve + 3] = x2;
-                line_positions[i_curve + 4] = y2;
-                line_positions[i_curve + 5] = z2;
-
+                var i_curve = (j + l) * 6;
                 colors[i_curve + 0] = r;
                 colors[i_curve + 1] = g;
                 colors[i_curve + 2] = b;
@@ -5021,10 +5014,10 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
             for (var j = 0; j < curve_length; ++j) {
                 var i_curve = j * 3;
 
-                var _spline$getPoint3 = spline.getPoint(j / curve_length),
-                    x = _spline$getPoint3.x,
-                    y = _spline$getPoint3.y,
-                    z = _spline$getPoint3.z;
+                var _spline$getPoint = spline.getPoint(j / curve_length),
+                    x = _spline$getPoint.x,
+                    y = _spline$getPoint.y,
+                    z = _spline$getPoint.z;
 
                 lines[i_curve + 0] = x;
                 lines[i_curve + 1] = y;
