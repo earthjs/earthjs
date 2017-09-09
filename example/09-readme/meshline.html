@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/THREE.MeshLine.js'></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+    <style>
+        body {
+            background: #aaa;
+        }
+        #three-js {
+            pointer-events: all;
+        }
+    </style>
+</head>
+<body>
+    <svg id="earth-js" class="ej-center" width="420" height="420"></svg>
+    <canvas id="three-js" class="ej-center"></canvas>
+    <script>
+        const g = earthjs({
+            rotate:[47.29637916005367, -2.050804868735837, 1.2794284579135258],
+            scale:120,
+        })
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.dropShadowSvg())
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.globeThreejs('../d/world.jpg'))
+        .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
+        .register(earthjs.plugins.flightLineThreejs('../d/flights2.json','../images/point3.png'))
+        g.mousePlugin.selectAll('#three-js');
+        g.flightLineThreejs.ready = function(err, csv) {
+            g.flightLineThreejs.data(csv, true, [30,100],55,1);
+        }
+        g.ready(function(){
+            g.create();
+        })
+    </script>
+</body>
+</html>
