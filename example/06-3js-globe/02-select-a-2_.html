@@ -19,10 +19,16 @@
     <script>
         var g = earthjs({scale:300})
         .register(earthjs.plugins.selectCountryMix())
-        .register(earthjs.plugins.globeThreejs('../d/world_c.png'));
+        .register(earthjs.plugins.globeThreejs('../d/world_c.png'))
+        .register(earthjs.plugins.countryTooltipCanvas('../d/world-110m-country-names.tsv'));
         g.ready(function(){
             g.create();
         })
+        g.countryTooltipCanvas.show = function(props, tooltip) {
+            const title = '<b>Country:</b>'+
+            Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+            return tooltip.html(title);
+        };
 
         var canvas = d3.selectAll('canvas').nodes();
         d3.select('#pan').on('input', function() {

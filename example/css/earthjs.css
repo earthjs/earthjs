@@ -87,6 +87,7 @@ body {
     display: none;
 }
 .input-area {
+    background-color: #b7b7b7;
     position: absolute;
     padding: 20px;
     z-index: 5;

@@ -9,8 +9,8 @@ export default worldUrl => {
         world:  null,
         land:   null,
         lakes:     {type: 'FeatureCollection', features:[]},
-        selected:  {type: 'FeatureCollection', features:[]},
         countries: {type: 'FeatureCollection', features:[]},
+        selected:  {type: 'FeatureCollection', features:[], multiColor: false},
     };
 
     function create() {
@@ -38,12 +38,23 @@ export default worldUrl => {
             }
             if (this.hoverCanvas && __.options.showSelectedCountry) {
                 if (_.selected.features.length>0) {
-                    this.canvasPlugin.render(function(context, path) {
-                        context.beginPath();
-                        path(_.selected);
-                        context.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.4)';
-                        context.fill();
-                    }, _.drawTo, _.options);
+                    if (!_.selected.multiColor) {
+                        this.canvasPlugin.render(function(context, path) {
+                            context.beginPath();
+                            path(_.selected);
+                            context.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.4)';
+                            context.fill();
+                        }, _.drawTo, _.options);
+                    } else {
+                        for (var scountry of _.selected.features) {
+                            this.canvasPlugin.render(function(context, path) {
+                                context.beginPath();
+                                path(scountry);
+                                context.fillStyle = scountry.color;
+                                context.fill();
+                            }, _.drawTo, _.options);
+                        }
+                    }
                 }
                 const {country} = this.hoverCanvas.states();
                 if (country && !_.selected.features.find(obj=>obj.id===country.id)) {
@@ -137,9 +148,10 @@ export default worldUrl => {
                 return _.countries.features;
             }
         },
-        selectedCountries(arr) {
+        selectedCountries(arr, multiColor=false) {
             if (arr) {
                 _.selected.features = arr;
+                _.selected = {type: 'FeatureCollection', features: arr, multiColor};
             } else {
                 return _.selected.features;
             }

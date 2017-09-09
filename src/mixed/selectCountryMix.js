@@ -37,7 +37,7 @@ export default (worldUrl='../d/world-110m.json') => {
             autorotate(event, country) {
                 if (!country) {
                     g.worldCanvas.style({});
-                    g.autorotatePlugin.start();
+                    // g.autorotatePlugin.start();
                     g.worldCanvas.selectedCountries([]);
                 }
             }
@@ -55,6 +55,23 @@ export default (worldUrl='../d/world-110m.json') => {
             const reg = g.worldCanvas.countries().filter(x=>arr.indexOf(x.id)>-1);
             g.worldCanvas.style({selected: 'rgba(255, 235, 0, 0.4)'});
             g.worldCanvas.selectedCountries(reg);
+            g.autorotatePlugin.stop();
+            if (centeroid) {
+                g.centerCanvas.go(centeroid);
+            }
+        },
+        multiRegion(mregion, centeroid) {
+            let reg = [];
+            const g = this;
+            for (var obj of mregion) {
+                const arr = g.worldCanvas.countries().filter(x=>{
+                    const bool = obj.countries.indexOf(x.id)>-1;
+                    if (bool) x.color = obj.color;
+                    return bool;
+                });
+                reg = reg.concat(arr);
+            }
+            g.worldCanvas.selectedCountries(reg, true);
             g.autorotatePlugin.stop();
             if (centeroid) {
                 g.centerCanvas.go(centeroid);

@@ -17,9 +17,57 @@
     </style>
 </head>
 <body>
-    <svg id="earth-js" width="1000" height="930"></svg>
+    <div class="input-area">
+        <button id="g7" href=''>[ G7 Countries ]</button>
+        <button id="b4" href=''>[ B4 Countries ]</button>
+        <button id="ap" href=''>[ APAC Countries ]</button>
+        <input id="pan" type="range" min="0" max="700" step="1" value="0"/>
+    </div>
+    <svg id="earth-js" width="930" height="930"></svg>
     <canvas id="three-js"></canvas>
     <canvas class="ej-canvas"></canvas>
-    <script type='text/javascript' src='02-country_select_.js'></script>
+    <script type="text/javascript">
+    const g = earthjs({scale:350})
+    .register(earthjs.plugins.dropShadowSvg())
+    .register(earthjs.plugins.selectCountryMix())
+    .register(earthjs.plugins.imageThreejs('../d/world.jpg'))
+    .register(earthjs.plugins.countryTooltipCanvas('../d/world-110m-country-names.tsv'));
+    g.mousePlugin.selectAll('#three-js');
+    g.ready(function(){
+        g.create();
+    })
+    g.countryTooltipCanvas.show = function(props, tooltip) {
+        const title = '<b>Country:</b><br>'+
+        Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+        return tooltip.html(title);
+    };
+
+    var canvas = d3.selectAll('canvas').nodes();
+    d3.select('#pan').on('input', function() {
+        canvas[0].style.left = (this.value)+'px';
+    })
+    var g7 = [  {color: 'yellow',countries: [250,826,276,380]},
+                {color: 'red',   countries: [392]},
+                {color: 'blue',  countries: [840,124]}];
+    d3.select('#g7').on('click', function(e) {
+        event.preventDefault();
+        g.selectCountryMix.multiRegion(g7, 246);
+    })
+    var b4 = [  {color: 'yellow',countries: [250,826,276,380]},
+                {color: 'blue',  countries: [372,620,724,56,528,616,213,40,703,642,348,440,428,233,246,752,203,208,300,100,191,705,196]}];
+    d3.select('#b4').on('click', function(e) {
+        event.preventDefault();
+        g.selectCountryMix.multiRegion(b4, 246);
+    })
+    var ap = [
+        {color: 'rgba(255,255,0,0.5)',countries: [360,458,608,96,764,626,104,116,704,418]},
+        {color: 'rgba(255,0,0,0.5)'  ,countries: [156,392,408,410,496,158]},
+        {color: 'rgba(0,0,255,0.5)'  ,countries: [356,144,50,64,524,586]},
+        {color: 'rgba(0,255,255,0.5)',countries: [36,540,548,554,598,90,242]}];
+    d3.select('#ap').on('click', function(e) {
+        event.preventDefault();
+        g.selectCountryMix.multiRegion(ap, 360);
+    })
+    </script>
 </body>
 </html>

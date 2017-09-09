@@ -1,5 +1,6 @@
 const g = earthjs({scale:350})
 .register(earthjs.plugins.mousePlugin())
+.register(earthjs.plugins.clickCanvas())
 .register(earthjs.plugins.threejsPlugin())
 .register(earthjs.plugins.autorotatePlugin())
 .register(earthjs.plugins.dropShadowSvg())
@@ -7,6 +8,10 @@ const g = earthjs({scale:350})
 .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
 .register(earthjs.plugins.flightLineThreejs('../d/flights2.json','../images/point3.png'))
 g.mousePlugin.selectAll('#three-js');
+g.worldThreejs.ready = function(err, csv) {
+    g.worldThreejs.data(csv);
+    g.clickCanvas.data(csv);
+}
 g.flightLineThreejs.ready = function(err, csv) {
     g.flightLineThreejs.data(csv, true, [30,100],100,1);
 }

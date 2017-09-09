@@ -3260,8 +3260,8 @@ var worldCanvas = (function (worldUrl) {
         world: null,
         land: null,
         lakes: { type: 'FeatureCollection', features: [] },
-        selected: { type: 'FeatureCollection', features: [] },
-        countries: { type: 'FeatureCollection', features: [] }
+        countries: { type: 'FeatureCollection', features: [] },
+        selected: { type: 'FeatureCollection', features: [], multiColor: false }
     };
 
     function create() {
@@ -3289,12 +3289,44 @@ var worldCanvas = (function (worldUrl) {
             }
             if (this.hoverCanvas && __.options.showSelectedCountry) {
                 if (_.selected.features.length > 0) {
-                    this.canvasPlugin.render(function (context, path) {
-                        context.beginPath();
-                        path(_.selected);
-                        context.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.4)';
-                        context.fill();
-                    }, _.drawTo, _.options);
+                    if (!_.selected.multiColor) {
+                        this.canvasPlugin.render(function (context, path) {
+                            context.beginPath();
+                            path(_.selected);
+                            context.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.4)';
+                            context.fill();
+                        }, _.drawTo, _.options);
+                    } else {
+                        var _iteratorNormalCompletion = true;
+                        var _didIteratorError = false;
+                        var _iteratorError = undefined;
+
+                        try {
+                            for (var _iterator = _.selected.features[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                var scountry = _step.value;
+
+                                this.canvasPlugin.render(function (context, path) {
+                                    context.beginPath();
+                                    path(scountry);
+                                    context.fillStyle = scountry.color;
+                                    context.fill();
+                                }, _.drawTo, _.options);
+                            }
+                        } catch (err) {
+                            _didIteratorError = true;
+                            _iteratorError = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion && _iterator.return) {
+                                    _iterator.return();
+                                }
+                            } finally {
+                                if (_didIteratorError) {
+                                    throw _iteratorError;
+                                }
+                            }
+                        }
+                    }
                 }
 
                 var _hoverCanvas$states = this.hoverCanvas.states(),
@@ -3400,8 +3432,11 @@ var worldCanvas = (function (worldUrl) {
             }
         },
         selectedCountries: function selectedCountries(arr) {
+            var multiColor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
             if (arr) {
                 _.selected.features = arr;
+                _.selected = { type: 'FeatureCollection', features: arr, multiColor: multiColor };
             } else {
                 return _.selected.features;
             }
@@ -6197,7 +6232,7 @@ var selectCountryMix = (function () {
             autorotate: function autorotate(event, country) {
                 if (!country) {
                     g.worldCanvas.style({});
-                    g.autorotatePlugin.start();
+                    // g.autorotatePlugin.start();
                     g.worldCanvas.selectedCountries([]);
                 }
             }
@@ -6217,6 +6252,45 @@ var selectCountryMix = (function () {
             });
             g.worldCanvas.style({ selected: 'rgba(255, 235, 0, 0.4)' });
             g.worldCanvas.selectedCountries(reg);
+            g.autorotatePlugin.stop();
+            if (centeroid) {
+                g.centerCanvas.go(centeroid);
+            }
+        },
+        multiRegion: function multiRegion(mregion, centeroid) {
+            var reg = [];
+            var g = this;
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = mregion[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var obj = _step.value;
+
+                    var arr = g.worldCanvas.countries().filter(function (x) {
+                        var bool = obj.countries.indexOf(x.id) > -1;
+                        if (bool) x.color = obj.color;
+                        return bool;
+                    });
+                    reg = reg.concat(arr);
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            g.worldCanvas.selectedCountries(reg, true);
             g.autorotatePlugin.stop();
             if (centeroid) {
                 g.centerCanvas.go(centeroid);
