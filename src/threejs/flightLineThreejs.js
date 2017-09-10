@@ -14,7 +14,7 @@ export default (jsonUrl, imgUrl, height=150) => {
         onHover: {},
         onHoverVals: [],
     };
-    const lineScale = d3.scaleLinear().domain([30,2500]).range([0.001, 0.02]);
+    const lineScale = d3.scaleLinear().domain([30,2500]).range([0.001, 0.01]);
     const PI180 = Math.PI / 180.0;
 
     let colorRange = [d3.rgb('#ff0000'),d3.rgb("#aaffff")];

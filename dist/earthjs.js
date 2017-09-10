@@ -4830,7 +4830,7 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
         onHover: {},
         onHoverVals: []
     };
-    var lineScale = d3.scaleLinear().domain([30, 2500]).range([0.001, 0.02]);
+    var lineScale = d3.scaleLinear().domain([30, 2500]).range([0.001, 0.01]);
     var PI180 = Math.PI / 180.0;
 
     var colorRange = [d3.rgb('#ff0000'), d3.rgb("#aaffff")];

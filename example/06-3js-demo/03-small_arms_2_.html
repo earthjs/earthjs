@@ -4,6 +4,7 @@
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
     <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src='../js/THREE.MeshLine.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
     <style>
@@ -36,7 +37,8 @@
 </head>
 <body>
     <div class="input-area">
-        <input id="pan" type="range" min="0" max="700" step="1" value="0"/>
+        <input id="pan"  type="range" min="0" max="700" step="1" value="0"/>
+        <input id="year" type="range" min="1992" max="2014" step="1" value="2014"/>
     </div>
     <div class="top-ten">
         <h1 id="title"></h1>
@@ -193,7 +195,7 @@
         const data= g.worldCanvas.data();
         const countries = topojson.feature(data, data.objects.countries).features;
         g.worldCanvas.countries(countries.filter(x=>arr.indexOf(x.id)>-1));
-        g.flightLineThreejs.data(csv, true, [40,150],100,1);
+        g.flightLineThreejs.data(csv, true, [80,150],100,1);
         g.smallArmsJson.topTen();
         const cl = g.countryTooltipCanvas.data();
         const xd = cl.find(t=> t.cid===cc);
@@ -225,6 +227,12 @@
     })
 
 
+    var canvas = d3.selectAll('canvas').nodes();
+    d3.select('#year').on('input', function() {
+        _.t = +this.value;
+        reload();
+        g.flightLineThreejs.reload();
+    })
     var canvas = d3.selectAll('canvas').nodes();
     d3.select('#pan').on('input', function() {
         canvas[0].style.left = (this.value)+'px';
