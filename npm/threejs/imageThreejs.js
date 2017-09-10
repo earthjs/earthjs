@@ -14,7 +14,6 @@ export default function (imgUrl) {
                 var material = new THREE.MeshBasicMaterial({map: map});
                 _.sphereObject = new THREE.Mesh(geometry, material);
                 tj.addGroup(_.sphereObject);
-                tj.rotate();
             });
         } else {
             tj.addGroup(_.sphereObject);

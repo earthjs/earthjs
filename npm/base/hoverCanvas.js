@@ -15,7 +15,6 @@ export default function () {
     }
 
     function init() {
-        this._.options.showSelectedCountry = false;
         if (this.worldCanvas) {
             var world = this.worldCanvas.data();
             if (world) {
@@ -91,6 +90,8 @@ export default function () {
         onInit: function onInit(me) {
             _.me = me;
             _.svg = this._.svg;
+            // need to be call once as init() used in 2 places
+            this._.options.showSelectedCountry = false;
             init.call(this);
         },
         selectAll: function selectAll(q) {

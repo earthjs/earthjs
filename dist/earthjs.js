@@ -3255,7 +3255,6 @@ var worldCanvas = (function (worldUrl) {
     var _ = {
         style: {},
         options: {},
-        landColor: null,
         drawTo: null,
         world: null,
         land: null,
@@ -3350,7 +3349,7 @@ var worldCanvas = (function (worldUrl) {
         this.canvasPlugin.render(function (context, path) {
             context.beginPath();
             path(_.land);
-            context.fillStyle = _.style.land || _.landColor;
+            context.fillStyle = _.style.land || 'rgba(2, 20, 37,0.8)';
             context.fill();
         }, _.drawTo, _.options);
     }
@@ -3362,7 +3361,7 @@ var worldCanvas = (function (worldUrl) {
             context.beginPath();
             path(_.countries);
             if (!border) {
-                context.fillStyle = _.style.countries || _.style.land || _.landColor;
+                context.fillStyle = _.style.countries || 'rgba(2, 20, 37,0.8)';
                 context.fill();
             }
             context.lineWidth = 0.1;
@@ -3385,14 +3384,6 @@ var worldCanvas = (function (worldUrl) {
         urls: worldUrl && [worldUrl],
         onReady: function onReady(err, data) {
             _.me.data(data);
-            Object.defineProperty(this._.options, 'landColor', {
-                get: function get() {
-                    return _.landColor;
-                },
-                set: function set(x) {
-                    _.landColor = x;
-                }
-            });
         },
         onInit: function onInit(me) {
             _.me = me;
@@ -3402,7 +3393,6 @@ var worldCanvas = (function (worldUrl) {
             options.showBorder = false;
             options.showCountries = true;
             options.transparentLand = false;
-            options.landColor = 'rgba(117, 87, 57, 0.6)';
         },
         onCreate: function onCreate() {
             var _this = this;
@@ -4829,6 +4819,7 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
 
     /*eslint no-console: 0 */
     var _ = {
+        data: [],
         sphereObject: null,
         track_lines_object: null,
         track_points_object: null,
@@ -6210,7 +6201,8 @@ var selectCountryMix = (function () {
         var g = this.register(earthjs.plugins.mousePlugin()).register(earthjs.plugins.hoverCanvas()).register(earthjs.plugins.clickCanvas()).register(earthjs.plugins.centerCanvas()).register(earthjs.plugins.canvasPlugin()).register(earthjs.plugins.countryCanvas()).register(earthjs.plugins.autorotatePlugin()).register(earthjs.plugins.worldCanvas(worldUrl)).register(earthjs.plugins.threejsPlugin());
         g.canvasPlugin.selectAll('.ej-canvas');
         g._.options.showSelectedCountry = true;
-        g._.options.showBorder = true;
+        g._.options.showBorder = false;
+        g.worldCanvas.style({ countries: 'rgba(220,91,52,0.2)' });
         g.worldCanvas.ready = function (err, json) {
             g.countryCanvas.data(json);
             g.worldCanvas.data(json);
@@ -6219,7 +6211,6 @@ var selectCountryMix = (function () {
         };
         g.centerCanvas.focused(function (event, country) {
             g.autorotatePlugin.stop();
-            g.worldCanvas.style({});
             if (event.metaKey) {
                 var arr = g.worldCanvas.selectedCountries().concat(country);
                 g.worldCanvas.selectedCountries(arr);
@@ -6227,15 +6218,6 @@ var selectCountryMix = (function () {
                 g.worldCanvas.selectedCountries([country]);
             }
             console.log(country);
-        });
-        g.clickCanvas.onCountry({
-            autorotate: function autorotate(event, country) {
-                if (!country) {
-                    g.worldCanvas.style({});
-                    // g.autorotatePlugin.start();
-                    g.worldCanvas.selectedCountries([]);
-                }
-            }
         });
     }
 
@@ -6250,7 +6232,6 @@ var selectCountryMix = (function () {
             var reg = g.worldCanvas.countries().filter(function (x) {
                 return arr.indexOf(x.id) > -1;
             });
-            g.worldCanvas.style({ selected: 'rgba(255, 235, 0, 0.4)' });
             g.worldCanvas.selectedCountries(reg);
             g.autorotatePlugin.stop();
             if (centeroid) {

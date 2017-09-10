@@ -4,7 +4,7 @@
   "description": "D3 Earth JS using SVG, Canvas & THREE js, build with some plugins.",
   "main": "core.js",
   "scripts": {
-    "npm": "rm -rf npm && buble src --no modules -o npm",
+    "npm": "rm -rf npm && buble src --no  modules --yes dangerousForOf -o npm",
     "test": "browserify test/*-test.js | tape-run",
     "pre-testem": "browserify test/_init_.js > test/bundle.js",
     "build": "rollup -c && uglifyjs dist/earthjs.js -c -m -o dist/earthjs.min.js",

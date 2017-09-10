@@ -9,11 +9,13 @@ export default function (worldUrl) {
         world:  null,
         land:   null,
         lakes:     {type: 'FeatureCollection', features:[]},
-        selected:  {type: 'FeatureCollection', features:[]},
         countries: {type: 'FeatureCollection', features:[]},
+        selected:  {type: 'FeatureCollection', features:[], multiColor: false},
     };
 
     function create() {
+        var this$1 = this;
+
         var __ = this._;
         if (_.world) {
             if (__.options.transparent || __.options.transparentLand) {
@@ -26,7 +28,7 @@ export default function (worldUrl) {
             }
             if (__.options.showLand) {
                 if (__.options.showCountries || _.me.showCountries) {
-                    canvasAddCountries.call(this);
+                    canvasAddCountries.call(this, __.options.showBorder);
                 } else  {
                     canvasAddWorld.call(this);
                 }
@@ -38,12 +40,25 @@ export default function (worldUrl) {
             }
             if (this.hoverCanvas && __.options.showSelectedCountry) {
                 if (_.selected.features.length>0) {
-                    this.canvasPlugin.render(function(context, path) {
-                        context.beginPath();
-                        path(_.selected);
-                        context.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.4)';
-                        context.fill();
-                    }, _.drawTo, _.options);
+                    if (!_.selected.multiColor) {
+                        this.canvasPlugin.render(function(context, path) {
+                            context.beginPath();
+                            path(_.selected);
+                            context.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.4)';
+                            context.fill();
+                        }, _.drawTo, _.options);
+                    } else {
+                        for (var i = 0, list = _.selected.features; i < list.length; i += 1) {
+                            var scountry = list[i];
+
+                            this$1.canvasPlugin.render(function(context, path) {
+                                context.beginPath();
+                                path(scountry);
+                                context.fillStyle = scountry.color;
+                                context.fill();
+                            }, _.drawTo, _.options);
+                        }
+                    }
                 }
                 var ref = this.hoverCanvas.states();
                 var country = ref.country;
@@ -142,9 +157,12 @@ export default function (worldUrl) {
                 return _.countries.features;
             }
         },
-        selectedCountries: function selectedCountries(arr) {
+        selectedCountries: function selectedCountries(arr, multiColor) {
+            if ( multiColor === void 0 ) multiColor=false;
+
             if (arr) {
                 _.selected.features = arr;
+                _.selected = {type: 'FeatureCollection', features: arr, multiColor: multiColor};
             } else {
                 return _.selected.features;
             }

@@ -11,10 +11,10 @@ export default function (worldUrl) {
         .register(earthjs.plugins.clickCanvas())
         .register(earthjs.plugins.centerCanvas())
         .register(earthjs.plugins.canvasPlugin())
-        .register(earthjs.plugins.dropShadowSvg())
         .register(earthjs.plugins.countryCanvas())
         .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.worldCanvas(worldUrl));
+        .register(earthjs.plugins.worldCanvas(worldUrl))
+        .register(earthjs.plugins.threejsPlugin());
         g.canvasPlugin.selectAll('.ej-canvas');
         g._.options.showSelectedCountry = true;
         g._.options.showBorder = true;
@@ -39,7 +39,7 @@ export default function (worldUrl) {
             autorotate: function autorotate(event, country) {
                 if (!country) {
                     g.worldCanvas.style({});
-                    g.autorotatePlugin.start();
+                    // g.autorotatePlugin.start();
                     g.worldCanvas.selectedCountries([]);
                 }
             }
@@ -57,6 +57,25 @@ export default function (worldUrl) {
             var reg = g.worldCanvas.countries().filter(function (x){ return arr.indexOf(x.id)>-1; });
             g.worldCanvas.style({selected: 'rgba(255, 235, 0, 0.4)'});
             g.worldCanvas.selectedCountries(reg);
+            g.autorotatePlugin.stop();
+            if (centeroid) {
+                g.centerCanvas.go(centeroid);
+            }
+        },
+        multiRegion: function multiRegion(mregion, centeroid) {
+            var reg = [];
+            var g = this;
+            for (var i = 0, list = mregion; i < list.length; i += 1) {
+                var obj = list[i];
+
+                var arr = g.worldCanvas.countries().filter(function (x){
+                    var bool = obj.countries.indexOf(x.id)>-1;
+                    if (bool) { x.color = obj.color; }
+                    return bool;
+                });
+                reg = reg.concat(arr);
+            }
+            g.worldCanvas.selectedCountries(reg, true);
             g.autorotatePlugin.stop();
             if (centeroid) {
                 g.centerCanvas.go(centeroid);

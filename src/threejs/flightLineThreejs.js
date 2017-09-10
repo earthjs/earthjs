@@ -3,6 +3,7 @@
 export default (jsonUrl, imgUrl, height=150) => {
     /*eslint no-console: 0 */
     const _ = {
+        data: [],
         sphereObject: null,
         track_lines_object: null,
         track_points_object: null,

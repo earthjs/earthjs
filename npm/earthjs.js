@@ -173,9 +173,11 @@ var earthjs = function (options) {
                     interval.call(globe, timestamp);
                     if ((timestamp - start2) > intervalTicker+30) {
                         start2 = timestamp;
-                        earths.forEach(function(p) {
+                        for (var i = 0, list = earths; i < list.length; i += 1) {
+                            var p = list[i];
+
                             p._.interval.call(p, timestamp);
-                        });
+                        }
                     }
                 }
             }
@@ -201,9 +203,11 @@ var earthjs = function (options) {
     }
 
     __.interval = function(t) {
-        _.onIntervalVals.forEach(function(fn) {
+        for (var i = 0, list = _.onIntervalVals; i < list.length; i += 1) {
+            var fn = list[i];
+
             fn.call(globe, t);
-        });
+        }
         return globe;
     }
 
@@ -214,17 +218,21 @@ var earthjs = function (options) {
                 _.onRefresh[fn].call(globe);
             });
         } else {
-            _.onRefreshVals.forEach(function(fn) {
+            for (var i = 0, list = _.onRefreshVals; i < list.length; i += 1) {
+                var fn = list[i];
+
                 fn.call(globe);
-            });
+            }
         }
         return globe;
     }
 
     __.resize = function() {
-        _.onResizeVals.forEach(function(fn) {
+        for (var i = 0, list = _.onResizeVals; i < list.length; i += 1) {
+            var fn = list[i];
+
             fn.call(globe);
-        });
+        }
         return globe;
     }
 

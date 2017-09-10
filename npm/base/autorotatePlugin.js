@@ -56,14 +56,21 @@ export default function (degPerSec) {
         speed: function speed(degPerSec) {
             _.degree = degPerSec/1000;
         },
+        sync: function sync(arr) {
+            _.sync = arr;
+        },
         start: function start() {
             this._.options.spin = true;
         },
         stop: function stop() {
             this._.options.spin = false;
         },
-        sync: function sync(arr) {
-            _.sync = arr;
+        spin: function spin(rotate) {
+            if (rotate!==undefined) {
+                this._.options.spin = rotate;
+            } else {
+                return this._.options.spin;
+            }
         }
     };
 }

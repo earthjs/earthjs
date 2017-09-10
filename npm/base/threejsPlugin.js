@@ -71,7 +71,9 @@ export default function (threejs) {
         renderThree.call(this);
     }
 
-    function rotate(obj) {
+    function rotate(obj, direct) {
+        if ( direct === void 0 ) direct=false;
+
         if (!obj) {
             obj = _.group;
         }
@@ -81,7 +83,7 @@ export default function (threejs) {
         var q1 = __.versor(rt);
         var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
         obj.setRotationFromQuaternion(q2);
-        renderThree.call(this);
+        renderThree.call(this, direct);
     }
 
     var renderThreeX = null;
@@ -111,7 +113,7 @@ export default function (threejs) {
             renderThree.call(this, false, rotate);
         },
         onRefresh: function onRefresh() {
-            rotate.call(this);
+            rotate.call(this, null, true);
         },
         onResize: function onResize() {
             scale.call(this);

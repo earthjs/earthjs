@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+    <style>
+    body {
+        background: #393c54;
+        background-image: url("../d/tiles.png");
+    }
+    #three-js {
+        pointer-events: all;
+    }
+    </style>
+</head>
+<body>
+    <svg id="earth-js" width="1000" height="930"></svg>
+    <canvas id="three-js"></canvas>
+    <canvas class="ej-canvas"></canvas>
+    <script type='text/javascript'>
+
+    function smallArmsJson(
+        json1='../d/country_iso3166.json',
+        json2='../d/country_lat_lon.json',
+        json3='../d/small-arms.json',
+        json4='../d/country_nm_to_id.json') {
+        /*eslint no-console: 0 */
+        const _ = {
+            countryIso: null,
+            countryLLg: null,
+            dataYearly: null,
+            countryNmToId: null
+        };
+        window._ = _;
+        return {
+            name: 'smallArmsJson',
+            urls: [json1,json2,json3, json4],
+            onReady(err, countryIso, countryLLg, dataYearly, countryNmToId) {
+                _.me.allData({countryIso, countryLLg, dataYearly, countryNmToId});
+            },
+            onInit(me) {
+                _.me = me;
+            },
+            allData(all) {
+                if (all) {
+                    _.countryIso   = all.countryIso;
+                    _.countryLLg   = all.countryLLg;
+                    _.dataYearly   = all.dataYearly;
+                    _.countryNmToId= all.countryNmToId;
+                    _.t = all.dataYearly.map(x=> x.t).sort().pop();
+
+                } else {
+                    const  {countryIso, countryLLg, dataYearly, countryNmToId} = _;
+                    return {countryIso, countryLLg, dataYearly, countryNmToId};
+                }
+            },
+            getData(cc,type='all',t=_.t) {
+                _.total = [0,0];
+                _.sum_i = {};
+                _.sum_e = {};
+                _.all_i = [];
+                _.all_e = [];
+                if (cc) {
+                    _.cc = cc;
+                }
+                const ar = [];
+                const ll = _.countryLLg.countries;
+                const f1 = _.dataYearly.filter(x=> x.t===t)[0];
+                f1.data.forEach(x=> {
+                    const te = (x.e===_.cc);
+                    const ti = (x.i===_.cc);
+                    if (te || ti) {
+                        const key = x.e+x.i;
+                        if (te) {
+                            if (_.sum_e[key]===undefined) {
+                                _.sum_e[key] = x;_.sum_e[key].v = 0;
+                            }
+                            _.sum_e[key].v = _.sum_e[key].v + x.v;
+                            _.total[0] = _.total[0] + x.v; //ttl export
+                            _.all_e.push(x);
+                        } else {
+                            if (_.sum_i[key]===undefined) {
+                                _.sum_i[key] = x;_.sum_i[key].v = 0;
+                            }
+                            _.sum_i[key].v = _.sum_i[key].v + x.v;
+                            _.total[1] = _.total[1] + x.v; //ttl import
+                            _.all_i.push(x);
+                        }
+                    }
+                });
+                _.sum_e2 = Object.keys(_.sum_e).map(key=> _.sum_e[key]).filter(x=> x.v>0);
+                _.sum_i2 = Object.keys(_.sum_i).map(key=> _.sum_i[key]).filter(x=> x.v>0);
+                _.sum_e2.sort((a,b)=> b.v-a.v).forEach(x=> {
+                    const s = ll[x.e];
+                    const t = ll[x.i];
+                    if (s && t) ar.push([s.lat, s.lon, t.lat, t.lon, x.v]);
+                });
+                _.sum_i2.sort((a,b)=> b.v-a.v).forEach(x=> {
+                    const s = ll[x.e];
+                    const t = ll[x.i];
+                    if (s && t) ar.push([s.lat, s.lon, t.lat, t.lon, x.v]);
+                });
+                _.cids = _.sum_e2.map(x=> x.i).concat(
+                         _.sum_i2.map(x=> x.e)).filter(x=> x!==_.cc && x);
+                _.cids = [...new Set(_.cids)];
+                return ar;
+            },
+            getCountryId(cname) {
+                return _.countryNmToId[cname.toUpperCase()];
+            },
+            ids() {
+                const cl=this.countryTooltipCanvas.data();
+                return _.cids.map(x=> {
+                    const lx = cl.find(t=> t.cid===x);
+                    return lx && lx.id;
+                })
+            }
+        }
+    }
+
+
+    const g = earthjs({scale:350})
+    .register(smallArmsJson())
+    .register(earthjs.plugins.dropShadowSvg())
+    .register(earthjs.plugins.selectCountryMix())
+    .register(earthjs.plugins.imageThreejs('../d/world5.jpg'))
+    .register(earthjs.plugins.flightLineThreejs(null,'../images/point3.png'))
+    .register(earthjs.plugins.countryTooltipCanvas('../d/world-110m-country-names.json'));
+    g.mousePlugin.selectAll('#three-js');
+    g.ready(function(){
+        const csv = g.smallArmsJson.getData('SG');
+        const arr = g.smallArmsJson.ids();
+        const data= g.worldCanvas.data();
+        const countries = topojson.feature(data, data.objects.countries).features;
+        g.worldCanvas.countries(countries.filter(x=>arr.indexOf(x.id)>-1));
+        g.flightLineThreejs.data(csv, true, [30,100],100,1);
+        g.create();
+    })
+    g.clickCanvas.onCountry({
+        chgCountry(event, country) {
+            if (!country) return;
+            const countries = g.countryTooltipCanvas.data();
+            const obj = countries.filter(x=> x.id===country.id)[0];
+            if (obj) {
+                const cc = g.smallArmsJson.getCountryId(obj.name);
+                if (cc) {
+                    const csv = g.smallArmsJson.getData(cc);
+                    const arr = g.smallArmsJson.ids();
+                    const data= g.worldCanvas.data();
+                    const countries = topojson.feature(data, data.objects.countries).features;
+                    g.worldCanvas.countries(countries.filter(x=>arr.indexOf(x.id)>-1));
+                    g.flightLineThreejs.data(csv, true, [30,100],100,1);
+                    g.flightLineThreejs.reload();
+                }
+            }
+            console.log(obj, name);
+        }
+    })
+    </script>
+</body>
+</html>

@@ -4,7 +4,6 @@ export default worldUrl => {
     const _ = {
         style:   {},
         options: {},
-        landColor: null,
         drawTo: null,
         world:  null,
         land:   null,
@@ -73,7 +72,7 @@ export default worldUrl => {
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
             path(_.land);
-            context.fillStyle = _.style.land || _.landColor;
+            context.fillStyle = _.style.land || 'rgba(2, 20, 37,0.8)';
             context.fill();
         }, _.drawTo, _.options);
     }
@@ -83,7 +82,7 @@ export default worldUrl => {
             context.beginPath();
             path(_.countries);
             if (!border) {
-                context.fillStyle =  _.style.countries || _.style.land || _.landColor;
+                context.fillStyle =  _.style.countries || 'rgba(2, 20, 37,0.8)';
                 context.fill();
             }
             context.lineWidth = 0.1;
@@ -106,12 +105,6 @@ export default worldUrl => {
         urls: worldUrl && [worldUrl],
         onReady(err, data) {
             _.me.data(data);
-            Object.defineProperty(this._.options, 'landColor', {
-                get: () => _.landColor,
-                set: (x) => {
-                    _.landColor = x;
-                }
-            });
         },
         onInit(me) {
             _.me = me;
@@ -121,7 +114,6 @@ export default worldUrl => {
             options.showBorder = false;
             options.showCountries = true;
             options.transparentLand = false;
-            options.landColor = 'rgba(117, 87, 57, 0.6)';
         },
         onCreate() {
             if (this.worldJson && !_.world) {
