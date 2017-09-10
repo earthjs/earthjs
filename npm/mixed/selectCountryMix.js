@@ -17,7 +17,8 @@ export default function (worldUrl) {
         .register(earthjs.plugins.threejsPlugin());
         g.canvasPlugin.selectAll('.ej-canvas');
         g._.options.showSelectedCountry = true;
-        g._.options.showBorder = true;
+        g._.options.showBorder = false;
+        g.worldCanvas.style({countries: 'rgba(220,91,52,0.2)'});
         g.worldCanvas.ready = function(err, json) {
             g.countryCanvas.data(json);
             g.worldCanvas.data(json);
@@ -26,7 +27,6 @@ export default function (worldUrl) {
         };
         g.centerCanvas.focused(function(event, country) {
             g.autorotatePlugin.stop();
-            g.worldCanvas.style({});
             if (event.metaKey) {
                 var arr = g.worldCanvas.selectedCountries().concat(country);
                 g.worldCanvas.selectedCountries(arr);
@@ -34,15 +34,6 @@ export default function (worldUrl) {
                 g.worldCanvas.selectedCountries([country]);
             }
             console.log(country);
-        })
-        g.clickCanvas.onCountry({
-            autorotate: function autorotate(event, country) {
-                if (!country) {
-                    g.worldCanvas.style({});
-                    // g.autorotatePlugin.start();
-                    g.worldCanvas.selectedCountries([]);
-                }
-            }
         })
     }
 
@@ -55,7 +46,6 @@ export default function (worldUrl) {
         region: function region(arr, centeroid) {
             var g = this;
             var reg = g.worldCanvas.countries().filter(function (x){ return arr.indexOf(x.id)>-1; });
-            g.worldCanvas.style({selected: 'rgba(255, 235, 0, 0.4)'});
             g.worldCanvas.selectedCountries(reg);
             g.autorotatePlugin.stop();
             if (centeroid) {

@@ -5,6 +5,7 @@ export default function (jsonUrl, imgUrl, height) {
 
     /*eslint no-console: 0 */
     var _ = {
+        data: [],
         sphereObject: null,
         track_lines_object: null,
         track_points_object: null,

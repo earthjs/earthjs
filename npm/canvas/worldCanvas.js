@@ -4,7 +4,6 @@ export default function (worldUrl) {
     var _ = {
         style:   {},
         options: {},
-        landColor: null,
         drawTo: null,
         world:  null,
         land:   null,
@@ -78,7 +77,7 @@ export default function (worldUrl) {
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
             path(_.land);
-            context.fillStyle = _.style.land || _.landColor;
+            context.fillStyle = _.style.land || 'rgba(2, 20, 37,0.8)';
             context.fill();
         }, _.drawTo, _.options);
     }
@@ -90,7 +89,7 @@ export default function (worldUrl) {
             context.beginPath();
             path(_.countries);
             if (!border) {
-                context.fillStyle =  _.style.countries || _.style.land || _.landColor;
+                context.fillStyle =  _.style.countries || 'rgba(2, 20, 37,0.8)';
                 context.fill();
             }
             context.lineWidth = 0.1;
@@ -113,12 +112,6 @@ export default function (worldUrl) {
         urls: worldUrl && [worldUrl],
         onReady: function onReady(err, data) {
             _.me.data(data);
-            Object.defineProperty(this._.options, 'landColor', {
-                get: function () { return _.landColor; },
-                set: function (x) {
-                    _.landColor = x;
-                }
-            });
         },
         onInit: function onInit(me) {
             _.me = me;
@@ -128,7 +121,6 @@ export default function (worldUrl) {
             options.showBorder = false;
             options.showCountries = true;
             options.transparentLand = false;
-            options.landColor = 'rgba(117, 87, 57, 0.6)';
         },
         onCreate: function onCreate() {
             var this$1 = this;

@@ -868,5 +868,10 @@
     "id": 716,
     "cid": "ZW",
     "name": "Zimbabwe"
+  },
+  {
+      "id": -1,
+      "cid": "SG",
+      "name": "Singapore"
   }
 ]
