@@ -80,7 +80,7 @@ var earthjs$2 = function earthjs() {
         selector: '#earth-js',
         rotate: [130, -33, -11],
         transparent: false,
-        margin: 0
+        padding: 0
     }, options);
     var _ = {
         onCreate: {},
@@ -396,11 +396,11 @@ var earthjs$2 = function earthjs() {
             scale = _$options.scale,
             width = _$options.width,
             height = _$options.height,
-            margin = _$options.margin;
+            padding = _$options.padding;
 
         if (!scale) {
             var mins = d3.min([width, height]);
-            scale = mins / 2 - margin;
+            scale = mins / 2 - padding;
         }
         return d3.geoOrthographic().rotate(__.options.rotate).translate(__.center).precision(0.1).clipAngle(90).scale(scale);
     };

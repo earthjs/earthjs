@@ -7,6 +7,7 @@
         .e-container {
             display: inline-block;
             position: relative;
+            margin-top: -50px;
             width: 700px;
             height: 500px;
         }
@@ -30,7 +31,7 @@
         <canvas class="ej-canvas"></canvas>
     </div>
     <script>
-        const g = earthjs({selector:'.ej-svg', margin:50})
+        const g = earthjs({selector:'.ej-svg', padding:50})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.autorotatePlugin())

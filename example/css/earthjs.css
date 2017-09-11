@@ -1,5 +1,5 @@
 body {
-    margin: 0;
+    padding: 0;
 }
 #earth-js, #three-js, .ej-svg, .ej-canvas, .top {
     position: absolute;

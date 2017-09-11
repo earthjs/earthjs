@@ -8,7 +8,7 @@ const earthjs = (options={}) => {
         selector: '#earth-js',
         rotate: [130,-33,-11],
         transparent: false,
-        margin: 0
+        padding: 0
     }, options);
     const _ = {
         onCreate: {},
@@ -232,10 +232,10 @@ const earthjs = (options={}) => {
         if (typeof(r)==='number') {
             __.options.rotate = [r,-33,-11];
         }
-        let {scale, width, height, margin} = __.options;
+        let {scale, width, height, padding} = __.options;
         if (!scale) {
             const mins = d3.min([width, height]);
-            scale =  mins / 2 - margin;
+            scale =  mins / 2 - padding;
         }
         return d3.geoOrthographic()
             .rotate(__.options.rotate)
