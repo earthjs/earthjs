@@ -8,7 +8,7 @@
 <body>
     <svg id="earth-js"></svg>
     <script>
-        const g = earthjs({transparent:true});
+        const g = earthjs({transparent:true,margin:50});
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.autorotatePlugin());
         g.register(earthjs.plugins.graticuleSvg());

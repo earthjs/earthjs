@@ -79,7 +79,8 @@ var earthjs$2 = function earthjs() {
     options = Object.assign({
         selector: '#earth-js',
         rotate: [130, -33, -11],
-        transparent: false
+        transparent: false,
+        margin: 0
     }, options);
     var _ = {
         onCreate: {},
@@ -106,8 +107,8 @@ var earthjs$2 = function earthjs() {
     };
     var drag = false;
     var svg = d3.selectAll(options.selector);
-    var width = svg.attr('width'),
-        height = svg.attr('height');
+    var width = +svg.attr('width'),
+        height = +svg.attr('height');
     if (!width || !height) {
         width = options.width || 700;
         height = options.height || 500;
@@ -391,10 +392,15 @@ var earthjs$2 = function earthjs() {
         if (typeof r === 'number') {
             __.options.rotate = [r, -33, -11];
         }
-        var scale = __.options.scale;
+        var _$options = __.options,
+            scale = _$options.scale,
+            width = _$options.width,
+            height = _$options.height,
+            margin = _$options.margin;
 
         if (!scale) {
-            scale = __.options.width / 3.5;
+            var mins = d3.min([width, height]);
+            scale = mins / 2 - margin;
         }
         return d3.geoOrthographic().rotate(__.options.rotate).translate(__.center).precision(0.1).clipAngle(90).scale(scale);
     };
@@ -5864,9 +5870,10 @@ var world3d = (function () {
     }
 
     function init() {
+        var r = this._.proj.scale() + 5;
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
-        _.sphereObject.scale.set(205, 205, 205);
+        _.sphereObject.scale.set(r, r, r);
         makeEnvMapMaterial(landUrl, function (material) {
             _.material = material;
             if (_.world && !_.loaded) {

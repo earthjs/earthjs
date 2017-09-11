@@ -14,9 +14,10 @@ export default (worldUrl='../d/world_geometry.json', landUrl='../d/gold.jpg', rt
     }
 
     function init() {
+        const r = this._.proj.scale()+5;
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
-        _.sphereObject.scale.set(205,205,205);
+        _.sphereObject.scale.set(r,r,r);
         makeEnvMapMaterial(landUrl, function(material) {
             _.material = material;
             if (_.world && !_.loaded) {

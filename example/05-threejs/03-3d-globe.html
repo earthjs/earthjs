@@ -12,20 +12,26 @@
     <canvas id="three-js"></canvas>
     <canvas class="ej-canvas"></canvas>
     <script>
-        const g = earthjs()
+        const g = earthjs({margin:30})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.oceanThreejs())
-        .register(earthjs.plugins.graticuleThreejs())
+        // .register(earthjs.plugins.graticuleThreejs())
         .register(earthjs.plugins.world3d())
-        .register(earthjs.plugins.worldThreejs('../d/world-110m.json'));
+        // .register(earthjs.plugins.worldThreejs('../d/world-110m.json'));
         g.ready(function(){
             g.create();
-            const s = g.worldThreejs.sphere().scale;
-            s.x = 1.027;
-            s.y = 1.027;
-            s.z = 1.027;
+            let s = g.oceanThreejs.sphere()
+            s.material.transparent = true
+            // s = g.world3d.sphere().scale;
+            // s.x = 1.127;
+            // s.y = 1.127;
+            // s.z = 1.127;
+            // s = g.worldThreejs.sphere().scale;
+            // s.x = 1.127;
+            // s.y = 1.127;
+            // s.z = 1.127;
         })
     </script>
 </body>

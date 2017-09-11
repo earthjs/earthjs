@@ -5,10 +5,10 @@
     <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
-    <svg id="earth-js" width="1400" height="1000"/>
+    <svg id="earth-js" width="1680" height="940"/>
     <canvas class="ej-canvas"></canvas>
     <script>
-        const g = earthjs()
+        const g = earthjs({margin: 10})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.graticuleCanvas());

@@ -8,7 +8,7 @@
 <body>
     <svg id="earth-js"></svg>
     <script>
-        const g = earthjs({transparent:true})
+        const g = earthjs({transparent:true, margin:50})
         .register(earthjs.plugins.mousePlugin({intervalDrag:true}))
         .register(earthjs.plugins.configPlugin())
         .register(earthjs.plugins.autorotatePlugin())

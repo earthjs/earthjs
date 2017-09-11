@@ -8,6 +8,7 @@ const earthjs = (options={}) => {
         selector: '#earth-js',
         rotate: [130,-33,-11],
         transparent: false,
+        margin: 0
     }, options);
     const _ = {
         onCreate: {},
@@ -34,7 +35,7 @@ const earthjs = (options={}) => {
     }
     const drag = false;
     const svg = d3.selectAll(options.selector);
-    let width = svg.attr('width'), height = svg.attr('height');
+    let width = +svg.attr('width'), height = +svg.attr('height');
     if (!width || !height) {
         width = options.width || 700;
         height = options.height || 500;
@@ -231,9 +232,10 @@ const earthjs = (options={}) => {
         if (typeof(r)==='number') {
             __.options.rotate = [r,-33,-11];
         }
-        let {scale} = __.options;
+        let {scale, width, height, margin} = __.options;
         if (!scale) {
-             scale =  __.options.width/3.5;
+            const mins = d3.min([width, height]);
+            scale =  mins / 2 - margin;
         }
         return d3.geoOrthographic()
             .rotate(__.options.rotate)

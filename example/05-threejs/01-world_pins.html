@@ -27,7 +27,7 @@
     <svg class="ej-svg" width="700" height="500"></svg>
     <canvas class="ej-canvas"></canvas>
     <script>
-        const g = earthjs()
+        const g = earthjs({margin:50})
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.hoverCanvas())

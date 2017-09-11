@@ -15,7 +15,7 @@
     <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
     <script>
-        const g = earthjs()
+        const g = earthjs({margin:50})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.configPlugin())
         .register(earthjs.plugins.threejsPlugin())

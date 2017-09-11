@@ -8,6 +8,7 @@
         .e-container {
             display: inline-block;
             position: relative;
+            margin-top: -38px;
             width: 700px;
             height: 500px;
         }
@@ -31,7 +32,7 @@
         <canvas class="ej-svg c4 ej-canvas"></canvas>
     </div>
     <script>
-        const g = earthjs({selector:'.s1,.s2,.s3,.s4',transparent:true});
+        const g = earthjs({selector:'.s1,.s2,.s3,.s4',transparent:true,margin:47});
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.autorotatePlugin());
@@ -41,9 +42,9 @@
         g.register(earthjs.plugins.graticuleCanvas());
         g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
         g.register(earthjs.plugins.dotsCanvas());
-        g.register(earthjs.plugins.barSvg());
         g.register(earthjs.plugins.pinCanvas('../d/bars.json', '../images/pin.png'));
         g.register(earthjs.plugins.fauxGlobeSvg());
+        g.register(earthjs.plugins.barSvg());
         g.canvasPlugin.selectAll('.ej-canvas');
         g.pinCanvas.ready = function(err, json) {
             const features = json.features;
