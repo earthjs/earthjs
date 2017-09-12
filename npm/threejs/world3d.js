@@ -18,9 +18,10 @@ export default function (worldUrl, landUrl, rtt) {
     }
 
     function init() {
+        var r = this._.proj.scale()+5;
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
-        _.sphereObject.scale.set(205,205,205);
+        _.sphereObject.scale.set(r,r,r);
         makeEnvMapMaterial(landUrl, function(material) {
             _.material = material;
             if (_.world && !_.loaded) {
@@ -43,13 +44,9 @@ export default function (worldUrl, landUrl, rtt) {
         var loader = new THREE.TextureLoader();
         loader.load(imgUrl, function(value) {
             var type = 't';
+            var shading  = THREE.SmoothShading;
             var uniforms = {tMatCap:{type: type,value: value}};
-            var material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: vertexShader,
-                fragmentShader: fragmentShader,
-                shading: THREE.SmoothShading
-            });
+            var material = new THREE.ShaderMaterial({shading: shading, uniforms: uniforms, vertexShader: vertexShader, fragmentShader: fragmentShader});
             cb.call(this, material);
         });
     }

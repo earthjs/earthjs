@@ -58,13 +58,9 @@ export default (worldUrl='../d/world_geometry.json', landUrl='../d/gold.jpg', rt
         const loader = new THREE.TextureLoader();
         loader.load(imgUrl, function(value) {
             const type = 't';
+            const shading  = THREE.SmoothShading;
             const uniforms = {tMatCap:{type,value}};
-            const material = new THREE.ShaderMaterial({
-                uniforms,
-                vertexShader,
-                fragmentShader,
-                shading: THREE.SmoothShading
-            });
+            const material = new THREE.ShaderMaterial({shading, uniforms, vertexShader, fragmentShader});
             cb.call(this, material);
         });
     }

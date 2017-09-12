@@ -5896,13 +5896,9 @@ var world3d = (function () {
         var loader = new THREE.TextureLoader();
         loader.load(imgUrl, function (value) {
             var type = 't';
+            var shading = THREE.SmoothShading;
             var uniforms = { tMatCap: { type: type, value: value } };
-            var material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: vertexShader,
-                fragmentShader: fragmentShader,
-                shading: THREE.SmoothShading
-            });
+            var material = new THREE.ShaderMaterial({ shading: shading, uniforms: uniforms, vertexShader: vertexShader, fragmentShader: fragmentShader });
             cb.call(this, material);
         });
     }

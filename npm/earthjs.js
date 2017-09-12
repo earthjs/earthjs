@@ -10,6 +10,7 @@ var earthjs = function (options) {
         selector: '#earth-js',
         rotate: [130,-33,-11],
         transparent: false,
+        padding: 0
     }, options);
     var _ = {
         onCreate: {},
@@ -36,7 +37,7 @@ var earthjs = function (options) {
     }
     var drag = false;
     var svg = d3.selectAll(options.selector);
-    var width = svg.attr('width'), height = svg.attr('height');
+    var width = +svg.attr('width'), height = +svg.attr('height');
     if (!width || !height) {
         width = options.width || 700;
         height = options.height || 500;
@@ -243,8 +244,12 @@ var earthjs = function (options) {
         }
         var ref = __.options;
         var scale = ref.scale;
+        var width = ref.width;
+        var height = ref.height;
+        var padding = ref.padding;
         if (!scale) {
-             scale =  __.options.width/3.5;
+            var mins = d3.min([width, height]);
+            scale =  mins / 2 - padding;
         }
         return d3.geoOrthographic()
             .rotate(__.options.rotate)

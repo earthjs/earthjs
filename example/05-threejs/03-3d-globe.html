@@ -8,30 +8,36 @@
     <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
-    <svg id="earth-js"></svg>
+    <div class="input-area">
+        <input id="chn" type="range" min="0.1" max="1.8" step="0.01" value="1.2"/>
+    </div>
+    <svg id="earth-js" width="1680" height="940"/>
     <canvas id="three-js"></canvas>
     <canvas class="ej-canvas"></canvas>
     <script>
-        const g = earthjs({padding:30})
+        let c,o,t;
+        const g = earthjs({scale:280})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.oceanThreejs())
-        // .register(earthjs.plugins.graticuleThreejs())
+        .register(earthjs.plugins.graticuleThreejs())
         .register(earthjs.plugins.world3d())
-        // .register(earthjs.plugins.worldThreejs('../d/world-110m.json'));
+        .register(earthjs.plugins.worldThreejs('../d/world-110m.json'));
         g.ready(function(){
             g.create();
-            let s = g.oceanThreejs.sphere()
-            s.material.transparent = true
-            // s = g.world3d.sphere().scale;
-            // s.x = 1.127;
-            // s.y = 1.127;
-            // s.z = 1.127;
-            // s = g.worldThreejs.sphere().scale;
-            // s.x = 1.127;
-            // s.y = 1.127;
-            // s.z = 1.127;
+            c = g.world3d.data();
+            o = g.oceanThreejs.sphere();
+            t = g.worldThreejs.sphere();
+            c.China.mesh.scale.set(1.2,1.2,1.2);
+            o.material.transparent = true;
+            t.scale.set(1.5,1.5,1.5);
+        })
+
+        d3.select('#chn').on('input', function() {
+            const v = this.value;
+            c.China.mesh.scale.set(v,v,v);
+            t.scale.set(1.5,1.5,1.5);
         })
     </script>
 </body>
