@@ -14,6 +14,7 @@
         .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.graticuleCanvas())
         .register(earthjs.plugins.autorotatePlugin());
+        g.graticuleCanvas.style({line: 'blue'});
         g.canvasPlugin.selectAll('.ej-canvas');
         g.create();
     </script>
