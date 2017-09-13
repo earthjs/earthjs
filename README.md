@@ -178,24 +178,25 @@ earthjs.plugins.graticuleSimple = () => {
 }
 
 //... plugin in use
-const g = earthjs();
-g.register(earthjs.plugins.graticuleSimple());
-g.create();
+const g = earthjs()
+.register(earthjs.plugins.graticuleSimple())
+.create();
 ```
 **convention**
 
 For SVG create function:
 * when removing element, it should be removing same element that created from same plugin.
-* attributes are often get update (ex:"d"), it should be placed in refresh function and at the end of create function, it should call the refresh function.
+* attributes often get updated (ex:"d"), it should be placed in refresh function.
+* at the end of create function, it should call refresh function.
 
-in general, return value should be a simple object where by body of functions are kept in the private place with same name, and use **.call(this,...)** to execute the private function.
+in general, return value should be a simple object whereby body of functions are kept in the private place with same name, and use **.call(this,...)** to execute the private function.
 
 For Canvas, it always recreate the whole canvas, mean that onCreate & onRefresh should be using same (logic of drawing) function.
 
-For Threejs, the concept of refresh is different compare with SVG or Canvas, when globe rotate the internal state of projection is changed, to reflect the changes in UI, SVG or Canvas need to refresh or redraw the path, as for Threejs the projection state change need to transfer from D3 to threejs main container object, so less need to create onRefresh function.   
+For Threejs, the concept of refresh is different compare with SVG or Canvas, when globe rotate the internal state of projection is changed, to reflect the changes in UI, SVG or Canvas need to refresh or redraw the path, as for Threejs the D3 projection state change need to be transfer to Threejs main container object, so less need to create onRefresh function.   
 
 ## Building
-Building the project requires [Node.js](https://nodejs.org/en/). Once you've installed the project's dependencies with npm install, you can build the JavaScript to the dist directory with npm run build.
+Building earthjs requires [Node.js](https://nodejs.org/en/). Once you've installed the project's dependencies with npm install, you can build earthjs to the dist directory with npm run build.
 
 ## License
 earthjs.js is licensed under the **MIT license**. See the LICENSE file for more information.
