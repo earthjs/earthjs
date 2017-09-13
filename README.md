@@ -150,9 +150,9 @@ export default (url) => {
 ```javascript
 // example:
 g.register(earthjs.plugins.worldSvg('./d/world-110m.json'));
-g.worldSvg.ready = function(err, world) {
+g.worldSvg.ready = function(err, json) {
     //+++collpased code
-    g.worldSvg.data({world});
+    g.worldSvg.data(json);
 }
 ```
 **Plugin example**
