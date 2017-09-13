@@ -5853,7 +5853,7 @@ if (window.THREE) {
 
 // import data from './globe';
 var world3d = (function () {
-    var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world_geometry.json';
+    var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.geometry.json';
     var landUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '../d/gold.jpg';
     var rtt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : -1.57;
 

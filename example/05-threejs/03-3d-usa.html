@@ -25,12 +25,15 @@
         .register(earthjs.plugins.graticuleThreejs())
         .register(earthjs.plugins.world3d('../d/world.geometry.json','../d/gold.jpg'))
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'));
+        g.world3d.ready = function(err, json) {
+            g.world3d.data({'United States': json['United States']})
+        }
         g.ready(function(){
             g.create();
             c = g.world3d.data();
             o = g.oceanThreejs.sphere();
             t = g.worldThreejs.sphere();
-            c.China.mesh.scale.set(1.2,1.2,1.2);
+            c['United States'].mesh.scale.set(1.2,1.2,1.2);
             o.material.transparent = true;
             t.scale.set(1.5,1.5,1.5);
         })
@@ -41,7 +44,7 @@
         })
         d3.select('#chn').on('input', function() {
             const v = this.value;
-            c.China.mesh.scale.set(v,v,v);
+            c['United States'].mesh.scale.set(v,v,v);
         })
     </script>
 </body>
