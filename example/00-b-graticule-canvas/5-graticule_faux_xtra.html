@@ -40,6 +40,7 @@
         .register(earthjs.plugins.graticuleCanvas())
         .register(earthjs.plugins.fauxGlobeSvg())
         g.canvasPlugin.selectAll('.ej-canvas');
+        g.graticuleCanvas.style({line: 'rgba(1,1,255,0.5)'});
         g.create();
     </script>
 </body>
