@@ -4,6 +4,8 @@
 export default (threejs='three-js') => {
     /*eslint no-console: 0 */
     const _ = {renderer: null, scene: null, camera: null};
+    const manager = new THREE.LoadingManager();
+    const loader  = new THREE.TextureLoader(manager);
     let SCALE;
 
     // Converts a point [longitude, latitude] in degrees to a THREE.Vector3.
@@ -67,7 +69,7 @@ export default (threejs='three-js') => {
         renderThree.call(this);
     }
 
-    function rotate(obj, direct=false) {
+    function rotate(obj, direct=false, delay=0) {
         if (!obj) {
             obj = _.group;
         }
@@ -77,7 +79,7 @@ export default (threejs='three-js') => {
         const q1 = __.versor(rt);
         const q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
         obj.setRotationFromQuaternion(q2);
-        renderThree.call(this, direct);
+        renderThree.call(this, direct, false, delay);
     }
 
     let renderThreeX = null;
@@ -101,7 +103,7 @@ export default (threejs='three-js') => {
         },
         onCreate() {
             _.group.children = [];
-            renderThree.call(this, false, rotate);
+            rotate.call(this);
         },
         onRefresh() {
             rotate.call(this, null, true);
@@ -126,6 +128,9 @@ export default (threejs='three-js') => {
         },
         wireframe(multilinestring, material) {
             return wireframe(multilinestring, material);
+        },
+        texture(imgUrl) {
+            return loader.load(imgUrl, image=> image);
         },
         renderThree() {
             renderThree.call(this);

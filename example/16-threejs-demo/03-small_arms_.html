@@ -36,7 +36,8 @@
 </head>
 <body>
     <div class="input-area">
-        <input id="pan" type="range" min="0" max="700" step="1" value="0"/>
+        Pan:<input id="pan" type="range" min="0" max="700" step="1" value="0"/><br>
+        Year:<input id="year" type="range" min="1992" max="2014" step="1" value="1992"/>
     </div>
     <div class="top-ten">
         <h1 id="title"></h1>
@@ -80,7 +81,7 @@
                     _.dataYearly   = all.dataYearly;
                     _.countryNmToId= all.countryNmToId;
                     _.countryName  = all.countryName;
-                    _.t = all.dataYearly.map(x=> x.t).sort().pop();
+                    _.t = all.dataYearly.map(x=> x.t).sort()[0]; //.pop();
 
                 } else {
                     const  {countryIso, countryLLg, dataYearly, countryNmToId, countryName} = _;
@@ -229,7 +230,11 @@
     d3.select('#pan').on('input', function() {
         canvas[0].style.left = (this.value)+'px';
     })
-
+    d3.select('#year').on('input', function() {
+        _.t = +this.value;
+        reload();
+        g.flightLineThreejs.reload();
+    })
     </script>
 </body>
 </html>

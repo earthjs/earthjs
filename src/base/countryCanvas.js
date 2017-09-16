@@ -40,7 +40,7 @@ export default worldUrl => {
         },
         onCreate() {
             if (this.worldJson && !_.world) {
-                _.me.allData(this.worldJson.allData());
+                _.me.data(this.worldJson.data());
             }
             create.call(this);
         },

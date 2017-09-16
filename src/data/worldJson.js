@@ -38,5 +38,12 @@ export default jsonUrl => {
                 return {world, land, lakes, countries};
             }
         },
+        countries(arr) {
+            if (arr) {
+                _.countries.features = arr;
+            } else {
+                return _.countries.features;
+            }
+        },
     }
 }

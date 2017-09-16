@@ -1,7 +1,5 @@
-<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
@@ -10,12 +8,14 @@
 <body>
     <svg id="earth-js"></svg>
     <script>
-        const g = earthjs();
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.oceanSvg());
-        g.register(earthjs.plugins.worldSvg('../d/world-110m.json'));
-        g.register(earthjs.plugins.countryTooltipSvg('../d/world-110m-country-names.tsv'));
-
+        const g = earthjs()
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.oceanSvg())
+        .register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
+        var o = g._.options;
+        g.mousePlugin.onDragStart({app() {o.showCountries = false;}});
+        g.mousePlugin.onDragEnd(  {app() {o.showCountries = true; }});
         g.ready(function(){
             g.create();
         })

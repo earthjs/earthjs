@@ -64,8 +64,9 @@ import sphereThreejs      from './src/threejs/sphereThreejs';
 import world3d            from './src/threejs/world3d';
 import world3d2           from './src/threejs/world3d2';
 
-import commonPlugins    from './src/mixed/commonPlugins';
-import selectCountryMix from './src/mixed/selectCountryMix';
+import commonPlugins     from './src/mixed/commonPlugins';
+import selectCountryMix  from './src/mixed/selectCountryMix';
+import selectCountryMix2 from './src/mixed/selectCountryMix2';
 
 earthjs.plugins= {
     baseCsv,
@@ -132,5 +133,6 @@ earthjs.plugins= {
 
     commonPlugins,
     selectCountryMix,
+    selectCountryMix2,
 };
 export default earthjs;

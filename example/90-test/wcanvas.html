@@ -10,7 +10,6 @@
     <canvas class="ej-canvas"></canvas>
     <script>
         const g = earthjs({transparent:true});
-        g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.autorotatePlugin());
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.dropShadowSvg());
@@ -24,6 +23,8 @@
         g.register(earthjs.plugins.dblClickCanvas());
         g.register(earthjs.plugins.centerCanvas());
         g.register(earthjs.plugins.countryTooltipCanvas('../d/world-110m-country-names.tsv'));
+        g._.options.showCountries = false;
+        g._.options.showLakes = false;
 
         g.clickCanvas.onCountry({
             wcanvas: function(event, country) {
@@ -46,11 +47,7 @@
             g.hoverCanvas.data(world);
             g.clickCanvas.data(world);
             g.dblClickCanvas.data(world);
-            // g.create();
-            g.configPlugin.set({
-                showCountries: false,
-                showLakes: false
-            });
+            g.create();
         })
     </script>
 </body>

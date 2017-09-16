@@ -28,6 +28,9 @@ export default () => {
                         transition.call(_this, d3.geoCentroid(country));
                         if (typeof(_.focused)==='function') {
                             _.focused.call(_this, event, country);
+                            if (_this.threejsPlugin) {
+                                _this.threejsPlugin.rotate();
+                            }
                         }
                     }
                 }

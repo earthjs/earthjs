@@ -11,10 +11,9 @@
         const g = earthjs()
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.canvasPlugin())
-        .register(earthjs.plugins.configPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.oceanSvg())
-        .register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
+        .register(earthjs.plugins.worldCanvas('../d/world-110m.json'))
         var o = g._.options;
         g.mousePlugin.onDragStart({app() {o.showCountries = false;}});
         g.mousePlugin.onDragEnd(  {app() {o.showCountries = true; }});

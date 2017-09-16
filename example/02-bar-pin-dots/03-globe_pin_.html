@@ -12,7 +12,6 @@
         const g = earthjs({transparent:true,padding:50});
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.canvasPlugin());
-        g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.autorotatePlugin());
         g.register(earthjs.plugins.dropShadowSvg());
         g.register(earthjs.plugins.oceanSvg());
@@ -21,6 +20,8 @@
         g.register(earthjs.plugins.dotsCanvas());
         g.register(earthjs.plugins.pinCanvas('../d/bars.json', '../images/pin.png'));
         g.register(earthjs.plugins.fauxGlobeSvg());
+        g._.options.showCountries = false;
+        g._.options.showLakes = false;
         g.canvasPlugin.selectAll('.ej-canvas');
         g.pinCanvas.ready = function(err, json) {
             const features = json.features;
@@ -40,11 +41,7 @@
             g.pinCanvas.data(json);
         };
         g.ready(function(){
-            // g.create();
-            g.configPlugin.set({
-                showCountries: false,
-                showLakes: false
-            });
+            g.create();
         })
     </script>
 </body>

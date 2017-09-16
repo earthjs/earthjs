@@ -7,12 +7,11 @@ export default (worldUrl, scw=6.279, height=2048) => {
         style: {},
         onDraw: {},
         onDrawVals: [],
-        selected: {
-            type: 'FeatureCollection',
-            features:[]
-        },
+        countries: {type: 'FeatureCollection', features:[]},
+        selected:  {type: 'FeatureCollection', features:[]},
         material: new THREE.MeshBasicMaterial({
             side: THREE.DoubleSide,
+            transparent: true,
             alphaTest: 0.5
         })
     };
@@ -21,20 +20,20 @@ export default (worldUrl, scw=6.279, height=2048) => {
         const width = height * 2;
         const SCALE = this._.proj.scale();
         _.geometry = new THREE.SphereGeometry(SCALE, 30, 30);
-        _.newCanvas = document.createElement('canvas');
+        _.newCanvas = d3.select('body').append('canvas') // document.createElement('canvas');
+            .style('display','none')
+            .attr('class','ej-canvas-new')
+            .node();
         _.newContext = _.newCanvas.getContext('2d');
-
         _.texture = new THREE.Texture(_.newCanvas);
         _.texture.transparent = true;
         _.material.map = _.texture;
 
         _.canvas = d3.select('body').append('canvas')
-            .style('position','absolute')
             .style('display','none')
-            .style('top','450px')
             .attr('width', width)
             .attr('height',height)
-            .attr('id','tjs-canvas')
+            .attr('class','ej-canvas-ctx')
             .node();
         _.context = _.canvas.getContext('2d');
         _.proj = d3.geoEquirectangular().scale(width/scw).translate([width/2, height/2]);
@@ -44,6 +43,7 @@ export default (worldUrl, scw=6.279, height=2048) => {
         //set dimensions
         _.newCanvas.width = _.canvas.width;
         _.newCanvas.height = _.canvas.height;
+        _.me._ = _; // only for debugging
     }
 
     function create() {
@@ -68,13 +68,13 @@ export default (worldUrl, scw=6.279, height=2048) => {
                 var obj = _.countries.features[i];
                 _.context.beginPath();
                 _.path(obj);
-                _.context.fillStyle = obj.color || '#8f9fc1'; //"rgb(" + (i+1) + ",0,0)";
+                _.context.fillStyle = obj.color || _.style.countries || 'rgba(2, 20, 37,0.8)';
                 _.context.fill();
             }
             return true;
         } else {
             _.path(_.countries);
-            _.context.fillStyle = '#8f9fc1'; // '#00ff00';
+            _.context.fillStyle = _.style.countries || 'rgba(2, 20, 37,0.8)';
             _.context.fill();
             return false;
         }
@@ -90,20 +90,20 @@ export default (worldUrl, scw=6.279, height=2048) => {
         } else {
             _.context.clearRect(0, 0, _.canvas.width, _.canvas.height);
         }
-        let crp = true;
+        let border = o.showBorder;
         _.context.beginPath();
-        if (!o.showBorder) {
-            crp = choropleth.call(this);
+        if (!border) {
+            choropleth.call(this);
         }
         if (o.showBorder || o.showBorder===undefined) {
             let sc = scale10(this._.proj.scale());
             if (sc < 1)
                 sc = 1;
-            if (crp) {
-                _.path(_.countries);
+            if (border) {
+                _.path(_.allCountries);
             }
             _.context.lineWidth = sc;
-            _.context.strokeStyle = _.style.countries || 'rgb(239, 237, 234)'; //'rgb(0, 37, 34)';
+            _.context.strokeStyle = _.style.border || 'rgb(239, 237, 234)';
             _.context.stroke();
         }
         //apply the old canvas to the new one
@@ -121,14 +121,14 @@ export default (worldUrl, scw=6.279, height=2048) => {
             if (_.selected.features.length>0) {
                 _.newContext.beginPath();
                 _.path2(_.selected);
-                _.newContext.fillStyle = _.style.selected || 'rgba(255, 235, 0, 0.4)'; // 'rgba(87, 255, 99, 0.4)';
+                _.newContext.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.5)'; // 0.4 'rgba(255, 235, 0, 0.4)'; // 'rgba(87, 255, 99, 0.4)';
                 _.newContext.fill();
             }
             const {country} = this.hoverCanvas.states();
             if (country && !_.selected.features.find(obj=>obj.id===country.id)) {
                 _.newContext.beginPath();
                 _.path2(country);
-                _.newContext.fillStyle = _.style.hover || 'rgba(117, 0, 0, 0.4)'; //'rgb(137, 138, 34)';
+                _.newContext.fillStyle = _.style.hover || 'rgba(117, 0, 0, 0.5)'; // 0.4 'rgb(137, 138, 34)';
                 _.newContext.fill();
             }
             _.texture.needsUpdate = true;
@@ -148,7 +148,7 @@ export default (worldUrl, scw=6.279, height=2048) => {
         },
         onCreate() {
             if (this.worldJson && !_.world) {
-                _.me.allData(this.worldJson.allData());
+                _.me.data(this.worldJson.data());
             }
             create.call(this);
         },
@@ -162,6 +162,13 @@ export default (worldUrl, scw=6.279, height=2048) => {
             Object.assign(_.onDraw, obj);
             _.onDrawVals = Object.keys(_.onDraw).map(k => _.onDraw[k]);
         },
+        countries(arr) {
+            if (arr) {
+                _.countries.features = arr;
+            } else {
+                return _.countries.features;
+            }
+        },
         selectedCountries(arr) {
             if (arr) {
                 _.selected.features = arr;
@@ -172,7 +179,8 @@ export default (worldUrl, scw=6.279, height=2048) => {
         data(data) {
             if (data) {
                 _.world = data;
-                _.countries = topojson.feature(data, data.objects.countries);
+                _.allCountries = topojson.feature(data, data.objects.countries);
+                _.countries.features = _.allCountries.features;
             } else {
                 return  _.world;
             }
@@ -191,6 +199,10 @@ export default (worldUrl, scw=6.279, height=2048) => {
                 _.style = s;
             }
             return _.style;
+        },
+        reload() {
+            resize.call(this);
+            refresh.call(this);
         },
         refresh() {
             _.refresh = true;

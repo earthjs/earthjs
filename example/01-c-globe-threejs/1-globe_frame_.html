@@ -1,22 +1,22 @@
+<!DOCTYPE html>
 <html>
 <head>
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../js/three.min.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
     <svg id="earth-js"></svg>
+    <canvas id="three-js"></canvas>
     <script>
-        const g = earthjs()
+        const g = earthjs({padding:50})
         .register(earthjs.plugins.mousePlugin())
-        .register(earthjs.plugins.configPlugin())
+        .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.oceanSvg())
-        .register(earthjs.plugins.worldSvg('../d/world-110m.json'));
-        var o = g._.options;
-        g.mousePlugin.onDragStart({app() {o.showCountries = false;}});
-        g.mousePlugin.onDragEnd(  {app() {o.showCountries = true; }});
+        .register(earthjs.plugins.dropShadowSvg())
+        .register(earthjs.plugins.worldThreejs('../d/world-110m.json'));
         g.ready(function(){
             g.create();
         })

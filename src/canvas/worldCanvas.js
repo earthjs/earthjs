@@ -41,7 +41,7 @@ export default worldUrl => {
                         this.canvasPlugin.render(function(context, path) {
                             context.beginPath();
                             path(_.selected);
-                            context.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.4)';
+                            context.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.5)';
                             context.fill();
                         }, _.drawTo, _.options);
                     } else {
@@ -60,7 +60,7 @@ export default worldUrl => {
                     this.canvasPlugin.render(function(context, path) {
                         context.beginPath();
                         path(country);
-                        context.fillStyle = _.style.hover || 'rgba(117, 0, 0, 0.4)';
+                        context.fillStyle = _.style.hover || 'rgba(117, 0, 0, 0.5)';
                         context.fill();
                     }, _.drawTo, _.options);
                 }
@@ -95,7 +95,7 @@ export default worldUrl => {
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
             path(_.lakes);
-            context.fillStyle = _.style.lakes || 'rgba(80, 87, 97, 0.4)';
+            context.fillStyle = _.style.lakes || 'rgba(80, 87, 97, 0.5)';
             context.fill();
         }, _.drawTo, _.options);
     }

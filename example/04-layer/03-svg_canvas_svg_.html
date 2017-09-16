@@ -32,7 +32,6 @@
     <svg class="ej-svg" width="700" height="500"></svg>
     <script>
         const g = earthjs({rotate:-40,padding:50});
-        g.register(earthjs.plugins.configPlugin());
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.autorotatePlugin());
         g.mousePlugin.selectAll('.ej-svg');
@@ -58,14 +57,12 @@
             json.features.forEach(d => d.geometry.value = d.properties.mag);
             g.barSvg.data(json);
         };
+        g._.options.showCountries = false;
+        g._.options.showLakes = false;
 
         // g.placesSvg.selectAll('#earth-js2');
         g.ready(function(){
-            // g.create();
-            g.configPlugin.set({
-                showCountries: false,
-                showLakes: false
-            });
+            g.create();
         });
 
         const st = d3.select('#js-controlled');

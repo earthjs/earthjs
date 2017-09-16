@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+</head>
+<body>
+    <svg id="earth-js"></svg>
+    <canvas id="three-js"></canvas>
+    <script>
+        const g = earthjs({padding:50})
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.dropShadowSvg())
+        .register(earthjs.plugins.graticuleThreejs())
+        g.create();
+    </script>
+</body>
+</html>

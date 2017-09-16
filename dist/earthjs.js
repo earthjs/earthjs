@@ -143,37 +143,42 @@ var earthjs$2 = function earthjs() {
         },
         $slc: {},
         ready: function ready(fn) {
-            if (fn && _.promeses.length > 0) {
-                var q = d3.queue();
-                _.loadingData = true;
-                _.promeses.forEach(function (obj) {
-                    obj.urls.forEach(function (url) {
-                        var ext = url.split('.').pop();
-                        if (ext === 'geojson') {
-                            ext = 'json';
-                        }
-                        q.defer(d3[ext], url);
-                    });
-                });
-                q.await(function () {
-                    var args = [].slice.call(arguments);
-                    var err = args.shift();
+            if (fn) {
+                globe._.readyFn = fn;
+                globe._.promeses = _.promeses;
+                if (_.promeses.length > 0) {
+                    var q = d3.queue();
+                    _.loadingData = true;
                     _.promeses.forEach(function (obj) {
-                        var ln = obj.urls.length;
-                        var ar = args.slice(0, ln);
-                        var ready = globe[obj.name].ready;
-                        ar.unshift(err);
-
-                        if (ready) {
-                            ready.apply(globe, ar);
-                        } else {
-                            obj.onReady.apply(globe, ar);
-                        }
-                        args = args.slice(ln);
+                        obj.urls.forEach(function (url) {
+                            var ext = url.split('.').pop();
+                            if (ext === 'geojson') {
+                                ext = 'json';
+                            }
+                            q.defer(d3[ext], url);
+                        });
                     });
-                    _.loadingData = false;
-                    fn.call(globe);
-                });
+                    q.await(function () {
+                        var args = [].slice.call(arguments);
+                        var err = args.shift();
+                        _.promeses.forEach(function (obj) {
+                            var ln = obj.urls.length;
+                            var ar = args.slice(0, ln);
+                            var ready = globe[obj.name].ready;
+                            ar.unshift(err);
+
+                            if (ready) {
+                                ready.apply(globe, ar);
+                            } else {
+                                obj.onReady.apply(globe, ar);
+                            }
+                            args = args.slice(ln);
+                        });
+                        _.loadingData = false;
+                        fn.called = true;
+                        fn.call(globe);
+                    });
+                }
             } else if (arguments.length === 0) {
                 return _.loadingData;
             }
@@ -502,6 +507,13 @@ var worldJson = (function (jsonUrl) {
 
                 return { world: world, land: land, lakes: lakes, countries: countries };
             }
+        },
+        countries: function countries(arr) {
+            if (arr) {
+                _.countries.features = arr;
+            } else {
+                return _.countries.features;
+            }
         }
     };
 });
@@ -785,7 +797,7 @@ var hoverCanvas = (function () {
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                _.me.allData(this.worldJson.allData());
+                _.me.data(this.worldJson.data());
             }
         },
         onCircle: function onCircle(obj) {
@@ -917,7 +929,7 @@ var clickCanvas = (function () {
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                _.me.allData(this.worldJson.allData());
+                _.me.data(this.worldJson.data());
             }
         },
         onCircle: function onCircle(obj) {
@@ -1375,7 +1387,7 @@ var countryCanvas = (function (worldUrl) {
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                _.me.allData(this.worldJson.allData());
+                _.me.data(this.worldJson.data());
             }
             create.call(this);
         },
@@ -1416,6 +1428,8 @@ var threejsPlugin = (function () {
 
     /*eslint no-console: 0 */
     var _ = { renderer: null, scene: null, camera: null };
+    var manager = new THREE.LoadingManager();
+    var loader = new THREE.TextureLoader(manager);
     var SCALE = void 0;
 
     // Converts a point [longitude, latitude] in degrees to a THREE.Vector3.
@@ -1480,6 +1494,7 @@ var threejsPlugin = (function () {
 
     function _rotate(obj) {
         var direct = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+        var delay = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
 
         if (!obj) {
             obj = _.group;
@@ -1490,7 +1505,7 @@ var threejsPlugin = (function () {
         var q1 = __.versor(rt);
         var q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
         obj.setRotationFromQuaternion(q2);
-        _renderThree.call(this, direct);
+        _renderThree.call(this, direct, false, delay);
     }
 
     var renderThreeX = null;
@@ -1519,7 +1534,7 @@ var threejsPlugin = (function () {
         },
         onCreate: function onCreate() {
             _.group.children = [];
-            _renderThree.call(this, false, _rotate);
+            _rotate.call(this);
         },
         onRefresh: function onRefresh() {
             _rotate.call(this, null, true);
@@ -1544,6 +1559,11 @@ var threejsPlugin = (function () {
         },
         wireframe: function wireframe(multilinestring, material) {
             return _wireframe(multilinestring, material);
+        },
+        texture: function texture(imgUrl) {
+            return loader.load(imgUrl, function (image) {
+                return image;
+            });
         },
         renderThree: function renderThree() {
             _renderThree.call(this);
@@ -1634,7 +1654,7 @@ var dblClickCanvas = (function () {
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                _.me.allData(this.worldJson.allData());
+                _.me.data(this.worldJson.data());
             }
         },
         onCircle: function onCircle(obj) {
@@ -3298,7 +3318,7 @@ var worldCanvas = (function (worldUrl) {
                         this.canvasPlugin.render(function (context, path) {
                             context.beginPath();
                             path(_.selected);
-                            context.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.4)';
+                            context.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.5)';
                             context.fill();
                         }, _.drawTo, _.options);
                     } else {
@@ -3343,7 +3363,7 @@ var worldCanvas = (function (worldUrl) {
                     this.canvasPlugin.render(function (context, path) {
                         context.beginPath();
                         path(country);
-                        context.fillStyle = _.style.hover || 'rgba(117, 0, 0, 0.4)';
+                        context.fillStyle = _.style.hover || 'rgba(117, 0, 0, 0.5)';
                         context.fill();
                     }, _.drawTo, _.options);
                 }
@@ -3380,7 +3400,7 @@ var worldCanvas = (function (worldUrl) {
         this.canvasPlugin.render(function (context, path) {
             context.beginPath();
             path(_.lakes);
-            context.fillStyle = _.style.lakes || 'rgba(80, 87, 97, 0.4)';
+            context.fillStyle = _.style.lakes || 'rgba(80, 87, 97, 0.5)';
             context.fill();
         }, _.drawTo, _.options);
     }
@@ -3577,6 +3597,9 @@ var centerCanvas = (function () {
                         transition.call(_this, d3.geoCentroid(country));
                         if (typeof _.focused === 'function') {
                             _.focused.call(_this, event, country);
+                            if (_this.threejsPlugin) {
+                                _this.threejsPlugin.rotate();
+                            }
                         }
                     }
                 }
@@ -4472,12 +4495,11 @@ var canvasThreejs = (function (worldUrl) {
         style: {},
         onDraw: {},
         onDrawVals: [],
-        selected: {
-            type: 'FeatureCollection',
-            features: []
-        },
+        countries: { type: 'FeatureCollection', features: [] },
+        selected: { type: 'FeatureCollection', features: [] },
         material: new THREE.MeshBasicMaterial({
             side: THREE.DoubleSide,
+            transparent: true,
             alphaTest: 0.5
         })
     };
@@ -4486,14 +4508,14 @@ var canvasThreejs = (function (worldUrl) {
         var width = height * 2;
         var SCALE = this._.proj.scale();
         _.geometry = new THREE.SphereGeometry(SCALE, 30, 30);
-        _.newCanvas = document.createElement('canvas');
+        _.newCanvas = d3.select('body').append('canvas') // document.createElement('canvas');
+        .style('display', 'none').attr('class', 'ej-canvas-new').node();
         _.newContext = _.newCanvas.getContext('2d');
-
         _.texture = new THREE.Texture(_.newCanvas);
         _.texture.transparent = true;
         _.material.map = _.texture;
 
-        _.canvas = d3.select('body').append('canvas').style('position', 'absolute').style('display', 'none').style('top', '450px').attr('width', width).attr('height', height).attr('id', 'tjs-canvas').node();
+        _.canvas = d3.select('body').append('canvas').style('display', 'none').attr('width', width).attr('height', height).attr('class', 'ej-canvas-ctx').node();
         _.context = _.canvas.getContext('2d');
         _.proj = d3.geoEquirectangular().scale(width / scw).translate([width / 2, height / 2]);
         _.path = d3.geoPath().projection(_.proj).context(_.context);
@@ -4502,6 +4524,7 @@ var canvasThreejs = (function (worldUrl) {
         //set dimensions
         _.newCanvas.width = _.canvas.width;
         _.newCanvas.height = _.canvas.height;
+        _.me._ = _; // only for debugging
     }
 
     function create() {
@@ -4528,13 +4551,13 @@ var canvasThreejs = (function (worldUrl) {
                 var obj = _.countries.features[i];
                 _.context.beginPath();
                 _.path(obj);
-                _.context.fillStyle = obj.color || '#8f9fc1'; //"rgb(" + (i+1) + ",0,0)";
+                _.context.fillStyle = obj.color || _.style.countries || 'rgba(2, 20, 37,0.8)';
                 _.context.fill();
             }
             return true;
         } else {
             _.path(_.countries);
-            _.context.fillStyle = '#8f9fc1'; // '#00ff00';
+            _.context.fillStyle = _.style.countries || 'rgba(2, 20, 37,0.8)';
             _.context.fill();
             return false;
         }
@@ -4550,19 +4573,19 @@ var canvasThreejs = (function (worldUrl) {
         } else {
             _.context.clearRect(0, 0, _.canvas.width, _.canvas.height);
         }
-        var crp = true;
+        var border = o.showBorder;
         _.context.beginPath();
-        if (!o.showBorder) {
-            crp = choropleth.call(this);
+        if (!border) {
+            choropleth.call(this);
         }
         if (o.showBorder || o.showBorder === undefined) {
             var sc = scale10(this._.proj.scale());
             if (sc < 1) sc = 1;
-            if (crp) {
-                _.path(_.countries);
+            if (border) {
+                _.path(_.allCountries);
             }
             _.context.lineWidth = sc;
-            _.context.strokeStyle = _.style.countries || 'rgb(239, 237, 234)'; //'rgb(0, 37, 34)';
+            _.context.strokeStyle = _.style.border || 'rgb(239, 237, 234)';
             _.context.stroke();
         }
         //apply the old canvas to the new one
@@ -4578,7 +4601,7 @@ var canvasThreejs = (function (worldUrl) {
             if (_.selected.features.length > 0) {
                 _.newContext.beginPath();
                 _.path2(_.selected);
-                _.newContext.fillStyle = _.style.selected || 'rgba(255, 235, 0, 0.4)'; // 'rgba(87, 255, 99, 0.4)';
+                _.newContext.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.5)'; // 0.4 'rgba(255, 235, 0, 0.4)'; // 'rgba(87, 255, 99, 0.4)';
                 _.newContext.fill();
             }
 
@@ -4590,7 +4613,7 @@ var canvasThreejs = (function (worldUrl) {
             })) {
                 _.newContext.beginPath();
                 _.path2(country);
-                _.newContext.fillStyle = _.style.hover || 'rgba(117, 0, 0, 0.4)'; //'rgb(137, 138, 34)';
+                _.newContext.fillStyle = _.style.hover || 'rgba(117, 0, 0, 0.5)'; // 0.4 'rgb(137, 138, 34)';
                 _.newContext.fill();
             }
             _.texture.needsUpdate = true;
@@ -4610,7 +4633,7 @@ var canvasThreejs = (function (worldUrl) {
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                _.me.allData(this.worldJson.allData());
+                _.me.data(this.worldJson.data());
             }
             create.call(this);
         },
@@ -4626,6 +4649,13 @@ var canvasThreejs = (function (worldUrl) {
                 return _.onDraw[k];
             });
         },
+        countries: function countries(arr) {
+            if (arr) {
+                _.countries.features = arr;
+            } else {
+                return _.countries.features;
+            }
+        },
         selectedCountries: function selectedCountries(arr) {
             if (arr) {
                 _.selected.features = arr;
@@ -4636,7 +4666,8 @@ var canvasThreejs = (function (worldUrl) {
         data: function data(_data) {
             if (_data) {
                 _.world = _data;
-                _.countries = topojson.feature(_data, _data.objects.countries);
+                _.allCountries = topojson.feature(_data, _data.objects.countries);
+                _.countries.features = _.allCountries.features;
             } else {
                 return _.world;
             }
@@ -4657,6 +4688,10 @@ var canvasThreejs = (function (worldUrl) {
                 _.style = s;
             }
             return _.style;
+        },
+        reload: function reload() {
+            resize.call(this);
+            _refresh.call(this);
         },
         refresh: function refresh() {
             _.refresh = true;
@@ -5477,23 +5512,43 @@ var oceanThreejs = (function (color) {
     };
 });
 
+// https://threejs.org/docs/#api/materials/Material
 var imageThreejs = (function () {
     var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.png';
 
     /*eslint no-console: 0 */
     var _ = { sphereObject: null };
 
+    function init() {
+        var tj = this.threejsPlugin;
+        _.material = new THREE.MeshBasicMaterial({
+            map: tj.texture(imgUrl)
+        });
+        Object.defineProperty(_.me, 'transparent', {
+            get: function get() {
+                return _.transparent;
+            },
+            set: function set(x) {
+                _.transparent = x;
+                if (x) {
+                    _.material.side = THREE.DoubleSide;
+                    _.material.alphaTest = 0.01;
+                } else {
+                    _.material.side = THREE.FrontSide;
+                    _.material.alphaTest = 0;
+                }
+                _.material.needsUpdate = true;
+            }
+        });
+    }
+
     function create() {
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
             var SCALE = this._.proj.scale();
-            var loader = new THREE.TextureLoader();
-            loader.load(imgUrl, function (map) {
-                var geometry = new THREE.SphereGeometry(SCALE, 30, 30);
-                var material = new THREE.MeshBasicMaterial({ map: map });
-                _.sphereObject = new THREE.Mesh(geometry, material);
-                tj.addGroup(_.sphereObject);
-            });
+            var geometry = new THREE.SphereGeometry(SCALE, 30, 30);
+            _.sphereObject = new THREE.Mesh(geometry, _.material);
+            tj.addGroup(_.sphereObject);
         } else {
             tj.addGroup(_.sphereObject);
         }
@@ -5503,7 +5558,8 @@ var imageThreejs = (function () {
         name: 'imageThreejs',
         onInit: function onInit(me) {
             _.me = me;
-            this._.options.showImage = true;
+            _.transparent = false;
+            init.call(this);
         },
         onCreate: function onCreate() {
             create.call(this);
@@ -6283,6 +6339,94 @@ var selectCountryMix = (function () {
     };
 });
 
+var selectCountryMix2 = (function () {
+    var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world-110m.json';
+    var worldImg = arguments[1];
+
+    /*eslint no-console: 0 */
+    var _ = {};
+
+    function init() {
+        var g = this.register(earthjs.plugins.worldJson(worldUrl)).register(earthjs.plugins.mousePlugin()).register(earthjs.plugins.hoverCanvas()).register(earthjs.plugins.clickCanvas()).register(earthjs.plugins.centerCanvas()).register(earthjs.plugins.countryCanvas()).register(earthjs.plugins.threejsPlugin()).register(earthjs.plugins.autorotatePlugin());
+        if (worldImg) {
+            g.register(earthjs.plugins.imageThreejs(worldImg));
+        }
+        g.register(earthjs.plugins.canvasThreejs());
+        g._.options.showSelectedCountry = true;
+        g._.options.showBorder = false;
+        g.canvasThreejs.style({ countries: 'rgba(220,91,52,0.5)' });
+        g.centerCanvas.focused(function (event, country) {
+            g.autorotatePlugin.stop();
+            if (event.metaKey) {
+                var arr = g.canvasThreejs.selectedCountries().concat(country);
+                g.canvasThreejs.selectedCountries(arr);
+            } else {
+                g.canvasThreejs.selectedCountries([country]);
+            }
+            g.canvasThreejs.refresh();
+            console.log(country);
+        });
+    }
+
+    return {
+        name: 'selectCountryMix2',
+        onInit: function onInit(me) {
+            _.me = me;
+            init.call(this);
+        },
+        region: function region(arr, centeroid) {
+            var g = this;
+            var reg = g.canvasThreejs.countries().filter(function (x) {
+                return arr.indexOf(x.id) > -1;
+            });
+            g.canvasThreejs.selectedCountries(reg);
+            g.autorotatePlugin.stop();
+            if (centeroid) {
+                g.centerCanvas.go(centeroid);
+            }
+        },
+        multiRegion: function multiRegion(mregion, centeroid) {
+            var reg = [];
+            var g = this;
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = mregion[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var obj = _step.value;
+
+                    var arr = g.canvasThreejs.countries().filter(function (x) {
+                        var bool = obj.countries.indexOf(x.id) > -1;
+                        if (bool) x.color = obj.color;
+                        return bool;
+                    });
+                    reg = reg.concat(arr);
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            g.canvasThreejs.selectedCountries(reg, true);
+            g.autorotatePlugin.stop();
+            if (centeroid) {
+                g.centerCanvas.go(centeroid);
+            }
+        }
+    };
+});
+
 earthjs$2.plugins = {
     baseCsv: baseCsv,
     worldJson: worldJson,
@@ -6347,7 +6491,8 @@ earthjs$2.plugins = {
     world3d2: world3d2,
 
     commonPlugins: commonPlugins,
-    selectCountryMix: selectCountryMix
+    selectCountryMix: selectCountryMix,
+    selectCountryMix2: selectCountryMix2
 };
 
 return earthjs$2;

@@ -4,6 +4,7 @@
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
     <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
@@ -15,10 +16,11 @@
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.dropShadowSvg())
-        .register(earthjs.plugins.oceanSvg())
-        .register(earthjs.plugins.imageThreejs('../d/graticule.svg'))
-        .register(earthjs.plugins.fauxGlobeSvg());
-        g.create();
+        .register(earthjs.plugins.imageThreejs('../d/texture.jpg'))
+        .register(earthjs.plugins.worldThreejs('../d/world-110m.json'));
+        g.ready(function(){
+            g.create();
+        })
     </script>
 </body>
 </html>

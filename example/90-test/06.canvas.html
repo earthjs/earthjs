@@ -8,8 +8,7 @@
 <body>
     <svg id="earth-js"></svg>
     <script>
-        const g = earthjs({transparent:true});
-        g.register(earthjs.plugins.configPlugin());
+        const g = earthjs({transparent:true, padding:50});
         g.register(earthjs.plugins.autorotatePlugin());
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.dropShadowSvg());
@@ -21,6 +20,8 @@
         g.register(earthjs.plugins.fauxGlobeSvg());
         g.register(earthjs.plugins.barSvg());
         g.register(earthjs.plugins.dotsCanvas('../d/bars.json'));
+        g._.options.showCountries = false;
+        g._.options.showLakes = false;
         g.dotsCanvas.ready = function(err, json) {
             const features = json.features;
             const maxMag = features.map(d => d.properties.mag).sort(d3.descending)[0];
@@ -39,11 +40,7 @@
             g.dotsCanvas.data(json);
         };
         g.ready(function(){
-            // g.create();
-            g.configPlugin.set({
-                showCountries: false,
-                showLakes: false
-            });
+            g.create();
         })
     </script>
 </body>

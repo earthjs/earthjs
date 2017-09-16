@@ -37,8 +37,7 @@
 </head>
 <body>
     <div class="input-area">
-        <input id="pan"  type="range" min="0" max="700" step="1" value="0"/>
-        <input id="year" type="range" min="1992" max="2014" step="1" value="2014"/>
+        <input id="year" type="range" min="1992" max="2014" step="1" value="1992"/>
     </div>
     <div class="top-ten">
         <h1 id="title"></h1>
@@ -82,7 +81,7 @@
                     _.dataYearly   = all.dataYearly;
                     _.countryNmToId= all.countryNmToId;
                     _.countryName  = all.countryName;
-                    _.t = all.dataYearly.map(x=> x.t).sort().pop();
+                    _.t = all.dataYearly.map(x=> x.t).sort()[0]; //.pop();
 
                 } else {
                     const  {countryIso, countryLLg, dataYearly, countryNmToId, countryName} = _;
@@ -183,30 +182,35 @@
     const g = earthjs({scale:350})
     .register(smallArmsJson())
     .register(earthjs.plugins.dropShadowSvg())
-    .register(earthjs.plugins.selectCountryMix())
+    // .register(earthjs.plugins.oceanSvg())
+    .register(earthjs.plugins.selectCountryMix2())
+    .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
     .register(earthjs.plugins.imageThreejs('../d/world.jpg'))
     .register(earthjs.plugins.flightLineThreejs(null,'../images/point3.png'))
     .register(earthjs.plugins.countryTooltipCanvas());
     g.mousePlugin.selectAll('#three-js');
-
     function reload(cc) {
         const csv = g.smallArmsJson.getData(cc);
         const arr = g.smallArmsJson.ids();
-        const data= g.worldCanvas.data();
+        const data= g.worldJson.data();
         const countries = topojson.feature(data, data.objects.countries).features;
-        g.worldCanvas.countries(countries.filter(x=>arr.indexOf(x.id)>-1));
+        g.canvasThreejs.countries(countries.filter(x=>arr.indexOf(x.id)>-1));
         g.flightLineThreejs.data(csv, true, [80,150],100,1);
         g.smallArmsJson.topTen();
         const cl = g.countryTooltipCanvas.data();
         const xd = cl.find(t=> t.cid===cc);
         if (xd) {
-            g.worldCanvas.selectedCountries(countries.filter(x=> x.id===xd.id));
+            g.canvasThreejs.selectedCountries(countries.filter(x=> x.id===xd.id));
         }
+        g.canvasThreejs.reload();
     }
-
+    g.worldJson.ready = function(err, json) {
+        g.canvasThreejs.data(json);
+        g.worldJson.data(json);
+    }
     g.ready(function(){
         g.countryTooltipCanvas.data(g.smallArmsJson.allData().countryName);
-        g.worldCanvas.style({countries: 'rgba(220,91,52,0.4)'});
+        delete g._.options.showBorder;
         reload('SG');
         g.create();
     })
@@ -233,11 +237,6 @@
         reload();
         g.flightLineThreejs.reload();
     })
-    var canvas = d3.selectAll('canvas').nodes();
-    d3.select('#pan').on('input', function() {
-        canvas[0].style.left = (this.value)+'px';
-    })
-
     </script>
 </body>
 </html>
