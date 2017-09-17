@@ -11,14 +11,11 @@
         const g = earthjs()
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.canvasPlugin())
-        .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.oceanSvg())
-        .register(earthjs.plugins.worldCanvas('../d/world.hires.topo.json'));
+        .register(earthjs.plugins.worldCanvas('../d/world-hi.json'));
         var o = g._.options;
         o.showCountries = true;
         o.showLakes = false;
-        // g.mousePlugin.onDragStart({app() {o.showCountries = false;}});
-        // g.mousePlugin.onDragEnd(  {app() {o.showCountries = true; }});
         g.ready(function(){
             g.create();
         })

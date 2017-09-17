@@ -1,0 +1,33 @@
+// cid = country_nm_to_id.json
+// iso = country_iso3166.json
+g=cnew.objects.countries.geometries;
+g.forEach(x=> x.name=x.properties.name);
+g.forEach(x=> x.cid = cid[x.name.toUpperCase()]);
+g.forEach(x=> x.name = iso[x.cid]);
+g.forEach(x=> delete x.properties);
+
+// cid=world-110m-country-names.json
+// g.forEach(x=> x.cid = cid[x.name.toUpperCase()]);
+g.forEach(x=> {
+    var f = cid.find(y=> y.id===x.id);
+    x.cid = f ? f.cid : undefined;
+})
+
+
+cnew.objects.land = {"type":"MultiPolygon","arcs":[]};
+cnew.objects.ne_110m_lakes = {"type":"FeatureCollection","features":[]};
+
+$('body').innerText = JSON.stringify(cnew);
+
+
+cnew.objects.countries.geometries.forEach(x=> {
+    var f = cid.find(y=> y.id===x.id);
+    if (!f) console.log(x.properties)
+})
+
+cnew.objects.countries.geometries.forEach(x=> {
+  var w = cid.filter(y=>y.cid===x.cid)[0];
+  if (w) {
+      x.name = w.name
+  }
+})
