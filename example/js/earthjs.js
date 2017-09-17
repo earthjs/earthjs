@@ -2130,6 +2130,7 @@ var worldSvg = (function (worldUrl) {
         urls: worldUrl && [worldUrl],
         onReady: function onReady(err, data) {
             _.me.data(data);
+            console.log(data);
         },
         onInit: function onInit(me) {
             _.me = me;
@@ -5168,7 +5169,7 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
                 // resolution: resolution,
                 // sizeAttenuation: true,
             });
-            for (var j = 0; j < curve_length; ++j) {
+            for (var j = 0; j <= curve_length; ++j) {
                 var i_curve = j * 3;
 
                 var _spline$getPoint = spline.getPoint(j / curve_length),

@@ -295,7 +295,7 @@ export default (jsonUrl, imgUrl, height=150) => {
                 // resolution: resolution,
                 // sizeAttenuation: true,
             });
-            for (let j = 0; j < curve_length; ++j) {
+            for (let j = 0; j <= curve_length; ++j) {
                 const i_curve = j * 3;
                 const {x,y,z} = spline.getPoint(j / curve_length);
                 lines[i_curve + 0] = x;
