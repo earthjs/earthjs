@@ -4418,22 +4418,17 @@ var iconsThreejs = (function (jsonUrl, iconUrl) {
     }
 
     function init() {
-        var _this = this;
-
         var tj = this.threejsPlugin;
         this._.options.showIcons = true;
-        var loader = new THREE.TextureLoader();
-        loader.load(iconUrl, function (map) {
-            _.material = new THREE.MeshPhongMaterial({
-                side: THREE.DoubleSide,
-                transparent: true,
-                map: map
-            });
-            if (_.data && !_.loaded) {
-                loadIcons.call(_this);
-                tj.rotate();
-            }
+        _.material = new THREE.MeshPhongMaterial({
+            side: THREE.DoubleSide,
+            transparent: true,
+            map: tj.texture(iconUrl)
         });
+        if (_.data && !_.loaded) {
+            loadIcons.call(this);
+            tj.rotate();
+        }
     }
 
     function create() {
@@ -5261,12 +5256,7 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
 
     function init() {
         _.SCALE = this._.proj.scale();
-        var manager = new THREE.LoadingManager();
-        var loader = new THREE.TextureLoader(manager);
-        this._.options.showFlightLine = true;
-        _.texture = loader.load(imgUrl, function (point_texture) {
-            return point_texture;
-        });
+        _.texture = this.threejsPlugin.texture(imgUrl);
     }
 
     function create() {
@@ -5331,6 +5321,7 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
         onInit: function onInit(me) {
             _.me = me;
             init.call(this);
+            this._.options.showFlightLine = true;
         },
         onResize: function onResize() {
             resize.call(this);
@@ -5632,8 +5623,6 @@ var globeThreejs = (function () {
         onHover: {},
         onHoverVals: []
     };
-    var manager = new THREE.LoadingManager();
-    var loader = new THREE.TextureLoader(manager);
 
     function init() {
         this._.options.showGlobe = true;
@@ -5643,15 +5632,9 @@ var globeThreejs = (function () {
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
             var SCALE = this._.proj.scale();
-            var earth_img = loader.load(imgUrl, function (image) {
-                return image;
-            });
-            var elevt_img = loader.load(elvUrl, function (image) {
-                return image;
-            });
-            var water_img = loader.load(wtrUrl, function (image) {
-                return image;
-            });
+            var earth_img = tj.texture(imgUrl);
+            var elevt_img = tj.texture(elvUrl);
+            var water_img = tj.texture(wtrUrl);
             var geometry = new THREE.SphereGeometry(SCALE, 30, 30);
             var material = new THREE.MeshPhongMaterial({
                 map: earth_img,
@@ -5729,8 +5712,6 @@ var sphereThreejs = (function () {
 
   /*eslint no-console: 0 */
   var _ = { sphereObject: null };
-  var manager = new THREE.LoadingManager();
-  var loader = new THREE.TextureLoader(manager);
   var Shaders = {
     'earth': {
       uniforms: {
@@ -5753,9 +5734,7 @@ var sphereThreejs = (function () {
       var geometry = new THREE.SphereGeometry(SCALE, 30, 30);
       var uniforms1 = THREE.UniformsUtils.clone(Shaders.earth.uniforms);
       var uniforms2 = THREE.UniformsUtils.clone(Shaders.atmosphere.uniforms);
-      uniforms1['texture'].value = loader.load(imgUrl, function (image) {
-        return image;
-      });
+      uniforms1['texture'].value = tj.texture(imgUrl);
 
       var mesh1 = new THREE.Mesh(geometry, new THREE.ShaderMaterial({
         uniforms: uniforms1,
@@ -5795,12 +5774,12 @@ var sphereThreejs = (function () {
     sphere: function sphere() {
       return _.sphereObject;
     },
-    imgSrc: function imgSrc(umgUrl) {
+    imgSrc: function imgSrc(imgUrl) {
+      var tj = this.threejsPlugin;
+
       var material = _.me.sphere().children[0].material;
 
-      material.uniforms.texture.value = loader.load(umgUrl, function (image) {
-        return image;
-      });
+      material.uniforms.texture.value = tj.texture(imgUrl);
       material.needsUpdate = true;
     }
   };
@@ -5930,7 +5909,7 @@ var world3d = (function () {
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r, r, r);
-        makeEnvMapMaterial(landUrl, function (material) {
+        makeEnvMapMaterial.call(this, landUrl, function (material) {
             _.material = material;
             if (_.world && !_.loaded) {
                 loadCountry();
@@ -5949,14 +5928,12 @@ var world3d = (function () {
     var vertexShader = '\n    varying vec2 vN;\n    void main() {\n        vec4 p = vec4( position, 1. );\n        vec3 e = normalize( vec3( modelViewMatrix * p ) );\n        vec3 n = normalize( normalMatrix * normal );\n        vec3 r = reflect( e, n );\n        float m = 2. * length( vec3( r.xy, r.z + 1. ) );\n        vN = r.xy / m + .5;\n        gl_Position = projectionMatrix * modelViewMatrix * p;\n    }\n    ';
     var fragmentShader = '\n    uniform sampler2D tMatCap;\n    varying vec2 vN;\n    void main() {\n        vec3 base = texture2D( tMatCap, vN ).rgb;\n        gl_FragColor = vec4( base, 1. );\n    }\n    ';
     function makeEnvMapMaterial(imgUrl, cb) {
-        var loader = new THREE.TextureLoader();
-        loader.load(imgUrl, function (value) {
-            var type = 't';
-            var shading = THREE.SmoothShading;
-            var uniforms = { tMatCap: { type: type, value: value } };
-            var material = new THREE.ShaderMaterial({ shading: shading, uniforms: uniforms, vertexShader: vertexShader, fragmentShader: fragmentShader });
-            cb.call(this, material);
-        });
+        var type = 't';
+        var tj = this.threejsPlugin;
+        var shading = THREE.SmoothShading;
+        var uniforms = { tMatCap: { type: type, value: tj.texture(imgUrl) } };
+        var material = new THREE.ShaderMaterial({ shading: shading, uniforms: uniforms, vertexShader: vertexShader, fragmentShader: fragmentShader });
+        cb.call(this, material);
     }
 
     return {
@@ -6074,7 +6051,7 @@ var world3d2 = (function () {
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r, r, r);
-        makeEnvMapMaterial(landUrl, function (material) {
+        makeEnvMapMaterial.call(this, landUrl, function (material) {
             _.material = material;
             if (_.world && !_.loaded) {
                 loadCountry();
@@ -6093,18 +6070,16 @@ var world3d2 = (function () {
     var vertexShader = '\n    varying vec2 vN;\n    void main() {\n        vec4 p = vec4( position, 1. );\n        vec3 e = normalize( vec3( modelViewMatrix * p ) );\n        vec3 n = normalize( normalMatrix * normal );\n        vec3 r = reflect( e, n );\n        float m = 2. * length( vec3( r.xy, r.z + 1. ) );\n        vN = r.xy / m + .5;\n        gl_Position = projectionMatrix * modelViewMatrix * p;\n    }\n    ';
     var fragmentShader = '\n    uniform sampler2D tMatCap;\n    varying vec2 vN;\n    void main() {\n        vec3 base = texture2D( tMatCap, vN ).rgb;\n        gl_FragColor = vec4( base, 1. );\n    }\n    ';
     function makeEnvMapMaterial(imgUrl, cb) {
-        var loader = new THREE.TextureLoader();
-        loader.load(imgUrl, function (value) {
-            var type = 't';
-            var uniforms = { tMatCap: { type: type, value: value } };
-            var material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: vertexShader,
-                fragmentShader: fragmentShader,
-                shading: THREE.SmoothShading
-            });
-            cb.call(this, material);
+        var type = 't';
+        var tj = this.threejsPlugin;
+        var uniforms = { tMatCap: { type: type, value: tj.texture(imgUrl) } };
+        var material = new THREE.ShaderMaterial({
+            uniforms: uniforms,
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader,
+            shading: THREE.SmoothShading
         });
+        cb.call(this, material);
     }
 
     return {

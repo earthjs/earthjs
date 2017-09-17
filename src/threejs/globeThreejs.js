@@ -8,8 +8,6 @@ export default (
         onHover: {},
         onHoverVals: [],
     };
-    const manager = new THREE.LoadingManager();
-    const loader = new THREE.TextureLoader(manager);
 
     function init() {
         this._.options.showGlobe = true;
@@ -19,9 +17,9 @@ export default (
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
             const SCALE = this._.proj.scale();
-            const earth_img = loader.load(imgUrl, image=>image);
-            const elevt_img = loader.load(elvUrl, image=>image);
-            const water_img = loader.load(wtrUrl, image=>image);
+            const earth_img = tj.texture(imgUrl);
+            const elevt_img = tj.texture(elvUrl);
+            const water_img = tj.texture(wtrUrl);
             const geometry  = new THREE.SphereGeometry(SCALE, 30, 30);
             const material  = new THREE.MeshPhongMaterial({
                 map: earth_img,

@@ -1,8 +1,6 @@
 export default (imgUrl='../d/world.png') => {
     /*eslint no-console: 0 */
     const _ = {sphereObject: null};
-    const manager = new THREE.LoadingManager();
-    const loader = new THREE.TextureLoader(manager);
     var Shaders = {
       'earth' : {
         uniforms: {
@@ -55,7 +53,7 @@ export default (imgUrl='../d/world.png') => {
             const geometry  = new THREE.SphereGeometry(SCALE, 30, 30);
             const uniforms1 = THREE.UniformsUtils.clone(Shaders.earth.uniforms);
             const uniforms2 = THREE.UniformsUtils.clone(Shaders.atmosphere.uniforms);
-            uniforms1['texture'].value = loader.load(imgUrl, image=>image);
+            uniforms1['texture'].value = tj.texture(imgUrl);
 
             var mesh1 = new THREE.Mesh(geometry, new THREE.ShaderMaterial({
                 uniforms: uniforms1,
@@ -95,9 +93,10 @@ export default (imgUrl='../d/world.png') => {
         sphere() {
             return _.sphereObject;
         },
-        imgSrc(umgUrl) {
+        imgSrc(imgUrl) {
+            const tj = this.threejsPlugin;
             const {material} = _.me.sphere().children[0];
-            material.uniforms.texture.value = loader.load(umgUrl, image=>image);
+            material.uniforms.texture.value = tj.texture(imgUrl);
             material.needsUpdate = true;
         }
     }

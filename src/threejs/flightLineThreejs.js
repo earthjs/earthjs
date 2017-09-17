@@ -379,13 +379,7 @@ export default (jsonUrl, imgUrl, height=150) => {
 
     function init() {
         _.SCALE = this._.proj.scale();
-        const manager = new THREE.LoadingManager();
-        const loader = new THREE.TextureLoader(manager);
-        this._.options.showFlightLine = true;
-        _.texture = loader.load(imgUrl,
-            function(point_texture) {
-                return point_texture;
-            })
+        _.texture = this.threejsPlugin.texture(imgUrl);
     }
 
     function create() {
@@ -443,6 +437,7 @@ export default (jsonUrl, imgUrl, height=150) => {
         onInit(me) {
             _.me = me;
             init.call(this);
+            this._.options.showFlightLine = true;
         },
         onResize() {
             resize.call(this);

@@ -72,7 +72,7 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../d/gold.jpg', inn
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r,r,r);
-        makeEnvMapMaterial(landUrl, function(material) {
+        makeEnvMapMaterial.call(this, landUrl, function(material) {
             _.material = material;
             if (_.world && !_.loaded) {
                 loadCountry()
@@ -109,18 +109,16 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../d/gold.jpg', inn
     }
     `
     function makeEnvMapMaterial(imgUrl, cb) {
-        const loader = new THREE.TextureLoader();
-        loader.load(imgUrl, function(value) {
-            const type = 't';
-            const uniforms = {tMatCap:{type,value}};
-            const material = new THREE.ShaderMaterial({
-                uniforms,
-                vertexShader,
-                fragmentShader,
-                shading: THREE.SmoothShading
-            });
-            cb.call(this, material);
+        const type = 't';
+        const tj = this.threejsPlugin;
+        const uniforms = {tMatCap:{type,value: tj.texture(imgUrl)}};
+        const material = new THREE.ShaderMaterial({
+            uniforms,
+            vertexShader,
+            fragmentShader,
+            shading: THREE.SmoothShading
         });
+        cb.call(this, material);
     }
 
     return {

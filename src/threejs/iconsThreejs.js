@@ -33,18 +33,15 @@ export default (jsonUrl, iconUrl) => {
     function init() {
         const tj = this.threejsPlugin;
         this._.options.showIcons = true;
-        const loader = new THREE.TextureLoader();
-        loader.load(iconUrl, map => {
-            _.material = new THREE.MeshPhongMaterial({
-                side: THREE.DoubleSide,
-                transparent: true,
-                map
-            });
-            if (_.data && !_.loaded) {
-                loadIcons.call(this);
-                tj.rotate();
-            }
+        _.material = new THREE.MeshPhongMaterial({
+            side: THREE.DoubleSide,
+            transparent: true,
+            map: tj.texture(iconUrl)
         });
+        if (_.data && !_.loaded) {
+            loadIcons.call(this);
+            tj.rotate();
+        }
     }
 
     function create() {
