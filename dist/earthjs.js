@@ -532,6 +532,27 @@ var choroplethCsv = (function (csvUrl) {
     /*eslint no-console: 0 */
     var _ = { data: null, color: null };
 
+    function getPath(path) {
+        var v = this;
+        path.split('.').forEach(function (p) {
+            return v = v[p];
+        });
+        return v;
+    }
+
+    function updatePath(path, value) {
+        var o = void 0,
+            k = void 0,
+            v = this;
+        path.split('.').forEach(function (p) {
+            o = v;
+            k = p;
+            v = v[p];
+        });
+        o[k] = value;
+        // console.log(o,k,value);
+    }
+
     return {
         name: 'choroplethCsv',
         urls: csvUrl && [csvUrl],
@@ -544,6 +565,8 @@ var choroplethCsv = (function (csvUrl) {
         data: function data(_data) {
             if (_data) {
                 _.data = _data;
+                _.data.getPath = getPath;
+                _.data.updatePath = updatePath;
             } else {
                 return _.data;
             }
@@ -553,11 +576,12 @@ var choroplethCsv = (function (csvUrl) {
             var id = arr[0].split(':');
             var vl = arr[1].split(':');
             json.features.forEach(function (obj) {
-                var o = cn.find(function (x) {
-                    return '' + obj[id[0]] === x[id[1]];
+                var o = cn.find(function (src) {
+                    return getPath.call(obj, id[0]) === getPath.call(src, id[1]);
                 });
                 if (o) {
-                    obj[vl[0]] = o[vl[1]];
+                    var v = getPath.call(o, vl[1]);
+                    updatePath.call(obj, vl[0], v);
                 }
             });
         },
@@ -4672,7 +4696,7 @@ var canvasThreejs = (function (worldUrl) {
                 var obj = _.countries.features[i];
                 _.context.beginPath();
                 _.path(obj);
-                _.context.fillStyle = obj.color || _.style.countries || 'rgba(2, 20, 37,0.8)';
+                _.context.fillStyle = obj.properties.color || _.style.countries || 'rgba(2, 20, 37,0.8)';
                 _.context.fill();
             }
             return true;

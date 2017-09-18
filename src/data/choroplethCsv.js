@@ -2,6 +2,23 @@ export default csvUrl => {
     /*eslint no-console: 0 */
     const _ = {data: null, color: null};
 
+    function getPath(path) {
+        let v = this;
+        path.split('.').forEach(p => v = v[p]);
+        return v;
+    }
+
+    function updatePath(path, value) {
+        let o, k, v = this;
+        path.split('.').forEach(p => {
+            o = v;
+            k = p;
+            v = v[p];
+        });
+        o[k] = value;
+        // console.log(o,k,value);
+    }
+
     return {
         name: 'choroplethCsv',
         urls: csvUrl && [csvUrl],
@@ -14,6 +31,8 @@ export default csvUrl => {
         data(data) {
             if (data) {
                 _.data = data;
+                _.data.getPath = getPath;
+                _.data.updatePath = updatePath;
             } else {
                 return _.data;
             }
@@ -23,9 +42,13 @@ export default csvUrl => {
             const id = arr[0].split(':');
             const vl = arr[1].split(':');
             json.features.forEach(function(obj) {
-                const o = cn.find(x=> ''+obj[id[0]]===x[id[1]] );
+                const o = cn.find(src=> {
+                    return getPath.call(obj, id[0])===
+                           getPath.call(src, id[1]);
+                });
                 if (o) {
-                    obj[vl[0]] = o[vl[1]];
+                    const v = getPath.call(o, vl[1]);
+                    updatePath.call(obj, vl[0], v);
                 }
             })
         },

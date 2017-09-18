@@ -18,21 +18,27 @@
         .register(earthjs.plugins.countryNamesCsv('../d/world-110m-country-names.tsv'))
         .register(earthjs.plugins.choroplethCsv('../d/2010_alcohol_consumption_by_country.csv'))
         .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.clickCanvas())
         .register(earthjs.plugins.hoverCanvas())
         .register(earthjs.plugins.countryCanvas())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.canvasThreejs())
+        .register(earthjs.plugins.autorotatePlugin());
         g.canvasThreejs.style({ocean: '#36496e'});
         g._.options.showSelectedCountry = true;
         g._.options.choropleth = true;
         g.ready(function(){
             const countries = g.worldJson.allData().countries;
-            g.choroplethCsv  .colorize('alcohol', 'schemeOranges'); //schemeReds, https://github.com/d3/d3-scale-chromatic
-            g.countryNamesCsv.mergeData(countries, ['id:id','name:name']);
-            g.choroplethCsv  .mergeData(countries, ['name:location','color:color']);
-            g.choroplethCsv  .mergeData(countries, ['name:location','value:alcohol']);
+            g.choroplethCsv  .colorize('alcohol', 'schemeGreens'); //schemeReds, https://github.com/d3/d3-scale-chromatic
+            g.choroplethCsv  .mergeData(countries, ['properties.cid:cid', 'properties.color:color']);
+            g.choroplethCsv  .mergeData(countries, ['properties.cid:cid', 'properties.value:alcohol']);
             g.canvasThreejs.allData(g.worldJson.allData());
             g.create();
+        })
+        g.clickCanvas.onCountry({
+            app3(e, country) {
+                console.log(country);
+            }
         })
     </script>
 </body>

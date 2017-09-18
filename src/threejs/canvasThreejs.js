@@ -68,7 +68,7 @@ export default (worldUrl, scw=6.279, height=2048) => {
                 var obj = _.countries.features[i];
                 _.context.beginPath();
                 _.path(obj);
-                _.context.fillStyle = obj.color || _.style.countries || 'rgba(2, 20, 37,0.8)';
+                _.context.fillStyle = obj.properties.color || _.style.countries || 'rgba(2, 20, 37,0.8)';
                 _.context.fill();
             }
             return true;
