@@ -10,15 +10,15 @@ Earthjs is a javascript library for easy building orthographic globe. Originally
 
 Earthjs is created using D3-v4, design as pluggable modules.
 
-Awesome interactive globe can be created, drag to rotate the globe, zooming using scroll mouse. Multi layer of globe, combination between SVG, Canvas and Threejs. Multi globe created as a twin globe with similar layer or different layer. Solid globe or transparent globe in SVG, Canvas or Threejs, hide/show some features balancing between smooth rendering and cpu utilization. point of location, bar chart, tooltips on country, point of location (dots) & bar chart.
+Awesome interactive globe can be created, drag to rotate, scroll mouse zooming. Multi layer of globe, combination between SVG, Canvas and Threejs. Multiple globe as a twin globe with same or different layer. Solid or transparent globe in SVG, Canvas or Threejs, hide/show some features balancing between smooth rendering and cpu utilization. point/mark of location, bar chart on globe & tooltips.
 
-SVG is a way to create prototype of globe quickly as it used standard SVG DOM element so event & css can be applied to each element. the downside will come when the need to create so much SVG element, the responsiveness or jaggering drag will show.
+SVG for quickly prototyping the globe as it used standard SVG DOM element so event & css can be applied to each element. the downside will come when the need to create so much SVG element, the responsiveness or jaggering drag will show.
 
-Canvas is a way to create if more data point that need to be rendered increased. Interactivity or mouse detection are available for hovering, click & double click. detect country or point of location.
+Canvas for more data point that need to be render and UX experience stay in good shape. Interactivity or mouse detection are available for hovering, click & double click. detect country or point of location.
 
-WebGL/Threejs is a way to go if eye catchy of globe is needed or want to be better CPU utilization by moving some intensive calculation to GPU.
+WebGL/Threejs is a way to go if eye catchy of globe is needed and lots of data, or want to be better CPU utilization by moving some intensive calculation to GPU.
 
-Interesting Data Visualization can be created by combining SVG, Canvas & Threejs(WebGL) like: choropleth globe using Canvas or Threejs, heatmap globe by rendering heatmap on Canvas and use that canvas as a texture in Threejs, flightLine to connect two datapoint using Threejs and coloring target location (usually country) using Canvas. flashy bullet that travel along the way of flightLine is there including the mouse event using Threejs.
+Interesting Data Visualization can be created by combining SVG, Canvas & Threejs(WebGL) like: choropleth globe using Canvas or Threejs, heatmap globe by rendering heatmap on canvas and use that canvas as a texture in Threejs, flightLine to connect two datapoint using Threejs and coloring target location (usually country) using Canvas. flashy bullet that travel along the way of flightLine is there including the mouse event using Threejs.
 
 ## Internal Plugins (more than 50)
 Selected plugins bundled into library:

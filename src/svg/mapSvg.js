@@ -9,6 +9,7 @@ export default worldUrl => {
         countries: {type: 'FeatureCollection', features:[]},
     };
     const $ = {};
+    const tooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
 
     function init() {
         _.svg = this._.svg;
@@ -18,7 +19,7 @@ export default worldUrl => {
         _.proj = d3.geoEquirectangular().scale(scale).translate([width/2, height/2]);
         _.path = d3.geoPath().projection(_.proj).context(_.context);
         _.svg.call(zoom);
-}
+    }
 
     function create() {
         _.svg.selectAll('.map').remove();
@@ -26,8 +27,26 @@ export default worldUrl => {
             $.g = _.svg.append('g').attr('class','countries');
             $.countries = $.g.selectAll('path')
                 .data(_.countries.features).enter().append('path')
-                .attr('class', d => `map-${d.properties.cid}`)
+                .attr('class', d => `cid-${d.properties.cid}`)
                 .attr('id', d => `x${d.id}`);
+
+            $.countries.on('mouseover', function(d) {
+                const {pageX, pageY} = d3.event;
+                tooltip
+                    .html(d.properties.name)
+                    .style('display', 'block')
+                    .style('left', (pageX + 7) + 'px')
+                    .style('top', (pageY - 15) + 'px')
+            })
+            .on('mouseout', function() {
+                tooltip.style('display', 'none')
+            })
+            .on('mousemove', function() {
+                const {pageX, pageY} = d3.event;
+                tooltip
+                    .style('left', (pageX + 7) + 'px')
+                    .style('top', (pageY - 15) + 'px')
+            });
             refresh.call(this);
         }
     }

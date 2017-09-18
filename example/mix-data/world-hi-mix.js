@@ -1,3 +1,5 @@
+/* eslint no-undef:0 */
+/* eslint no-console:0 */
 // cid = country_nm_to_id.json
 // iso = country_iso3166.json
 g=cnew.objects.countries.geometries;
@@ -23,6 +25,12 @@ g.forEach(x=> {
     delete x.name;
 });
 $('body').innerText = JSON.stringify(cnew);
+
+g.forEach(x=> {
+    // console.log(!cid[x.id] ? x : '.')
+    x.properties.cid3 = cid[x.id] && cid[x.id].cid3;
+});
+
 
 
 cnew.objects.countries.geometries.forEach(x=> {

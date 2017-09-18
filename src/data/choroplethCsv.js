@@ -1,6 +1,6 @@
 export default csvUrl => {
     /*eslint no-console: 0 */
-    const _ = {choropleth: null, color: null};
+    const _ = {data: null, color: null};
 
     return {
         name: 'choroplethCsv',
@@ -13,13 +13,13 @@ export default csvUrl => {
         },
         data(data) {
             if (data) {
-                _.choropleth = data;
+                _.data = data;
             } else {
-                return _.choropleth;
+                return _.data;
             }
         },
         mergeData(json, arr) {
-            const cn = _.choropleth;
+            const cn = _.data;
             const id = arr[0].split(':');
             const vl = arr[1].split(':');
             json.features.forEach(function(obj) {
@@ -31,16 +31,22 @@ export default csvUrl => {
         },
         // https://github.com/d3/d3-scale-chromatic
         colorize(key, scheme='schemeReds') {
-            let arr = _.choropleth.map(x=>+x[key]);
+            let arr = _.data.map(x=>+x[key]);
             arr = [...new Set(arr)];
             _.min = d3.min(arr);
             _.max = d3.max(arr);
             const c = d3[scheme] || d3.schemeReds;
             const x = d3.scaleLinear().domain([1, 10]).rangeRound([_.min, _.max]);
             const color = d3.scaleThreshold().domain(d3.range(2, 10)).range(c[9]);
-            _.choropleth.forEach(function(obj) {
+            _.data.forEach(function(obj) {
                 obj.color = color(x(+obj[key]));
             })
+        },
+        setCss(target) {
+            const colors = _.data.map(x=> {
+                return `.countries path.cid-${x.cid} {fill: ${x.color};} `
+            });
+            d3.select(target).text(colors.join("\n"));
         }
     }
 }

@@ -3,17 +3,24 @@
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src="../js/d3-scale-chromatic.v1.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
     <style media="screen">
         #x10 {display: none;}
     </style>
+    <style id="choropleth"></style>
 </head>
 <body>
     <svg id="earth-js" class="ej-center" width="1600" height="800"/>
     <script>
         const g = earthjs()
+        // .register(earthjs.plugins.baseCsv('../d/2014_world_gdp_with_codes.csv'))
+        // .register(earthjs.plugins.baseCsv('../d/2010_alcohol_consumption_by_country.csv'))
+        .register(earthjs.plugins.choroplethCsv('../d/2010_alcohol_consumption_by_country.csv'))
         .register(earthjs.plugins.mapSvg('../d/world-hi.json'));
         g.ready(function(){
+            g.choroplethCsv.colorize('alcohol', 'schemeOranges');
+            g.choroplethCsv.setCss('#choropleth');
             g.create();
         })
     </script>

@@ -530,7 +530,7 @@ var toConsumableArray = function (arr) {
 
 var choroplethCsv = (function (csvUrl) {
     /*eslint no-console: 0 */
-    var _ = { choropleth: null, color: null };
+    var _ = { data: null, color: null };
 
     return {
         name: 'choroplethCsv',
@@ -543,13 +543,13 @@ var choroplethCsv = (function (csvUrl) {
         },
         data: function data(_data) {
             if (_data) {
-                _.choropleth = _data;
+                _.data = _data;
             } else {
-                return _.choropleth;
+                return _.data;
             }
         },
         mergeData: function mergeData(json, arr) {
-            var cn = _.choropleth;
+            var cn = _.data;
             var id = arr[0].split(':');
             var vl = arr[1].split(':');
             json.features.forEach(function (obj) {
@@ -566,7 +566,7 @@ var choroplethCsv = (function (csvUrl) {
         colorize: function colorize(key) {
             var scheme = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'schemeReds';
 
-            var arr = _.choropleth.map(function (x) {
+            var arr = _.data.map(function (x) {
                 return +x[key];
             });
             arr = [].concat(toConsumableArray(new Set(arr)));
@@ -575,9 +575,15 @@ var choroplethCsv = (function (csvUrl) {
             var c = d3[scheme] || d3.schemeReds;
             var x = d3.scaleLinear().domain([1, 10]).rangeRound([_.min, _.max]);
             var color = d3.scaleThreshold().domain(d3.range(2, 10)).range(c[9]);
-            _.choropleth.forEach(function (obj) {
+            _.data.forEach(function (obj) {
                 obj.color = color(x(+obj[key]));
             });
+        },
+        setCss: function setCss(target) {
+            var colors = _.data.map(function (x) {
+                return '.countries path.cid-' + x.cid + ' {fill: ' + x.color + ';} ';
+            });
+            d3.select(target).text(colors.join("\n"));
         }
     };
 });
@@ -1908,6 +1914,7 @@ var mapSvg = (function (worldUrl) {
         countries: { type: 'FeatureCollection', features: [] }
     };
     var $ = {};
+    var tooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
 
     function init() {
         _.svg = this._.svg;
@@ -1929,9 +1936,25 @@ var mapSvg = (function (worldUrl) {
         if (this._.options.showMap) {
             $.g = _.svg.append('g').attr('class', 'countries');
             $.countries = $.g.selectAll('path').data(_.countries.features).enter().append('path').attr('class', function (d) {
-                return 'map-' + d.properties.cid;
+                return 'cid-' + d.properties.cid;
             }).attr('id', function (d) {
                 return 'x' + d.id;
+            });
+
+            $.countries.on('mouseover', function (d) {
+                var _d3$event = d3.event,
+                    pageX = _d3$event.pageX,
+                    pageY = _d3$event.pageY;
+
+                tooltip.html(d.properties.name).style('display', 'block').style('left', pageX + 7 + 'px').style('top', pageY - 15 + 'px');
+            }).on('mouseout', function () {
+                tooltip.style('display', 'none');
+            }).on('mousemove', function () {
+                var _d3$event2 = d3.event,
+                    pageX = _d3$event2.pageX,
+                    pageY = _d3$event2.pageY;
+
+                tooltip.style('left', pageX + 7 + 'px').style('top', pageY - 15 + 'px');
             });
             refresh.call(this);
         }
@@ -4363,8 +4386,7 @@ var dotsThreejs = (function (urlJson) {
     var _ = { dataDots: null };
     var material = new THREE.MeshBasicMaterial({
         side: THREE.DoubleSide,
-        color: 0xC19999 //F0C400,
-    });
+        color: 0xC19999 });
 
     function init() {
         this._.options.showDots = true;
@@ -5267,10 +5289,6 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
                 useMap: false,
                 opacity: 1,
                 lineWidth: lineWidth
-                // near: this._.camera.near,
-                // far:  this._.camera.far
-                // resolution: resolution,
-                // sizeAttenuation: true,
             });
             for (var j = 0; j <= curve_length; ++j) {
                 var i_curve = j * 3;
