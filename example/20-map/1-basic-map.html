@@ -1,0 +1,21 @@
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+    <style media="screen">
+        #x10 {display: none;}
+    </style>
+</head>
+<body>
+    <svg id="earth-js" class="ej-center" width="1600" height="800"/>
+    <script>
+        const g = earthjs()
+        .register(earthjs.plugins.mapSvg('../d/world-hi.json'));
+        g.ready(function(){
+            g.create();
+        })
+    </script>
+</body>
+</html>

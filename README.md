@@ -56,6 +56,7 @@ Selected plugins bundled into library:
 * placesSvg,
 * worldSvg,
 * barSvg,
+* mapSvg,
 * dotsSvg,
 * pingsSvg,
 * pinCanvas,
@@ -82,6 +83,7 @@ Selected plugins bundled into library:
 * world3d2,
 * commonPlugins,
 * selectCountryMix,
+* selectCountryMix2,
 
 ## Requirements
 * [D3 version 4](http://d3js.org/)

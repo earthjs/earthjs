@@ -1897,6 +1897,110 @@ var barSvg = (function (urlBars) {
     };
 });
 
+var mapSvg = (function (worldUrl) {
+    var _ = {
+        q: null,
+        svg: null,
+        world: null,
+        land: null,
+        lakes: { type: 'FeatureCollection', features: [] },
+        selected: { type: 'FeatureCollection', features: [] },
+        countries: { type: 'FeatureCollection', features: [] }
+    };
+    var $ = {};
+
+    function init() {
+        _.svg = this._.svg;
+        var _$options = this._.options,
+            width = _$options.width,
+            height = _$options.height;
+
+        var scale = width / 6.279;
+        var zoom = d3.zoom().on('zoom', function () {
+            return $.g.attr('transform', d3.event.transform);
+        });
+        _.proj = d3.geoEquirectangular().scale(scale).translate([width / 2, height / 2]);
+        _.path = d3.geoPath().projection(_.proj).context(_.context);
+        _.svg.call(zoom);
+    }
+
+    function create() {
+        _.svg.selectAll('.map').remove();
+        if (this._.options.showMap) {
+            $.g = _.svg.append('g').attr('class', 'countries');
+            $.countries = $.g.selectAll('path').data(_.countries.features).enter().append('path').attr('class', function (d) {
+                return 'map-' + d.properties.cid;
+            }).attr('id', function (d) {
+                return 'x' + d.id;
+            });
+            refresh.call(this);
+        }
+    }
+
+    function refresh() {
+        var __ = this._;
+        if (__.options.showMap) {
+            $.countries.attr('d', _.path);
+        }
+    }
+
+    return {
+        name: 'mapSvg',
+        urls: worldUrl && [worldUrl],
+        onReady: function onReady(err, data) {
+            _.me.data(data);
+        },
+        onInit: function onInit(me) {
+            _.me = me;
+            var __ = this._;
+            var options = __.options;
+            options.showMap = true;
+            init.call(this);
+        },
+        onCreate: function onCreate() {
+            if (this.worldJson && !_.world) {
+                _.me.allData(this.worldJson.allData());
+            }
+            create.call(this);
+        },
+        onRefresh: function onRefresh() {
+            refresh.call(this);
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.world = _data;
+                _.land = topojson.feature(_data, _data.objects.land);
+                _.lakes.features = topojson.feature(_data, _data.objects.ne_110m_lakes).features;
+                _.countries.features = topojson.feature(_data, _data.objects.countries).features;
+            } else {
+                return _.world;
+            }
+        },
+        allData: function allData(all) {
+            if (all) {
+                _.world = all.world;
+                _.land = all.land;
+                _.lakes = all.lakes;
+                _.countries = all.countries;
+            } else {
+                var world = _.world,
+                    land = _.land,
+                    lakes = _.lakes,
+                    countries = _.countries;
+
+                return { world: world, land: land, lakes: lakes, countries: countries };
+            }
+        },
+        selectAll: function selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg = d3.selectAll(q);
+            }
+            return _.svg;
+        }
+    };
+});
+
 var dotsSvg = (function (urlDots) {
     var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
         important = _ref.important;
@@ -2130,7 +2234,6 @@ var worldSvg = (function (worldUrl) {
         urls: worldUrl && [worldUrl],
         onReady: function onReady(err, data) {
             _.me.data(data);
-            console.log(data);
         },
         onInit: function onInit(me) {
             _.me = me;
@@ -6440,6 +6543,7 @@ earthjs$2.plugins = {
     placesSvg: placesSvg,
     worldSvg: worldSvg,
     barSvg: barSvg,
+    mapSvg: mapSvg,
     dotsSvg: dotsSvg,
     pingsSvg: pingsSvg,
     pinCanvas: pinCanvas,

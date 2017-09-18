@@ -93,7 +93,6 @@ export default worldUrl => {
         urls: worldUrl && [worldUrl],
         onReady(err, data) {
             _.me.data(data);
-            console.log(data);
         },
         onInit(me) {
             _.me = me;

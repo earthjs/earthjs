@@ -19,6 +19,7 @@ import dblClickCanvas   from './src/base/dblClickCanvas';
 import autorotatePlugin from './src/base/autorotatePlugin';
 
 import barSvg           from './src/svg/barSvg';
+import mapSvg           from './src/svg/mapSvg';
 import dotsSvg          from './src/svg/dotsSvg';
 import worldSvg         from './src/svg/worldSvg';
 import pingsSvg         from './src/svg/pingsSvg';
@@ -105,6 +106,7 @@ earthjs.plugins= {
     placesSvg,
     worldSvg,
     barSvg,
+    mapSvg,
     dotsSvg,
     pingsSvg,
     pinCanvas,

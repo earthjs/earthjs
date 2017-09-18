@@ -17,6 +17,11 @@ g.forEach(x=> {
 cnew.objects.land = {"type":"MultiPolygon","arcs":[]};
 cnew.objects.ne_110m_lakes = {"type":"FeatureCollection","features":[]};
 
+g.forEach(x=> {
+    x.properties = {cid:x.cid, name:x.name};
+    delete x.cid;
+    delete x.name;
+});
 $('body').innerText = JSON.stringify(cnew);
 
 
