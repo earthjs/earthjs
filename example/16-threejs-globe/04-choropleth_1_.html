@@ -31,6 +31,7 @@
             g.countryNamesCsv.mergeData(countries, ['id:id','name:name']);
             g.choroplethCsv  .mergeData(countries, ['name:location','color:color']);
             g.choroplethCsv  .mergeData(countries, ['name:location','value:alcohol']);
+            g.canvasThreejs.allData(g.worldJson.allData());
             g.create();
         })
     </script>
