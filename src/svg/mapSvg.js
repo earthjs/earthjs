@@ -9,7 +9,7 @@ export default worldUrl => {
         countries: {type: 'FeatureCollection', features:[]},
     };
     const $ = {};
-    const tooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
+    const mapTooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
 
     function init() {
         _.svg = this._.svg;
@@ -21,6 +21,12 @@ export default worldUrl => {
         _.svg.call(zoom);
     }
 
+    function show(data, tooltip) {
+        const props = data.properties;
+        const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+        return tooltip.html(title)
+    }
+
     function create() {
         _.svg.selectAll('.map').remove();
         if (this._.options.showMap) {
@@ -30,20 +36,19 @@ export default worldUrl => {
                 .attr('class', d => `cid-${d.properties.cid}`)
                 .attr('id', d => `x${d.id}`);
 
-            $.countries.on('mouseover', function(d) {
+            $.countries.on('mouseover', function(data) {
                 const {pageX, pageY} = d3.event;
-                tooltip
-                    .html(d.properties.name)
+                (_.me.show || show)(data, mapTooltip)
                     .style('display', 'block')
                     .style('left', (pageX + 7) + 'px')
                     .style('top', (pageY - 15) + 'px')
             })
             .on('mouseout', function() {
-                tooltip.style('display', 'none')
+                mapTooltip.style('display', 'none')
             })
             .on('mousemove', function() {
                 const {pageX, pageY} = d3.event;
-                tooltip
+                mapTooltip
                     .style('left', (pageX + 7) + 'px')
                     .style('top', (pageY - 15) + 'px')
             });

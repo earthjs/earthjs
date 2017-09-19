@@ -612,9 +612,9 @@ var choroplethCsv = (function (csvUrl) {
                 colorList = d3[_.scheme][9];
             }
             var value = void 0;
-            return colorList.map(function (color, i) {
-                value = _.scale.invert(i + 1);
-                return { color: color, value: value };
+            return colorList.map(function (color, id) {
+                value = _.scale.invert(id + 1);
+                return { color: color, value: value, id: id };
             });
         },
         setCss: function setCss(target) {
@@ -1961,7 +1961,7 @@ var mapSvg = (function (worldUrl) {
         countries: { type: 'FeatureCollection', features: [] }
     };
     var $ = {};
-    var tooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
+    var mapTooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
 
     function init() {
         _.svg = this._.svg;
@@ -1978,6 +1978,14 @@ var mapSvg = (function (worldUrl) {
         _.svg.call(zoom);
     }
 
+    function show(data, tooltip) {
+        var props = data.properties;
+        var title = Object.keys(props).map(function (k) {
+            return k + ': ' + props[k];
+        }).join('<br/>');
+        return tooltip.html(title);
+    }
+
     function create() {
         _.svg.selectAll('.map').remove();
         if (this._.options.showMap) {
@@ -1988,20 +1996,20 @@ var mapSvg = (function (worldUrl) {
                 return 'x' + d.id;
             });
 
-            $.countries.on('mouseover', function (d) {
+            $.countries.on('mouseover', function (data) {
                 var _d3$event = d3.event,
                     pageX = _d3$event.pageX,
                     pageY = _d3$event.pageY;
 
-                tooltip.html(d.properties.name).style('display', 'block').style('left', pageX + 7 + 'px').style('top', pageY - 15 + 'px');
+                (_.me.show || show)(data, mapTooltip).style('display', 'block').style('left', pageX + 7 + 'px').style('top', pageY - 15 + 'px');
             }).on('mouseout', function () {
-                tooltip.style('display', 'none');
+                mapTooltip.style('display', 'none');
             }).on('mousemove', function () {
                 var _d3$event2 = d3.event,
                     pageX = _d3$event2.pageX,
                     pageY = _d3$event2.pageY;
 
-                tooltip.style('left', pageX + 7 + 'px').style('top', pageY - 15 + 'px');
+                mapTooltip.style('left', pageX + 7 + 'px').style('top', pageY - 15 + 'px');
             });
             refresh.call(this);
         }
@@ -4433,7 +4441,8 @@ var dotsThreejs = (function (urlJson) {
     var _ = { dataDots: null };
     var material = new THREE.MeshBasicMaterial({
         side: THREE.DoubleSide,
-        color: 0xC19999 });
+        color: 0xC19999 //F0C400,
+    });
 
     function init() {
         this._.options.showDots = true;
@@ -5336,6 +5345,10 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
                 useMap: false,
                 opacity: 1,
                 lineWidth: lineWidth
+                // near: this._.camera.near,
+                // far:  this._.camera.far
+                // resolution: resolution,
+                // sizeAttenuation: true,
             });
             for (var j = 0; j <= curve_length; ++j) {
                 var i_curve = j * 3;

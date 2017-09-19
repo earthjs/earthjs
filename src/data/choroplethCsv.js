@@ -72,9 +72,9 @@ export default (csvUrl, scheme='schemeReds') => {
                 colorList = d3[_.scheme][9];
             }
             let value;
-            return colorList.map((color,i) => {
-                value  = _.scale.invert(i+1);
-                return {color, value};
+            return colorList.map((color,id) => {
+                value  = _.scale.invert(id+1);
+                return {color, value, id};
             });
         },
         setCss(target) {
