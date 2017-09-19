@@ -7,6 +7,13 @@
     <script type='text/javascript' src='../js/earthjs.js'></script>
     <style media="screen">
         #x10 {display: none;}
+        .color-range div {
+            border: 1px solid black;
+            display: inline-block;
+            padding: 2px 0;
+            text-align: center;
+            width: 40px;
+        }
     </style>
     <style id="choropleth"></style>
 </head>
@@ -22,6 +29,12 @@
             g.choroplethCsv.colorize('alcohol', 'schemeOranges');
             g.choroplethCsv.setCss('#choropleth');
             g.create();
+            var f = d3.format(".1f");
+            d3.select('body')
+                .append('div').attr('class','color-range')
+                    .selectAll('div').data(g.choroplethCsv.colorize()).enter()
+                    .append('div').style('background', d => d.color)
+                        .text(d => f(d.value));
         })
     </script>
 </body>

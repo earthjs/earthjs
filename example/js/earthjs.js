@@ -529,6 +529,8 @@ var toConsumableArray = function (arr) {
 };
 
 var choroplethCsv = (function (csvUrl) {
+    var scheme = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'schemeReds';
+
     /*eslint no-console: 0 */
     var _ = { data: null, color: null };
 
@@ -588,19 +590,31 @@ var choroplethCsv = (function (csvUrl) {
 
         // https://github.com/d3/d3-scale-chromatic
         colorize: function colorize(key) {
-            var scheme = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'schemeReds';
+            var schemeKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : scheme;
 
-            var arr = _.data.map(function (x) {
-                return +x[key];
-            });
-            arr = [].concat(toConsumableArray(new Set(arr)));
-            _.min = d3.min(arr);
-            _.max = d3.max(arr);
-            var c = d3[scheme] || d3.schemeReds;
-            var x = d3.scaleLinear().domain([1, 10]).rangeRound([_.min, _.max]);
-            var color = d3.scaleThreshold().domain(d3.range(2, 10)).range(c[9]);
-            _.data.forEach(function (obj) {
-                obj.color = color(x(+obj[key]));
+            var colorList = void 0;
+            if (arguments.length === 2) {
+                colorList = d3[schemeKey][9];
+                var arr = _.data.map(function (x) {
+                    return +x[key];
+                });
+                arr = [].concat(toConsumableArray(new Set(arr)));
+                var r = [1, 9];
+                _.scheme = schemeKey;
+                _.minMax = d3.extent(arr);
+                _.range = d3.range.apply(d3, r);
+                _.scale = d3.scaleLinear().domain(_.minMax).rangeRound(r);
+                _.color = d3.scaleThreshold().domain(_.range).range(colorList);
+                _.data.forEach(function (obj) {
+                    obj.color = _.color(_.scale(+obj[key]));
+                });
+            } else {
+                colorList = d3[_.scheme][9];
+            }
+            var value = void 0;
+            return colorList.map(function (color, i) {
+                value = _.scale.invert(i + 1);
+                return { color: color, value: value };
             });
         },
         setCss: function setCss(target) {
@@ -608,6 +622,15 @@ var choroplethCsv = (function (csvUrl) {
                 return '.countries path.cid-' + x.cid + ' {fill: ' + x.color + ';} ';
             });
             d3.select(target).text(colors.join("\n"));
+        },
+        colorScale: function colorScale(value) {
+            var result = void 0;
+            if (value !== undefined) {
+                result = _.color(_.scale(+value));
+            } else {
+                result = { color: _.color, scale: _.scale, minMax: _.minMax };
+            }
+            return result;
         }
     };
 });

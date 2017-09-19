@@ -1,4 +1,4 @@
-export default csvUrl => {
+export default (csvUrl, scheme='schemeReds') => {
     /*eslint no-console: 0 */
     const _ = {data: null, color: null};
 
@@ -53,23 +53,44 @@ export default csvUrl => {
             })
         },
         // https://github.com/d3/d3-scale-chromatic
-        colorize(key, scheme='schemeReds') {
-            let arr = _.data.map(x=>+x[key]);
-            arr = [...new Set(arr)];
-            _.min = d3.min(arr);
-            _.max = d3.max(arr);
-            const c = d3[scheme] || d3.schemeReds;
-            const x = d3.scaleLinear().domain([1, 10]).rangeRound([_.min, _.max]);
-            const color = d3.scaleThreshold().domain(d3.range(2, 10)).range(c[9]);
-            _.data.forEach(function(obj) {
-                obj.color = color(x(+obj[key]));
-            })
+        colorize(key, schemeKey=scheme) {
+            let colorList;
+            if (arguments.length===2) {
+                colorList = d3[schemeKey][9];
+                let arr = _.data.map(x=>+x[key]);
+                arr = [...new Set(arr)];
+                const r = [1,9];
+                _.scheme= schemeKey;
+                _.minMax= d3.extent(arr);
+                _.range = d3.range.apply(d3, r);
+                _.scale = d3.scaleLinear().domain(_.minMax).rangeRound(r);
+                _.color = d3.scaleThreshold().domain(_.range).range(colorList);
+                _.data.forEach(function(obj) {
+                    obj.color = _.color(_.scale(+obj[key]));
+                })
+            } else {
+                colorList = d3[_.scheme][9];
+            }
+            let value;
+            return colorList.map((color,i) => {
+                value  = _.scale.invert(i+1);
+                return {color, value};
+            });
         },
         setCss(target) {
             const colors = _.data.map(x=> {
                 return `.countries path.cid-${x.cid} {fill: ${x.color};} `
             });
             d3.select(target).text(colors.join("\n"));
+        },
+        colorScale(value) {
+            let result;
+            if (value!==undefined) {
+                result = _.color(_.scale(+value));
+            } else {
+                result = {color: _.color, scale: _.scale, minMax: _.minMax};
+            }
+            return result;
         }
     }
 }
