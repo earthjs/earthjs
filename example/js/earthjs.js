@@ -533,6 +533,7 @@ var choroplethCsv = (function (csvUrl) {
 
     /*eslint no-console: 0 */
     var _ = { data: null, color: null };
+    window._ = _;
 
     function getPath(path) {
         var v = this;
@@ -592,33 +593,35 @@ var choroplethCsv = (function (csvUrl) {
         colorize: function colorize(key) {
             var schemeKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : scheme;
 
-            var colorList = void 0;
-            if (arguments.length === 2) {
+            var value = void 0,
                 colorList = d3[schemeKey][9];
+            if (arguments.length === 2) {
+
                 var arr = _.data.map(function (x) {
                     return +x[key];
                 });
                 arr = [].concat(toConsumableArray(new Set(arr)));
-                var r = [1, 9];
+                var r = [1, 8];
                 _.scheme = schemeKey;
                 _.minMax = d3.extent(arr);
-                _.range = d3.range.apply(d3, r);
+                _.range = d3.range.apply(d3, r); //_.scale(2990000) - 2
                 _.scale = d3.scaleLinear().domain(_.minMax).rangeRound(r);
                 _.color = d3.scaleThreshold().domain(_.range).range(colorList);
+                _.colorValues = colorList.map(function (color, id) {
+                    value = Math.floor(_.scale.invert(id + 1.45));
+                    return { id: id, color: color, value: value, totalValue: 0 };
+                });
                 _.data.forEach(function (obj) {
-                    var id = _.scale(+obj[key]);
+                    var vl = +obj[key];
+                    var id = _.scale(vl);
                     obj.color = _.color(id);
                     obj.colorId = id - 1;
-                    console.log(obj);
+                    // console.log('obj: ', obj);
+                    _.colorValues[obj.colorId].totalValue += vl;
                 });
-            } else {
-                colorList = d3[_.scheme][9];
             }
-            var value = void 0;
-            return colorList.map(function (color, id) {
-                value = _.scale.invert(id + 1);
-                return { color: color, value: value, id: id };
-            });
+            // console.log('_.colorValues: ', _.colorValues);
+            return _.colorValues;
         },
         colorScale: function colorScale(value) {
             var result = void 0;
@@ -633,7 +636,7 @@ var choroplethCsv = (function (csvUrl) {
             var hiden = void 0;
             var texts = _.data.map(function (x) {
                 if (fl !== undefined && fl !== x.colorId) {
-                    hiden = 'opacity:0.08';
+                    hiden = '';
                 } else {
                     hiden = 'opacity:1;fill:' + x.color + ';stroke:black';
                 }
@@ -648,21 +651,31 @@ var choroplethCsv = (function (csvUrl) {
             var selector = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'body';
             var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '.1f';
 
-            var f = d3.format(format);
             var data = _.me.colorize();
-            var colorRange = d3.select('body').append('div').attr('class', 'color-range').selectAll('div').data(data).enter().append('div').attr('class', function (d) {
-                return 's-' + d.id;
+            data.sort(function (a, b) {
+                return b.value - a.value;
+            });
+            var f = d3.format(format);
+            var colorRange = d3.select('body').append('div').attr('class', 'color-range');
+            colorRange.append('div').attr('class', 'color-range-title');
+            var colorList = data.filter(function (x) {
+                // console.log('xxx',x, x.totalValue!==0);
+                return x.totalValue !== 0;
+            });
+            var colorItems = colorRange.selectAll('div.color-range-item').data(colorList).enter().append('div').attr('class', function (d) {
+                return 'color-range-item s-' + d.id;
             }).style('background', function (d) {
                 return d.color;
             }).text(function (d) {
-                return f(d.value);
+                // console.log(d.value, f(d.totalValue));
+                return f(d.totalValue);
             });
-            colorRange.on('mouseover', function (data) {
+            colorItems.on('mouseover', function (data) {
                 _.me.setCss(_.targetCss, data.id);
-                console.log('over', data);
-            }).on('mouseout', function (data) {
+                // console.log('over',data);
+            }).on('mouseout', function () {
                 _.me.setCss(_.targetCss);
-                console.log('out', data);
+                // console.log('out',data);
             });
         }
     };
@@ -2020,7 +2033,7 @@ var mapSvg = (function (worldUrl) {
     }
 
     function create() {
-        _.svg.selectAll('.map').remove();
+        _.svg.selectAll('.countries').remove();
         if (this._.options.showMap) {
             $.g = _.svg.append('g').attr('class', 'countries');
             $.countries = $.g.selectAll('path').data(_.countries.features).enter().append('path').attr('class', function (d) {

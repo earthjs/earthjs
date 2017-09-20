@@ -1,6 +1,7 @@
 export default (csvUrl, scheme='schemeReds') => {
     /*eslint no-console: 0 */
     const _ = {data: null, color: null};
+    window._ = _;
 
     function getPath(path) {
         let v = this;
@@ -54,31 +55,32 @@ export default (csvUrl, scheme='schemeReds') => {
         },
         // https://github.com/d3/d3-scale-chromatic
         colorize(key, schemeKey=scheme) {
-            let colorList;
+            let value, colorList = d3[schemeKey][9];
             if (arguments.length===2) {
-                colorList = d3[schemeKey][9];
+
                 let arr = _.data.map(x=>+x[key]);
                 arr = [...new Set(arr)];
-                const r = [1,9];
+                const r = [1,8];
                 _.scheme= schemeKey;
                 _.minMax= d3.extent(arr);
-                _.range = d3.range.apply(d3, r);
+                _.range = d3.range.apply(d3, r);  //_.scale(2990000) - 2
                 _.scale = d3.scaleLinear().domain(_.minMax).rangeRound(r);
                 _.color = d3.scaleThreshold().domain(_.range).range(colorList);
+                _.colorValues = colorList.map((color,id) => {
+                    value = Math.floor(_.scale.invert(id+1.45));
+                    return {id, color, value, totalValue: 0};
+                });
                 _.data.forEach(function(obj) {
-                    const id = _.scale(+obj[key]);
+                    const vl = +obj[key];
+                    const id = _.scale(vl);
                     obj.color = _.color(id);
                     obj.colorId = id-1;
-                    console.log(obj);
+                    // console.log('obj: ', obj);
+                    _.colorValues[obj.colorId].totalValue += vl;
                 })
-            } else {
-                colorList = d3[_.scheme][9];
             }
-            let value;
-            return colorList.map((color,id) => {
-                value  = _.scale.invert(id+1);
-                return {color, value, id};
-            });
+            // console.log('_.colorValues: ', _.colorValues);
+            return _.colorValues;
         },
         colorScale(value) {
             let result;
@@ -93,7 +95,7 @@ export default (csvUrl, scheme='schemeReds') => {
             let hiden;
             const texts = _.data.map(x=> {
                 if (fl!==undefined && fl!==x.colorId) {
-                    hiden = `opacity:0.08`; } else {
+                    hiden = ''; } else {
                     hiden = `opacity:1;fill:${x.color};stroke:black`;
                 }
                 return `.countries path.cid-${x.cid} {${hiden};}`;
@@ -104,22 +106,33 @@ export default (csvUrl, scheme='schemeReds') => {
             d3.select(_.targetCss).text(texts.join("\n"));
         },
         setColorRange(selector='body', format='.1f') {
+            let data = _.me.colorize();
+            data.sort((a,b)=> b.value-a.value);
             const f = d3.format(format);
-            const data = _.me.colorize();
             const colorRange = d3.select('body')
-                .append('div').attr('class','color-range')
-                .selectAll('div').data(data).enter()
-                .append('div').attr('class', d => `s-${d.id}`)
-                    .style('background', d => d.color)
-                    .text(d => f(d.value));
+                .append('div').attr('class','color-range');
             colorRange
+                .append('div').attr('class','color-range-title');
+            const colorList = data.filter(x => {
+                // console.log('xxx',x, x.totalValue!==0);
+                return x.totalValue!==0;
+            });
+            const colorItems = colorRange
+                .selectAll('div.color-range-item').data(colorList).enter()
+                .append('div').attr('class', d => `color-range-item s-${d.id}`)
+                    .style('background', d => d.color)
+                    .text(d => {
+                        // console.log(d.value, f(d.totalValue));
+                        return f(d.totalValue);
+                    });
+            colorItems
                 .on('mouseover', function(data) {
                     _.me.setCss(_.targetCss, data.id);
-                    console.log('over',data);
+                    // console.log('over',data);
                 })
-                .on('mouseout', function(data) {
+                .on('mouseout', function() {
                     _.me.setCss(_.targetCss);
-                    console.log('out',data);
+                    // console.log('out',data);
                 })
         }
     }

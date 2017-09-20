@@ -28,7 +28,7 @@ export default worldUrl => {
     }
 
     function create() {
-        _.svg.selectAll('.map').remove();
+        _.svg.selectAll('.countries').remove();
         if (this._.options.showMap) {
             $.g = _.svg.append('g').attr('class','countries');
             $.countries = $.g.selectAll('path')
