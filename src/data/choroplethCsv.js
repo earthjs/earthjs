@@ -66,7 +66,10 @@ export default (csvUrl, scheme='schemeReds') => {
                 _.scale = d3.scaleLinear().domain(_.minMax).rangeRound(r);
                 _.color = d3.scaleThreshold().domain(_.range).range(colorList);
                 _.data.forEach(function(obj) {
-                    obj.color = _.color(_.scale(+obj[key]));
+                    const id = _.scale(+obj[key]);
+                    obj.color = _.color(id);
+                    obj.colorId = id-1;
+                    console.log(obj);
                 })
             } else {
                 colorList = d3[_.scheme][9];
@@ -77,12 +80,6 @@ export default (csvUrl, scheme='schemeReds') => {
                 return {color, value, id};
             });
         },
-        setCss(target) {
-            const colors = _.data.map(x=> {
-                return `.countries path.cid-${x.cid} {fill: ${x.color};} `
-            });
-            d3.select(target).text(colors.join("\n"));
-        },
         colorScale(value) {
             let result;
             if (value!==undefined) {
@@ -91,6 +88,39 @@ export default (csvUrl, scheme='schemeReds') => {
                 result = {color: _.color, scale: _.scale, minMax: _.minMax};
             }
             return result;
+        },
+        setCss(target, fl) {
+            let hiden;
+            const texts = _.data.map(x=> {
+                if (fl!==undefined && fl!==x.colorId) {
+                    hiden = `opacity:0.08`; } else {
+                    hiden = `opacity:1;fill:${x.color};stroke:black`;
+                }
+                return `.countries path.cid-${x.cid} {${hiden};}`;
+            });
+            if (target) {
+                _.targetCss = target;
+            }
+            d3.select(_.targetCss).text(texts.join("\n"));
+        },
+        setColorRange(selector='body', format='.1f') {
+            const f = d3.format(format);
+            const data = _.me.colorize();
+            const colorRange = d3.select('body')
+                .append('div').attr('class','color-range')
+                .selectAll('div').data(data).enter()
+                .append('div').attr('class', d => `s-${d.id}`)
+                    .style('background', d => d.color)
+                    .text(d => f(d.value));
+            colorRange
+                .on('mouseover', function(data) {
+                    _.me.setCss(_.targetCss, data.id);
+                    console.log('over',data);
+                })
+                .on('mouseout', function(data) {
+                    _.me.setCss(_.targetCss);
+                    console.log('out',data);
+                })
         }
     }
 }

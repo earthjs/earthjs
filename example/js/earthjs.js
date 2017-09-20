@@ -606,22 +606,19 @@ var choroplethCsv = (function (csvUrl) {
                 _.scale = d3.scaleLinear().domain(_.minMax).rangeRound(r);
                 _.color = d3.scaleThreshold().domain(_.range).range(colorList);
                 _.data.forEach(function (obj) {
-                    obj.color = _.color(_.scale(+obj[key]));
+                    var id = _.scale(+obj[key]);
+                    obj.color = _.color(id);
+                    obj.colorId = id - 1;
+                    console.log(obj);
                 });
             } else {
                 colorList = d3[_.scheme][9];
             }
             var value = void 0;
-            return colorList.map(function (color, i) {
-                value = _.scale.invert(i + 1);
-                return { color: color, value: value };
+            return colorList.map(function (color, id) {
+                value = _.scale.invert(id + 1);
+                return { color: color, value: value, id: id };
             });
-        },
-        setCss: function setCss(target) {
-            var colors = _.data.map(function (x) {
-                return '.countries path.cid-' + x.cid + ' {fill: ' + x.color + ';} ';
-            });
-            d3.select(target).text(colors.join("\n"));
         },
         colorScale: function colorScale(value) {
             var result = void 0;
@@ -631,6 +628,42 @@ var choroplethCsv = (function (csvUrl) {
                 result = { color: _.color, scale: _.scale, minMax: _.minMax };
             }
             return result;
+        },
+        setCss: function setCss(target, fl) {
+            var hiden = void 0;
+            var texts = _.data.map(function (x) {
+                if (fl !== undefined && fl !== x.colorId) {
+                    hiden = 'opacity:0.08';
+                } else {
+                    hiden = 'opacity:1;fill:' + x.color + ';stroke:black';
+                }
+                return '.countries path.cid-' + x.cid + ' {' + hiden + ';}';
+            });
+            if (target) {
+                _.targetCss = target;
+            }
+            d3.select(_.targetCss).text(texts.join("\n"));
+        },
+        setColorRange: function setColorRange() {
+            var selector = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'body';
+            var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '.1f';
+
+            var f = d3.format(format);
+            var data = _.me.colorize();
+            var colorRange = d3.select('body').append('div').attr('class', 'color-range').selectAll('div').data(data).enter().append('div').attr('class', function (d) {
+                return 's-' + d.id;
+            }).style('background', function (d) {
+                return d.color;
+            }).text(function (d) {
+                return f(d.value);
+            });
+            colorRange.on('mouseover', function (data) {
+                _.me.setCss(_.targetCss, data.id);
+                console.log('over', data);
+            }).on('mouseout', function (data) {
+                _.me.setCss(_.targetCss);
+                console.log('out', data);
+            });
         }
     };
 });
@@ -5687,7 +5720,7 @@ var oceanThreejs = (function (color) {
 
 // https://threejs.org/docs/#api/materials/Material
 var imageThreejs = (function () {
-    var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.png';
+    var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../globe/world.png';
 
     /*eslint no-console: 0 */
     var _ = { sphereObject: null };
@@ -5744,7 +5777,7 @@ var imageThreejs = (function () {
 });
 
 var worldThreejs = (function () {
-    var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.png';
+    var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../globe/world.png';
 
     /*eslint no-console: 0 */
     var _ = {
@@ -5795,9 +5828,9 @@ var worldThreejs = (function () {
 });
 
 var globeThreejs = (function () {
-    var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.jpg';
-    var elvUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '../d/elevation.jpg';
-    var wtrUrl = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '../d/water.png';
+    var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../globe/world.jpg';
+    var elvUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '../globe/elevation.jpg';
+    var wtrUrl = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '../globe/water.png';
 
     /*eslint no-console: 0 */
     var _ = {
@@ -5890,7 +5923,7 @@ var globeThreejs = (function () {
 });
 
 var sphereThreejs = (function () {
-  var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.png';
+  var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../globe/world.png';
 
   /*eslint no-console: 0 */
   var _ = { sphereObject: null };
@@ -6071,7 +6104,7 @@ if (window.THREE) {
 // import data from './globe';
 var world3d = (function () {
     var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.geometry.json';
-    var landUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '../d/gold.jpg';
+    var landUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '../globe/gold.jpg';
     var rtt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : -1.57;
 
     /*eslint no-console: 0 */
@@ -6150,7 +6183,7 @@ var world3d = (function () {
 // view-source:http://callumprentice.github.io/apps/extruded_earth/index.html
 var world3d2 = (function () {
     var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/countries.geo.json';
-    var landUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '../d/gold.jpg';
+    var landUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '../globe/gold.jpg';
     var inner = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.9;
     var outer = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
     var rtt = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;

@@ -1,6 +1,6 @@
 // import data from './globe';
 import Map3DGeometry from './map3d';
-export default (worldUrl='../d/world.geometry.json', landUrl='../d/gold.jpg', rtt=-1.57) => {
+export default (worldUrl='../d/world.geometry.json', landUrl='../globe/gold.jpg', rtt=-1.57) => {
     /*eslint no-console: 0 */
     const _ = {sphereObject: new THREE.Object3D()};
 

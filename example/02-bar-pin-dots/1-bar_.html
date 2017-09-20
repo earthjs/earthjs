@@ -12,7 +12,7 @@
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.autorotatePlugin());
         g.register(earthjs.plugins.graticuleSvg());
-        g.register(earthjs.plugins.barSvg('../d/bars.json'));
+        g.register(earthjs.plugins.barSvg('../data/bars.json'));
         g.barSvg.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
             g.barSvg.data(json);

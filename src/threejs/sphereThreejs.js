@@ -1,4 +1,4 @@
-export default (imgUrl='../d/world.png') => {
+export default (imgUrl='../globe/world.png') => {
     /*eslint no-console: 0 */
     const _ = {sphereObject: null};
     var Shaders = {

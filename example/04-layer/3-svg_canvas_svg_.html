@@ -51,7 +51,7 @@
         g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
         g.worldCanvas.style({land: 'green'});
 
-        g.register(earthjs.plugins.barSvg('../d/bars.json'));
+        g.register(earthjs.plugins.barSvg('../data/bars.json'));
         g.barSvg.selectAll('.ej-svg');
         g.barSvg.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);

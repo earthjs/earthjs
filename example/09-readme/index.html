@@ -24,9 +24,9 @@
         .register(earthjs.plugins.dropShadowSvg())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.globeThreejs('../d/world.jpg'))
+        .register(earthjs.plugins.globeThreejs('../globe/world.jpg'))
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
-        .register(earthjs.plugins.flightLineThreejs('../d/flights2.json','../images/point3.png'))
+        .register(earthjs.plugins.flightLineThreejs('../data/flights2.json','../globe/point3.png'))
         g.mousePlugin.selectAll('#three-js');
         g.flightLineThreejs.ready = function(err, csv) {
             g.flightLineThreejs.data(csv, true, [30,60],55,1);

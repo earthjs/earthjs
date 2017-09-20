@@ -15,7 +15,7 @@
         g.register(earthjs.plugins.autorotatePlugin());
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.graticuleThreejs())
-        g.register(earthjs.plugins.dotsThreejs('../d/bars.json'))
+        g.register(earthjs.plugins.dotsThreejs('../data/bars.json'))
         g.dotsThreejs.ready = function(err, json) {
             json.geometry = {radius: 2}
             g.dotsThreejs.data(json);

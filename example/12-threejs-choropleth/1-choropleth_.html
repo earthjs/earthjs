@@ -16,7 +16,7 @@
         var g = earthjs({scale:300})
         .register(earthjs.plugins.worldJson('../d/world-110m.json'))
         .register(earthjs.plugins.countryNamesCsv('../d/world-110m-country-names.tsv'))
-        .register(earthjs.plugins.choroplethCsv('../d/2010_alcohol_consumption_by_country.csv'))
+        .register(earthjs.plugins.choroplethCsv('../data/2010_alcohol_consumption_by_country.csv'))
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.hoverCanvas())
         .register(earthjs.plugins.countryCanvas())

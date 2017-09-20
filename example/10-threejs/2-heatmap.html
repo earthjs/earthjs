@@ -25,7 +25,7 @@
         .register(earthjs.plugins.canvasThreejs('../d/world-110m.json'))
         .register(earthjs.plugins.hmapThreejs())
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
-        .register(earthjs.plugins.barThreejs('../d/bars.json'))
+        .register(earthjs.plugins.barThreejs('../data/bars.json'))
         .register(earthjs.plugins.dotsCThreejs());
         g.barThreejs.ready = function(err, json) {
             json.features.forEach(function(d) {

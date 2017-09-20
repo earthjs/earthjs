@@ -9,7 +9,7 @@
     <style>
     body {
         background: #393c54;
-        /*background-image: url("../d/tiles.png");*/
+        /*background-image: url("../images/tiles.png");*/
     }
     #three-js {
         pointer-events: all;
@@ -54,7 +54,7 @@
     function smallArmsJson(
         json1='../d/country_iso3166.json',
         json2='../d/country_lat_lon.json',
-        json3='../d/small-arms.json',
+        json3='../data/small-arms.json',
         json4='../d/country_nm_to_id.json',
         json5='../d/world-110m-country-names.json') {
         /*eslint no-console: 0 */
@@ -183,8 +183,8 @@
     .register(smallArmsJson())
     .register(earthjs.plugins.dropShadowSvg())
     .register(earthjs.plugins.selectCountryMix())
-    .register(earthjs.plugins.imageThreejs('../d/world.jpg'))
-    .register(earthjs.plugins.flightLineThreejs(null,'../images/point3.png'))
+    .register(earthjs.plugins.imageThreejs('../globe/world.jpg'))
+    .register(earthjs.plugins.flightLineThreejs(null,'../globe/point3.png'))
     .register(earthjs.plugins.countryTooltipCanvas());
     g.mousePlugin.selectAll('#three-js');
 

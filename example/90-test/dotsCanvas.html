@@ -14,7 +14,7 @@
         g.register(earthjs.plugins.oceanSvg());
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.hoverCanvas());
-        g.register(earthjs.plugins.dotsCanvas('../d/bars.json'));
+        g.register(earthjs.plugins.dotsCanvas('../data/bars.json'));
         g.dotsCanvas.ready = function(err, json) {
             const features = json.features;
             const maxMag = features.map(d => d.properties.mag).sort(d3.descending)[0];

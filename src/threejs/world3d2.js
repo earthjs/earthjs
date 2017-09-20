@@ -1,5 +1,5 @@
 // view-source:http://callumprentice.github.io/apps/extruded_earth/index.html
-export default (worldUrl='../d/countries.geo.json', landUrl='../d/gold.jpg', inner=0.9,outer=0, rtt=0) => {
+export default (worldUrl='../d/countries.geo.json', landUrl='../globe/gold.jpg', inner=0.9,outer=0, rtt=0) => {
     /*eslint no-console: 0 */
     const _ = {sphereObject: new THREE.Object3D(), group: {}};
 

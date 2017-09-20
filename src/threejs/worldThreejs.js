@@ -1,4 +1,4 @@
-export default (worldUrl='../d/world.png') => {
+export default (worldUrl='../globe/world.png') => {
     /*eslint no-console: 0 */
     const _ = {
         world: null,

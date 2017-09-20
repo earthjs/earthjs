@@ -48,7 +48,7 @@
         g2.register(earthjs.plugins.dropShadowSvg());
         g2.register(earthjs.plugins.oceanSvg());
         g2.register(earthjs.plugins.fauxGlobeSvg());
-        g2.register(earthjs.plugins.barSvg('../d/bars.json'));
+        g2.register(earthjs.plugins.barSvg('../data/bars.json'));
         g2.barSvg.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
             g2.barSvg.data(json);

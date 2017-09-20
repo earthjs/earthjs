@@ -1,5 +1,5 @@
 // https://threejs.org/docs/#api/materials/Material
-export default (imgUrl='../d/world.png') => {
+export default (imgUrl='../globe/world.png') => {
     /*eslint no-console: 0 */
     const _ = {sphereObject: null};
 

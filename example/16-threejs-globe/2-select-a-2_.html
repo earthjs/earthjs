@@ -19,7 +19,7 @@
     <script>
         var g = earthjs({scale:300})
         .register(earthjs.plugins.selectCountryMix())
-        .register(earthjs.plugins.globeThreejs('../d/world_c.png'))
+        .register(earthjs.plugins.globeThreejs('../globe/world_canvas.png'))
         .register(earthjs.plugins.countryTooltipCanvas('../d/world-110m-country-names.tsv'));
         g.ready(function(){
             g.create();

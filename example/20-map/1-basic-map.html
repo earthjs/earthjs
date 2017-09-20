@@ -7,12 +7,20 @@
     <script type='text/javascript' src='../js/earthjs.js'></script>
     <style media="screen">
         #x10 {display: none;}
+        .color-range {
+            position: absolute;
+            z-index: 3;
+        }
         .color-range div {
             border: 1px solid black;
+            cursor: pointer;
             display: inline-block;
             padding: 2px 0;
             text-align: center;
             width: 40px;
+        }
+        .countries path {
+            opacity: 0.08;
         }
     </style>
     <style id="choropleth"></style>
@@ -21,20 +29,15 @@
     <svg id="earth-js" class="ej-center" width="1600" height="800"/>
     <script>
         const g = earthjs()
-        // .register(earthjs.plugins.baseCsv('../d/2014_world_gdp_with_codes.csv'))
-        // .register(earthjs.plugins.baseCsv('../d/2010_alcohol_consumption_by_country.csv'))
-        .register(earthjs.plugins.choroplethCsv('../d/2010_alcohol_consumption_by_country.csv'))
+        // .register(earthjs.plugins.baseCsv('../data/2014_world_gdp_with_codes.csv'))
+        // .register(earthjs.plugins.baseCsv('../data/2010_alcohol_consumption_by_country.csv'))
+        .register(earthjs.plugins.choroplethCsv('../data/2010_alcohol_consumption_by_country.csv'))
         .register(earthjs.plugins.mapSvg('../d/world-hi.json'));
         g.ready(function(){
             g.choroplethCsv.colorize('alcohol', 'schemeOranges');
+            g.choroplethCsv.setColorRange('body');
             g.choroplethCsv.setCss('#choropleth');
             g.create();
-            var f = d3.format(".1f");
-            d3.select('body')
-                .append('div').attr('class','color-range')
-                    .selectAll('div').data(g.choroplethCsv.colorize()).enter()
-                    .append('div').style('background', d => d.color)
-                        .text(d => f(d.value));
         })
     </script>
 </body>
