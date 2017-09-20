@@ -40,7 +40,6 @@ export default worldUrl => {
 
             $.countries
             .on('click', function(d) {
-                console.log('Clickedd:', d);
                 if (_this.choroplethCsv) {
                     const v = _this.choroplethCsv.colorScale();
                     const vscale = v.scale(d.properties.value);

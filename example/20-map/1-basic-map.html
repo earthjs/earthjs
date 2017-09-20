@@ -9,7 +9,7 @@
         #x10 {display: none;}
         .color-range {
             position: absolute;
-            width: 40px;
+            width: 44px;
             z-index: 3;
         }
         .color-range-item {
@@ -18,11 +18,15 @@
             display: inline-block;
             padding: 2px 0;
             text-align: center;
+            width: 44px;
+        }
+        .color-range-item.selected {
+            border: 3px solid #c7c100;
             width: 40px;
         }
         .color-countries {
             position: absolute;
-            cursor: pointer;
+            cursor: default;
             z-index: 3;
             right: 0;
             font-size: 0.6em;
@@ -30,10 +34,14 @@
             font-family: monospace;
             padding: 0 10px 0 0;
         }
-        .color-countries-item {
+        /*.color-countries-item {
             border-bottom: 1px solid blue;
+        }*/
+        .color-countries-item:hover {
+            text-decoration: underline;
         }
         .countries path {
+            cursor: pointer;
             opacity: 0.08;
         }
     </style>

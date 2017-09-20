@@ -532,7 +532,6 @@ var choroplethCsv = (function (csvUrl) {
     var scheme = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'schemeReds';
 
     /*eslint no-console: 0 */
-    /*eslint no-debugger: 0 */
     var _ = {
         data: null,
         color: null,
@@ -560,7 +559,6 @@ var choroplethCsv = (function (csvUrl) {
             v = v[p];
         });
         o[k] = value;
-        // console.log(o,k,value);
     }
 
     return {
@@ -623,11 +621,9 @@ var choroplethCsv = (function (csvUrl) {
                     var id = _.scale(vl);
                     obj.color = _.color(id);
                     obj.colorId = id - 1;
-                    // console.log('obj: ', obj);
                     _.colorValues[obj.colorId].totalValue += vl;
                 });
             }
-            // console.log('_.colorValues: ', _.colorValues);
             return _.colorValues;
         },
         colorScale: function colorScale(value) {
@@ -670,7 +666,6 @@ var choroplethCsv = (function (csvUrl) {
                 var value = x.properties.value;
 
                 var vscale = _.scale(value);
-                console.log(x, colorId, vscale);
                 return vscale - 1 === colorId;
             });
             colorList.sort(function (a, b) {
@@ -709,20 +704,15 @@ var choroplethCsv = (function (csvUrl) {
             var colorList = data.filter(function (x) {
                 return x.totalValue !== 0;
             });
-            var colorItems = colorRange.selectAll('div.color-range-item').data(colorList).enter().append('div').attr('class', function (d) {
+            _.colorItems = colorRange.selectAll('div.color-range-item').data(colorList).enter().append('div').attr('class', function (d) {
                 return 'color-range-item s-' + d.id;
             }).style('background', function (d) {
                 return d.color;
             }).text(function (d) {
                 return f(d.totalValue);
             });
-            colorItems.on('click', function (data) {
-                if (_.selectedColorId === data.id) {
-                    _.selectedColorId = null;
-                } else {
-                    _.selectedColorId = data.id;
-                }
-                _.me.setCss(_.targetCss);
+            _.colorItems.on('click', function (data) {
+                _.me.setSelectedColor(data.id);
             }).on('mouseover', function (data) {
                 _.me.setCss(_.targetCss, data.id);
                 _.me.setColorcountries(data.id);
@@ -736,9 +726,15 @@ var choroplethCsv = (function (csvUrl) {
             });
         },
         setSelectedColor: function setSelectedColor(colorId) {
+            _.colorItems.classed('selected', false);
+            if (_.selectedColorId !== colorId) {
+                _.colorItems.filter('.s-' + colorId).classed('selected', true);
+            } else {
+                colorId = null;
+            }
             _.selectedColorId = colorId;
-            _.me.setCss(_.targetCss);
             _.me.setColorcountries(colorId);
+            _.me.setCss(_.targetCss);
         },
         countries: function countries(arr) {
             if (arr) {
@@ -2114,7 +2110,6 @@ var mapSvg = (function (worldUrl) {
             });
 
             $.countries.on('click', function (d) {
-                console.log('Clickedd:', d);
                 if (_this.choroplethCsv) {
                     var v = _this.choroplethCsv.colorScale();
                     var vscale = v.scale(d.properties.value);

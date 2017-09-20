@@ -1,6 +1,5 @@
 export default (csvUrl, scheme='schemeReds') => {
     /*eslint no-console: 0 */
-    /*eslint no-debugger: 0 */
     const _ = {
         data: null,
         color: null,
@@ -24,7 +23,6 @@ export default (csvUrl, scheme='schemeReds') => {
             v = v[p];
         });
         o[k] = value;
-        // console.log(o,k,value);
     }
 
     return {
@@ -82,11 +80,9 @@ export default (csvUrl, scheme='schemeReds') => {
                     const id = _.scale(vl);
                     obj.color = _.color(id);
                     obj.colorId = id-1;
-                    // console.log('obj: ', obj);
                     _.colorValues[obj.colorId].totalValue += vl;
                 })
             }
-            // console.log('_.colorValues: ', _.colorValues);
             return _.colorValues;
         },
         colorScale(value) {
@@ -125,7 +121,6 @@ export default (csvUrl, scheme='schemeReds') => {
             const colorList = data.filter(x => {
                 const {value} = x.properties;
                 const vscale = _.scale(value);
-                console.log(x, colorId, vscale);
                 return vscale-1===colorId;
             });
             colorList.sort((a,b)=> b.properties.value-a.properties.value);
@@ -153,19 +148,14 @@ export default (csvUrl, scheme='schemeReds') => {
             const colorRange = d3.select(selector).append('div').attr('class','color-range');
             colorRange.append('div').attr('class','color-range-title');
             const colorList = data.filter(x => x.totalValue!==0);
-            const colorItems = colorRange
+            _.colorItems = colorRange
                 .selectAll('div.color-range-item').data(colorList).enter()
                 .append('div').attr('class', d => `color-range-item s-${d.id}`)
                     .style('background', d => d.color)
                     .text(d => f(d.totalValue));
-            colorItems
+            _.colorItems
                 .on('click', function(data) {
-                    if (_.selectedColorId===data.id) {
-                        _.selectedColorId = null;
-                    } else {
-                        _.selectedColorId = data.id;
-                    }
-                    _.me.setCss(_.targetCss);
+                    _.me.setSelectedColor(data.id)
                 })
                 .on('mouseover', function(data) {
                     _.me.setCss(_.targetCss, data.id);
@@ -181,9 +171,15 @@ export default (csvUrl, scheme='schemeReds') => {
                 })
         },
         setSelectedColor(colorId) {
+            _.colorItems.classed('selected', false);
+            if (_.selectedColorId!==colorId) {
+                _.colorItems.filter(`.s-${colorId}`).classed('selected', true);
+            } else {
+                colorId = null;
+            }
             _.selectedColorId = colorId;
-            _.me.setCss(_.targetCss);
             _.me.setColorcountries(colorId);
+            _.me.setCss(_.targetCss);
         },
         countries(arr) {
             if (arr) {
