@@ -1,4 +1,5 @@
 export default worldUrl => {
+    /*eslint no-console: 0 */
     const _ = {
         q: null,
         svg:null,
@@ -28,6 +29,7 @@ export default worldUrl => {
     }
 
     function create() {
+        const _this = this;
         _.svg.selectAll('.countries').remove();
         if (this._.options.showMap) {
             $.g = _.svg.append('g').attr('class','countries');
@@ -36,7 +38,16 @@ export default worldUrl => {
                 .attr('class', d => `cid-${d.properties.cid}`)
                 .attr('id', d => `x${d.id}`);
 
-            $.countries.on('mouseover', function(data) {
+            $.countries
+            .on('click', function(d) {
+                console.log('Clickedd:', d);
+                if (_this.choroplethCsv) {
+                    const v = _this.choroplethCsv.colorScale();
+                    const vscale = v.scale(d.properties.value);
+                    _this.choroplethCsv.setSelectedColor(vscale-1);
+                }
+            })
+            .on('mouseover', function(data) {
                 const {pageX, pageY} = d3.event;
                 (_.me.show || show)(data, mapTooltip)
                     .style('display', 'block')

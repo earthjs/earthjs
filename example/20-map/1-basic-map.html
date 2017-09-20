@@ -9,6 +9,7 @@
         #x10 {display: none;}
         .color-range {
             position: absolute;
+            width: 40px;
             z-index: 3;
         }
         .color-range-item {
@@ -18,6 +19,19 @@
             padding: 2px 0;
             text-align: center;
             width: 40px;
+        }
+        .color-countries {
+            position: absolute;
+            cursor: pointer;
+            z-index: 3;
+            right: 0;
+            font-size: 0.6em;
+            text-align: right;
+            font-family: monospace;
+            padding: 0 10px 0 0;
+        }
+        .color-countries-item {
+            border-bottom: 1px solid blue;
         }
         .countries path {
             opacity: 0.08;
@@ -33,12 +47,25 @@
         // .register(earthjs.plugins.baseCsv('../data/2010_alcohol_consumption_by_country.csv'))
         .register(earthjs.plugins.choroplethCsv('../data/2010_alcohol_consumption_by_country.csv'))
         .register(earthjs.plugins.mapSvg('../d/world-hi.json'));
+        g.choroplethCsv.ready = function(err, json) {
+            json.forEach(x => x.alcohol = +x.alcohol);
+            g.choroplethCsv.data(json);
+        }
         g.ready(function(){
-            g.choroplethCsv.colorize('alcohol', 'schemeOranges');
+            const countries = g.mapSvg.allData().countries;
+            g.choroplethCsv.countries(countries.features);
+            g.choroplethCsv.mergeData(countries, ['properties.cid:cid', 'properties.value:alcohol']);
+            g.choroplethCsv.colorize('alcohol', 'schemeReds');
             g.choroplethCsv.setColorRange('body');
             g.choroplethCsv.setCss('#choropleth');
             g.create();
         })
+        g.mapSvg.show = function(data, tooltip) {
+            const {name, value} = data.properties;
+            tooltip.html(`name: ${name}<br>value: ${value}`);
+            _.hover = data;
+            return tooltip;
+        }
     </script>
 </body>
 </html>

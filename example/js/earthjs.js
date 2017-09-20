@@ -532,7 +532,14 @@ var choroplethCsv = (function (csvUrl) {
     var scheme = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'schemeReds';
 
     /*eslint no-console: 0 */
-    var _ = { data: null, color: null };
+    /*eslint no-debugger: 0 */
+    var _ = {
+        data: null,
+        color: null,
+        selectedColorId: null,
+        selectedCountryId: null,
+        countries: { type: 'FeatureCollection', features: [] }
+    };
     window._ = _;
 
     function getPath(path) {
@@ -634,11 +641,14 @@ var choroplethCsv = (function (csvUrl) {
         },
         setCss: function setCss(target, fl) {
             var hiden = void 0;
+            if (fl === undefined && _.selectedColorId !== null) {
+                fl = _.selectedColorId;
+            }
             var texts = _.data.map(function (x) {
-                if (fl !== undefined && fl !== x.colorId) {
-                    hiden = '';
-                } else {
+                if (fl === undefined || fl === x.colorId || fl === x.cid) {
                     hiden = 'opacity:1;fill:' + x.color + ';stroke:black';
+                } else {
+                    hiden = '';
                 }
                 return '.countries path.cid-' + x.cid + ' {' + hiden + ';}';
             });
@@ -647,19 +657,56 @@ var choroplethCsv = (function (csvUrl) {
             }
             d3.select(_.targetCss).text(texts.join("\n"));
         },
+        setColorcountries: function setColorcountries(colorId) {
+            var selector = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'body';
+            var format = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '.1f';
+
+            var data = _.me.countries();
+            var f = d3.format(format);
+            d3.select(selector + ' .color-countries').remove();
+            var colorCountries = d3.select(selector).append('div').attr('class', 'color-countries');
+            colorCountries.append('div').attr('class', 'color-countries-title');
+            var colorList = data.filter(function (x) {
+                var value = x.properties.value;
+
+                var vscale = _.scale(value);
+                console.log(x, colorId, vscale);
+                return vscale - 1 === colorId;
+            });
+            colorList.sort(function (a, b) {
+                return b.properties.value - a.properties.value;
+            });
+            colorCountries.selectAll('div.color-countries-item').data(colorList).enter().append('div').attr('class', function (d) {
+                return 'color-countries-item cid-' + d.properties.cid;
+            }).attr('data-cid', function (d) {
+                return d.properties.cid;
+            }).html(function (d) {
+                var _d$properties = d.properties,
+                    cid3 = _d$properties.cid3,
+                    name = _d$properties.name,
+                    value = _d$properties.value;
+
+                return name + ': ' + f(value) + ' - ' + (cid3 ? cid3 : '&nbsp;-&nbsp;');
+            });
+            colorCountries.on('mouseover', function () {
+                _.me.setCss(_.targetCss, d3.event.target.dataset.cid);
+            }).on('mouseout', function () {
+                _.me.setCss(_.targetCss);
+            });
+        },
         setColorRange: function setColorRange() {
             var selector = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'body';
             var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '.1f';
 
             var data = _.me.colorize();
+            var f = d3.format(format);
             data.sort(function (a, b) {
                 return b.value - a.value;
             });
-            var f = d3.format(format);
-            var colorRange = d3.select('body').append('div').attr('class', 'color-range');
+            d3.select(selector + ' .color-range').remove();
+            var colorRange = d3.select(selector).append('div').attr('class', 'color-range');
             colorRange.append('div').attr('class', 'color-range-title');
             var colorList = data.filter(function (x) {
-                // console.log('xxx',x, x.totalValue!==0);
                 return x.totalValue !== 0;
             });
             var colorItems = colorRange.selectAll('div.color-range-item').data(colorList).enter().append('div').attr('class', function (d) {
@@ -667,16 +714,38 @@ var choroplethCsv = (function (csvUrl) {
             }).style('background', function (d) {
                 return d.color;
             }).text(function (d) {
-                // console.log(d.value, f(d.totalValue));
                 return f(d.totalValue);
             });
-            colorItems.on('mouseover', function (data) {
+            colorItems.on('click', function (data) {
+                if (_.selectedColorId === data.id) {
+                    _.selectedColorId = null;
+                } else {
+                    _.selectedColorId = data.id;
+                }
+                _.me.setCss(_.targetCss);
+            }).on('mouseover', function (data) {
                 _.me.setCss(_.targetCss, data.id);
-                // console.log('over',data);
+                _.me.setColorcountries(data.id);
             }).on('mouseout', function () {
                 _.me.setCss(_.targetCss);
-                // console.log('out',data);
+                if (_.selectedColorId === null) {
+                    _.me.setColorcountries(-2);
+                } else {
+                    _.me.setColorcountries(_.selectedColorId);
+                }
             });
+        },
+        setSelectedColor: function setSelectedColor(colorId) {
+            _.selectedColorId = colorId;
+            _.me.setCss(_.targetCss);
+            _.me.setColorcountries(colorId);
+        },
+        countries: function countries(arr) {
+            if (arr) {
+                _.countries.features = arr;
+            } else {
+                return _.countries.features;
+            }
         }
     };
 });
@@ -1997,6 +2066,7 @@ var barSvg = (function (urlBars) {
 });
 
 var mapSvg = (function (worldUrl) {
+    /*eslint no-console: 0 */
     var _ = {
         q: null,
         svg: null,
@@ -2033,6 +2103,7 @@ var mapSvg = (function (worldUrl) {
     }
 
     function create() {
+        var _this = this;
         _.svg.selectAll('.countries').remove();
         if (this._.options.showMap) {
             $.g = _.svg.append('g').attr('class', 'countries');
@@ -2042,7 +2113,14 @@ var mapSvg = (function (worldUrl) {
                 return 'x' + d.id;
             });
 
-            $.countries.on('mouseover', function (data) {
+            $.countries.on('click', function (d) {
+                console.log('Clickedd:', d);
+                if (_this.choroplethCsv) {
+                    var v = _this.choroplethCsv.colorScale();
+                    var vscale = v.scale(d.properties.value);
+                    _this.choroplethCsv.setSelectedColor(vscale - 1);
+                }
+            }).on('mouseover', function (data) {
                 var _d3$event = d3.event,
                     pageX = _d3$event.pageX,
                     pageY = _d3$event.pageY;

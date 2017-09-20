@@ -1,6 +1,13 @@
 export default (csvUrl, scheme='schemeReds') => {
     /*eslint no-console: 0 */
-    const _ = {data: null, color: null};
+    /*eslint no-debugger: 0 */
+    const _ = {
+        data: null,
+        color: null,
+        selectedColorId: null,
+        selectedCountryId: null,
+        countries: {type: 'FeatureCollection', features:[]},
+    };
     window._ = _;
 
     function getPath(path) {
@@ -93,10 +100,14 @@ export default (csvUrl, scheme='schemeReds') => {
         },
         setCss(target, fl) {
             let hiden;
+            if (fl===undefined && _.selectedColorId!==null) {
+                fl = _.selectedColorId;
+            }
             const texts = _.data.map(x=> {
-                if (fl!==undefined && fl!==x.colorId) {
-                    hiden = ''; } else {
+                if (fl===undefined || fl===x.colorId || fl===x.cid) {
                     hiden = `opacity:1;fill:${x.color};stroke:black`;
+                } else {
+                    hiden = '';
                 }
                 return `.countries path.cid-${x.cid} {${hiden};}`;
             });
@@ -105,35 +116,81 @@ export default (csvUrl, scheme='schemeReds') => {
             }
             d3.select(_.targetCss).text(texts.join("\n"));
         },
+        setColorcountries(colorId, selector='body', format='.1f') {
+            let data = _.me.countries();
+            const f = d3.format(format);
+            d3.select(`${selector} .color-countries`).remove();
+            const colorCountries = d3.select(selector).append('div').attr('class','color-countries');
+            colorCountries.append('div').attr('class','color-countries-title');
+            const colorList = data.filter(x => {
+                const {value} = x.properties;
+                const vscale = _.scale(value);
+                console.log(x, colorId, vscale);
+                return vscale-1===colorId;
+            });
+            colorList.sort((a,b)=> b.properties.value-a.properties.value);
+            colorCountries
+                .selectAll('div.color-countries-item').data(colorList).enter()
+                .append('div').attr('class', d => `color-countries-item cid-${d.properties.cid}`)
+                    .attr('data-cid', d => d.properties.cid)
+                    .html(d => {
+                        const {cid3, name, value} = d.properties;
+                        return `${name}: ${f(value)} - ${cid3 ? cid3 : '&nbsp;-&nbsp;'}`;
+                    });
+            colorCountries
+                .on('mouseover', function() {
+                    _.me.setCss(_.targetCss, d3.event.target.dataset.cid);
+                })
+                .on('mouseout', function() {
+                    _.me.setCss(_.targetCss);
+                })
+        },
         setColorRange(selector='body', format='.1f') {
             let data = _.me.colorize();
-            data.sort((a,b)=> b.value-a.value);
             const f = d3.format(format);
-            const colorRange = d3.select('body')
-                .append('div').attr('class','color-range');
-            colorRange
-                .append('div').attr('class','color-range-title');
-            const colorList = data.filter(x => {
-                // console.log('xxx',x, x.totalValue!==0);
-                return x.totalValue!==0;
-            });
+            data.sort((a,b)=> b.value-a.value);
+            d3.select(`${selector} .color-range`).remove();
+            const colorRange = d3.select(selector).append('div').attr('class','color-range');
+            colorRange.append('div').attr('class','color-range-title');
+            const colorList = data.filter(x => x.totalValue!==0);
             const colorItems = colorRange
                 .selectAll('div.color-range-item').data(colorList).enter()
                 .append('div').attr('class', d => `color-range-item s-${d.id}`)
                     .style('background', d => d.color)
-                    .text(d => {
-                        // console.log(d.value, f(d.totalValue));
-                        return f(d.totalValue);
-                    });
+                    .text(d => f(d.totalValue));
             colorItems
+                .on('click', function(data) {
+                    if (_.selectedColorId===data.id) {
+                        _.selectedColorId = null;
+                    } else {
+                        _.selectedColorId = data.id;
+                    }
+                    _.me.setCss(_.targetCss);
+                })
                 .on('mouseover', function(data) {
                     _.me.setCss(_.targetCss, data.id);
-                    // console.log('over',data);
+                    _.me.setColorcountries(data.id);
                 })
                 .on('mouseout', function() {
                     _.me.setCss(_.targetCss);
-                    // console.log('out',data);
+                    if (_.selectedColorId===null) {
+                        _.me.setColorcountries(-2);
+                    } else {
+                        _.me.setColorcountries(_.selectedColorId);
+                    }
                 })
-        }
+        },
+        setSelectedColor(colorId) {
+            _.selectedColorId = colorId;
+            _.me.setCss(_.targetCss);
+            _.me.setColorcountries(colorId);
+        },
+        countries(arr) {
+            if (arr) {
+                _.countries.features = arr;
+            } else {
+                return _.countries.features;
+            }
+        },
     }
 }
