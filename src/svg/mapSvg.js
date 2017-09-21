@@ -5,6 +5,9 @@ export default worldUrl => {
         svg:null,
         world: null,
         land:   null,
+        onCountry: {},
+        onCountryVals: [],
+        selectedCountry: null,
         lakes:     {type: 'FeatureCollection', features:[]},
         selected:  {type: 'FeatureCollection', features:[]},
         countries: {type: 'FeatureCollection', features:[]},
@@ -41,10 +44,26 @@ export default worldUrl => {
             $.countries
             .on('click', function(d) {
                 if (_this.choroplethCsv) {
+                    let oscale = -1;
                     const v = _this.choroplethCsv.colorScale();
                     const vscale = v.scale(d.properties.value);
-                    _this.choroplethCsv.setSelectedColor(vscale-1);
+                    if (_.selectedCountry) {
+                        oscale = v.scale(_.selectedCountry.properties.value);
+                    }
+                    if (oscale!==vscale || _.selectedCountry===d) {
+                        _this.choroplethCsv.setSelectedColor(vscale-1);
+                    }
                 }
+                $.countries.classed('selected', false);
+                if (_.selectedCountry!==d) {
+                    _.selectedCountry = d;
+                    $.countries.filter(`#x${d.id}`).classed('selected', true);
+                } else {
+                    _.selectedCountry = null;
+                }
+                _.onCountryVals.forEach(v => {
+                    v.call(this, d3.event, d);
+                });
             })
             .on('mouseover', function(data) {
                 const {pageX, pageY} = d3.event;
@@ -94,6 +113,13 @@ export default worldUrl => {
         },
         onRefresh() {
             refresh.call(this);
+        },
+        onCountry(obj) {
+            Object.assign(_.onCountry, obj);
+            _.onCountryVals = Object.keys(_.onCountry).map(k => _.onCountry[k]);
+        },
+        selectedCountry() {
+            return _.selectedCountry;
         },
         data(data) {
             if (data) {

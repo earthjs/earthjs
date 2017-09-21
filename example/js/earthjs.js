@@ -2068,6 +2068,9 @@ var mapSvg = (function (worldUrl) {
         svg: null,
         world: null,
         land: null,
+        onCountry: {},
+        onCountryVals: [],
+        selectedCountry: null,
         lakes: { type: 'FeatureCollection', features: [] },
         selected: { type: 'FeatureCollection', features: [] },
         countries: { type: 'FeatureCollection', features: [] }
@@ -2110,11 +2113,29 @@ var mapSvg = (function (worldUrl) {
             });
 
             $.countries.on('click', function (d) {
+                var _this2 = this;
+
                 if (_this.choroplethCsv) {
+                    var oscale = -1;
                     var v = _this.choroplethCsv.colorScale();
                     var vscale = v.scale(d.properties.value);
-                    _this.choroplethCsv.setSelectedColor(vscale - 1);
+                    if (_.selectedCountry) {
+                        oscale = v.scale(_.selectedCountry.properties.value);
+                    }
+                    if (oscale !== vscale || _.selectedCountry === d) {
+                        _this.choroplethCsv.setSelectedColor(vscale - 1);
+                    }
                 }
+                $.countries.classed('selected', false);
+                if (_.selectedCountry !== d) {
+                    _.selectedCountry = d;
+                    $.countries.filter('#x' + d.id).classed('selected', true);
+                } else {
+                    _.selectedCountry = null;
+                }
+                _.onCountryVals.forEach(function (v) {
+                    v.call(_this2, d3.event, d);
+                });
             }).on('mouseover', function (data) {
                 var _d3$event = d3.event,
                     pageX = _d3$event.pageX,
@@ -2162,6 +2183,15 @@ var mapSvg = (function (worldUrl) {
         },
         onRefresh: function onRefresh() {
             refresh.call(this);
+        },
+        onCountry: function onCountry(obj) {
+            Object.assign(_.onCountry, obj);
+            _.onCountryVals = Object.keys(_.onCountry).map(function (k) {
+                return _.onCountry[k];
+            });
+        },
+        selectedCountry: function selectedCountry() {
+            return _.selectedCountry;
         },
         data: function data(_data) {
             if (_data) {
