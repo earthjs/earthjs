@@ -19,10 +19,10 @@ export default worldUrl => {
         _.svg = this._.svg;
         const {width, height} = this._.options;
         const scale = width/6.279;
-        const zoom = d3.zoom().on('zoom', () => $.g.attr('transform', d3.event.transform));
+        _.zoom = d3.zoom().on('zoom', () => $.g.attr('transform', d3.event.transform));
         _.proj = d3.geoEquirectangular().scale(scale).translate([width/2, height/2]);
         _.path = d3.geoPath().projection(_.proj).context(_.context);
-        _.svg.call(zoom);
+        _.svg.call(_.zoom);
     }
 
     function show(data, tooltip) {
@@ -149,5 +149,8 @@ export default worldUrl => {
             }
             return _.svg;
         },
+        resetZoom() {
+            _.svg.call(_.zoom.transform, d3.zoomIdentity);
+        }
     }
 }

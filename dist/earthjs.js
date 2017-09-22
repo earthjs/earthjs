@@ -2085,12 +2085,12 @@ var mapSvg = (function (worldUrl) {
             height = _$options.height;
 
         var scale = width / 6.279;
-        var zoom = d3.zoom().on('zoom', function () {
+        _.zoom = d3.zoom().on('zoom', function () {
             return $.g.attr('transform', d3.event.transform);
         });
         _.proj = d3.geoEquirectangular().scale(scale).translate([width / 2, height / 2]);
         _.path = d3.geoPath().projection(_.proj).context(_.context);
-        _.svg.call(zoom);
+        _.svg.call(_.zoom);
     }
 
     function show(data, tooltip) {
@@ -2224,6 +2224,9 @@ var mapSvg = (function (worldUrl) {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
+        },
+        resetZoom: function resetZoom() {
+            _.svg.call(_.zoom.transform, d3.zoomIdentity);
         }
     };
 });
