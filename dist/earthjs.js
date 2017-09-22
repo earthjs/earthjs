@@ -2062,6 +2062,8 @@ var barSvg = (function (urlBars) {
 });
 
 var mapSvg = (function (worldUrl) {
+    var flexbox = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '.ej-flexbox';
+
     /*eslint no-console: 0 */
     var _ = {
         q: null,
@@ -2076,7 +2078,7 @@ var mapSvg = (function (worldUrl) {
         countries: { type: 'FeatureCollection', features: [] }
     };
     var $ = {};
-    var mapTooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
+    _.mapTooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
 
     function init() {
         _.svg = this._.svg;
@@ -2103,6 +2105,7 @@ var mapSvg = (function (worldUrl) {
 
     function create() {
         var _this = this;
+        _.flexBox = d3.selectAll(flexbox);
         _.svg.selectAll('.countries').remove();
         if (this._.options.showMap) {
             $.g = _.svg.append('g').attr('class', 'countries');
@@ -2141,15 +2144,22 @@ var mapSvg = (function (worldUrl) {
                     pageX = _d3$event.pageX,
                     pageY = _d3$event.pageY;
 
-                (_.me.show || show)(data, mapTooltip).style('display', 'block').style('left', pageX + 7 + 'px').style('top', pageY - 15 + 'px');
-            }).on('mouseout', function () {
-                mapTooltip.style('display', 'none');
+                (_.me.show || show)(data, _.mapTooltip).style('display', 'block').style('left', pageX + 7 + 'px').style('top', pageY - 15 + 'px');
+                _.flexBox.style('display', 'flex');
+            }).on('mouseout', function (data) {
+                if (_.me.hide) {
+                    _.me.hide(data, _.mapTooltip);
+                }
+                _.mapTooltip.style('display', 'none');
+                if (_.selectedCountry === null) {
+                    _.flexBox.style('display', 'none');
+                }
             }).on('mousemove', function () {
                 var _d3$event2 = d3.event,
                     pageX = _d3$event2.pageX,
                     pageY = _d3$event2.pageY;
 
-                mapTooltip.style('left', pageX + 7 + 'px').style('top', pageY - 15 + 'px');
+                _.mapTooltip.style('left', pageX + 7 + 'px').style('top', pageY - 15 + 'px');
             });
             refresh.call(this);
         }

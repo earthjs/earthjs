@@ -1,4 +1,4 @@
-export default worldUrl => {
+export default (worldUrl, flexbox='.ej-flexbox') => {
     /*eslint no-console: 0 */
     const _ = {
         q: null,
@@ -13,7 +13,7 @@ export default worldUrl => {
         countries: {type: 'FeatureCollection', features:[]},
     };
     const $ = {};
-    const mapTooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
+    _.mapTooltip = d3.select('body').append('div').attr('class', 'ej-country-tooltip');
 
     function init() {
         _.svg = this._.svg;
@@ -33,6 +33,7 @@ export default worldUrl => {
 
     function create() {
         const _this = this;
+        _.flexBox = d3.selectAll(flexbox);
         _.svg.selectAll('.countries').remove();
         if (this._.options.showMap) {
             $.g = _.svg.append('g').attr('class','countries');
@@ -67,17 +68,24 @@ export default worldUrl => {
             })
             .on('mouseover', function(data) {
                 const {pageX, pageY} = d3.event;
-                (_.me.show || show)(data, mapTooltip)
+                (_.me.show || show)(data, _.mapTooltip)
                     .style('display', 'block')
                     .style('left', (pageX + 7) + 'px')
-                    .style('top', (pageY - 15) + 'px')
+                    .style('top', (pageY - 15) + 'px');
+                _.flexBox.style('display', 'flex');
             })
-            .on('mouseout', function() {
-                mapTooltip.style('display', 'none')
+            .on('mouseout', function(data) {
+                if (_.me.hide) {
+                    _.me.hide(data, _.mapTooltip);
+                }
+                _.mapTooltip.style('display', 'none');
+                if (_.selectedCountry===null) {
+                    _.flexBox.style('display', 'none');
+                }
             })
             .on('mousemove', function() {
                 const {pageX, pageY} = d3.event;
-                mapTooltip
+                _.mapTooltip
                     .style('left', (pageX + 7) + 'px')
                     .style('top', (pageY - 15) + 'px')
             });
