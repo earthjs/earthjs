@@ -126,11 +126,14 @@ export default (csvUrl, scheme='schemeReds') => {
             colorList.sort((a,b)=> b.properties.value-a.properties.value);
             colorCountries
                 .selectAll('div.color-countries-item').data(colorList).enter()
-                .append('div').attr('class', d => `color-countries-item cid-${d.properties.cid}`)
+                .append('div')
                     .attr('data-cid', d => d.properties.cid)
+                    .attr('class', d => {
+                        `color-countries-item cid-${d.properties.cid}`
+                    })
                     .html(d => {
-                        const {cid3, name, value} = d.properties;
-                        return `${name}: ${f(value)} - ${cid3 ? cid3 : '&nbsp;-&nbsp;'}`;
+                        const {cid, name, value} = d.properties;
+                        return `${name}: ${f(value)} - ${cid ? cid : '&nbsp;-&nbsp;'}`;
                     });
             colorCountries
                 .on('mouseover', function() {

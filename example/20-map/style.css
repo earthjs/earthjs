@@ -1,8 +1,17 @@
 #x10 {display: none;}
 #title {
+    left: 50%;
+    top: 10px;
+    position: absolute;
+    transform: translateX(-50%);
     text-align: center;
     cursor: pointer;
     z-index: 5;
+}
+
+.svg-container {
+    position: relative;
+    margin-top: 50px;
 }
 .color-range {
     position: absolute;
@@ -53,4 +62,7 @@
     left: 8px;
     transform: translateY(-50%);
     z-index: 5;
+}
+.color-countries-item.selected {
+    border: 3px solid #c7c100;    
 }

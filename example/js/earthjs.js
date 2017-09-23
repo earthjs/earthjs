@@ -677,11 +677,11 @@ var choroplethCsv = (function (csvUrl) {
                 return d.properties.cid;
             }).html(function (d) {
                 var _d$properties = d.properties,
-                    cid3 = _d$properties.cid3,
+                    cid = _d$properties.cid,
                     name = _d$properties.name,
                     value = _d$properties.value;
 
-                return name + ': ' + f(value) + ' - ' + (cid3 ? cid3 : '&nbsp;-&nbsp;');
+                return name + ': ' + f(value) + ' - ' + (cid ? cid : '&nbsp;-&nbsp;');
             });
             colorCountries.on('mouseover', function () {
                 _.me.setCss(_.targetCss, d3.event.target.dataset.cid);

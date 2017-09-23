@@ -9,10 +9,12 @@
     <style id="choropleth"></style>
 </head>
 <body>
-    <svg id="earth-js" class="ej-center" width="1600" height="800"/>
-    <h4 id="title">TITLE</h4>
+    <h4 id="title">CHOROPLETH</h4>
     <div class="selected-country">
         <div class="content"></div>
+    </div>
+    <div class="svg-container">
+        <svg id="earth-js" class="ej-center" width="1600" height="800"/>
     </div>
     <script>
         const g = earthjs()
@@ -39,12 +41,20 @@
         };
         g.mapSvg.onCountry({
             toggle(event, country) {
-                const {name, value} = country.properties;
+                const {name, value, cid} = country.properties;
                 const selected = g.mapSvg.selectedCountry() ? 'block' : 'none';
                 const countryBox = d3.select('.selected-country').style('display', selected);
                 const title = `${name}<br>ALCOHOL:${value}`;
                 countryBox.select('.content').html(title);
+                d3.selectAll(`.color-countries-item`).classed('selected', false);
+                if (selected==='block') {
+                    d3.selectAll(`.color-countries-item.cid-${cid}`).classed('selected', true);
+                }
             }
+        })
+
+        d3.select('#title').on('click', function() {
+            g.mapSvg.resetZoom();
         })
     </script>
 </body>
