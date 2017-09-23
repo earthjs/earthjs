@@ -1,0 +1,56 @@
+#x10 {display: none;}
+#title {
+    text-align: center;
+    cursor: pointer;
+    z-index: 5;
+}
+.color-range {
+    position: absolute;
+    width: 44px;
+    z-index: 3;
+}
+.color-range-item {
+    border: 1px solid black;
+    cursor: pointer;
+    display: inline-block;
+    padding: 2px 0;
+    text-align: center;
+    width: 44px;
+}
+.color-range-item.selected {
+    border: 3px solid #c7c100;
+    width: 40px;
+}
+.color-countries {
+    position: absolute;
+    cursor: default;
+    z-index: 3;
+    right: 0;
+    font-size: 0.6em;
+    text-align: right;
+    font-family: monospace;
+    padding: 0 10px 0 0;
+}
+.color-countries-item:hover {
+    text-decoration: underline;
+}
+.countries path {
+    cursor: pointer;
+    opacity: 0.08;
+}
+.countries path.selected {
+    stroke-width: 2px;
+    stroke: #c7c100 !important;
+}
+.selected-country {
+    display: none;
+    padding: 10px;
+    position: absolute;
+    background-color: rgba(250,250,200,0.5);
+    border: 1px solid red;
+    border-radius: 5px;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-50%);
+    z-index: 5;
+}

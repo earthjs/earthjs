@@ -1,72 +1,18 @@
 <html>
 <head>
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <link type="text/css" rel="stylesheet" href="./style.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src="../js/d3-scale-chromatic.v1.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
-    <style media="screen">
-        #x10 {display: none;}
-        .color-range {
-            position: absolute;
-            width: 44px;
-            z-index: 3;
-        }
-        .color-range-item {
-            border: 1px solid black;
-            cursor: pointer;
-            display: inline-block;
-            padding: 2px 0;
-            text-align: center;
-            width: 44px;
-        }
-        .color-range-item.selected {
-            border: 3px solid #c7c100;
-            width: 40px;
-        }
-        .color-countries {
-            position: absolute;
-            cursor: default;
-            z-index: 3;
-            right: 0;
-            font-size: 0.6em;
-            text-align: right;
-            font-family: monospace;
-            padding: 0 10px 0 0;
-        }
-        .color-countries-item:hover {
-            text-decoration: underline;
-        }
-        .countries path {
-            cursor: pointer;
-            opacity: 0.08;
-        }
-        .countries path.selected {
-            stroke-width: 2px;
-            stroke: #c7c100 !important;
-        }
-        .selected-country {
-            display: none;
-            padding: 10px;
-            position: absolute;
-            background-color: rgba(250,250,200,0.5);
-            border: 1px solid red;
-            border-radius: 5px;
-            top: 50%;
-            left: 8px;
-            transform: translateY(-50%);
-            z-index: 5;
-        }
-    </style>
     <style id="choropleth"></style>
 </head>
 <body>
     <svg id="earth-js" class="ej-center" width="1600" height="800"/>
+    <h4 id="title">TITLE</h4>
     <div class="selected-country">
-        <h3>Selected Country</h3>
-        <div class="content">
-
-        </div>
+        <div class="content"></div>
     </div>
     <script>
         const g = earthjs()
@@ -87,16 +33,16 @@
         })
         g.mapSvg.show = function(data, tooltip) {
             const {name, value} = data.properties;
-            tooltip.html(`name: ${name}<br>value: ${value}`);
+            tooltip.html(`${name}<br>ALCOHOL: ${value}`);
             _.hover = data;
             return tooltip;
         };
         g.mapSvg.onCountry({
             toggle(event, country) {
-                const props = country.properties;
+                const {name, value} = country.properties;
                 const selected = g.mapSvg.selectedCountry() ? 'block' : 'none';
                 const countryBox = d3.select('.selected-country').style('display', selected);
-                const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+                const title = `${name}<br>ALCOHOL:${value}`;
                 countryBox.select('.content').html(title);
             }
         })
