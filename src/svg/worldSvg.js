@@ -13,8 +13,9 @@ export default worldUrl => {
 
     function create() {
         const __ = this._;
-        _.svg.selectAll('.landbg,.land,.lakes,.countries').remove();
+        _.svg.selectAll(`.${_.me.name}`).remove();
         if (__.options.showLand) {
+            $.g = _.svg.append('g').attr('class', _.me.name);
             if (_.world) {
                 if (__.options.transparent || __.options.transparentLand) {
                     _.svgAddWorldBg.call(this);
@@ -70,22 +71,22 @@ export default worldUrl => {
     }
 
     function svgAddWorldBg() {
-        $.worldBg = _.svg.append('g').attr('class','landbg').append('path').datum(_.land)
+        $.worldBg = $.g.append('g').attr('class','landbg').append('path').datum(_.land)
         .attr('fill', 'rgba(119,119,119,0.2)');
     }
 
     function svgAddWorld() {
-        $.world = _.svg.append('g').attr('class','land').append('path').datum(_.land);
+        $.world = $.g.append('g').attr('class','land').append('path').datum(_.land);
     }
 
     function svgAddCountries() {
-        $.countries = _.svg.append('g').attr('class','countries').selectAll('path')
+        $.countries = $.g.append('g').attr('class','countries').selectAll('path')
             .data(_.countries.features).enter().append('path')
             .attr('id',function(d) {return 'x'+d.id});
     }
 
     function svgAddLakes() {
-        $.lakes = _.svg.append('g').attr('class','lakes').append('path').datum(_.lakes);
+        $.lakes = $.g.append('g').attr('class','lakes').append('path').datum(_.lakes);
     }
 
     return {
@@ -152,8 +153,5 @@ export default worldUrl => {
             }
             return _.svg;
         },
-        $world()     {return $.world;    },
-        $lakes()     {return $.lakes;    },
-        $countries() {return $.countries;},
     };
 }

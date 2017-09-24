@@ -1,6 +1,6 @@
 {
   "name": "earthjs",
-  "version": "0.7.93",
+  "version": "0.7.94",
   "description": "D3 Earth JS using SVG, Canvas & THREE js, build with some plugins.",
   "main": "core.js",
   "scripts": {

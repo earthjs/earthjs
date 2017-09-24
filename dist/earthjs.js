@@ -80,6 +80,7 @@ var earthjs$2 = function earthjs() {
         selector: '#earth-js',
         rotate: [130, -33, -11],
         transparent: false,
+        map: false,
         padding: 0
     }, options);
     var _ = {
@@ -392,25 +393,32 @@ var earthjs$2 = function earthjs() {
         return globe;
     };
 
-    __.orthoGraphic = function () {
-        var r = __.options.rotate;
-        if (typeof r === 'number') {
-            __.options.rotate = [r, -33, -11];
-        }
+    __.projection = function () {
         var _$options = __.options,
             scale = _$options.scale,
             width = _$options.width,
             height = _$options.height,
             padding = _$options.padding;
 
-        if (!scale) {
-            var mins = d3.min([width, height]);
-            scale = mins / 2 - padding;
+        if (__.options.map) {
+            if (!scale) {
+                scale = width / 6.279 - padding;
+            }
+            return d3.geoEquirectangular().translate(__.center).precision(0.1).scale(scale);
+        } else {
+            if (!scale) {
+                var mins = d3.min([width, height]);
+                scale = mins / 2 - padding;
+            }
+            var r = __.options.rotate;
+            if (typeof r === 'number') {
+                __.options.rotate = [r, -33, -11];
+            }
+            return d3.geoOrthographic().rotate(__.options.rotate).translate(__.center).precision(0.1).clipAngle(90).scale(scale);
         }
-        return d3.geoOrthographic().rotate(__.options.rotate).translate(__.center).precision(0.1).clipAngle(90).scale(scale);
     };
 
-    __.proj = __.orthoGraphic();
+    __.proj = __.projection();
     __.path = d3.geoPath().projection(__.proj);
     return globe;
     //----------------------------------------
@@ -671,10 +679,10 @@ var choroplethCsv = (function (csvUrl) {
             colorList.sort(function (a, b) {
                 return b.properties.value - a.properties.value;
             });
-            colorCountries.selectAll('div.color-countries-item').data(colorList).enter().append('div').attr('class', function (d) {
-                return 'color-countries-item cid-' + d.properties.cid;
-            }).attr('data-cid', function (d) {
+            colorCountries.selectAll('div.color-countries-item').data(colorList).enter().append('div').attr('data-cid', function (d) {
                 return d.properties.cid;
+            }).attr('class', function (d) {
+                'color-countries-item cid-' + d.properties.cid;
             }).html(function (d) {
                 var _d$properties = d.properties,
                     cid = _d$properties.cid,
@@ -1408,6 +1416,7 @@ var canvasPlugin = (function () {
         path: null,
         q: null
     };
+    var $ = {};
 
     function init() {
         var __ = this._;
@@ -1419,7 +1428,8 @@ var canvasPlugin = (function () {
         var __ = this._;
         if (__.options.showCanvas) {
             if (!_.canvas) {
-                var fObject = __.svg.append('g').attr('class', 'canvas').append('foreignObject').attr('x', 0).attr('y', 0).attr('width', __.options.width).attr('height', __.options.height);
+                $.g = __.svg.append('g').attr('class', _.me.name);
+                var fObject = $.g.append('foreignObject').attr('x', 0).attr('y', 0).attr('width', __.options.width).attr('height', __.options.height);
                 var fBody = fObject.append('xhtml:body').style('margin', '0px').style('padding', '0px').style('background-color', 'none').style('width', __.options.width + 'px').style('height', __.options.height + 'px');
                 _.canvas = fBody.append('canvas');
             }
@@ -1509,6 +1519,9 @@ var canvasPlugin = (function () {
                 context.restore();
                 __.proj.rotate(r);
             }, drawTo, options);
+        },
+        $g: function $g() {
+            return $.g;
         }
     };
 });
@@ -2395,8 +2408,9 @@ var worldSvg = (function (worldUrl) {
 
     function create() {
         var __ = this._;
-        _.svg.selectAll('.landbg,.land,.lakes,.countries').remove();
+        _.svg.selectAll('.' + _.me.name).remove();
         if (__.options.showLand) {
+            $.g = _.svg.append('g').attr('class', _.me.name);
             if (_.world) {
                 if (__.options.transparent || __.options.transparentLand) {
                     _.svgAddWorldBg.call(this);
@@ -2452,21 +2466,21 @@ var worldSvg = (function (worldUrl) {
     }
 
     function svgAddWorldBg() {
-        $.worldBg = _.svg.append('g').attr('class', 'landbg').append('path').datum(_.land).attr('fill', 'rgba(119,119,119,0.2)');
+        $.worldBg = $.g.append('g').attr('class', 'landbg').append('path').datum(_.land).attr('fill', 'rgba(119,119,119,0.2)');
     }
 
     function svgAddWorld() {
-        $.world = _.svg.append('g').attr('class', 'land').append('path').datum(_.land);
+        $.world = $.g.append('g').attr('class', 'land').append('path').datum(_.land);
     }
 
     function svgAddCountries() {
-        $.countries = _.svg.append('g').attr('class', 'countries').selectAll('path').data(_.countries.features).enter().append('path').attr('id', function (d) {
+        $.countries = $.g.append('g').attr('class', 'countries').selectAll('path').data(_.countries.features).enter().append('path').attr('id', function (d) {
             return 'x' + d.id;
         });
     }
 
     function svgAddLakes() {
-        $.lakes = _.svg.append('g').attr('class', 'lakes').append('path').datum(_.lakes);
+        $.lakes = $.g.append('g').attr('class', 'lakes').append('path').datum(_.lakes);
     }
 
     return {
@@ -2537,14 +2551,8 @@ var worldSvg = (function (worldUrl) {
             }
             return _.svg;
         },
-        $world: function $world() {
-            return $.world;
-        },
-        $lakes: function $lakes() {
-            return $.lakes;
-        },
-        $countries: function $countries() {
-            return $.countries;
+        $g: function $g() {
+            return $.g;
         }
     };
 });

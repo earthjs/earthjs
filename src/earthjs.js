@@ -8,6 +8,7 @@ const earthjs = (options={}) => {
         selector: '#earth-js',
         rotate: [130,-33,-11],
         transparent: false,
+        map: false,
         padding: 0
     }, options);
     const _ = {
@@ -100,7 +101,7 @@ const earthjs = (options={}) => {
                         _.loadingData = false;
                         fn.called = true;
                         fn.call(globe);
-                    });                    
+                    });
                 }
             } else if (arguments.length===0) {
                 return _.loadingData;
@@ -232,25 +233,36 @@ const earthjs = (options={}) => {
         return globe;
     }
 
-    __.orthoGraphic = function() {
-        const r = __.options.rotate;
-        if (typeof(r)==='number') {
-            __.options.rotate = [r,-33,-11];
-        }
+    __.projection = function() {
         let {scale, width, height, padding} = __.options;
-        if (!scale) {
-            const mins = d3.min([width, height]);
-            scale =  mins / 2 - padding;
+        if (__.options.map) {
+            if (!scale) {
+                scale = (width/6.279) - padding;
+            }
+            return d3.geoEquirectangular()
+                .translate(__.center)
+                .precision(0.1)
+                .scale(scale);
+        } else {
+            if (!scale) {
+                const mins = d3.min([width, height]);
+                scale =  mins / 2 - padding;
+            }
+            const r = __.options.rotate;
+            if (typeof(r)==='number') {
+                __.options.rotate = [r,-33,-11];
+            }
+            return d3.geoOrthographic()
+                .rotate(__.options.rotate)
+                .translate(__.center)
+                .precision(0.1)
+                .clipAngle(90)
+                .scale(scale);
         }
-        return d3.geoOrthographic()
-            .rotate(__.options.rotate)
-            .translate(__.center)
-            .precision(0.1)
-            .clipAngle(90)
-            .scale(scale);
+
     }
 
-    __.proj = __.orthoGraphic();
+    __.proj = __.projection();
     __.path = d3.geoPath().projection(__.proj);
     return globe;
     //----------------------------------------

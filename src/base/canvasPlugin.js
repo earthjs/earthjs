@@ -6,6 +6,7 @@ export default () => {
         path: null,
         q: null
     }
+    const $ = {};
 
     function init() {
         const __ = this._;
@@ -17,7 +18,8 @@ export default () => {
         const __ = this._;
         if (__.options.showCanvas) {
             if (!_.canvas) {
-                const fObject = __.svg.append('g').attr('class','canvas').append('foreignObject')
+                $.g = __.svg.append('g').attr('class', _.me.name);
+                const fObject = $.g.append('foreignObject')
                 .attr('x', 0)
                 .attr('y', 0)
                 .attr('width', __.options.width)
@@ -113,6 +115,6 @@ export default () => {
                 context.restore();
                 __.proj.rotate(r);
             }, drawTo, options);
-        }
+        },
     }
 }
