@@ -1,6 +1,7 @@
 export default (csvUrl, scheme='schemeReds') => {
     /*eslint no-console: 0 */
     const _ = {
+        cid: null,
         data: null,
         color: null,
         selectedColorId: null,
@@ -129,7 +130,8 @@ export default (csvUrl, scheme='schemeReds') => {
                 .append('div')
                     .attr('data-cid', d => d.properties.cid)
                     .attr('class', d => {
-                        `color-countries-item cid-${d.properties.cid}`
+                        const selected = (d.properties.cid===_.cid ? 'selected' : '');
+                        return `color-countries-item cid-${d.properties.cid} ${selected}`;
                     })
                     .html(d => {
                         const {cid, name, value} = d.properties;
@@ -190,6 +192,9 @@ export default (csvUrl, scheme='schemeReds') => {
             } else {
                 return _.countries.features;
             }
+        },
+        cid(id) {
+            _.cid = id;
         },
     }
 }

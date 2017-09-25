@@ -44,6 +44,8 @@ export default (worldUrl, flexbox='.ej-flexbox') => {
 
             $.countries
             .on('click', function(d) {
+                const cid = d.properties.cid;
+                $.countries.classed('selected', false);
                 if (_this.choroplethCsv) {
                     let oscale = -1;
                     const v = _this.choroplethCsv.colorScale();
@@ -54,8 +56,10 @@ export default (worldUrl, flexbox='.ej-flexbox') => {
                     if (oscale!==vscale || _.selectedCountry===d) {
                         _this.choroplethCsv.setSelectedColor(vscale-1);
                     }
+                    _this.choroplethCsv.cid(cid);
+                    d3.selectAll(`.color-countries-item`).classed('selected', false);
+                    d3.selectAll(`.color-countries-item.cid-${cid}`).classed('selected', true);
                 }
-                $.countries.classed('selected', false);
                 if (_.selectedCountry!==d) {
                     _.selectedCountry = d;
                     $.countries.filter(`#x${d.id}`).classed('selected', true);

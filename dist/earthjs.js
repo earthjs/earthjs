@@ -541,6 +541,7 @@ var choroplethCsv = (function (csvUrl) {
 
     /*eslint no-console: 0 */
     var _ = {
+        cid: null,
         data: null,
         color: null,
         selectedColorId: null,
@@ -682,7 +683,8 @@ var choroplethCsv = (function (csvUrl) {
             colorCountries.selectAll('div.color-countries-item').data(colorList).enter().append('div').attr('data-cid', function (d) {
                 return d.properties.cid;
             }).attr('class', function (d) {
-                'color-countries-item cid-' + d.properties.cid;
+                var selected = d.properties.cid === _.cid ? 'selected' : '';
+                return 'color-countries-item cid-' + d.properties.cid + ' ' + selected;
             }).html(function (d) {
                 var _d$properties = d.properties,
                     cid = _d$properties.cid,
@@ -750,6 +752,9 @@ var choroplethCsv = (function (csvUrl) {
             } else {
                 return _.countries.features;
             }
+        },
+        cid: function cid(id) {
+            _.cid = id;
         }
     };
 });
@@ -1519,9 +1524,6 @@ var canvasPlugin = (function () {
                 context.restore();
                 __.proj.rotate(r);
             }, drawTo, options);
-        },
-        $g: function $g() {
-            return $.g;
         }
     };
 });
@@ -2131,6 +2133,8 @@ var mapSvg = (function (worldUrl) {
             $.countries.on('click', function (d) {
                 var _this2 = this;
 
+                var cid = d.properties.cid;
+                $.countries.classed('selected', false);
                 if (_this.choroplethCsv) {
                     var oscale = -1;
                     var v = _this.choroplethCsv.colorScale();
@@ -2141,8 +2145,10 @@ var mapSvg = (function (worldUrl) {
                     if (oscale !== vscale || _.selectedCountry === d) {
                         _this.choroplethCsv.setSelectedColor(vscale - 1);
                     }
+                    _this.choroplethCsv.cid(cid);
+                    d3.selectAll('.color-countries-item').classed('selected', false);
+                    d3.selectAll('.color-countries-item.cid-' + cid).classed('selected', true);
                 }
-                $.countries.classed('selected', false);
                 if (_.selectedCountry !== d) {
                     _.selectedCountry = d;
                     $.countries.filter('#x' + d.id).classed('selected', true);
@@ -2550,9 +2556,6 @@ var worldSvg = (function (worldUrl) {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
-        },
-        $g: function $g() {
-            return $.g;
         }
     };
 });
