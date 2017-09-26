@@ -277,6 +277,7 @@ var earthjs$2 = function earthjs() {
                     }
                 }
             }
+            __.options.tween && __.options.tween(timestamp);
             earthjs.ticker = requestAnimationFrame(step);
         }
         earthjs.ticker = requestAnimationFrame(step);

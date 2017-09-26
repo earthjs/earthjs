@@ -184,6 +184,7 @@ const earthjs = (options={}) => {
                     }
                 }
             }
+            __.options.tween && __.options.tween(timestamp);
             earthjs.ticker = requestAnimationFrame(step);
         }
         earthjs.ticker = requestAnimationFrame(step);

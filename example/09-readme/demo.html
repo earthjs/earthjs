@@ -6,62 +6,33 @@
     <script type='text/javascript' src='../js/three.min.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
-    <style>body {background: #555;}</style>
+    <script type='text/javascript' src='../js/Tween.min.js'></script>
+    <style>
+        body {background: #555;}
+        hr {margin: 20px 0;}
+        .input-area {background-color: rgba(183, 183, 183,.1);}
+    </style>
 </head>
 <body>
     <div class="input-area">
         <a href="#" id="empty-group">Clear</a><br><br>
         <a href="#" id="toggle-flight">Flight Line</a><br><br>
+        <a href="#" id="toggle-bars">Bar Line</a><br><br>
+        <a href="#" id="toggle-grat">Graticule</a><br><br>
         <a href="#" id="toggle-ocean">Ocean</a><br><br>
         <a href="#" id="toggle-earth">Earth</a><br><br>
         <a href="#" id="toggle-world3d">World 3d</a><br><br>
-        <a href="#" id="toggle-border">Border</a>
+        <a href="#" id="toggle-border">Border</a><br><hr>
+        <a href="#" id="blue-marble">Preset - Blue marble</a><br><br>
+        <a href="#" id="bar-graph">Preset - Bar graph</a><br><br>
+        <a href="#" id="float-3d">Preset - Float 3d</a><br><br>
+        <a href="#" id="flight-ln">Preset - Flight line</a><br><br>
     </div>
     <svg id="earth-js" class="ej-center" width="1000" height="920"></svg>
     <canvas id="three-js" class="ej-center"></canvas>
-    <script>
-        const g = earthjs({padding:85})
-        .register(earthjs.plugins.mousePlugin())
-        .register(earthjs.plugins.threejsPlugin())
-        .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.clickCanvas())
-        .register(earthjs.plugins.dropShadowSvg())
-
-        .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
-        .register(earthjs.plugins.imageThreejs('../globe/world5.jpg'),'oceanThreejs')
-        .register(earthjs.plugins.world3d('../d/world.geometry.json','../globe/blue.jpg',0.95))
-        .register(earthjs.plugins.imageThreejs('../globe/earth_ocean-mask.png'), 'earthThreejs')
-        .register(earthjs.plugins.flightLineThreejs('../data/flights2.json','../globe/point3.png'));
-
-        g.flightLineThreejs.ready = function(err, csv) {
-            g.flightLineThreejs.data(csv,true,[30,200],100,1);
-        }
-        g.worldThreejs.ready = function(err, json) {
-            g.worldThreejs.data(json);
-            g.clickCanvas.data(json);
-        }
-
-        var x,r,o,t;
-        g.autorotatePlugin.stop();
-        g.ready(function(){
-            g.create();
-            g.threejsPlugin.emptyGroup();
-            g.flightLineThreejs.add();
-            g.oceanThreejs.add();
-            r = g._.proj.scale()-3;
-            t = g.world3d.sphere();
-            o = g.oceanThreejs.sphere();
-            o.scale.set(.97,.97,.97);
-            t.scale.set(r,r,r);
-        });
-
-        d3.select('#empty-group'   ).on('click', () => (g.threejsPlugin.emptyGroup()))
-        d3.select('#toggle-ocean'  ).on('click', () => (g.oceanThreejs.isAdded() ? g.oceanThreejs.remove() : g.oceanThreejs.add()))
-        d3.select('#toggle-flight' ).on('click', () => (g.flightLineThreejs.isAdded() ? g.flightLineThreejs.remove() : g.flightLineThreejs.add()))
-        d3.select('#toggle-earth'  ).on('click', () => (g.earthThreejs.isAdded() ? g.earthThreejs.remove() : g.earthThreejs.add()))
-        d3.select('#toggle-world3d').on('click', () => (g.world3d.isAdded() ? g.world3d.remove() : g.world3d.add()))
-        d3.select('#toggle-border' ).on('click', () => (g.worldThreejs.isAdded() ? g.worldThreejs.remove() : g.worldThreejs.add()))
-
-    </script>
+    <script src="demo/register.js"></script>
+    <script src="demo/tweening.js"></script>
+    <script src="demo/ready.js"></script>
+    <script src="demo/input.js"></script>
 </body>
 </html>
