@@ -5868,7 +5868,10 @@ var imageThreejs = (function () {
     function init() {
         var tj = this.threejsPlugin;
         _.material = new THREE.MeshBasicMaterial({
-            map: tj.texture(imgUrl)
+            map: tj.texture(imgUrl),
+            side: THREE.DoubleSide,
+            transparent: true,
+            alphaTest: 0.5
         });
         Object.defineProperty(_.me, 'transparent', {
             get: function get() {
@@ -6245,7 +6248,8 @@ if (window.THREE) {
 var world3d = (function () {
     var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.geometry.json';
     var landUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '../globe/gold.jpg';
-    var rtt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : -1.57;
+    var inner = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.9;
+    var rtt = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : -1.57;
 
     /*eslint no-console: 0 */
     var _ = { sphereObject: new THREE.Object3D() };
@@ -6253,7 +6257,7 @@ var world3d = (function () {
     function loadCountry() {
         var data = _.world;
         for (var name in data) {
-            var geometry = new Map3DGeometry(data[name], 0.9);
+            var geometry = new Map3DGeometry(data[name], inner);
             _.sphereObject.add(data[name].mesh = new THREE.Mesh(geometry, _.material));
         }
         _.loaded = true;
@@ -6287,7 +6291,12 @@ var world3d = (function () {
         var tj = this.threejsPlugin;
         var shading = THREE.SmoothShading;
         var uniforms = { tMatCap: { type: type, value: tj.texture(imgUrl) } };
-        var material = new THREE.ShaderMaterial({ shading: shading, uniforms: uniforms, vertexShader: vertexShader, fragmentShader: fragmentShader });
+        var material = new THREE.ShaderMaterial({
+            shading: shading,
+            uniforms: uniforms,
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader
+        });
         cb.call(this, material);
     }
 
@@ -6422,17 +6431,19 @@ var world3d2 = (function () {
         tj.addGroup(_.sphereObject);
     }
 
-    var vertexShader = '\n    varying vec2 vN;\n    void main() {\n        vec4 p = vec4( position, 1. );\n        vec3 e = normalize( vec3( modelViewMatrix * p ) );\n        vec3 n = normalize( normalMatrix * normal );\n        vec3 r = reflect( e, n );\n        float m = 2. * length( vec3( r.xy, r.z + 1. ) );\n        vN = r.xy / m + .5;\n        gl_Position = projectionMatrix * modelViewMatrix * p;\n    }\n    ';
-    var fragmentShader = '\n    uniform sampler2D tMatCap;\n    varying vec2 vN;\n    void main() {\n        vec3 base = texture2D( tMatCap, vN ).rgb;\n        gl_FragColor = vec4( base, 1. );\n    }\n    ';
+    var vertexShader = '\n    varying vec2 vN;\n    void main() {\n        vec4 p = vec4( position, 1. );\n        vec3 e = normalize( vec3( modelViewMatrix * p ) );\n        vec3 n = normalize( normalMatrix * normal );\n        vec3 r = reflect( e, n );\n        float m = 2. * length( vec3( r.xy, r.z + 1. ) );\n        vN = r.xy / m + .15;\n        gl_Position = projectionMatrix * modelViewMatrix * p;\n    }\n    ';
+    var fragmentShader = '\n    uniform sampler2D texture;\n    varying vec2 vN;\n    void main() {\n        vec3 base = texture2D( texture, vN ).rgb;\n        gl_FragColor = vec4( base, 0.95 );\n    }\n    ';
     function makeEnvMapMaterial(imgUrl, cb) {
         var type = 't';
         var tj = this.threejsPlugin;
-        var uniforms = { tMatCap: { type: type, value: tj.texture(imgUrl) } };
+        var value = tj.texture(imgUrl);
+        var shading = THREE.SmoothShading;
+        var uniforms = { texture: { type: type, value: value } };
         var material = new THREE.ShaderMaterial({
+            shading: shading,
             uniforms: uniforms,
             vertexShader: vertexShader,
-            fragmentShader: fragmentShader,
-            shading: THREE.SmoothShading
+            fragmentShader: fragmentShader
         });
         cb.call(this, material);
     }

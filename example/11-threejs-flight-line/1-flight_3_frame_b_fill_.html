@@ -13,22 +13,20 @@
     <canvas id="three-js" class="ej-center"></canvas>
     <script>
         const g = earthjs({scale:300})
-
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
-
         .register(earthjs.plugins.clickCanvas())
-        .register(earthjs.plugins.worldJson('../d/world-110m.json'))
+
         .register(earthjs.plugins.oceanThreejs('#abc'))
-        .register(earthjs.plugins.graticuleThreejs())
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
         .register(earthjs.plugins.flightLineThreejs('../data/flights2.json','../globe/point.png'))
 
         g.flightLineThreejs.ready = function(err, csv) {
             g.flightLineThreejs.data(csv, true);
         }
-        g.worldJson.ready = function(err, json) {
+        g.worldThreejs.ready = function(err, json) {
+            g.worldThreejs.data(json);
             g.clickCanvas.data(json);
         }
 

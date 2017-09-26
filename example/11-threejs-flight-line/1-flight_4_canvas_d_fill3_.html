@@ -20,10 +20,10 @@
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
 
+        .register(earthjs.plugins.imageThreejs('../globe/world5.jpg'))
         .register(earthjs.plugins.canvasThreejs('../d/world-110m.json'))
-        .register(earthjs.plugins.flightLineThreejs('../data/flights2.json','../globe/point.png'))
+        .register(earthjs.plugins.flightLineThreejs('../data/flights2.json','../globe/point.png'));
 
-        // g.canvasThreejs.style({ocean: 'rgba(54,73,110,1)'});
         g.flightLineThreejs.ready = function(err, csv) {
             g.flightLineThreejs.data(csv, true);
         }

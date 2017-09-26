@@ -4,29 +4,23 @@
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
     <script type='text/javascript' src='../js/three.min.js'></script>
-    <script type='text/javascript' src='../js/THREE.MeshLine.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
-    <style>body {background: #555;}</style>
 </head>
 <body>
-    <svg id="earth-js" class="ej-center" width="1000" height="920"></svg>
-    <canvas id="three-js" class="ej-center"></canvas>
+    <svg id="earth-js"></svg>
+    <canvas id="three-js"></canvas>
     <script>
-        const g = earthjs({scale:300})
+        const g = earthjs({padding:50})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
-
-        .register(earthjs.plugins.flightLineThreejs('../data/flights2.json','../globe/point.png'))
-
-        g.flightLineThreejs.ready = function(err, csv) {
-            g.flightLineThreejs.data(csv, true);
-        }
-
+        .register(earthjs.plugins.dropShadowSvg())
+        .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
+        .register(earthjs.plugins.world3d2('../d/countries.geo.json','../globe/blue.jpg',0.95));
         g.ready(function(){
             g.create();
-        })
+        });
     </script>
 </body>
 </html>

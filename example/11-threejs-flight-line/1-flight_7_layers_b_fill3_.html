@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+    <style>body {background: #555;}</style>
+</head>
+<body>
+    <svg id="earth-js" class="ej-center" width="1000" height="920"></svg>
+    <canvas id="three-js"></canvas>
+    <script>
+        const g = earthjs({scale:300})
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.clickCanvas())
+
+        .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
+        .register(earthjs.plugins.imageThreejs('../globe/world5.jpg'),'oceanThreejs')
+        .register(earthjs.plugins.world3d('../d/world.geometry.json','../globe/blue.jpg',0.95))
+        .register(earthjs.plugins.imageThreejs('../globe/earth_ocean-mask.png'), 'earthThreejs')
+        .register(earthjs.plugins.flightLineThreejs('../data/flights2.json','../globe/point3.png'));
+
+        g.flightLineThreejs.ready = function(err, csv) {
+            g.flightLineThreejs.data(csv,true,[30,200],100,1);
+        }
+        g.worldThreejs.ready = function(err, json) {
+            g.worldThreejs.data(json);
+            g.clickCanvas.data(json);
+        }
+
+        var x,o,t;
+        g.autorotatePlugin.stop();
+        g.ready(function(){
+            g.create();
+            o = g.oceanThreejs.sphere();
+            o.scale.set(0.97,0.97,0.97);
+            t = g.world3d.sphere();
+            t.scale.set(298,298,298);
+        });
+    </script>
+</body>
+</html>

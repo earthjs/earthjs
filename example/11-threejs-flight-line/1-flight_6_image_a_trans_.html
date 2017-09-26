@@ -6,23 +6,19 @@
     <script type='text/javascript' src='../js/three.min.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
-    <style>body {
-        background-image: url("../images/tiles.jpg");
-    }
-    </style>
+    <style>body {background: #555;}</style>
 </head>
 <body>
     <svg id="earth-js" class="ej-center" width="1000" height="920"></svg>
-    <canvas id="three-js" class="ej-center"></canvas>
+    <canvas id="three-js"></canvas>
     <script>
         const g = earthjs({scale:300})
-
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
 
-        .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
-        .register(earthjs.plugins.flightLineThreejs('../data/flights2.json','../globe/point.png'))
+        .register(earthjs.plugins.imageThreejs('../globe/earth_ocean-mask.png'))
+        .register(earthjs.plugins.flightLineThreejs('../data/flights2.json','../globe/point.png'));
 
         g.flightLineThreejs.ready = function(err, csv) {
             g.flightLineThreejs.data(csv, true);
@@ -33,7 +29,7 @@
         light.color.set(0x777777);
         g.ready(function(){
             g.create();
-        })
+        });
     </script>
 </body>
 </html>

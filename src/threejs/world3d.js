@@ -1,13 +1,13 @@
 // import data from './globe';
 import Map3DGeometry from './map3d';
-export default (worldUrl='../d/world.geometry.json', landUrl='../globe/gold.jpg', rtt=-1.57) => {
+export default (worldUrl='../d/world.geometry.json', landUrl='../globe/gold.jpg', inner=0.9, rtt=-1.57) => {
     /*eslint no-console: 0 */
     const _ = {sphereObject: new THREE.Object3D()};
 
     function loadCountry() {
         const data = _.world;
         for (var name in data) {
-            var geometry = new Map3DGeometry(data[name], 0.9);
+            var geometry = new Map3DGeometry(data[name], inner);
             _.sphereObject.add(data[name].mesh = new THREE.Mesh(geometry, _.material));
         }
         _.loaded = true;
@@ -59,7 +59,12 @@ export default (worldUrl='../d/world.geometry.json', landUrl='../globe/gold.jpg'
         const tj = this.threejsPlugin;
         const shading  = THREE.SmoothShading;
         const uniforms = {tMatCap:{type,value: tj.texture(imgUrl)}};
-        const material = new THREE.ShaderMaterial({shading, uniforms, vertexShader, fragmentShader});
+        const material = new THREE.ShaderMaterial({
+            shading,
+            uniforms,
+            vertexShader,
+            fragmentShader
+        });
         cb.call(this, material);
     }
 

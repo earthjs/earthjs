@@ -7,6 +7,9 @@ export default (imgUrl='../globe/world.png') => {
         const tj = this.threejsPlugin;
         _.material = new THREE.MeshBasicMaterial({
             map: tj.texture(imgUrl),
+            side: THREE.DoubleSide,
+            transparent: true,
+            alphaTest: 0.5
         });
         Object.defineProperty(_.me, 'transparent', {
             get: () => _.transparent,

@@ -96,27 +96,29 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../globe/gold.jpg',
         vec3 n = normalize( normalMatrix * normal );
         vec3 r = reflect( e, n );
         float m = 2. * length( vec3( r.xy, r.z + 1. ) );
-        vN = r.xy / m + .5;
+        vN = r.xy / m + .15;
         gl_Position = projectionMatrix * modelViewMatrix * p;
     }
     `
     const fragmentShader = `
-    uniform sampler2D tMatCap;
+    uniform sampler2D texture;
     varying vec2 vN;
     void main() {
-        vec3 base = texture2D( tMatCap, vN ).rgb;
-        gl_FragColor = vec4( base, 1. );
+        vec3 base = texture2D( texture, vN ).rgb;
+        gl_FragColor = vec4( base, 0.95 );
     }
     `
     function makeEnvMapMaterial(imgUrl, cb) {
         const type = 't';
         const tj = this.threejsPlugin;
-        const uniforms = {tMatCap:{type,value: tj.texture(imgUrl)}};
+        const value = tj.texture(imgUrl);
+        const shading  = THREE.SmoothShading;
+        const uniforms = {texture:{type,value}};
         const material = new THREE.ShaderMaterial({
+            shading,
             uniforms,
             vertexShader,
-            fragmentShader,
-            shading: THREE.SmoothShading
+            fragmentShader
         });
         cb.call(this, material);
     }
