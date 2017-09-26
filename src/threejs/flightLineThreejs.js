@@ -374,6 +374,7 @@ export default (jsonUrl, imgUrl, height=150) => {
             }, false);
         }
         _.sphereObject = group;
+        _.sphereObject.name = _.me.name;
         _.loaded = true;
     }
 

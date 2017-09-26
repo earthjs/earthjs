@@ -32,6 +32,7 @@ export default (color, color2=0xAAAAAA) => {
             } else {
                 _.sphereObject = new THREE.Mesh(geometry, _.material);
             }
+            _.sphereObject.name = _.me.name;
         }
         tj.addGroup(_.sphereObject);
     }

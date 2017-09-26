@@ -84,6 +84,7 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../globe/gold.jpg',
         if (_.material && !_.loaded) {
             loadCountry()
         }
+        _.sphereObject.name = _.me.name;
         const tj = this.threejsPlugin;
         tj.addGroup(_.sphereObject);
     }

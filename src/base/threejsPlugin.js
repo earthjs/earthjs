@@ -50,7 +50,7 @@ export default (threejs='three-js') => {
         _.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true, canvas: container});
         _.renderer.setClearColor(0x000000, 0);
         _.renderer.setSize(width, height);
-        _.renderer.sortObjects = false;
+        _.renderer.sortObjects = true;
         this.renderThree = renderThree;
         if (window.THREEx &&  window.THREEx.DomEvents) {
             _.domEvents	= new window.THREEx.DomEvents(_.camera, _.renderer.domElement);
@@ -116,6 +116,18 @@ export default (threejs='three-js') => {
         },
         addGroup(obj) {
             _.group.add(obj);
+            if (obj.name && this[obj.name]) {
+                this[obj.name].add = () => {_.group.add(obj)};
+                this[obj.name].remove = () => {_.group.remove(obj)};
+                this[obj.name].isAdded = () => _.group.children.filter(x=>x.name===obj.name).length>0;
+            }
+        },
+        emptyGroup() {
+            const arr = _.group.children;
+            const ttl = arr.length;
+            for (let i= ttl; i>-1; i--) {
+                _.group.remove(arr[i]);
+            }
         },
         scale(obj) {
             scale.call(this, obj);

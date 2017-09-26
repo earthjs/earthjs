@@ -51,6 +51,7 @@ export default (worldUrl, scw=6.279, height=2048) => {
         if (!_.sphereObject) {
             resize.call(this);
             _.sphereObject= new THREE.Mesh(_.geometry, _.material);
+            _.sphereObject.name = _.me.name;
         }
         _.onDrawVals.forEach(v => {
             v.call(this, _.newContext, _.path);

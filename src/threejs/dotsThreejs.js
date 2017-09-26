@@ -27,6 +27,7 @@ export default urlJson => {
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
             _.sphereObject = new THREE.Group();
+            _.sphereObject.name = _.me.name;
             _.dataDots.features.forEach((d) => {
                 const dot = createDot.call(this, d);
                 _.sphereObject.add(dot);

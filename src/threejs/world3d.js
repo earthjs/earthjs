@@ -30,6 +30,7 @@ export default (worldUrl='../d/world.geometry.json', landUrl='../globe/gold.jpg'
         if (_.material && !_.loaded) {
             loadCountry()
         }
+        _.sphereObject.name = _.me.name;
         const tj = this.threejsPlugin;
         tj.addGroup(_.sphereObject);
     }

@@ -74,8 +74,9 @@ export default (imgUrl='../globe/world.png') => {
             group.add(mesh1);
             group.add(mesh2);
             _.sphereObject = group;
+            _.sphereObject.name = _.me.name;
             tj.addGroup(_.sphereObject);
-            tj.rotate();
+            // tj.rotate();
         } else {
             tj.addGroup(_.sphereObject);
         }

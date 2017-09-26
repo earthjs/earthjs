@@ -14,6 +14,7 @@ export default (worldUrl='../globe/world.png') => {
             const mesh = topojson.mesh(_.world, _.world.objects.countries);
             const material = new THREE.MeshBasicMaterial({color: 0x707070});
             _.sphereObject = tj.wireframe(mesh, material);
+            _.sphereObject.name = _.me.name;
         }
         tj.addGroup(_.sphereObject);
     }

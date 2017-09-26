@@ -50,6 +50,7 @@ export default (jsonUrl, height=2) => {
                 group.add(mesh);
             })
             _.sphereObject = group;
+            _.sphereObject.name = _.me.name;
         }
         tj.addGroup(_.sphereObject);
     }

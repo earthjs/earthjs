@@ -44,6 +44,7 @@ export default () => {
             _.context.strokeStyle = 'rgba(119,119,119,0.6)';
             _.context.stroke();
             _.sphereObject = new THREE.Mesh( geometry, material );
+            _.sphereObject.name = _.me.name;
             _.texture.needsUpdate = false;
         }
         tj.addGroup(_.sphereObject);

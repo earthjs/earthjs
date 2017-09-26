@@ -29,6 +29,7 @@ export default (
                 specular: new THREE.Color('grey')
             })
             _.sphereObject = new THREE.Mesh(geometry, material);
+            _.sphereObject.name = _.me.name;
             if (this._.domEvents) {
                 this._.domEvents.addEventListener(_.sphereObject, 'mousemove', function(event){
                     for (var v of _.onHoverVals) {

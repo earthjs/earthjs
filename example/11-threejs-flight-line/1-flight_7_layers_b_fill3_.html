@@ -10,13 +10,14 @@
 </head>
 <body>
     <svg id="earth-js" class="ej-center" width="1000" height="920"></svg>
-    <canvas id="three-js"></canvas>
+    <canvas id="three-js" class="ej-center"></canvas>
     <script>
-        const g = earthjs({scale:300})
+        const g = earthjs({scale:300,padding:85})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.clickCanvas())
+        .register(earthjs.plugins.dropShadowSvg())
 
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
         .register(earthjs.plugins.imageThreejs('../globe/world5.jpg'),'oceanThreejs')
@@ -36,9 +37,12 @@
         g.autorotatePlugin.stop();
         g.ready(function(){
             g.create();
-            o = g.oceanThreejs.sphere();
-            o.scale.set(0.97,0.97,0.97);
+            g.threejsPlugin.emptyGroup();
+            g.flightLineThreejs.add();
+            g.oceanThreejs.add();
             t = g.world3d.sphere();
+            o = g.oceanThreejs.sphere();
+            o.scale.set(.97,.97,.97);
             t.scale.set(298,298,298);
         });
     </script>
