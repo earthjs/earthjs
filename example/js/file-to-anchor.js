@@ -9,7 +9,7 @@ var walkSync = function(dir, filelist) {
     files.forEach(function(file) {
         const path = dir+file;
         const isDir = fs.statSync(path).isDirectory();
-        if (isDir && path.indexOf('/0')>0) {
+        if (isDir && path.match(/\d{2}/)) {
             filelist.push(`<h2>${file}</h2>`);
             filelist = walkSync(path+ '/', filelist);
         }
