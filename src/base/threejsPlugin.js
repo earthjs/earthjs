@@ -117,16 +117,24 @@ export default (threejs='three-js') => {
         addGroup(obj) {
             _.group.add(obj);
             if (obj.name && this[obj.name]) {
-                this[obj.name].add = () => {_.group.add(obj)};
-                this[obj.name].remove = () => {_.group.remove(obj)};
+                this[obj.name].add = () => {
+                    _.group.add(obj);
+                    this.__addEventQueue(obj.name);
+                };
+                this[obj.name].remove = () => {
+                    _.group.remove(obj);
+                    this.__removeEventQueue(obj.name);
+                };
                 this[obj.name].isAdded = () => _.group.children.filter(x=>x.name===obj.name).length>0;
             }
         },
         emptyGroup() {
             const arr = _.group.children;
             const ttl = arr.length;
-            for (let i= ttl; i>-1; i--) {
-                _.group.remove(arr[i]);
+            for (let i= ttl-1; i>-1; --i) {
+                const obj = arr[i];
+                _.group.remove(obj);
+                obj.name && this.__removeEventQueue(obj.name);
             }
         },
         scale(obj) {

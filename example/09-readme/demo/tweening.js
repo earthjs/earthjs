@@ -18,7 +18,7 @@ function tweening() {
     .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
     .onUpdate(function() {
         const {r} = cord;
-        if (arr.length<tmax)
+        if (arr.length<tmax && mesh)
             mesh.scale.set(r,r,r)
         else {
             arr.forEach(k=>data[k].mesh.scale.set(r,r,r))

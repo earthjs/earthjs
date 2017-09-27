@@ -443,7 +443,7 @@ export default (jsonUrl, imgUrl, height=150) => {
         onResize() {
             resize.call(this);
         },
-        onInterval(t) {
+        onInterval(t) {console.log(1)
             _.lightFlow && interval.call(this, t);
         },
         onCreate() {

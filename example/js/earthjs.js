@@ -106,6 +106,7 @@ var earthjs$2 = function earthjs() {
             return globe;
         }
     };
+    window._ = _;
     var drag = false;
     var svg = d3.selectAll(options.selector);
     var width = +svg.attr('width'),
@@ -185,7 +186,7 @@ var earthjs$2 = function earthjs() {
             }
         },
         register: function register(obj, name) {
-            var ar = { name: name || obj.name };
+            var ar = { name: name || obj.name, __on__: {} };
             globe[ar.name] = ar;
             Object.keys(obj).forEach(function (fn) {
                 if (['urls', 'onReady', 'onInit', 'onCreate', 'onRefresh', 'onResize', 'onInterval'].indexOf(fn) === -1) {
@@ -421,15 +422,38 @@ var earthjs$2 = function earthjs() {
 
     __.proj = __.projection();
     __.path = d3.geoPath().projection(__.proj);
+
+    globe.__addEventQueue = function (name) {
+        var obj = globe[name].__on__;
+        obj && Object.keys(obj).forEach(function (qname) {
+            return AddQueueEvent(obj, qname, name);
+        });
+    };
+    globe.__removeEventQueue = function (name) {
+        var obj = globe[name].__on__;
+        if (obj) {
+            Object.keys(obj).forEach(function (qname) {
+                delete _[qname][name];
+                _[qname + 'Keys'] = Object.keys(_[qname]);
+                _[qname + 'Vals'] = _[qname + 'Keys'].map(function (k) {
+                    return _[qname][k];
+                });
+            });
+        }
+    };
     return globe;
     //----------------------------------------
+    function AddQueueEvent(obj, qname, name) {
+        _[qname][name] = obj[qname];
+        _[qname + 'Keys'] = Object.keys(_[qname]);
+        _[qname + 'Vals'] = _[qname + 'Keys'].map(function (k) {
+            return _[qname][k];
+        });
+    }
     function qEvent(obj, qname, name) {
         if (obj[qname]) {
-            _[qname][name || obj.name] = obj[qname];
-            _[qname + 'Keys'] = Object.keys(_[qname]);
-            _[qname + 'Vals'] = _[qname + 'Keys'].map(function (k) {
-                return _[qname][k];
-            });
+            globe[name].__on__[qname] = obj[qname];
+            AddQueueEvent(obj, qname, name);
         }
     }
 };
@@ -1726,13 +1750,17 @@ var threejsPlugin = (function () {
             return _.group;
         },
         addGroup: function addGroup(obj) {
+            var _this2 = this;
+
             _.group.add(obj);
             if (obj.name && this[obj.name]) {
                 this[obj.name].add = function () {
                     _.group.add(obj);
+                    _this2.__addEventQueue(obj.name);
                 };
                 this[obj.name].remove = function () {
                     _.group.remove(obj);
+                    _this2.__removeEventQueue(obj.name);
                 };
                 this[obj.name].isAdded = function () {
                     return _.group.children.filter(function (x) {
@@ -1744,8 +1772,10 @@ var threejsPlugin = (function () {
         emptyGroup: function emptyGroup() {
             var arr = _.group.children;
             var ttl = arr.length;
-            for (var i = ttl; i > -1; i--) {
-                _.group.remove(arr[i]);
+            for (var i = ttl - 1; i > -1; --i) {
+                var obj = arr[i];
+                _.group.remove(obj);
+                obj.name && this.__removeEventQueue(obj.name);
             }
         },
         scale: function scale(obj) {
@@ -5711,6 +5741,7 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
             resize.call(this);
         },
         onInterval: function onInterval(t) {
+            console.log(1);
             _.lightFlow && interval.call(this, t);
         },
         onCreate: function onCreate() {

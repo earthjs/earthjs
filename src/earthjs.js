@@ -34,6 +34,7 @@ const earthjs = (options={}) => {
             return globe;
         }
     }
+    window._ = _;
     const drag = false;
     const svg = d3.selectAll(options.selector);
     let width = +svg.attr('width'), height = +svg.attr('height');
@@ -108,7 +109,7 @@ const earthjs = (options={}) => {
             }
         },
         register(obj, name) {
-            const ar = {name: name || obj.name};
+            const ar = {name: name || obj.name, __on__:{}};
             globe[ar.name] = ar;
             Object.keys(obj).forEach(function(fn) {
                 if ([
@@ -265,13 +266,32 @@ const earthjs = (options={}) => {
 
     __.proj = __.projection();
     __.path = d3.geoPath().projection(__.proj);
+
+    globe.__addEventQueue = function(name) {
+        const obj = globe[name].__on__;
+        obj && Object.keys(obj).forEach(qname => AddQueueEvent(obj, qname, name));
+    }
+    globe.__removeEventQueue = function(name) {
+        const obj = globe[name].__on__;
+        if (obj) {
+            Object.keys(obj).forEach(qname => {
+                delete _[qname][name];
+                _[qname+'Keys'] = Object.keys(_[qname]);
+                _[qname+'Vals'] = _[qname+'Keys'].map(k => _[qname][k]);                
+            });
+        }
+    }
     return globe;
     //----------------------------------------
+    function AddQueueEvent(obj, qname, name) {
+        _[qname][name]  = obj[qname];
+        _[qname+'Keys'] = Object.keys(_[qname]);
+        _[qname+'Vals'] = _[qname+'Keys'].map(k => _[qname][k]);
+    }
     function qEvent(obj, qname, name) {
         if (obj[qname]) {
-            _[qname][name || obj.name] = obj[qname];
-            _[qname+'Keys'] = Object.keys(_[qname]);
-            _[qname+'Vals'] = _[qname+'Keys'].map(k => _[qname][k]);
+            globe[name].__on__[qname] = obj[qname];
+            AddQueueEvent(obj, qname, name)
         }
     }
 }
