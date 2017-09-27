@@ -8,7 +8,6 @@ export default (csvUrl, scheme='schemeReds') => {
         selectedCountryId: null,
         countries: {type: 'FeatureCollection', features:[]},
     };
-    window._ = _;
 
     function getPath(path) {
         let v = this;

@@ -2,6 +2,7 @@
 <html>
 <head>
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <link type="text/css" rel="stylesheet" href="./demo/style.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
     <script type='text/javascript' src="../js/d3-scale-chromatic.v1.min.js"></script>
     <script type='text/javascript' src='../js/three.min.js'></script>
@@ -9,29 +10,6 @@
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
     <script type='text/javascript' src='../js/Tween.min.js'></script>
-    <style>
-        body {background: #555;}
-        hr {margin: 20px 0;}
-        .input-area {
-            color: white;
-            font-size: 2em;
-            font-family: sans-serif;
-            background-color: rgba(183, 183, 183,.1);
-        }
-        .input-area label {
-            cursor: pointer;
-        }
-        .input-area input {
-            display: none;
-        }
-        .input-area input:checked+label {
-            color: red;
-        }
-        .input-area.right {
-            right: 0;
-            text-align: right;
-        }
-    </style>
 </head>
 <body>
     <div class="input-area left">
@@ -39,7 +17,8 @@
         <input type="checkbox" id="toggle-bars"/><label for="toggle-bars">Bar Graph</label><br><br>
         <input type="checkbox" id="toggle-grat"/><label for="toggle-grat">Graticule</label><br><br>
         <input type="checkbox" id="toggle-border"/><label for="toggle-border">Border</label><br><br>
-        <input type="checkbox" id="toggle-ocean" checked/><label for="toggle-ocean">Ocean</label><br><br>
+        <input type="checkbox" id="toggle-ocean1" checked/><label for="toggle-ocean1">Ocean:1</label><br><br>
+        <input type="checkbox" id="toggle-ocean2"/><label for="toggle-ocean2">Ocean:2</label><br><br>
         <input type="checkbox" id="toggle-earth"/><label for="toggle-earth">Earth</label><br><br>
         <input type="checkbox" id="toggle-canvas"/><label for="toggle-canvas">Canvas</label><br><br>
         <input type="checkbox" id="toggle-world3d"/><label for="toggle-world3d">World 3d</label><br><br>

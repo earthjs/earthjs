@@ -1,6 +1,7 @@
 // Philippe Rivière’s https://bl.ocks.org/Fil/9ed0567b68501ee3c3fef6fbe3c81564
 // https://gist.github.com/Fil/ad107bae48e0b88014a0e3575fe1ba64
 // http://bl.ocks.org/kenpenn/16a9c611417ffbfc6129
+// https://stackoverflow.com/questions/42392777/three-js-buffer-management
 export default (threejs='three-js') => {
     /*eslint no-console: 0 */
     const _ = {renderer: null, scene: null, camera: null};
@@ -70,15 +71,12 @@ export default (threejs='three-js') => {
     }
 
     function rotate(obj, direct=false, delay=0) {
-        if (!obj) {
-            obj = _.group;
-        }
         const __ = this._;
         const rt = __.proj.rotate();
         rt[0]   -= 90;
         const q1 = __.versor(rt);
         const q2 = new THREE.Quaternion(-q1[2], q1[1], q1[3], q1[0]);
-        obj.setRotationFromQuaternion(q2);
+        (obj || _.group).setRotationFromQuaternion(q2);
         renderThree.call(this, direct, false, delay);
     }
 
@@ -86,6 +84,10 @@ export default (threejs='three-js') => {
     function renderThree(direct=false, fn) {
         if (direct) {
             _.renderer.render(_.scene, _.camera);
+            if (renderThreeX) {
+                renderThreeX = null;
+                clearTimeout(renderThreeX);
+            }
         } else if (renderThreeX===null) {
             renderThreeX = setTimeout(() => {
                 fn && fn.call(this, _.group);
@@ -120,10 +122,12 @@ export default (threejs='three-js') => {
                 this[obj.name].add = () => {
                     _.group.add(obj);
                     this.__addEventQueue(obj.name);
+                    renderThree.call(this);
                 };
                 this[obj.name].remove = () => {
                     _.group.remove(obj);
                     this.__removeEventQueue(obj.name);
+                    renderThree.call(this);
                 };
                 this[obj.name].isAdded = () => _.group.children.filter(x=>x.name===obj.name).length>0;
             }
@@ -135,6 +139,7 @@ export default (threejs='three-js') => {
                 const obj = arr[i];
                 _.group.remove(obj);
                 obj.name && this.__removeEventQueue(obj.name);
+                renderThree.call(this);
             }
         },
         scale(obj) {

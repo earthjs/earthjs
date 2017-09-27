@@ -1,7 +1,7 @@
 export default (
     imgUrl='../globe/world.jpg',
-    elvUrl='../globe/elevation.jpg',
-    wtrUrl='../globe/water.png') => {
+    elvUrl='../globe/earth_elevation.jpg',
+    wtrUrl='../globe/earth_water.png') => {
     /*eslint no-console: 0 */
     const _ = {
         sphereObject: null,

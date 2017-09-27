@@ -1,0 +1,21 @@
+body {background: #555;}
+hr {margin: 20px 0;}
+.input-area {
+    color: white;
+    font-size: 1.8em;
+    font-family: sans-serif;
+    background-color: rgba(183, 183, 183,.1);
+}
+.input-area label {
+    cursor: pointer;
+}
+.input-area input {
+    display: none;
+}
+.input-area input:checked+label {
+    color: red;
+}
+.input-area.right {
+    right: 0;
+    text-align: right;
+}

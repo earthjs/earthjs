@@ -1,9 +1,11 @@
 /* eslint no-unused-vars:0 */
 /* eslint no-undef:0 */
-let tmax=20;
+let tween, tmax=20;
 function tweening() {
+    if (g._.options.tween)
+        return;
     let cord, targ, ctr, mesh;
-    const arr = keys.filter(s=>data[s].mesh.scale.x>1);
+    let arr = keys.filter(s=>data[s].mesh.scale.x>1);
     if (arr.length<tmax) {
         ctr  = keys[Math.round(Math.random() * 230)];
         mesh = data[ctr].mesh; // "United States"
@@ -13,8 +15,8 @@ function tweening() {
         cord = {r:1.5};
         targ = {r:1};
     }
-    g._.options.tween = function(time) {TWEEN.update(time);}
-    new TWEEN.Tween(cord).to(targ, 500)
+    g._.options.tween = time => TWEEN.update(time);
+    tween = new TWEEN.Tween(cord).to(targ, 500)
     .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
     .onUpdate(function() {
         const {r} = cord;

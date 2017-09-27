@@ -406,7 +406,7 @@ export default (jsonUrl, imgUrl, height=150) => {
 
     let start = 0;
     function interval(timestamp) {
-        if ((timestamp - start)>30 && !this._.drag) {
+        if ((timestamp - start)>30) {
             start = timestamp;
             update_point_cloud();
             this.threejsPlugin.renderThree();
@@ -443,8 +443,9 @@ export default (jsonUrl, imgUrl, height=150) => {
         onResize() {
             resize.call(this);
         },
-        onInterval(t) {console.log(1)
-            _.lightFlow && interval.call(this, t);
+        onInterval(t) {
+            if (!this._.drag && _.lightFlow)
+                interval.call(this, t);
         },
         onCreate() {
             create.call(this);

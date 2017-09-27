@@ -126,7 +126,7 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
                     _.wait = null;
                     ondblclick();
                 } else if (_.wait===null) {
-                    _.wait = window.setTimeout(function() {
+                    _.wait = setTimeout(function() {
                         if (_.wait) {
                             _.wait = false;
                         }

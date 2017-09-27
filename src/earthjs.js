@@ -185,7 +185,8 @@ const earthjs = (options={}) => {
                     }
                 }
             }
-            __.options.tween && __.options.tween(timestamp);
+            if (__.options.tween && !__.drag)
+                __.options.tween(timestamp);
             earthjs.ticker = requestAnimationFrame(step);
         }
         earthjs.ticker = requestAnimationFrame(step);
@@ -277,7 +278,7 @@ const earthjs = (options={}) => {
             Object.keys(obj).forEach(qname => {
                 delete _[qname][name];
                 _[qname+'Keys'] = Object.keys(_[qname]);
-                _[qname+'Vals'] = _[qname+'Keys'].map(k => _[qname][k]);                
+                _[qname+'Vals'] = _[qname+'Keys'].map(k => _[qname][k]);
             });
         }
     }
