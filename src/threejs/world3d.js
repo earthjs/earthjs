@@ -95,5 +95,11 @@ export default (worldUrl='../d/world.geometry.json', landUrl='../globe/gold.jpg'
         sphere() {
             return _.sphereObject;
         },
+        extrude(inner) {
+            for (let name in _.world) {
+                const dataItem = _.world[name];
+                dataItem.mesh.geometry = new Map3DGeometry(dataItem, inner);
+            }
+        }
     }
 }

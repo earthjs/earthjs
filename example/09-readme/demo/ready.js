@@ -8,16 +8,23 @@ g.iconsThreejs.ready = function(err, json) {
     g.barThreejs.data(json);
 };
 g.flightLineThreejs.ready = function(err, csv) {
-    g.flightLineThreejs.data(csv,true,[30,200],100,1);
+    g.flightLineThreejs.data(csv,['#aaffff','#ff0011'],[30,200],100,1);
 }
 g.worldThreejs.ready = function(err, json) {
+    g.canvasThreejs.data(json);
     g.worldThreejs.data(json);
     g.clickCanvas.data(json);
 }
 
 let data,keys,r;
 // g.autorotatePlugin.stop();
+g._.options.choropleth = true;
 g.ready(function(){
+    const countries = g.worldThreejs.allData().countries;
+    g.choroplethCsv  .colorize('alcohol', 'schemeOranges', 0.8); //schemeReds, https://github.com/d3/d3-scale-chromatic
+    g.choroplethCsv  .mergeData(countries, ['properties.cid:cid', 'properties.color:color']);
+    g.choroplethCsv  .mergeData(countries, ['properties.cid:cid', 'properties.value:alcohol']);
+    g.canvasThreejs.allData(g.worldThreejs.allData());
     g.create();
 
     g.threejsPlugin.emptyGroup();

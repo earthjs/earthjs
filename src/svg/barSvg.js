@@ -7,7 +7,7 @@ export default urlBars => {
     function init() {
         const __ = this._;
         __.options.showBars = true;
-        _.barProjection = __.orthoGraphic();
+        _.barProjection = __.projection();
         _.svg = __.svg;
     }
 

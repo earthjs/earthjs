@@ -631,10 +631,11 @@ var choroplethCsv = (function (csvUrl) {
         // https://github.com/d3/d3-scale-chromatic
         colorize: function colorize(key) {
             var schemeKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : scheme;
+            var opacity = arguments[2];
 
             var value = void 0,
                 colorList = d3[schemeKey][9];
-            if (arguments.length === 2) {
+            if (arguments.length > 1) {
 
                 var arr = _.data.map(function (x) {
                     return +x[key];
@@ -653,7 +654,13 @@ var choroplethCsv = (function (csvUrl) {
                 _.data.forEach(function (obj) {
                     var vl = +obj[key];
                     var id = _.scale(vl);
-                    obj.color = _.color(id);
+                    if (opacity === undefined) {
+                        obj.color = _.color(id);
+                    } else {
+                        var color = d3.color(_.color(id));
+                        color.opacity = opacity;
+                        obj.color = color + '';
+                    }
                     obj.colorId = id - 1;
                     _.colorValues[obj.colorId].totalValue += vl;
                 });
@@ -2017,7 +2024,7 @@ var barSvg = (function (urlBars) {
     function init() {
         var __ = this._;
         __.options.showBars = true;
-        _.barProjection = __.orthoGraphic();
+        _.barProjection = __.projection();
         _.svg = __.svg;
     }
 
@@ -5279,7 +5286,7 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
         onHover: {},
         onHoverVals: []
     };
-    var lineScale = d3.scaleLinear().domain([30, 2500]).range([0.001, 0.01]);
+    var lineScale = d3.scaleLinear().domain([30, 2500]).range([0.001, 0.005]);
     var PI180 = Math.PI / 180.0;
 
     var colorRange = [d3.rgb('#ff0000'), d3.rgb("#aaffff")];
@@ -6028,6 +6035,21 @@ var worldThreejs = (function () {
                 return _.world;
             }
         },
+        allData: function allData(all) {
+            if (all) {
+                _.world = all.world;
+                _.land = all.land;
+                _.lakes = all.lakes;
+                _.countries = all.countries;
+            } else {
+                var world = _.world,
+                    land = _.land,
+                    lakes = _.lakes,
+                    countries = _.countries;
+
+                return { world: world, land: land, lakes: lakes, countries: countries };
+            }
+        },
         sphere: function sphere() {
             return _.sphereObject;
         }
@@ -6392,6 +6414,12 @@ var world3d = (function () {
         },
         sphere: function sphere() {
             return _.sphereObject;
+        },
+        extrude: function extrude(inner) {
+            for (var name in _.world) {
+                var dataItem = _.world[name];
+                dataItem.mesh.geometry = new Map3DGeometry(dataItem, inner);
+            }
         }
     };
 });

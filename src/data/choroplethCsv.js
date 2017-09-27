@@ -60,9 +60,9 @@ export default (csvUrl, scheme='schemeReds') => {
             })
         },
         // https://github.com/d3/d3-scale-chromatic
-        colorize(key, schemeKey=scheme) {
+        colorize(key, schemeKey=scheme, opacity) {
             let value, colorList = d3[schemeKey][9];
-            if (arguments.length===2) {
+            if (arguments.length>1) {
 
                 let arr = _.data.map(x=>+x[key]);
                 arr = [...new Set(arr)];
@@ -79,7 +79,13 @@ export default (csvUrl, scheme='schemeReds') => {
                 _.data.forEach(function(obj) {
                     const vl = +obj[key];
                     const id = _.scale(vl);
-                    obj.color = _.color(id);
+                    if (opacity===undefined) {
+                        obj.color = _.color(id);
+                    } else {
+                        const color = d3.color(_.color(id));
+                        color.opacity = opacity;
+                        obj.color = color+'';
+                    }
                     obj.colorId = id-1;
                     _.colorValues[obj.colorId].totalValue += vl;
                 })

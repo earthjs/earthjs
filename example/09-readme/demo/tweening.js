@@ -23,6 +23,7 @@ function tweening() {
         else {
             arr.forEach(k=>data[k].mesh.scale.set(r,r,r))
         }
+        g.threejsPlugin.renderThree();
     })
     .onComplete(function() {
         g._.options.tween = null
