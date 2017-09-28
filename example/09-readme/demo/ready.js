@@ -1,5 +1,9 @@
 /* eslint no-unused-vars:0 */
 /* eslint no-undef:0 */
+g.border.ready = function(err, json) {
+    g.borderSvg.data(json);
+    g.border.data(json);
+}
 g.iconsThreejs.ready = function(err, json) {
     json.features.forEach(function(d) {
         d.geometry.value = d.properties.mag;
@@ -8,7 +12,7 @@ g.iconsThreejs.ready = function(err, json) {
     g.barThreejs.data(json);
 };
 g.flight.ready = function(err, csv) {
-    g.flight.data(csv,['#aaffff','#ff0011'],[30,200],100,1);
+    g.flight.data(csv,['#aaffff','#88ff11'],[30,200],100,1);
 }
 g.border.ready = function(err, json) {
     g.canvas.data(json);
@@ -35,6 +39,7 @@ g.ready(function(){
     g.graticule.sphere().scale.set(0.97,0.97,0.97);
     g.ocean1.sphere().scale.set(0.97,0.97,0.97);
     g.ocean2.sphere().scale.set(0.97,0.97,0.97);
+    g.ocean3.sphere().scale.set(0.97,0.97,0.97);
     g.world3d.sphere().scale.set(r,r,r);
 
     data = g.world3d.data();

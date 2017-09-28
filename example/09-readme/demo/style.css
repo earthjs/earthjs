@@ -16,6 +16,9 @@ hr {margin: 20px 0;}
     color: red;
 }
 .input-area.right {
-    right: 0;
+    right: 8px;
     text-align: right;
+}
+.countries path {
+    fill: rgba(117,87,57,0.1);
 }

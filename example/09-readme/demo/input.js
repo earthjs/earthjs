@@ -12,23 +12,36 @@ d3.select('#toggle-world3d').on('click', () => (g.world3d.isAdded()   ? g.world3
 d3.select('#toggle-canvas' ).on('click', () => (g.canvas.isAdded()    ? g.canvas.remove()    : g.canvas.add()));
 d3.select('#toggle-border' ).on('click', () => (g.border.isAdded()    ? g.border.remove()    : g.border.add()));
 d3.select('#toggle-ocean1' ).on('click', () => {
-    d3.selectAll('#toggle-ocean2').property('checked', false);
-    d3.selectAll('#toggle-ocean1').property('checked', true);
+    d3.selectAll('#toggle-ocean1,#toggle-ocean2,#toggle-ocean3').property('checked', false);
     if (g.ocean1.isAdded())
         g.ocean1.remove()
     else {
+        g.ocean3.remove()
         g.ocean2.remove()
         g.ocean1.add()
+        d3.selectAll('#toggle-ocean1').property('checked', true);
     };
 });
 d3.select('#toggle-ocean2' ).on('click', () => {
-    d3.selectAll('#toggle-ocean1').property('checked', false);
-    d3.selectAll('#toggle-ocean2').property('checked', true);
+    d3.selectAll('#toggle-ocean1,#toggle-ocean2,#toggle-ocean3').property('checked', false);
     if (g.ocean2.isAdded())
         g.ocean2.remove()
     else {
+        g.ocean3.remove()
         g.ocean1.remove()
         g.ocean2.add()
+        d3.selectAll('#toggle-ocean2').property('checked', true);
+    };
+});
+d3.select('#toggle-ocean3' ).on('click', () => {
+    d3.selectAll('#toggle-ocean1,#toggle-ocean2,#toggle-ocean3').property('checked', false);
+    if (g.ocean3.isAdded())
+        g.ocean3.remove()
+    else {
+        g.ocean1.remove()
+        g.ocean2.remove()
+        g.ocean3.add()
+        d3.selectAll('#toggle-ocean3').property('checked', true);
     };
 });
 d3.select('#toggle-bars'   ).on('click', () => {
@@ -48,10 +61,8 @@ d3.select('#empty-group'   ).on('click', () => {
 d3.select('#blue-marble').on('click', () => {
     g.threejsPlugin.emptyGroup();
     g.ocean1.add();
-    g.border.add();
-    g.world3d.add();
     g.earth.add();
-    checked('ocean1,border,world3d,earth');
+    checked('ocean1,earth');
 });
 d3.select('#heat-map').on('click', () => {
     g.threejsPlugin.emptyGroup();
@@ -61,13 +72,13 @@ d3.select('#heat-map').on('click', () => {
     checked('grat,ocean2,canvas');
 });
 d3.select('#float-3d').on('click', () => {
+    g.threejsPlugin.emptyGroup();
+    g.graticule.add();
+    g.ocean1.add();
+    g.world3d.add();
+    g.border.add();
+    checked('grat,ocean1,world3d,border');
     if (!g._.options.tween) {
-        g.threejsPlugin.emptyGroup();
-        g.graticule.add();
-        g.ocean1.add();
-        g.world3d.add();
-        g.border.add();
-        checked('grat,ocean1,world3d,border');
         tmax = 20;
         tweening();
     } else {
