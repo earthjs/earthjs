@@ -43,10 +43,10 @@ d3.select('#empty-group'   ).on('click', () => {
     g.threejsPlugin.emptyGroup();
     tmax = 1;
 });
-d3.select('#blue-marble').on('click', () => checked('ocean1,earth');
-d3.select('#heat-map'   ).on('click', () => checked('border,ocean1,canvas');
+d3.select('#blue-marble').on('click', () => checked('ocean1,earth'));
+d3.select('#heat-map'   ).on('click', () => checked('border,ocean1,canvas'));
 d3.select('#float-3d'   ).on('click', () => {
-    checked('grat,ocean3,world3d,border');
+    checked('graticule,ocean3,world3d,border');
     if (!g._.options.tween) {
         tmax = tval;
         tweening();
@@ -55,7 +55,7 @@ d3.select('#float-3d'   ).on('click', () => {
     }
 });
 d3.select('#bar-graph').on('click', () => {
-    checked('ocean1,border,bars,world3d','bars');
+    checked('ocean1,border,world3d','bars');
     g.iconsThreejs.add();
     g.barThreejs.add();
 });
