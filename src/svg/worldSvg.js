@@ -153,5 +153,8 @@ export default worldUrl => {
             }
             return _.svg;
         },
+        $world()     {return $.world;},
+        $lakes()     {return $.lakes;},
+        $countries() {return $.countries;},
     };
 }

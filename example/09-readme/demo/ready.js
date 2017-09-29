@@ -30,16 +30,15 @@ g.ready(function(){
     g.choroplethCsv  .mergeData(countries, ['properties.cid:cid', 'properties.value:alcohol']);
     g.canvas.allData(g.border.allData());
     g.create();
-
     g.threejsPlugin.emptyGroup();
-    // g.flight.add();
     g.ocean1.add();
 
-    r = g._.proj.scale()-3;
     g.graticule.sphere().scale.set(0.97,0.97,0.97);
     g.ocean1.sphere().scale.set(0.97,0.97,0.97);
     g.ocean2.sphere().scale.set(0.97,0.97,0.97);
     g.ocean3.sphere().scale.set(0.97,0.97,0.97);
+    g.ocean3.sphere().material.transparent = true;
+    r = g._.proj.scale()-3;
     g.world3d.sphere().scale.set(r,r,r);
 
     data = g.world3d.data();

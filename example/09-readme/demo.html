@@ -6,34 +6,36 @@
     <script type='text/javascript' src="../js/d3.min.js"></script>
     <script type='text/javascript' src="../js/d3-scale-chromatic.v1.min.js"></script>
     <script type='text/javascript' src='../js/three.min.js'></script>
-    <script type='text/javascript' src='../js/THREE.MeshLine.js'></script>
+    <!-- <script type='text/javascript' src='../js/THREE.MeshLine.js'></script> -->
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
     <script type='text/javascript' src='../js/Tween.min.js'></script>
 </head>
 <body>
-    <div class="input-area left">
-        <label href="#" id="empty-group">Clear</label><br><br>
-        <input type="checkbox" id="toggle-bars"/><label for="toggle-bars">Bar Graph</label><br><br>
-        <input type="checkbox" id="toggle-grat"/><label for="toggle-grat">Graticule</label><br><br>
-        <input type="checkbox" id="toggle-border"/><label for="toggle-border">Border</label><br><br>
-        <input type="checkbox" id="toggle-earth"/><label for="toggle-earth">Earth</label><br><br>
-        <input type="checkbox" id="toggle-ocean1" checked/><label for="toggle-ocean1">Ocean:1</label><br><br>
-        <input type="checkbox" id="toggle-ocean2"/><label for="toggle-ocean2">Ocean:2</label><br><br>
-        <input type="checkbox" id="toggle-ocean3"/><label for="toggle-ocean3">Ocean:3</label><br><br>
-        <input type="checkbox" id="toggle-canvas"/><label for="toggle-canvas">Canvas</label><br><br>
-        <input type="checkbox" id="toggle-world3d"/><label for="toggle-world3d">World 3d</label><br><br>
-        <input type="checkbox" id="toggle-flight"/><label for="toggle-flight">Flight Line</label>
+    <div class="input-container">
+        <svg id="earth-js" class="ej-center"></svg>
+        <canvas id="three-js" class="ej-center"></canvas>
+        <div class="input-area left">
+            <label href="#" id="empty-group">Clear</label><br><br>
+            <input type="checkbox" id="toggle-bars"/><label for="toggle-bars">Bar Graph</label><br><br>
+            <input type="checkbox" id="toggle-grat"/><label for="toggle-grat">Graticule</label><br><br>
+            <input type="checkbox" id="toggle-border"/><label for="toggle-border">Border</label><br><br>
+            <input type="checkbox" id="toggle-earth"/><label for="toggle-earth">Earth</label><br><br>
+            <input type="checkbox" id="toggle-ocean1" checked/><label for="toggle-ocean1">Ocean:1</label><br><br>
+            <input type="checkbox" id="toggle-ocean2" /><label for="toggle-ocean2">Ocean:2</label><br><br>
+            <input type="checkbox" id="toggle-ocean3"/><label for="toggle-ocean3">Ocean:3</label><br><br>
+            <input type="checkbox" id="toggle-world3d"/><label for="toggle-world3d">World 3d</label><br><br>
+            <input type="checkbox" id="toggle-canvas"/><label for="toggle-canvas">Choropleth</label><br><br>
+            <input type="checkbox" id="toggle-flight"/><label for="toggle-flight">Flight Line</label>
+        </div>
+        <div class="input-area right">
+            <input type="radio" name="preset" value="1" id="blue-marble"/><label for="blue-marble">Blue marble</label><br><br>
+            <input type="radio" name="preset" value="2" id="heat-map"/><label for="heat-map">Choropleth</label><br><br>
+            <input type="radio" name="preset" value="3" id="bar-graph"/><label for="bar-graph">Bar graph</label><br><br>
+            <input type="radio" name="preset" value="4" id="float-3d"/><label for="float-3d">Float 3d</label><br><br>
+            <input type="radio" name="preset" value="5" id="flight-ln"/><label for="flight-ln">Flight line</label>
+        </div>
     </div>
-    <div class="input-area right">
-        <input type="radio" name="preset" value="1" id="blue-marble"/><label for="blue-marble">Blue marble</label><br><br>
-        <input type="radio" name="preset" value="2" id="heat-map"/><label for="heat-map">Heat map</label><br><br>
-        <input type="radio" name="preset" value="3" id="bar-graph"/><label for="bar-graph">Bar graph</label><br><br>
-        <input type="radio" name="preset" value="4" id="float-3d"/><label for="float-3d">Float 3d</label><br><br>
-        <input type="radio" name="preset" value="5" id="flight-ln"/><label for="flight-ln">Flight line</label>
-    </div>
-    <svg id="earth-js" class="ej-center" width="1820" height="920"></svg>
-    <canvas id="three-js" class="ej-center"></canvas>
     <script src="demo/register.js"></script>
     <script src="demo/tweening.js"></script>
     <script src="demo/ready.js"></script>

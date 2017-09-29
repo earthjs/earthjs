@@ -37,7 +37,8 @@
 </head>
 <body>
     <div class="input-area">
-        <input id="year" type="range" min="1992" max="2014" step="1" value="1992"/>
+        <input id="year" type="range" min="1992" max="2014" step="1" value="2014"/><br>
+        <input id="frm" type="range" min="0.06" max="1" step="0.01" value="1"/>
     </div>
     <div class="top-ten">
         <h1 id="title"></h1>
@@ -182,9 +183,9 @@
     const g = earthjs({scale:350})
     .register(smallArmsJson())
     .register(earthjs.plugins.dropShadowSvg())
-    // .register(earthjs.plugins.oceanSvg())
     .register(earthjs.plugins.selectCountryMix2())
-    .register(earthjs.plugins.world3d('../d/world.geometry.json','../globe/gold.jpg'))
+    .register(earthjs.plugins.oceanThreejs())
+    .register(earthjs.plugins.world3d('../d/world.geometry.json','../globe/gold.jpg',0.975))
     .register(earthjs.plugins.flightLineThreejs(null,'../globe/point3.png'))
     .register(earthjs.plugins.countryTooltipCanvas());
     g.world3d.sphere().scale.set(347,347,347)
@@ -195,7 +196,7 @@
         const data= g.worldJson.data();
         const countries = topojson.feature(data, data.objects.countries).features;
         g.canvasThreejs.countries(countries.filter(x=>arr.indexOf(x.id)>-1));
-        g.flightLineThreejs.data(csv, true, [80,150],100,1);
+        g.flightLineThreejs.data(csv, ['#aaffff','#88ff11'], [80,150],100,1);
         g.smallArmsJson.topTen();
         const cl = g.countryTooltipCanvas.data();
         const xd = cl.find(t=> t.cid===cc);
@@ -208,11 +209,16 @@
         g.canvasThreejs.data(json);
         g.worldJson.data(json);
     }
+    let o,w;
     g.ready(function(){
         g.countryTooltipCanvas.data(g.smallArmsJson.allData().countryName);
         delete g._.options.showBorder;
         reload('SG');
         g.create();
+        w = g.world3d.sphere();
+        o = g.oceanThreejs.sphere();
+        o.scale.set(0.95,0.95,0.95);
+        o.material.transparent = true;
     })
     g.clickCanvas.onCountry({
         chgCountry(event, country) {
@@ -230,12 +236,19 @@
         }
     })
 
-
     var canvas = d3.selectAll('canvas').nodes();
     d3.select('#year').on('input', function() {
-        _.t = +this.value;
-        reload();
+        _.t = +this.value;reload();
         g.flightLineThreejs.reload();
+    });
+    const scale = d3.scaleLinear().domain([0.03,1]).range([3,344]);
+    d3.select('#frm').on('input', function() {
+        const v = +this.value;
+        let ww = scale(v);
+        let oo = v - 0.05;
+        console.log(ww,oo);
+        w.scale.set(ww,ww,ww);
+        o.scale.set(oo,oo,oo);
     })
     </script>
 </body>

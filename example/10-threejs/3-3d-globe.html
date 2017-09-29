@@ -16,7 +16,6 @@
     <canvas id="three-js"></canvas>
     <canvas class="ej-canvas"></canvas>
     <script>
-        let c,o,t;
         const g = earthjs({scale:280})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.threejsPlugin())
@@ -25,14 +24,16 @@
         .register(earthjs.plugins.graticuleThreejs())
         .register(earthjs.plugins.world3d('../d/world.geometry.json','../globe/gold.jpg'))
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'));
+
+        let c,t,o;
         g.ready(function(){
             g.create();
-            c = g.world3d.data();
-            o = g.oceanThreejs.sphere();
+            c = g.world3d.data().China.mesh;
             t = g.worldThreejs.sphere();
-            c.China.mesh.scale.set(1.2,1.2,1.2);
-            o.material.transparent = true;
+            o = g.oceanThreejs.sphere();
+            c.scale.set(1.2,1.2,1.2);
             t.scale.set(1.5,1.5,1.5);
+            o.material.transparent = true;
         })
 
         d3.select('#frm').on('input', function() {
@@ -41,7 +42,7 @@
         })
         d3.select('#chn').on('input', function() {
             const v = this.value;
-            c.China.mesh.scale.set(v,v,v);
+            c.scale.set(v,v,v);
         })
     </script>
 </body>

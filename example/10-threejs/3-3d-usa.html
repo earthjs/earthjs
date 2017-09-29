@@ -10,13 +10,12 @@
 <body>
     <div class="input-area">
         <input id="frm" type="range" min="1" max="1.5" step="0.01" value="1.5"/><br>
-        <input id="chn" type="range" min="0.1" max="1.8" step="0.01" value="1.2"/>
+        <input id="chn" type="range" min="0.1" max="1.8" step="0.01" value="1.46"/>
     </div>
     <svg id="earth-js" width="1680" height="940"/>
     <canvas id="three-js"></canvas>
     <canvas class="ej-canvas"></canvas>
     <script>
-        let c,o,t;
         const g = earthjs({scale:280})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.threejsPlugin())
@@ -26,25 +25,33 @@
         .register(earthjs.plugins.world3d('../d/world.geometry.json','../globe/gold.jpg'))
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'));
         g.world3d.ready = function(err, json) {
-            g.world3d.data({'United States': json['United States']})
+            g.world3d.data({
+                'United States': json['United States'],
+                'Canada': json['Canada'],
+                'Mexico': json['Mexico']
+            })
         }
+
+        let c,t,o;
         g.ready(function(){
             g.create();
-            c = g.world3d.data();
-            o = g.oceanThreejs.sphere();
+            c = g.world3d.data()['United States'].mesh;
             t = g.worldThreejs.sphere();
-            c['United States'].mesh.scale.set(1.2,1.2,1.2);
-            o.material.transparent = true;
+            o = g.oceanThreejs.sphere();
+            c.scale.set(1.46,1.46,1.46);
             t.scale.set(1.5,1.5,1.5);
+            o.material.transparent = true;
         })
 
         d3.select('#frm').on('input', function() {
             const v = this.value;
+            console.log('Frame:',v);
             t.scale.set(v,v,v);
         })
         d3.select('#chn').on('input', function() {
             const v = this.value;
-            c['United States'].mesh.scale.set(v,v,v);
+            console.log('US:',v);
+            c.scale.set(v,v,v);
         })
     </script>
 </body>

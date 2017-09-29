@@ -18,9 +18,9 @@
 </head>
 <body>
     <div class="input-area">
-        <button id="g7" href=''>[ G7 Countries ]</button>
-        <button id="b4" href=''>[ B4 Countries ]</button>
-        <button id="ap" href=''>[ APAC Countries ]</button>
+        <button id="g7" href=''>[ G7 Countries ]</button> -
+        <button id="b4" href=''>[ B4 Countries ]</button> -
+        <button id="ap" href=''>[ APAC Countries ]</button> -
         <input id="pan" type="range" min="0" max="700" step="1" value="0"/>
     </div>
     <svg id="earth-js" width="930" height="930"></svg>
@@ -30,7 +30,7 @@
     const g = earthjs({scale:350})
     .register(earthjs.plugins.dropShadowSvg())
     .register(earthjs.plugins.selectCountryMix())
-    .register(earthjs.plugins.imageThreejs('../globe/world.jpg'))
+    .register(earthjs.plugins.imageThreejs('../globe/world_1.jpg'))
     .register(earthjs.plugins.countryTooltipCanvas('../d/world-110m-country-names.tsv'));
     g.mousePlugin.selectAll('#three-js');
     g.ready(function(){

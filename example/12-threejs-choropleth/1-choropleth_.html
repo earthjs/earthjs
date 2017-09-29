@@ -7,31 +7,41 @@
     <script type='text/javascript' src='../js/three.min.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
-    <style>body {background: #555;}</style>
 </head>
 <body>
+    <div class="input-area">
+        <input id="frm" type="range" min="1" max="1.5" step="0.01" value="1.02"/><br>
+    </div>
     <svg id="earth-js" width="1000" height="920"></svg>
     <canvas id="three-js"></canvas>
     <script>
         var g = earthjs({scale:300})
-        .register(earthjs.plugins.worldJson('../d/world-110m.json'))
-        .register(earthjs.plugins.countryNamesCsv('../d/world-110m-country-names.tsv'))
-        .register(earthjs.plugins.choroplethCsv('../data/2010_alcohol_consumption_by_country.csv'))
         .register(earthjs.plugins.mousePlugin())
-        .register(earthjs.plugins.hoverCanvas())
-        .register(earthjs.plugins.countryCanvas())
         .register(earthjs.plugins.threejsPlugin())
-        .register(earthjs.plugins.canvasThreejs())
-        g.canvasThreejs.style({ocean: '#36496e'});
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.oceanThreejs())
+        .register(earthjs.plugins.graticuleThreejs())
+        .register(earthjs.plugins.choroplethCsv('../data/2010_alcohol_consumption_by_country.csv'))
+        .register(earthjs.plugins.canvasThreejs('../d/world-110m.json'))
         g._.options.showSelectedCountry = true;
         g._.options.choropleth = true;
+
+        let t,o;
         g.ready(function(){
-            const countries = g.worldJson.allData().countries;
-            g.choroplethCsv  .colorize('alcohol', 'schemeOranges'); //schemeReds, https://github.com/d3/d3-scale-chromatic
+            const countries = g.canvasThreejs.allData().countries;
+            g.choroplethCsv  .colorize('alcohol', 'schemeReds');
             g.choroplethCsv  .mergeData(countries, ['properties.cid:cid', 'properties.color:color']);
             g.choroplethCsv  .mergeData(countries, ['properties.cid:cid', 'properties.value:alcohol']);
-            g.canvasThreejs.allData(g.worldJson.allData());
             g.create();
+            t = g.canvasThreejs.sphere();
+            t.scale.set(1.02,1.02,1.02);
+            o = g.oceanThreejs.sphere();
+            o.material.transparent = true;
+        })
+
+        d3.select('#frm').on('input', function() {
+            const v = this.value;
+            t.scale.set(v,v,v);
         })
     </script>
 </body>

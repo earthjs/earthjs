@@ -15,7 +15,7 @@
         const g = earthjs({scale:300})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.threejsPlugin())
-        .register(earthjs.plugins.globeThreejs('../globe/world5.jpg'))
+        .register(earthjs.plugins.globeThreejs('../globe/world_texture_1.jpg'))
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
         .register(earthjs.plugins.flightLineThreejs('../data/flights2.json','../globe/point.png'))
         g.flightLineThreejs.ready = function(err, csv) {

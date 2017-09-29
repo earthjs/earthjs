@@ -1,6 +1,6 @@
 /* eslint no-unused-vars:0 */
 /* eslint no-undef:0 */
-let tween, tmax=20;
+let tween, tmax=tval=30;
 function tweening() {
     if (g._.options.tween)
         return;
@@ -29,7 +29,7 @@ function tweening() {
     })
     .onComplete(function() {
         g._.options.tween = null
-        if (tmax===20 || keys.filter(s=>data[s].mesh.scale.x>1).length>0)
+        if (tmax===tval || keys.filter(s=>data[s].mesh.scale.x>1).length>0)
             setTimeout(()=>tweening(),50);
     })
     .start(); // Start the tween immediately.

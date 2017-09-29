@@ -1,5 +1,5 @@
 export default (
-    imgUrl='../globe/world.jpg',
+    imgUrl='../globe/world_1.jpg',
     elvUrl='../globe/earth_elevation.jpg',
     wtrUrl='../globe/earth_water.png') => {
     /*eslint no-console: 0 */

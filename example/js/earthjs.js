@@ -2618,6 +2618,15 @@ var worldSvg = (function (worldUrl) {
                 _.svg = d3.selectAll(q);
             }
             return _.svg;
+        },
+        $world: function $world() {
+            return $.world;
+        },
+        $lakes: function $lakes() {
+            return $.lakes;
+        },
+        $countries: function $countries() {
+            return $.countries;
         }
     };
 });
@@ -6060,7 +6069,7 @@ var worldThreejs = (function () {
 });
 
 var globeThreejs = (function () {
-    var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../globe/world.jpg';
+    var imgUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../globe/world_1.jpg';
     var elvUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '../globe/earth_elevation.jpg';
     var wtrUrl = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '../globe/earth_water.png';
 
