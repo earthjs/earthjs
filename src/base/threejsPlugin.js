@@ -36,19 +36,22 @@ export default (threejs='three-js') => {
         const __ = this._;
         SCALE = __.proj.scale();
         const {width, height} = __.options;
-        const container = document.getElementById(threejs);
+        const canvas = document.getElementById(threejs);
         _.scale  = d3.scaleLinear().domain([0,SCALE]).range([0,1]);
         _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 30000)
         _.light  = new THREE.PointLight(0xffffff, 0);
         _.scene  = new THREE.Scene();
         _.group  = new THREE.Group();
+        _.node   = canvas;
         _.camera.position.z = 3010; // (higher than RADIUS + size of the bubble)
+        _.camera.name = 'camera';
+        _.group.name = 'group';
+        _.light.name = 'light';
         _.scene.add(_.camera);
         _.scene.add(_.group);
         _.camera.add(_.light);
-        this._.camera = _.camera;
 
-        _.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true, canvas: container});
+        _.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true, canvas});
         _.renderer.setClearColor(0x000000, 0);
         _.renderer.setSize(width, height);
         _.renderer.sortObjects = true;
@@ -56,7 +59,9 @@ export default (threejs='three-js') => {
         if (window.THREEx &&  window.THREEx.DomEvents) {
             _.domEvents	= new window.THREEx.DomEvents(_.camera, _.renderer.domElement);
         }
-        this._.domEvents = _.domEvents;
+        Object.defineProperty(_.me, 'camera', {get() {return _.camera;}});
+        Object.defineProperty(_.me, 'renderer', {get() {return _.renderer;}});
+        Object.defineProperty(_.me, 'domEvents', {get() {return _.domEvents;}});
     }
 
     function scale(obj) {
@@ -162,6 +167,9 @@ export default (threejs='three-js') => {
         },
         light() {
             return _.camera.children[0];
+        },
+        node() {
+            return _.node;
         }
     }
 }

@@ -1669,19 +1669,22 @@ var threejsPlugin = (function () {
             width = _$options.width,
             height = _$options.height;
 
-        var container = document.getElementById(threejs);
+        var canvas = document.getElementById(threejs);
         _.scale = d3.scaleLinear().domain([0, SCALE]).range([0, 1]);
         _.camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 30000);
         _.light = new THREE.PointLight(0xffffff, 0);
         _.scene = new THREE.Scene();
         _.group = new THREE.Group();
+        _.node = canvas;
         _.camera.position.z = 3010; // (higher than RADIUS + size of the bubble)
+        _.camera.name = 'camera';
+        _.group.name = 'group';
+        _.light.name = 'light';
         _.scene.add(_.camera);
         _.scene.add(_.group);
         _.camera.add(_.light);
-        this._.camera = _.camera;
 
-        _.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, canvas: container });
+        _.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, canvas: canvas });
         _.renderer.setClearColor(0x000000, 0);
         _.renderer.setSize(width, height);
         _.renderer.sortObjects = true;
@@ -1689,7 +1692,21 @@ var threejsPlugin = (function () {
         if (window.THREEx && window.THREEx.DomEvents) {
             _.domEvents = new window.THREEx.DomEvents(_.camera, _.renderer.domElement);
         }
-        this._.domEvents = _.domEvents;
+        Object.defineProperty(_.me, 'camera', {
+            get: function get() {
+                return _.camera;
+            }
+        });
+        Object.defineProperty(_.me, 'renderer', {
+            get: function get() {
+                return _.renderer;
+            }
+        });
+        Object.defineProperty(_.me, 'domEvents', {
+            get: function get() {
+                return _.domEvents;
+            }
+        });
     }
 
     function _scale(obj) {
@@ -1811,6 +1828,9 @@ var threejsPlugin = (function () {
         },
         light: function light() {
             return _.camera.children[0];
+        },
+        node: function node() {
+            return _.node;
         }
     };
 });
@@ -5596,10 +5616,6 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
                 useMap: false,
                 opacity: 1,
                 lineWidth: lineWidth
-                // near: this._.camera.near,
-                // far:  this._.camera.far
-                // resolution: resolution,
-                // sizeAttenuation: true,
             });
             for (var j = 0; j <= curve_length; ++j) {
                 var i_curve = j * 3;
@@ -5655,8 +5671,8 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
         group.add(!window.MeshLineMaterial ? generate_track_lines.call(this) : generate_track_lines2.call(this));
         group.add(generate_point_cloud.call(this));
         group.name = 'flightLineThreejs';
-        if (this._.domEvents) {
-            this._.domEvents.addEventListener(_.track_lines_object, 'mousemove', function (event) {
+        if (this.threejsPlugin.domEvents) {
+            this.threejsPlugin.domEvents.addEventListener(_.track_lines_object, 'mousemove', function (event) {
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
                 var _iteratorError = undefined;
@@ -6101,8 +6117,8 @@ var globeThreejs = (function () {
             });
             _.sphereObject = new THREE.Mesh(geometry, material);
             _.sphereObject.name = _.me.name;
-            if (this._.domEvents) {
-                this._.domEvents.addEventListener(_.sphereObject, 'mousemove', function (event) {
+            if (this.threejsPlugin.domEvents) {
+                this.threejsPlugin.domEvents.addEventListener(_.sphereObject, 'mousemove', function (event) {
                     var _iteratorNormalCompletion = true;
                     var _didIteratorError = false;
                     var _iteratorError = undefined;

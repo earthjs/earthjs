@@ -290,10 +290,6 @@ export default (jsonUrl, imgUrl, height=150) => {
                 useMap: false,
                 opacity: 1,
                 lineWidth,
-                // near: this._.camera.near,
-                // far:  this._.camera.far
-                // resolution: resolution,
-                // sizeAttenuation: true,
             });
             for (let j = 0; j <= curve_length; ++j) {
                 const i_curve = j * 3;
@@ -366,8 +362,8 @@ export default (jsonUrl, imgUrl, height=150) => {
             generate_track_lines2.call(this));
         group.add(generate_point_cloud.call(this));
         group.name = 'flightLineThreejs';
-        if (this._.domEvents) {
-            this._.domEvents.addEventListener(_.track_lines_object, 'mousemove', function(event){
+        if (this.threejsPlugin.domEvents) {
+            this.threejsPlugin.domEvents.addEventListener(_.track_lines_object, 'mousemove', function(event){
                 for (var v of _.onHoverVals) {
                     v.call(event.target, event);
                 }
