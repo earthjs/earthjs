@@ -21,6 +21,7 @@
         padding: 20px;
         right: 0;
         height: 100vh;
+        z-index: 4;
     }
     .top-ten select {
         text-align: right;
@@ -46,197 +47,197 @@
         <h2>Import:</h2>
         <select class="top-import" name="topImport" multiple></select><br>
     </div>
-    <svg id="earth-js" width="1000" height="880"></svg>
-    <canvas id="three-js"></canvas>
-    <canvas class="ej-canvas"></canvas>
+    <svg id="earth-js" class="ej-center"></svg>
+    <canvas id="three-js" class="ej-center"></canvas>
+    <canvas class="ej-canvas ej-center"></canvas>
     <script type='text/javascript'>
+        function smallArmsJson(
+            json1='../d/country_iso3166.json',
+            json2='../d/country_lat_lon.json',
+            json3='../data/small-arms.json',
+            json4='../d/country_nm_to_id.json',
+            json5='../d/world-110m-country-names.json') {
+            /*eslint no-console: 0 */
+            const _ = {
+                countryIso: null,
+                countryLLg: null,
+                dataYearly: null,
+                countryNmToId: null
+            };
+            window._ = _;
+            return {
+                name: 'smallArmsJson',
+                urls: [json1,json2,json3, json4, json5],
+                onReady(err, countryIso, countryLLg, dataYearly, countryNmToId, countryName) {
+                    _.me.allData({countryIso, countryLLg, dataYearly, countryNmToId, countryName});
+                },
+                onInit(me) {
+                    _.me = me;
+                },
+                allData(all) {
+                    if (all) {
+                        _.countryIso   = all.countryIso;
+                        _.countryLLg   = all.countryLLg;
+                        _.dataYearly   = all.dataYearly;
+                        _.countryNmToId= all.countryNmToId;
+                        _.countryName  = all.countryName;
+                        _.t = all.dataYearly.map(x=> x.t).sort()[0]; //.pop();
 
-    function smallArmsJson(
-        json1='../d/country_iso3166.json',
-        json2='../d/country_lat_lon.json',
-        json3='../data/small-arms.json',
-        json4='../d/country_nm_to_id.json',
-        json5='../d/world-110m-country-names.json') {
-        /*eslint no-console: 0 */
-        const _ = {
-            countryIso: null,
-            countryLLg: null,
-            dataYearly: null,
-            countryNmToId: null
-        };
-        window._ = _;
-        return {
-            name: 'smallArmsJson',
-            urls: [json1,json2,json3, json4, json5],
-            onReady(err, countryIso, countryLLg, dataYearly, countryNmToId, countryName) {
-                _.me.allData({countryIso, countryLLg, dataYearly, countryNmToId, countryName});
-            },
-            onInit(me) {
-                _.me = me;
-            },
-            allData(all) {
-                if (all) {
-                    _.countryIso   = all.countryIso;
-                    _.countryLLg   = all.countryLLg;
-                    _.dataYearly   = all.dataYearly;
-                    _.countryNmToId= all.countryNmToId;
-                    _.countryName  = all.countryName;
-                    _.t = all.dataYearly.map(x=> x.t).sort()[0]; //.pop();
-
-                } else {
-                    const  {countryIso, countryLLg, dataYearly, countryNmToId, countryName} = _;
-                    return {countryIso, countryLLg, dataYearly, countryNmToId, countryName};
-                }
-            },
-            getData(cc,type='all',t=_.t) {
-                _.total = [0,0];
-                _.sum_i = {};
-                _.sum_e = {};
-                _.all_i = [];
-                _.all_e = [];
-                if (cc) {
-                    _.cc = cc;
-                    _.cx = _.countryName.find(x=> x.cid===cc);
-                }
-                const ar = [];
-                const ll = _.countryLLg.countries;
-                const f1 = _.dataYearly.filter(x=> x.t===t)[0];
-                f1.data.forEach(x=> {
-                    const te = (x.e===_.cc);
-                    const ti = (x.i===_.cc);
-                    if (te || ti) {
-                        const key = x.e+x.i;
-                        if (te) {
-                            if (_.sum_e[key]===undefined) {
-                                _.sum_e[key] = x;_.sum_e[key].v = 0;
-                            }
-                            _.sum_e[key].v = _.sum_e[key].v + x.v;
-                            _.total[0] = _.total[0] + x.v; //ttl export
-                            _.all_e.push(x);
-                        } else {
-                            if (_.sum_i[key]===undefined) {
-                                _.sum_i[key] = x;_.sum_i[key].v = 0;
-                            }
-                            _.sum_i[key].v = _.sum_i[key].v + x.v;
-                            _.total[1] = _.total[1] + x.v; //ttl import
-                            _.all_i.push(x);
-                        }
+                    } else {
+                        const  {countryIso, countryLLg, dataYearly, countryNmToId, countryName} = _;
+                        return {countryIso, countryLLg, dataYearly, countryNmToId, countryName};
                     }
-                });
-                _.sum_e2 = Object.keys(_.sum_e).map(key=> _.sum_e[key]).filter(x=> x.v>0);
-                _.sum_i2 = Object.keys(_.sum_i).map(key=> _.sum_i[key]).filter(x=> x.v>0);
-                _.sum_e2.sort((a,b)=> b.v-a.v).forEach(x=> {
-                    const s = ll[x.e];
-                    const t = ll[x.i];
-                    if (s && t) ar.push([s.lat, s.lon, t.lat, t.lon, x.v]);
-                });
-                _.sum_i2.sort((a,b)=> b.v-a.v).forEach(x=> {
-                    const s = ll[x.e];
-                    const t = ll[x.i];
-                    if (s && t) ar.push([s.lat, s.lon, t.lat, t.lon, x.v]);
-                });
-                _.cids = _.sum_e2.map(x=> x.i).concat(
-                         _.sum_i2.map(x=> x.e)).filter(x=> x!==_.cc && x);
-                _.cids = [...new Set(_.cids)];
-                return ar;
-            },
-            getCountryId(cname) {
-                return _.countryNmToId[cname.toUpperCase()];
-            },
-            ids() {
-                const cl=this.countryTooltipCanvas.data();
-                return _.cids.map(x=> {
-                    const lx = cl.find(t=> t.cid===x);
-                    return lx && lx.id;
-                })
-            },
-            topTen() {
-                fm = d3.format("($.2s");
-                cc = g.smallArmsJson.allData().countryIso;
-                d3.select('#title').html(_.cx.name);
-                const tpExport = d3.select('.top-export');
-                tpExport.attr('size', _.sum_e2.length>25 ? 25 : _.sum_e2.length);
-                tpExport.html(_.sum_e2.map(x=> {
-                    return `<option value="${x.i}">${cc[x.i]} - ${fm(x.v)}</option>`
-                }).join(''))
+                },
+                getData(cc,type='all',t=_.t) {
+                    _.total = [0,0];
+                    _.sum_i = {};
+                    _.sum_e = {};
+                    _.all_i = [];
+                    _.all_e = [];
+                    if (cc) {
+                        _.cc = cc;
+                        _.cx = _.countryName.find(x=> x.cid===cc);
+                    }
+                    const ar = [];
+                    const ll = _.countryLLg.countries;
+                    const f1 = _.dataYearly.filter(x=> x.t===t)[0];
+                    f1.data.forEach(x=> {
+                        const te = (x.e===_.cc);
+                        const ti = (x.i===_.cc);
+                        if (te || ti) {
+                            const key = x.e+x.i;
+                            if (te) {
+                                if (_.sum_e[key]===undefined) {
+                                    _.sum_e[key] = x;_.sum_e[key].v = 0;
+                                }
+                                _.sum_e[key].v = _.sum_e[key].v + x.v;
+                                _.total[0] = _.total[0] + x.v; //ttl export
+                                _.all_e.push(x);
+                            } else {
+                                if (_.sum_i[key]===undefined) {
+                                    _.sum_i[key] = x;_.sum_i[key].v = 0;
+                                }
+                                _.sum_i[key].v = _.sum_i[key].v + x.v;
+                                _.total[1] = _.total[1] + x.v; //ttl import
+                                _.all_i.push(x);
+                            }
+                        }
+                    });
+                    _.sum_e2 = Object.keys(_.sum_e).map(key=> _.sum_e[key]).filter(x=> x.v>0);
+                    _.sum_i2 = Object.keys(_.sum_i).map(key=> _.sum_i[key]).filter(x=> x.v>0);
+                    _.sum_e2.sort((a,b)=> b.v-a.v).forEach(x=> {
+                        const s = ll[x.e];
+                        const t = ll[x.i];
+                        if (s && t) ar.push([s.lat, s.lon, t.lat, t.lon, x.v]);
+                    });
+                    _.sum_i2.sort((a,b)=> b.v-a.v).forEach(x=> {
+                        const s = ll[x.e];
+                        const t = ll[x.i];
+                        if (s && t) ar.push([s.lat, s.lon, t.lat, t.lon, x.v]);
+                    });
+                    _.cids = _.sum_e2.map(x=> x.i).concat(
+                             _.sum_i2.map(x=> x.e)).filter(x=> x!==_.cc && x);
+                    _.cids = [...new Set(_.cids)];
+                    return ar;
+                },
+                getCountryId(cname) {
+                    return _.countryNmToId[cname.toUpperCase()];
+                },
+                ids() {
+                    const cl=this.countryTooltipCanvas.data();
+                    return _.cids.map(x=> {
+                        const lx = cl.find(t=> t.cid===x);
+                        return lx && lx.id;
+                    })
+                },
+                topTen() {
+                    fm = d3.format("($.2s");
+                    cc = g.smallArmsJson.allData().countryIso;
+                    d3.select('#title').html(_.cx.name);
+                    const tpExport = d3.select('.top-export');
+                    tpExport.attr('size', _.sum_e2.length>25 ? 25 : _.sum_e2.length);
+                    tpExport.html(_.sum_e2.map(x=> {
+                        return `<option value="${x.i}">${cc[x.i]} - ${fm(x.v)}</option>`
+                    }).join(''))
 
-                const tpImport = d3.select('.top-import');
-                tpImport.attr('size', _.sum_i2.length>25 ? 25 : _.sum_i2.length);
-                tpImport.html(_.sum_i2.map(x=> {
-                    return `<option value="${x.e}">${cc[x.e]} - ${fm(x.v)}</option>`
-                }).join(''))
-            }
-        }
-    }
-    d3.select('.top-export').on('click',()=> {
-        const cc = d3.event.target.value;
-        reload(cc);
-        g.flightLineThreejs.reload();
-    })
-    d3.select('.top-import').on('click',()=> {
-        const cc = d3.event.target.value;
-        reload(cc);
-        g.flightLineThreejs.reload();
-    })
-
-    const g = earthjs({scale:350})
-    .register(smallArmsJson())
-    .register(earthjs.plugins.dropShadowSvg())
-    // .register(earthjs.plugins.oceanSvg())
-    .register(earthjs.plugins.selectCountryMix2())
-    .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
-    .register(earthjs.plugins.imageThreejs('../globe/world_1.jpg'))
-    .register(earthjs.plugins.flightLineThreejs(null,'../globe/point3.png'))
-    .register(earthjs.plugins.countryTooltipCanvas());
-    g.mousePlugin.selectAll('#three-js');
-    function reload(cc) {
-        const csv = g.smallArmsJson.getData(cc);
-        const arr = g.smallArmsJson.ids();
-        const data= g.worldJson.data();
-        const countries = topojson.feature(data, data.objects.countries).features;
-        g.canvasThreejs.countries(countries.filter(x=>arr.indexOf(x.id)>-1));
-        g.flightLineThreejs.data(csv, true, [80,150],100,1);
-        g.smallArmsJson.topTen();
-        const cl = g.countryTooltipCanvas.data();
-        const xd = cl.find(t=> t.cid===cc);
-        if (xd) {
-            g.canvasThreejs.selectedCountries(countries.filter(x=> x.id===xd.id));
-        }
-        g.canvasThreejs.reload();
-    }
-    g.worldJson.ready = function(err, json) {
-        g.canvasThreejs.data(json);
-        g.worldJson.data(json);
-    }
-    g.ready(function(){
-        g.countryTooltipCanvas.data(g.smallArmsJson.allData().countryName);
-        delete g._.options.showBorder;
-        reload('SG');
-        g.create();
-    })
-    g.clickCanvas.onCountry({
-        chgCountry(event, country) {
-            if (!country) return;
-            const countries = g.countryTooltipCanvas.data();
-            const obj = countries.filter(x=> x.id===country.id)[0];
-            if (obj) {
-                const cc = g.smallArmsJson.getCountryId(obj.name);
-                if (cc) {
-                    reload(cc);
-                    g.flightLineThreejs.reload();
+                    const tpImport = d3.select('.top-import');
+                    tpImport.attr('size', _.sum_i2.length>25 ? 25 : _.sum_i2.length);
+                    tpImport.html(_.sum_i2.map(x=> {
+                        return `<option value="${x.e}">${cc[x.e]} - ${fm(x.v)}</option>`
+                    }).join(''))
                 }
             }
-            console.log(obj, name);
         }
-    })
+        d3.select('.top-export').on('click',()=> {
+            const cc = d3.event.target.value;
+            reload(cc);
+            g.flightLineThreejs.reload();
+        })
+        d3.select('.top-import').on('click',()=> {
+            const cc = d3.event.target.value;
+            reload(cc);
+            g.flightLineThreejs.reload();
+        })
+
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
+        .register(smallArmsJson())
+        .register(earthjs.plugins.dropShadowSvg())
+        // .register(earthjs.plugins.oceanSvg())
+        .register(earthjs.plugins.selectCountryMix2())
+        .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
+        .register(earthjs.plugins.imageThreejs('../globe/world_1.jpg'))
+        .register(earthjs.plugins.flightLineThreejs(null,'../globe/point3.png'))
+        .register(earthjs.plugins.countryTooltipCanvas());
+        g.mousePlugin.selectAll('#three-js');
+        function reload(cc) {
+            const csv = g.smallArmsJson.getData(cc);
+            const arr = g.smallArmsJson.ids();
+            const data= g.worldJson.data();
+            const countries = topojson.feature(data, data.objects.countries).features;
+            g.canvasThreejs.countries(countries.filter(x=>arr.indexOf(x.id)>-1));
+            g.flightLineThreejs.data(csv, true, [80,150],100,1);
+            g.smallArmsJson.topTen();
+            const cl = g.countryTooltipCanvas.data();
+            const xd = cl.find(t=> t.cid===cc);
+            if (xd) {
+                g.canvasThreejs.selectedCountries(countries.filter(x=> x.id===xd.id));
+            }
+            g.canvasThreejs.reload();
+        }
+        g.worldJson.ready = function(err, json) {
+            g.canvasThreejs.data(json);
+            g.worldJson.data(json);
+        }
+        g.ready(function(){
+            g.countryTooltipCanvas.data(g.smallArmsJson.allData().countryName);
+            delete g._.options.showBorder;
+            reload('SG');
+            g.create();
+        })
+        g.clickCanvas.onCountry({
+            chgCountry(event, country) {
+                if (!country) return;
+                const countries = g.countryTooltipCanvas.data();
+                const obj = countries.filter(x=> x.id===country.id)[0];
+                if (obj) {
+                    const cc = g.smallArmsJson.getCountryId(obj.name);
+                    if (cc) {
+                        reload(cc);
+                        g.flightLineThreejs.reload();
+                    }
+                }
+                console.log(obj, name);
+            }
+        })
 
 
-    var canvas = d3.selectAll('canvas').nodes();
-    d3.select('#year').on('input', function() {
-        _.t = +this.value;
-        reload();
-        g.flightLineThreejs.reload();
-    })
+        var canvas = d3.selectAll('canvas').nodes();
+        d3.select('#year').on('input', function() {
+            _.t = +this.value;
+            reload();
+            g.flightLineThreejs.reload();
+        })
     </script>
 </body>
 </html>

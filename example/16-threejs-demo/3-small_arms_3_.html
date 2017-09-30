@@ -21,6 +21,7 @@
         padding: 20px;
         right: 0;
         height: 100vh;
+        z-index: 4;
     }
     .top-ten select {
         text-align: right;
@@ -47,9 +48,9 @@
         <h2>Import:</h2>
         <select class="top-import" name="topImport" multiple></select><br>
     </div>
-    <svg id="earth-js" width="1000" height="880"></svg>
-    <canvas id="three-js"></canvas>
-    <canvas class="ej-canvas"></canvas>
+    <svg id="earth-js" class="ej-center"></svg>
+    <canvas id="three-js" class="ej-center"></canvas>
+    <canvas class="ej-canvas ej-center"></canvas>
     <script type='text/javascript'>
 
     function smallArmsJson(
@@ -180,7 +181,8 @@
         g.flightLineThreejs.reload();
     })
 
-    const g = earthjs({scale:350})
+    const {offsetWidth, offsetHeight} = d3.select('body').node();
+    const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
     .register(smallArmsJson())
     .register(earthjs.plugins.dropShadowSvg())
     .register(earthjs.plugins.selectCountryMix2())
@@ -188,7 +190,6 @@
     .register(earthjs.plugins.world3d('../d/world.geometry.json','../globe/gold.jpg',0.975))
     .register(earthjs.plugins.flightLineThreejs(null,'../globe/point3.png'))
     .register(earthjs.plugins.countryTooltipCanvas());
-    g.world3d.sphere().scale.set(347,347,347)
     g.mousePlugin.selectAll('#three-js');
     function reload(cc) {
         const csv = g.smallArmsJson.getData(cc);
@@ -209,16 +210,19 @@
         g.canvasThreejs.data(json);
         g.worldJson.data(json);
     }
-    let o,w;
+    let s,o,w,scale;
     g.ready(function(){
         g.countryTooltipCanvas.data(g.smallArmsJson.allData().countryName);
         delete g._.options.showBorder;
         reload('SG');
         g.create();
+        s = g._.proj.scale();
         w = g.world3d.sphere();
         o = g.oceanThreejs.sphere();
         o.scale.set(0.95,0.95,0.95);
         o.material.transparent = true;
+        w.scale.set(s,s,s);
+        scale = d3.scaleLinear().domain([0.03,1]).range([3,s]);
     })
     g.clickCanvas.onCountry({
         chgCountry(event, country) {
@@ -241,7 +245,6 @@
         _.t = +this.value;reload();
         g.flightLineThreejs.reload();
     });
-    const scale = d3.scaleLinear().domain([0.03,1]).range([3,344]);
     d3.select('#frm').on('input', function() {
         const v = +this.value;
         let ww = scale(v);
