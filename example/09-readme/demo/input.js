@@ -12,7 +12,7 @@ function checked(ids,addition) {
     g.threejsPlugin.emptyGroup();
     ids.split(',').forEach(s=>g[s].add());
     if (addition) {
-        const ids = `ids,${addition}`;
+        ids = `${ids},${addition}`;
     }
     d3.selectAll('.left input:checked').property('checked', false);
     d3.selectAll(`#toggle-${ids.replace(/,/g,',#toggle-')}`).property('checked', true);
@@ -22,6 +22,7 @@ function toggle(key, enabled) {
 }
 d3.select('#toggle-earth'    ).on('click', () => toggle('earth',    d3.event.target.checked));
 d3.select('#toggle-flight'   ).on('click', () => toggle('flight',   d3.event.target.checked));
+d3.select('#toggle-flight2'  ).on('click', () => toggle('flight2',  d3.event.target.checked));
 d3.select('#toggle-graticule').on('click', () => toggle('graticule',d3.event.target.checked));
 d3.select('#toggle-world3d'  ).on('click', () => toggle('world3d',  d3.event.target.checked));
 d3.select('#toggle-canvas'   ).on('click', () => toggle('canvas',   d3.event.target.checked));

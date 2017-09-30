@@ -24,10 +24,11 @@
     </div>
     <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
-    <svg class="ej-svg" width="700" height="500"></svg>
+    <svg class="ej-svg" width="100%" height="100%"></svg>
     <canvas class="ej-canvas"></canvas>
     <script>
-        const g = earthjs({padding:50})
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth/4, height: offsetHeight, padding:5})
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.hoverCanvas())
@@ -62,7 +63,7 @@
 
         const canvas = d3.selectAll('canvas').nodes();
         const svg = d3.selectAll('.ej-svg').nodes();
-        d3.select('#pan').on('input', function() {
+        d3.select('#pan').attr('max',offsetWidth/4-10).on('input', function() {
             canvas[0].style.left = (this.value)+'px';
             canvas[1].style.left = (this.value*2)+'px';
                svg[0].style.left = (this.value*3)+'px';

@@ -8,17 +8,14 @@
     <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
-    <div class="input-area">
-        <input id="pan" type="range" min="0" max="400" step="1" value="0"/><br/>
-    </div>
     <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
     <script>
-        const g = earthjs({padding:50})
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.dropShadowSvg())
         .register(earthjs.plugins.oceanThreejs())
         .register(earthjs.plugins.graticuleThreejs())
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
@@ -33,11 +30,6 @@
         };
         g.ready(function(){
             g.create();
-        })
-
-        const canvas = d3.selectAll('canvas').nodes();
-        d3.select('#pan').on('input', function() {
-            canvas[0].style.left = (this.value)+'px';
         })
     </script>
 </body>
