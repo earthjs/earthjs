@@ -11,14 +11,17 @@
     <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
     <script>
-        const g = earthjs({padding:50})
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.dropShadowSvg())
+        .register(earthjs.plugins.oceanThreejs())
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'));
         g.ready(function(){
             g.create();
+            const o = g.oceanThreejs.sphere();
+            o.material.transparent = true;
         })
     </script>
 </body>

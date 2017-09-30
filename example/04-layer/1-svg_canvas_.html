@@ -18,23 +18,21 @@
     <svg id="earth-js"></svg>
     <canvas class="ej-canvas"></canvas>
     <script>
-        const g = earthjs();
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth/2, height: offsetHeight, padding:5, transparent: true})
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.autorotatePlugin());
-
         g.register(earthjs.plugins.oceanSvg());
         g.register(earthjs.plugins.graticuleSvg());
-
         g.register(earthjs.plugins.canvasPlugin());
         g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
         g.canvasPlugin.selectAll('canvas');
-
         g.ready(function(){
             g.create();
         });
 
         const canvas = d3.selectAll('canvas').nodes();
-        d3.select('#pan').on('input', function() {
+        d3.select('#pan').attr('max',offsetWidth/2-10).on('input', function() {
             canvas[0].style.left = this.value;
         })
     </script>

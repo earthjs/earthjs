@@ -10,11 +10,11 @@
     <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
     <script>
-        const g = earthjs({padding:50})
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.dropShadowSvg())
         .register(earthjs.plugins.imageThreejs('../globe/graticule.svg'))
         g.imageThreejs.transparent = true;
         g.create();

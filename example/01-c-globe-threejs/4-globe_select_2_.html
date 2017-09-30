@@ -11,10 +11,11 @@
     <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
     <script>
-        const g = earthjs()
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
         .register(earthjs.plugins.selectCountryMix2('../d/world-110m.json','../globe/world_1.jpg'))
         // g._.options.showSelectedCountry = true;
-        // g._.options.showBorder = null;
+        g._.options.showBorder = true;
         g.ready(function(){
             g.create();
         })

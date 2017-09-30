@@ -12,7 +12,8 @@
     <canvas id="three-js"></canvas>
     <canvas class="ej-canvas"></canvas>
     <script>
-        const g = earthjs()
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
         .register(earthjs.plugins.selectCountryMix())
         .register(earthjs.plugins.imageThreejs('../globe/world_1.jpg'));
         g.ready(function(){

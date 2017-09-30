@@ -10,7 +10,8 @@
     <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
     <script>
-        const g = earthjs();
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent: true})
         g.register(earthjs.plugins.threejsPlugin())
         g.register(earthjs.plugins.autorotatePlugin());
         g.register(earthjs.plugins.mousePlugin());

@@ -6,10 +6,11 @@
     <style>.ej-canvas {position: inherit;}</style>
 </head>
 <body>
-    <svg id="earth-js" width="1680" height="940"/>
+    <svg id="earth-js"/>
     <canvas class="ej-canvas"></canvas>
     <script>
-        const g = earthjs({transparent:true})
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.graticuleCanvas())

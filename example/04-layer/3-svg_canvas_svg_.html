@@ -29,44 +29,39 @@
     </div>
     <svg id="earth-js"></svg>
     <canvas class="ej-canvas"></canvas>
-    <svg class="ej-svg" width="700" height="500"></svg>
+    <svg class="ej-svg" width="100%" height="100%"></svg>
     <script>
-        const g = earthjs({rotate:-40,padding:50});
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.autorotatePlugin());
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth/3, height: offsetHeight, padding:5, transparent: true})
+        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.dropShadowSvg())
+        .register(earthjs.plugins.oceanSvg())
+        .register(earthjs.plugins.fauxGlobeSvg())
+        .register(earthjs.plugins.barSvg('../data/bars.json'))
+        .register(earthjs.plugins.graticuleCanvas())
+        .register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
+        g._.options.showCountries = false;
+        g._.options.showLakes = false;
         g.mousePlugin.selectAll('.ej-svg');
-
-        g.register(earthjs.plugins.dropShadowSvg());
-        g.register(earthjs.plugins.oceanSvg());
-
-        g.register(earthjs.plugins.canvasPlugin());
         g.canvasPlugin.selectAll('.ej-canvas');
-
-        g.register(earthjs.plugins.graticuleCanvas());
-
-        g.register(earthjs.plugins.fauxGlobeSvg());
         g.fauxGlobeSvg.selectAll('.ej-svg');
-
-        // g.register(earthjs.plugins.placesSvg('../d/places.json'));
-        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
-        g.worldCanvas.style({land: 'green'});
-
-        g.register(earthjs.plugins.barSvg('../data/bars.json'));
         g.barSvg.selectAll('.ej-svg');
+        g.worldCanvas.style({land: 'green'});
+        // g.register(earthjs.plugins.placesSvg('../d/places.json'));
+
         g.barSvg.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
             g.barSvg.data(json);
         };
-        g._.options.showCountries = false;
-        g._.options.showLakes = false;
-
         // g.placesSvg.selectAll('#earth-js2');
         g.ready(function(){
             g.create();
         });
 
         const st = d3.select('#js-controlled');
-        d3.select('#pan').on('input', function() {
+        d3.select('#pan').attr('max',offsetWidth/3-5).on('input', function() {
             st.text(`
 canvas.ej-canvas {
     /*top: ${this.value}px;*/
