@@ -13,31 +13,15 @@
     </style>
 </head>
 <body>
-    <div class="input-area">
-        <input id="pan" type="range" min="0" max="400" step="1" value="0"/><br/>
-    </div>
-    <svg id="earth-js" width="1000" height="920"></svg>
-    <canvas id="three-js"></canvas>
+    <svg id="earth-js" class="ej-center"></svg>
+    <canvas id="three-js" class="ej-center"></canvas>
+    <script type='text/javascript' src='./flightline.js'></script>
     <script>
-        // const g = earthjs()
-        const g = earthjs({scale:350})
-        .register(earthjs.plugins.mousePlugin())
-        .register(earthjs.plugins.threejsPlugin())
-        // .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.dropShadowSvg())
-        .register(earthjs.plugins.globeThreejs())
-        // .register(earthjs.plugins.oceanThreejs())
+        g.register(earthjs.plugins.globeThreejs())
         .register(earthjs.plugins.graticuleThreejs())
-        // .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
-        // .register(earthjs.plugins.flightLineThreejs('../d/locations.json',50))
         .register(earthjs.plugins.flightLineThreejs('../data/flights.json','../globe/point.png'));
         g.ready(function(){
             g.create();
-        })
-
-        const canvas = d3.selectAll('canvas').nodes();
-        d3.select('#pan').on('input', function() {
-            canvas[0].style.left = (this.value)+'px';
         })
     </script>
 </body>

@@ -9,29 +9,18 @@
     <style>body {background: #555;}</style>
 </head>
 <body>
-    <svg id="earth-js" class="ej-center" width="1000" height="920"></svg>
-    <canvas id="three-js"></canvas>
+    <svg id="earth-js" class="ej-center"></svg>
+    <canvas id="three-js" class="ej-center"></canvas>
+    <script type='text/javascript' src='./flightline.js'></script>
     <script>
-        const g = earthjs({scale:300})
-        .register(earthjs.plugins.mousePlugin())
-        .register(earthjs.plugins.threejsPlugin())
-        .register(earthjs.plugins.autorotatePlugin())
-
-        .register(earthjs.plugins.imageThreejs('../globe/world_texture_1.jpg'),'oceanThreejs')
+        g.register(earthjs.plugins.imageThreejs('../globe/world_texture_1.jpg'),'oceanThreejs')
         .register(earthjs.plugins.imageThreejs('../globe/earth_ocean-mask.png'),'earthThreejs')
         .register(earthjs.plugins.flightLineThreejs('../data/flights2.json','../globe/point3.png'));
-
         g.flightLineThreejs.ready = function(err, csv) {
             g.flightLineThreejs.data(csv,true,[30,200],100,1);
         }
-
-        const light = g.threejsPlugin.light();
-        light.intensity = 0.5;
-        light.color.set(0x777777);
         g.ready(function(){
             g.create();
-            // const t = g.worldThreejs.sphere();
-            // t.scale.set(1.03,1.03,1.03);
         });
     </script>
 </body>
