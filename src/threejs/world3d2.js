@@ -1,7 +1,22 @@
 // view-source:http://callumprentice.github.io/apps/extruded_earth/index.html
 export default (worldUrl='../d/countries.geo.json', landUrl='../globe/gold.jpg', inner=0.9,outer=0, rtt=0) => {
     /*eslint no-console: 0 */
-    const _ = {sphereObject: new THREE.Object3D(), group: {}};
+    const _ = {
+        group: {},
+        sphereObject: new THREE.Group(), //new THREE.Object3D(),
+        material: new THREE.MeshPhongMaterial({
+            color: new THREE.Color(0xaa9933),
+            side: THREE.DoubleSide
+        })
+    };
+    const ambient= new THREE.AmbientLight(0x777777);
+    const light1 = new THREE.DirectionalLight(0xffffff);
+    const light2 = new THREE.DirectionalLight(0xffffff);
+    light1.position.set( 1, 0, 1);
+    light2.position.set(-1, 0, 1);
+    _.sphereObject.add(ambient);
+    _.sphereObject.add(light1);
+    _.sphereObject.add(light2);
 
     function extrude(geometry,_i=0.9,_o=0) {
         const half = geometry.vertices.length / 2;
@@ -20,6 +35,7 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../globe/gold.jpg',
         geometry.computeFaceNormals();
     }
 
+    let material;
     function add_country(shape_points) {
         const shape = new THREE.Shape(shape_points);
         const geometry = new THREE.ExtrudeGeometry(shape,{
@@ -32,7 +48,7 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../globe/gold.jpg',
             vert.oz = vert.z;
         });
         extrude(geometry, inner, outer);
-        return new THREE.Mesh(geometry, _.material);
+        return new THREE.Mesh(geometry, material);
     }
 
     function shapePoints(country, list) {
@@ -47,12 +63,23 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../globe/gold.jpg',
         list.forEach(function (points) {
             shape_points.push(new THREE.Vector2(points[0], points[1]));
         });
-        _g.add(add_country(shape_points));
+        const mesh = add_country(shape_points);
+        mesh.cid = country.properties.cid;
+        _g.add(mesh);
     }
 
     function loadCountry() {
+        const {choropleth} = this._.options;
         _.world.features.forEach(function(country) {
             const {coordinates} = country.geometry;
+            if (choropleth) {
+                material = new THREE.MeshPhongMaterial({
+                    color: new THREE.Color(country.properties.color || 'rgb(2, 20, 37)'),
+                    side: THREE.DoubleSide
+                })
+            } else {
+                material = _.material;
+            }
             if (coordinates.length === 1) {
                 shapePoints(country, coordinates[0]);
             } else {
@@ -67,61 +94,17 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../globe/gold.jpg',
         });
     }
 
+    function create() {
+        !_.loaded && loadCountry.call(this);
+        this.threejsPlugin.addGroup(_.sphereObject);
+    }
+
     function init() {
         const r = this._.proj.scale();
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r,r,r);
-        makeEnvMapMaterial.call(this, landUrl, function(material) {
-            _.material = material;
-            if (_.world && !_.loaded) {
-                loadCountry()
-            }
-        });
-    }
-
-    function create() {
-        if (_.material && !_.loaded) {
-            loadCountry()
-        }
         _.sphereObject.name = _.me.name;
-        const tj = this.threejsPlugin;
-        tj.addGroup(_.sphereObject);
-    }
-
-    const vertexShader = `
-    varying vec2 vN;
-    void main() {
-        vec4 p = vec4( position, 1. );
-        vec3 e = normalize( vec3( modelViewMatrix * p ) );
-        vec3 n = normalize( normalMatrix * normal );
-        vec3 r = reflect( e, n );
-        float m = 2. * length( vec3( r.xy, r.z + 1. ) );
-        vN = r.xy / m + .15;
-        gl_Position = projectionMatrix * modelViewMatrix * p;
-    }
-    `
-    const fragmentShader = `
-    uniform sampler2D texture;
-    varying vec2 vN;
-    void main() {
-        vec3 base = texture2D( texture, vN ).rgb;
-        gl_FragColor = vec4( base, 0.95 );
-    }
-    `
-    function makeEnvMapMaterial(imgUrl, cb) {
-        const type = 't';
-        const tj = this.threejsPlugin;
-        const value = tj.texture(imgUrl);
-        const shading  = THREE.SmoothShading;
-        const uniforms = {texture:{type,value}};
-        const material = new THREE.ShaderMaterial({
-            shading,
-            uniforms,
-            vertexShader,
-            fragmentShader
-        });
-        cb.call(this, material);
     }
 
     return {

@@ -3,6 +3,7 @@
 <head>
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/d3-scale-chromatic.v1.min.js"></script>
     <script type='text/javascript' src='../js/three.min.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
@@ -18,8 +19,14 @@
         .register(earthjs.plugins.dropShadowSvg())
         .register(earthjs.plugins.oceanThreejs())
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
-        .register(earthjs.plugins.world3d2('../d/countries.geo.json','../globe/gold.jpg',0.95));
+        .register(earthjs.plugins.world3d2('../d/countries.geo.json','../globe/gold.jpg',0.95))
+        .register(earthjs.plugins.choroplethCsv('../data/2010_alcohol_consumption_by_country.csv'));
+        g._.options.choropleth = true;
         g.ready(function(){
+            const countries = g.world3d2.data();
+            g.choroplethCsv  .colorize('alcohol', 'schemeReds');
+            g.choroplethCsv  .mergeData(countries, ['properties.cid:cid', 'properties.color:color']);
+            g.choroplethCsv  .mergeData(countries, ['properties.cid:cid', 'properties.value:alcohol']);
             g.create();
             var ocean = g.oceanThreejs.sphere();
             ocean.scale.set(0.945,0.945,0.945);

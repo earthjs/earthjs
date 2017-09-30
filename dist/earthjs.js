@@ -6445,7 +6445,22 @@ var world3d2 = (function () {
     var rtt = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
 
     /*eslint no-console: 0 */
-    var _ = { sphereObject: new THREE.Object3D(), group: {} };
+    var _ = {
+        group: {},
+        sphereObject: new THREE.Group(), //new THREE.Object3D(),
+        material: new THREE.MeshPhongMaterial({
+            color: new THREE.Color(0xaa9933),
+            side: THREE.DoubleSide
+        })
+    };
+    var ambient = new THREE.AmbientLight(0x777777);
+    var light1 = new THREE.DirectionalLight(0xffffff);
+    var light2 = new THREE.DirectionalLight(0xffffff);
+    light1.position.set(1, 0, 1);
+    light2.position.set(-1, 0, 1);
+    _.sphereObject.add(ambient);
+    _.sphereObject.add(light1);
+    _.sphereObject.add(light2);
 
     function _extrude(geometry) {
         var _i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0.9;
@@ -6468,6 +6483,7 @@ var world3d2 = (function () {
         geometry.computeFaceNormals();
     }
 
+    var material = void 0;
     function add_country(shape_points) {
         var shape = new THREE.Shape(shape_points);
         var geometry = new THREE.ExtrudeGeometry(shape, {
@@ -6480,7 +6496,7 @@ var world3d2 = (function () {
             vert.oz = vert.z;
         });
         _extrude(geometry, inner, outer);
-        return new THREE.Mesh(geometry, _.material);
+        return new THREE.Mesh(geometry, material);
     }
 
     function shapePoints(country, list) {
@@ -6496,13 +6512,25 @@ var world3d2 = (function () {
         list.forEach(function (points) {
             shape_points.push(new THREE.Vector2(points[0], points[1]));
         });
-        _g.add(add_country(shape_points));
+        var mesh = add_country(shape_points);
+        mesh.cid = country.properties.cid;
+        _g.add(mesh);
     }
 
     function loadCountry() {
+        var choropleth = this._.options.choropleth;
+
         _.world.features.forEach(function (country) {
             var coordinates = country.geometry.coordinates;
 
+            if (choropleth) {
+                material = new THREE.MeshPhongMaterial({
+                    color: new THREE.Color(country.properties.color || 'rgb(2, 20, 37)'),
+                    side: THREE.DoubleSide
+                });
+            } else {
+                material = _.material;
+            }
             if (coordinates.length === 1) {
                 shapePoints(country, coordinates[0]);
             } else {
@@ -6517,43 +6545,17 @@ var world3d2 = (function () {
         });
     }
 
+    function create() {
+        !_.loaded && loadCountry.call(this);
+        this.threejsPlugin.addGroup(_.sphereObject);
+    }
+
     function init() {
         var r = this._.proj.scale();
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r, r, r);
-        makeEnvMapMaterial.call(this, landUrl, function (material) {
-            _.material = material;
-            if (_.world && !_.loaded) {
-                loadCountry();
-            }
-        });
-    }
-
-    function create() {
-        if (_.material && !_.loaded) {
-            loadCountry();
-        }
         _.sphereObject.name = _.me.name;
-        var tj = this.threejsPlugin;
-        tj.addGroup(_.sphereObject);
-    }
-
-    var vertexShader = '\n    varying vec2 vN;\n    void main() {\n        vec4 p = vec4( position, 1. );\n        vec3 e = normalize( vec3( modelViewMatrix * p ) );\n        vec3 n = normalize( normalMatrix * normal );\n        vec3 r = reflect( e, n );\n        float m = 2. * length( vec3( r.xy, r.z + 1. ) );\n        vN = r.xy / m + .15;\n        gl_Position = projectionMatrix * modelViewMatrix * p;\n    }\n    ';
-    var fragmentShader = '\n    uniform sampler2D texture;\n    varying vec2 vN;\n    void main() {\n        vec3 base = texture2D( texture, vN ).rgb;\n        gl_FragColor = vec4( base, 0.95 );\n    }\n    ';
-    function makeEnvMapMaterial(imgUrl, cb) {
-        var type = 't';
-        var tj = this.threejsPlugin;
-        var value = tj.texture(imgUrl);
-        var shading = THREE.SmoothShading;
-        var uniforms = { texture: { type: type, value: value } };
-        var material = new THREE.ShaderMaterial({
-            shading: shading,
-            uniforms: uniforms,
-            vertexShader: vertexShader,
-            fragmentShader: fragmentShader
-        });
-        cb.call(this, material);
     }
 
     return {
