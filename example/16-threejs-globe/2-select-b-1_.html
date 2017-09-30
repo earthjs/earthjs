@@ -13,11 +13,12 @@
         <input id="pan" type="range" min="0" max="1000" step="1" value="0"/><br/>
         <a id="g7" href=''>[ G7 Countries ]</a>
     </div>
-    <svg id="earth-js" width="1000" height="920"></svg>
+    <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
     <canvas class="ej-canvas"></canvas>
     <script>
-        var g = earthjs({scale:300})
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.hoverCanvas())
         .register(earthjs.plugins.clickCanvas())

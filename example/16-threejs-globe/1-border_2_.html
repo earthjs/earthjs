@@ -9,24 +9,25 @@
     <style>body {background: #555;}</style>
 </head>
 <body>
-    <svg id="earth-js" width="1000" height="920"></svg>
+    <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
     <script>
-        var g = earthjs({scale:300})
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
         .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.hoverCanvas())
         .register(earthjs.plugins.countryCanvas())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.canvasThreejs('../d/world-110m.json'))
         .register(earthjs.plugins.autorotatePlugin());
+        g.canvasThreejs.style({ocean: '#36496e'});
         g.canvasThreejs.ready = function(err, json) {
             g.canvasThreejs.data(json);
             g.countryCanvas.data(json);
             g.hoverCanvas.data(json);
         }
         g._.options.showSelectedCountry = true;
-        g._.options.transparent = true;
-        g._.options.showBorder = true;
+        // g._.options.coropleth = true;
         g.ready(function(){
             g.create();
         })

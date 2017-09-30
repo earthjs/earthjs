@@ -9,24 +9,22 @@
     <style>body {background: #555;}</style>
 </head>
 <body>
-    <svg id="earth-js" width="1000" height="920"></svg>
-    <canvas class="ej-canvas"></canvas>
+    <svg id="earth-js"></svg>
+    <canvas id="three-js"></canvas>
     <script>
-        var g = earthjs({scale:300})
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
         .register(earthjs.plugins.mousePlugin())
-        .register(earthjs.plugins.hoverCanvas())
-        .register(earthjs.plugins.canvasPlugin())
-        .register(earthjs.plugins.countryCanvas())
+        .register(earthjs.plugins.clickCanvas())
+        .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
-        g.canvasPlugin.selectAll('.ej-canvas');
-        g.worldCanvas.ready = function(err, json) {
-            g.worldCanvas.data(json);
-            g.countryCanvas.data(json);
-            g.hoverCanvas.data(json);
+        .register(earthjs.plugins.canvasThreejs('../d/world-110m.json'))
+        .register(earthjs.plugins.worldThreejs('../d/world-110m.json'));
+        g.canvasThreejs.ready = function(err, json) {
+            g.canvasThreejs.data(json);
+            g.clickCanvas.data(json);
         }
-        g._.options.showSelectedCountry = true;
-        g._.options.showBorder = true;
+        g._.options.showBorder = false;
         g.ready(function(){
             g.create();
         })
