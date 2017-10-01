@@ -34,3 +34,9 @@ hr {
 .countries path {
     fill: rgba(117,87,57,0.1);
 }
+.qrcode-img {
+    position: absolute;
+    z-index: 5;
+    right: 0;
+    bottom: 0;
+}
