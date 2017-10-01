@@ -32,7 +32,7 @@
         <canvas class="ej-canvas c2"/>
     </span>
     <script>
-        const g1 = earthjs({selector:'.s1', rotate: 0});
+        const g1 = earthjs({selector:'.s1', rotate: 0, padding:50});
         g1.register(earthjs.plugins.mousePlugin());
         g1.register(earthjs.plugins.autorotatePlugin());
 
@@ -44,7 +44,7 @@
         g1.register(earthjs.plugins.graticuleCanvas());
         g1.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
 
-        const g2 = earthjs({selector:'.s2', rotate: 180});
+        const g2 = earthjs({selector:'.s2', rotate: 180, padding:50});
         g2.register(earthjs.plugins.dropShadowSvg());
         g2.register(earthjs.plugins.oceanSvg());
         g2.register(earthjs.plugins.fauxGlobeSvg());

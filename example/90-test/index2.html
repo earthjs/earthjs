@@ -13,7 +13,7 @@
     <canvas  class="ej-canvas ea-layer ea-2"></canvas>
     <canvas  class="ej-canvas ea-layer ea-3"></canvas>
     <script>
-        const g = earthjs();
+        const g = earthjs({padding:50});
         g.register(earthjs.plugins.commonPlugins('../d/world-110m.json'));
         g.ready(() => g.create());
     </script>

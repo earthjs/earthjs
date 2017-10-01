@@ -18,7 +18,8 @@
     </div>
     <svg id="earth-js" class="e1"></svg>
     <script>
-        const g = earthjs({width:1200, height:750});
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent: true})
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.graticuleSvg());
         g.register(earthjs.plugins.worldSvg('../d/world-110m.json'));

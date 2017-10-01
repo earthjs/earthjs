@@ -14,9 +14,10 @@
     <canvas  class="ej-canvas ea-layer ea-3"></canvas>
     <script type='text/javascript' src='../js/ex/eQuakeApp.js'></script>
     <script>
-        const g = earthjs({width: 1200, height: 900});
-        g.register(earthjs.plugins.eQuakeApp());
-        g.ready(function(){
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent: true})
+        .register(earthjs.plugins.eQuakeApp())
+        .ready(function(){
             g.create();
         })
     </script>

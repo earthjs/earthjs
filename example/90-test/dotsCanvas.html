@@ -6,9 +6,10 @@
     <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
-    <svg id="earth-js" width="1000" height="800"></svg>
+    <svg id="earth-js"></svg>
     <script>
-        const g = earthjs({transparent:true});
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent: true})
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.autorotatePlugin());
         g.register(earthjs.plugins.oceanSvg());

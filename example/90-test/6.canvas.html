@@ -8,7 +8,8 @@
 <body>
     <svg id="earth-js"></svg>
     <script>
-        const g = earthjs({transparent:true, padding:50});
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent: true})
         g.register(earthjs.plugins.autorotatePlugin());
         g.register(earthjs.plugins.mousePlugin());
         g.register(earthjs.plugins.dropShadowSvg());
