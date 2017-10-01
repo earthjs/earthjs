@@ -1,6 +1,7 @@
 import earthjs from './src/earthjs';
 
 import baseCsv         from './src/data/baseCsv';
+import baseGeoJson     from './src/data/baseGeoJson';
 import worldJson       from './src/data/worldJson';
 import choroplethCsv   from './src/data/choroplethCsv';
 import countryNamesCsv from './src/data/countryNamesCsv';
@@ -71,6 +72,7 @@ import selectCountryMix2 from './src/mixed/selectCountryMix2';
 
 earthjs.plugins= {
     baseCsv,
+    baseGeoJson,
     worldJson,
     choroplethCsv,
     countryNamesCsv,

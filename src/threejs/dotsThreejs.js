@@ -4,17 +4,22 @@
 export default urlJson => {
     /*eslint no-console: 0 */
     const _ = {dataDots: null};
-    const material = new THREE.MeshBasicMaterial({
-        side: THREE.DoubleSide,
-        color: 0xC19999, //F0C400,
-    });
 
     function init() {
         this._.options.showDots = true;
     }
 
     function createDot(feature) {
-        const tj = this.threejsPlugin, radius = 10,
+        const tj = this.threejsPlugin,
+        material = new THREE.MeshBasicMaterial({
+            color: feature.geometry.color || 0xC19999, //F0C400,
+            side: THREE.DoubleSide,
+            transparent: true,
+            depthWrite: false,
+            depthTest: true,
+            opacity: 0.5,
+        }),
+        radius   = (feature.geometry.radius || 0.5) * 10,
         geometry = new THREE.CircleGeometry(radius, 30),
         mesh     = new THREE.Mesh(geometry, material),
         position = tj.vertex(feature.geometry.coordinates);
@@ -59,10 +64,10 @@ export default urlJson => {
         sphere() {
             return _.sphereObject;
         },
-        color(c) {
-            material.color.set(c);
-            material.needsUpdate = true;
-            this.threejsPlugin.renderThree();
-        }
+        // color(c) {
+        //     material.color.set(c);
+        //     material.needsUpdate = true;
+        //     this.threejsPlugin.renderThree();
+        // }
     }
 }

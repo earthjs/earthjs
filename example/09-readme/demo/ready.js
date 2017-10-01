@@ -19,6 +19,22 @@ g.border.ready = function(err, json) {
     g.border.data(json);
     g.clickCanvas.data(json);
 }
+g.equake.ready = function(err, json) {
+    const arr    = json.features;
+    const range  = d3.range.apply(d3, [1,8]);
+    const minMax = d3.extent(arr.map(d => d.properties.mag));
+    const vScale = d3.scaleLinear().domain(minMax).range([0.5, 2]);
+    const scale  = d3.scaleLinear().domain(minMax).rangeRound([1,8]);
+    const color  = d3.scaleThreshold().domain(range).range(d3.schemeReds[9]);
+
+    arr.forEach(d => {
+        const {mag}  = d.properties;
+        d.geometry.value  = mag;
+        d.geometry.radius = vScale(mag);
+        d.geometry.color  = color(scale(mag));
+    });
+    g.equake.data(json);
+};
 
 let data,keys,r;
 // g.autorotatePlugin.stop();

@@ -499,6 +499,41 @@ var baseCsv = (function (csvUrl) {
     };
 });
 
+var baseGeoJson = (function (jsonUrl) {
+    /*eslint no-console: 0 */
+    var _ = { data: null };
+
+    return {
+        name: 'baseGeoJson',
+        urls: jsonUrl && [jsonUrl],
+        onReady: function onReady(err, json) {
+            _.me.data(json);
+        },
+        onInit: function onInit(me) {
+            _.me = me;
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.data = _data;
+            } else {
+                return _.data;
+            }
+        },
+        message: function message(fn) {
+            _.data = _.data.map(fn);
+        },
+        allData: function allData(all) {
+            if (all) {
+                _.data = all.data;
+            } else {
+                var data = _.data;
+
+                return { data: data };
+            }
+        }
+    };
+});
+
 var worldJson = (function (jsonUrl) {
     /*eslint no-console: 0 */
     var _ = {
@@ -4713,10 +4748,6 @@ var hmapThreejs = (function (hmapUrl) {
 var dotsThreejs = (function (urlJson) {
     /*eslint no-console: 0 */
     var _ = { dataDots: null };
-    var material = new THREE.MeshBasicMaterial({
-        side: THREE.DoubleSide,
-        color: 0xC19999 //F0C400,
-    });
 
     function init() {
         this._.options.showDots = true;
@@ -4724,7 +4755,15 @@ var dotsThreejs = (function (urlJson) {
 
     function createDot(feature) {
         var tj = this.threejsPlugin,
-            radius = 10,
+            material = new THREE.MeshBasicMaterial({
+            color: feature.geometry.color || 0xC19999, //F0C400,
+            side: THREE.DoubleSide,
+            transparent: true,
+            depthWrite: false,
+            depthTest: true,
+            opacity: 0.5
+        }),
+            radius = (feature.geometry.radius || 0.5) * 10,
             geometry = new THREE.CircleGeometry(radius, 30),
             mesh = new THREE.Mesh(geometry, material),
             position = tj.vertex(feature.geometry.coordinates);
@@ -4770,11 +4809,6 @@ var dotsThreejs = (function (urlJson) {
         },
         sphere: function sphere() {
             return _.sphereObject;
-        },
-        color: function color(c) {
-            material.color.set(c);
-            material.needsUpdate = true;
-            this.threejsPlugin.renderThree();
         }
     };
 });
@@ -6904,6 +6938,7 @@ var selectCountryMix2 = (function () {
 
 earthjs$2.plugins = {
     baseCsv: baseCsv,
+    baseGeoJson: baseGeoJson,
     worldJson: worldJson,
     choroplethCsv: choroplethCsv,
     countryNamesCsv: countryNamesCsv,

@@ -23,6 +23,7 @@ function toggle(key, enabled) {
     enabled ? g[key].add() : g[key].remove()
 }
 d3.select('#toggle-earth'    ).on('click', () => toggle('earth',    d3.event.target.checked));
+d3.select('#toggle-equake'   ).on('click', () => toggle('equake',   d3.event.target.checked));
 d3.select('#toggle-flight'   ).on('click', () => toggle('flight',   d3.event.target.checked));
 d3.select('#toggle-flight2'  ).on('click', () => toggle('flight2',  d3.event.target.checked));
 d3.select('#toggle-graticule').on('click', () => toggle('graticule',d3.event.target.checked));
@@ -64,4 +65,7 @@ d3.select('#bar-graph').on('click', () => {
 });
 d3.select('#flight-ln').on('click', () => {
     checked('graticule,ocean3,border,world3d,earth,flight');
+});
+d3.select('#e-quake').on('click', () => {
+    checked('ocean2,border,equake');
 });
