@@ -1258,7 +1258,11 @@ var mousePlugin = (function () {
 
         _.zoom = d3.zoom().on('zoom', zoom).scaleExtent([0.1, 160]).translateExtent([[0, 0], wh]);
 
-        _.svg.call(d3.drag().on('start', dragstarted).on('end', dragsended).on('drag', dragged));
+        _.svg.call(d3.drag().filter(function () {
+            var touches = d3.event.touches;
+
+            return touches === undefined || touches.length === 1;
+        }).on('start', dragstarted).on('end', dragsended).on('drag', dragged));
         _.svg.call(_.zoom);
 
         // todo: add zoom lifecycle to optimize plugins zoom-able

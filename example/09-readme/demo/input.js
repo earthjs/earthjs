@@ -5,8 +5,10 @@ function changeOcean(id,enabled) {
     g.ocean1.remove()
     g.ocean2.remove()
     g.ocean3.remove()
-    enabled && g[`ocean${id}`].add();
-    d3.selectAll(`#toggle-ocean${id}`).property('checked', true);
+    if (enabled) {
+        g[`ocean${id}`].add();
+        d3.selectAll(`#toggle-ocean${id}`).property('checked', true);
+    }
 }
 function checked(ids,addition) {
     g.threejsPlugin.emptyGroup();

@@ -68,6 +68,10 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
             .translateExtent([[0,0], wh]);
 
         _.svg.call(d3.drag()
+            .filter(function() {
+                const {touches} = d3.event;
+                return (touches===undefined || touches.length===1);
+            })
             .on('start',dragstarted)
             .on('end',  dragsended)
             .on('drag', dragged));
