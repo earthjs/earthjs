@@ -18,40 +18,22 @@
     </div>
     <script>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
-        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5,map: true})
+        .register(earthjs.plugins.zoomPlugin())
         .register(earthjs.plugins.choroplethCsv('../data/2010_alcohol_consumption_by_country.csv'))
-        .register(earthjs.plugins.mapSvg('../d/world-hi.json'));
+        .register(earthjs.plugins.worldSvg('../d/world-110m.json'));
         g.choroplethCsv.ready = function(err, json) {
             json.forEach(x => x.alcohol = +x.alcohol);
             g.choroplethCsv.data(json);
         }
         g.ready(function(){
-            const countries = g.mapSvg.allData().countries;
+            const countries = g.worldSvg.allData().countries;
             g.choroplethCsv.countries(countries.features);
             g.choroplethCsv.mergeData(countries, ['properties.cid:cid', 'properties.value:alcohol']);
             g.choroplethCsv.colorize('alcohol', 'schemeReds');
             g.choroplethCsv.setColorRange('body');
             g.choroplethCsv.setCss('#choropleth');
             g.create();
-        })
-        g.mapSvg.show = function(data, tooltip) {
-            const {name, value} = data.properties;
-            tooltip.html(`${name}<br>ALCOHOL: ${value}`);
-            _.hover = data;
-            return tooltip;
-        };
-        g.mapSvg.onCountry({
-            toggle(event, country) {
-                const {name, value, cid} = country.properties;
-                const selected = g.mapSvg.selectedCountry() ? 'block' : 'none';
-                const countryBox = d3.select('.selected-country').style('display', selected);
-                const title = `${name}<br>ALCOHOL:${value}`;
-                countryBox.select('.content').html(title);
-            }
-        })
-
-        d3.select('#title').on('click', function() {
-            g.mapSvg.resetZoom();
         })
     </script>
 </body>

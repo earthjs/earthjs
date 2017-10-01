@@ -45,7 +45,8 @@
 }
 .countries path {
     cursor: pointer;
-    opacity: 0.08;
+    fill: #d6d5d5;
+    opacity: 1;
 }
 .countries path.selected {
     stroke-width: 2px;
@@ -64,5 +65,5 @@
     z-index: 5;
 }
 .color-countries-item.selected {
-    border: 3px solid #c7c100;    
+    border: 3px solid #c7c100;
 }

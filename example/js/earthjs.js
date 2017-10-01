@@ -2562,7 +2562,9 @@ var worldSvg = (function (worldUrl) {
     }
 
     function svgAddCountries() {
-        $.countries = $.g.append('g').attr('class', 'countries').selectAll('path').data(_.countries.features).enter().append('path').attr('id', function (d) {
+        $.countries = $.g.append('g').attr('class', 'countries').selectAll('path').data(_.countries.features).enter().append('path').attr('class', function (d) {
+            return 'cid-' + d.properties.cid;
+        }).attr('id', function (d) {
             return 'x' + d.id;
         });
     }
