@@ -5,6 +5,7 @@ const earthjs = (options={}) => {
     /*eslint no-console: 0 */
     cancelAnimationFrame(earthjs.ticker);
     options = Object.assign({
+        svgCanvasSelector: '.ej-svg,.ej-canvas',
         selector: '#earth-js',
         rotate: [130,-33,-11],
         transparent: false,
@@ -43,6 +44,8 @@ const earthjs = (options={}) => {
         height = options.height || 500;
         svg.attr('width', width).attr('height', height);
     }
+    d3.selectAll(options.svgCanvasSelector)
+        .attr('width', width).attr('height',height);
     const center = [width/2, height/2];
     Object.defineProperty(options, 'width', {
         get: () => width,
