@@ -1,9 +1,15 @@
 // https://bl.ocks.org/mbostock/2b85250396c17a79155302f91ec21224
 // https://bl.ocks.org/pbogden/2f8d2409f1b3746a1c90305a1a80d183
 // http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
+// https://stackoverflow.com/questions/22028288/how-to-optimize-rendering-of-many-spheregeometry-in-three-js
+// https://threejs.org/docs/#api/materials/PointsMaterial
 export default urlJson => {
     /*eslint no-console: 0 */
-    const _ = {dataDots: null};
+    const _ = {
+        dataDots: null,
+        onHover: {},
+        onHoverVals: [],
+};
 
     function init() {
         this._.options.showDots = true;
@@ -20,12 +26,18 @@ export default urlJson => {
             opacity: 0.5,
         }),
         radius   = (feature.geometry.radius || 0.5) * 10,
-        geometry = new THREE.CircleGeometry(radius, 30),
+        geometry = new THREE.CircleBufferGeometry(radius, 25),
         mesh     = new THREE.Mesh(geometry, material),
         position = tj.vertex(feature.geometry.coordinates);
         mesh.position.set(position.x, position.y, position.z);
         mesh.lookAt({x:0,y:0,z:0});
         return mesh;
+    }
+
+    function hover(event){
+        for (var v of _.onHoverVals) {
+            v.call(event.target, event);
+        }
     }
 
     function create() {
@@ -35,7 +47,11 @@ export default urlJson => {
             _.sphereObject.name = _.me.name;
             _.dataDots.features.forEach((d) => {
                 const dot = createDot.call(this, d);
+                dot.__data__ = d;
                 _.sphereObject.add(dot);
+                if (tj.domEvents) {
+                    tj.domEvents.addEventListener(dot, 'mousemove', hover, false);
+                }
             });
         }
         tj.addGroup(_.sphereObject);
@@ -60,6 +76,10 @@ export default urlJson => {
             } else {
                 return _.dataDots;
             }
+        },
+        onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverVals = Object.keys(_.onHover).map(k => _.onHover[k]);
         },
         sphere() {
             return _.sphereObject;

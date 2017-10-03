@@ -4797,9 +4797,15 @@ var hmapThreejs = (function (hmapUrl) {
 // https://bl.ocks.org/mbostock/2b85250396c17a79155302f91ec21224
 // https://bl.ocks.org/pbogden/2f8d2409f1b3746a1c90305a1a80d183
 // http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
+// https://stackoverflow.com/questions/22028288/how-to-optimize-rendering-of-many-spheregeometry-in-three-js
+// https://threejs.org/docs/#api/materials/PointsMaterial
 var dotsThreejs = (function (urlJson) {
     /*eslint no-console: 0 */
-    var _ = { dataDots: null };
+    var _ = {
+        dataDots: null,
+        onHover: {},
+        onHoverVals: []
+    };
 
     function init() {
         this._.options.showDots = true;
@@ -4816,12 +4822,39 @@ var dotsThreejs = (function (urlJson) {
             opacity: 0.5
         }),
             radius = (feature.geometry.radius || 0.5) * 10,
-            geometry = new THREE.CircleGeometry(radius, 30),
+            geometry = new THREE.CircleBufferGeometry(radius, 25),
             mesh = new THREE.Mesh(geometry, material),
             position = tj.vertex(feature.geometry.coordinates);
         mesh.position.set(position.x, position.y, position.z);
         mesh.lookAt({ x: 0, y: 0, z: 0 });
         return mesh;
+    }
+
+    function hover(event) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = _.onHoverVals[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var v = _step.value;
+
+                v.call(event.target, event);
+            }
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
+        }
     }
 
     function create() {
@@ -4833,7 +4866,11 @@ var dotsThreejs = (function (urlJson) {
             _.sphereObject.name = _.me.name;
             _.dataDots.features.forEach(function (d) {
                 var dot = createDot.call(_this, d);
+                dot.__data__ = d;
                 _.sphereObject.add(dot);
+                if (tj.domEvents) {
+                    tj.domEvents.addEventListener(dot, 'mousemove', hover, false);
+                }
             });
         }
         tj.addGroup(_.sphereObject);
@@ -4858,6 +4895,12 @@ var dotsThreejs = (function (urlJson) {
             } else {
                 return _.dataDots;
             }
+        },
+        onHover: function onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverVals = Object.keys(_.onHover).map(function (k) {
+                return _.onHover[k];
+            });
         },
         sphere: function sphere() {
             return _.sphereObject;
@@ -5031,6 +5074,8 @@ var canvasThreejs = (function (worldUrl) {
     var _ = {
         world: null,
         sphereObject: null,
+        onHover: {},
+        onHoverVals: [],
         style: {},
         onDraw: {},
         onDrawVals: [],
@@ -5066,6 +5111,33 @@ var canvasThreejs = (function (worldUrl) {
         _.me._ = _; // only for debugging
     }
 
+    function hover(event) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = _.onHoverVals[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var v = _step.value;
+
+                v.call(event.target, event);
+            }
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
+        }
+    }
+
     function create() {
         var _this = this;
 
@@ -5074,6 +5146,9 @@ var canvasThreejs = (function (worldUrl) {
             resize.call(this);
             _.sphereObject = new THREE.Mesh(_.geometry, _.material);
             _.sphereObject.name = _.me.name;
+            if (tj.domEvents) {
+                tj.domEvents.addEventListener(_.sphereObject, 'mousemove', hover, false);
+            }
         }
         _.onDrawVals.forEach(function (v) {
             v.call(_this, _.newContext, _.path);
@@ -5236,6 +5311,12 @@ var canvasThreejs = (function (worldUrl) {
         refresh: function refresh() {
             _.refresh = true;
             _refresh.call(this);
+        },
+        onHover: function onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverVals = Object.keys(_.onHover).map(function (k) {
+                return _.onHover[k];
+            });
         },
         sphere: function sphere() {
             return _.sphereObject;

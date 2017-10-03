@@ -1,0 +1,56 @@
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src="../js/d3-scale-chromatic.v1.min.js"></script>
+    <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+</head>
+<body>
+    <svg id="earth-js"></svg>
+    <canvas id="three-js"></canvas>
+    <script>
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent: true})
+        g.register(earthjs.plugins.threejsPlugin())
+        g.register(earthjs.plugins.autorotatePlugin());
+        g.register(earthjs.plugins.mousePlugin());
+        g.register(earthjs.plugins.clickCanvas());
+        g.register(earthjs.plugins.graticuleThreejs());
+        g.register(earthjs.plugins.canvasThreejs('../d/world-110m.json'));
+        g.register(earthjs.plugins.dotsThreejs('../data/geonames_cities100k.csv'));
+        g.canvasThreejs.ready = function(err, json) {
+            g.canvasThreejs.data(json);
+            g.clickCanvas.data(json);
+        }
+        g.dotsThreejs.ready = function(err, csv) {
+            const range  = d3.range.apply(d3, [1,8]);
+            const minMax = d3.extent(csv.map(d => +d.population));
+            const vScale = d3.scaleLinear().domain(minMax).range([0.5, 2]);
+            const scale  = d3.scaleLinear().domain(minMax).rangeRound([1,8]);
+            const color  = d3.scaleThreshold().domain(range).range(d3.schemeReds[9]);
+            const features = csv.map(d => {
+                return {
+                    type: 'Feature',
+                    properties: {
+                        name: d.name,
+                        population: d.population
+                    },
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [d.longitude, d.latitude],
+                        radius: vScale(+d.population),
+                        color: color(scale(+d.population)),
+                    }
+                }
+            });
+            const geometry = {radius: 2}
+            g.dotsThreejs.data({geometry, features});
+        };
+        g.ready(function(){
+            g.create();
+        })
+    </script>
+</body>
+</html>

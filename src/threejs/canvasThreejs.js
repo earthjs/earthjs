@@ -4,6 +4,8 @@ export default (worldUrl, scw=6.279, height=2048) => {
     const _ = {
         world: null,
         sphereObject:null,
+        onHover: {},
+        onHoverVals: [],
         style: {},
         onDraw: {},
         onDrawVals: [],
@@ -46,12 +48,21 @@ export default (worldUrl, scw=6.279, height=2048) => {
         _.me._ = _; // only for debugging
     }
 
+    function hover(event){
+        for (var v of _.onHoverVals) {
+            v.call(event.target, event);
+        }
+    }
+
     function create() {
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
             resize.call(this);
             _.sphereObject= new THREE.Mesh(_.geometry, _.material);
             _.sphereObject.name = _.me.name;
+            if (tj.domEvents) {
+                tj.domEvents.addEventListener(_.sphereObject, 'mousemove', hover, false);
+            }
         }
         _.onDrawVals.forEach(v => {
             v.call(this, _.newContext, _.path);
@@ -208,6 +219,10 @@ export default (worldUrl, scw=6.279, height=2048) => {
         refresh() {
             _.refresh = true;
             refresh.call(this);
+        },
+        onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverVals = Object.keys(_.onHover).map(k => _.onHover[k]);
         },
         sphere() {
             return _.sphereObject;
