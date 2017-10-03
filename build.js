@@ -21,6 +21,7 @@ import autorotatePlugin from './src/base/autorotatePlugin';
 
 import barSvg           from './src/svg/barSvg';
 import mapSvg           from './src/svg/mapSvg';
+import haloSvg          from './src/svg/haloSvg';
 import dotsSvg          from './src/svg/dotsSvg';
 import worldSvg         from './src/svg/worldSvg';
 import pingsSvg         from './src/svg/pingsSvg';
@@ -109,6 +110,7 @@ earthjs.plugins= {
     worldSvg,
     barSvg,
     mapSvg,
+    haloSvg,
     dotsSvg,
     pingsSvg,
     pinCanvas,
