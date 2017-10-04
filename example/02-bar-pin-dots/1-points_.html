@@ -1,0 +1,65 @@
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
+    <script type='text/javascript' src="../js/d3.min.js"></script>
+    <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src='../js/threex.domevents.js'></script>
+    <script type='text/javascript' src="../js/topojson.min.js"></script>
+    <script type='text/javascript' src='../js/earthjs.js'></script>
+    <style>
+        #three-js {
+            pointer-events: all;
+        }
+    </style>
+</head>
+<body>
+    <svg id="earth-js"></svg>
+    <canvas id="three-js"></canvas>
+    <script>
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent: true})
+        g.register(earthjs.plugins.threejsPlugin())
+        // g.register(earthjs.plugins.autorotatePlugin());
+        g.register(earthjs.plugins.mousePlugin());
+        g.register(earthjs.plugins.graticuleThreejs());
+        g.register(earthjs.plugins.canvasThreejs('../d/world-110m.json'));
+        g.register(earthjs.plugins.pointsThreejs('../data/geonames_cities100k.csv'));
+        g.mousePlugin.selectAll('#three-js');
+        g.pointsThreejs.ready = function(err, csv) {
+            const features = csv.map(d => {
+                return {
+                    type: 'Feature',
+                    properties: {
+                        name: d.name,
+                        population: d.population
+                    },
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [d.longitude, d.latitude]}
+                }
+            });
+            g.pointsThreejs.data({features});
+        };
+        let hovering = null;
+        g.pointsThreejs.onHover({
+            dotHoverIn(event) {
+                hovering = event;
+                const {point} = event.intersect;
+                const {vertices} = event.target.geometry;
+                console.log('hovering in:', event);
+            }
+        })
+        g.canvasThreejs.onHover({
+            dotHoverOut(event) {
+                if (hovering) {
+                    hovering = null
+                    console.log('hovering out...');
+                }
+            }
+        })
+        g.ready(function(){
+            g.create();
+        })
+    </script>
+</body>
+</html>

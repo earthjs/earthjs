@@ -55,6 +55,7 @@ import dotsThreejs        from './src/threejs/dotsThreejs';
 import dotsCThreejs       from './src/threejs/dotsCThreejs';
 import iconsThreejs       from './src/threejs/iconsThreejs';
 import canvasThreejs      from './src/threejs/canvasThreejs';
+import pointsThreejs      from './src/threejs/pointsThreejs';
 import textureThreejs     from './src/threejs/textureThreejs';
 import graticuleThreejs   from './src/threejs/graticuleThreejs';
 import flightLineThreejs  from './src/threejs/flightLineThreejs';
@@ -125,6 +126,7 @@ earthjs.plugins= {
     dotsCThreejs,
     iconsThreejs,
     canvasThreejs,
+    pointsThreejs,
     textureThreejs,
     graticuleThreejs,
     flightLineThreejs,

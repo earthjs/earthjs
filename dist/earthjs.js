@@ -5327,6 +5327,113 @@ var canvasThreejs = (function (worldUrl) {
 // https://bl.ocks.org/mbostock/2b85250396c17a79155302f91ec21224
 // https://bl.ocks.org/pbogden/2f8d2409f1b3746a1c90305a1a80d183
 // http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
+// https://stackoverflow.com/questions/22028288/how-to-optimize-rendering-of-many-spheregeometry-in-three-js
+// https://threejs.org/docs/#api/materials/PointsMaterial
+var pointsThreejs = (function (urlJson) {
+    //imgUrl='../globe/point3.png'
+    /*eslint no-console: 0 */
+    var _ = {
+        dataPoints: null,
+        onHover: {},
+        onHoverVals: []
+    };
+
+    function init() {
+        this._.options.showPoints = true;
+    }
+
+    function hover(event) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = _.onHoverVals[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var v = _step.value;
+
+                v.call(event.target, event);
+            }
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
+        }
+    }
+
+    function create() {
+        var tj = this.threejsPlugin;
+        if (!_.sphereObject) {
+            var particles = new THREE.Geometry();
+            _.dataPoints.features.forEach(function (d) {
+                var star = new THREE.Vector3();
+                var position = tj.vertex(d.geometry.coordinates);
+                star.x = position.x;
+                star.y = position.y;
+                star.z = position.z;
+                particles.vertices.push(star);
+            });
+            var pMaterial = new THREE.PointsMaterial({
+                // blending: THREE.AdditiveBlending,
+                // map: tj.texture(imgUrl),
+                // transparent: true,
+                // depthTest: false,
+                color: 0xff0000,
+                size: 30
+            });
+            var starField = new THREE.Points(particles, pMaterial);
+            _.sphereObject = starField;
+            _.sphereObject.name = _.me.name;
+            if (tj.domEvents) {
+                tj.domEvents.addEventListener(starField, 'mousemove', hover, false);
+            }
+        }
+        tj.addGroup(_.sphereObject);
+    }
+
+    return {
+        name: 'pointsThreejs',
+        urls: urlJson && [urlJson],
+        onReady: function onReady(err, data) {
+            _.me.data(data);
+        },
+        onInit: function onInit(me) {
+            _.me = me;
+            init.call(this);
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.dataPoints = _data;
+            } else {
+                return _.dataPoints;
+            }
+        },
+        onHover: function onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverVals = Object.keys(_.onHover).map(function (k) {
+                return _.onHover[k];
+            });
+        },
+        sphere: function sphere() {
+            return _.sphereObject;
+        }
+    };
+});
+
+// https://bl.ocks.org/mbostock/2b85250396c17a79155302f91ec21224
+// https://bl.ocks.org/pbogden/2f8d2409f1b3746a1c90305a1a80d183
+// http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
 // http://bl.ocks.org/MAKIO135/eab7b74e85ed2be48eeb
 var textureThreejs = (function () {
     /*eslint no-console: 0 */
@@ -7123,6 +7230,7 @@ earthjs$2.plugins = {
     dotsCThreejs: dotsCThreejs,
     iconsThreejs: iconsThreejs,
     canvasThreejs: canvasThreejs,
+    pointsThreejs: pointsThreejs,
     textureThreejs: textureThreejs,
     graticuleThreejs: graticuleThreejs,
     flightLineThreejs: flightLineThreejs,
