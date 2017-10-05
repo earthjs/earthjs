@@ -11,7 +11,7 @@ export default (threejs='three-js') => {
 
     // Converts a point [longitude, latitude] in degrees to a THREE.Vector3.
     function vertex(point) {
-        var lambda = point[0] * Math.PI / 180,
+        const lambda = point[0] * Math.PI / 180,
             phi = point[1] * Math.PI / 180,
             cosPhi = Math.cos(phi);
         return new THREE.Vector3(
@@ -23,7 +23,7 @@ export default (threejs='three-js') => {
 
     // Converts a GeoJSON MultiLineString in spherical coordinates to a THREE.LineSegments.
     function wireframe(multilinestring, material) {
-        var geometry = new THREE.Geometry;
+        const geometry = new THREE.Geometry;
         multilinestring.coordinates.forEach(function(line) {
             d3.pairs(line.map(vertex), function(a, b) {
                 geometry.vertices.push(a, b);

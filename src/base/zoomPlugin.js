@@ -13,7 +13,7 @@ export default () => {
             .translateExtent([[0,0], wh]));
 
         function zoom() {
-            var t = d3.event.transform;
+            const t = d3.event.transform;
             __.proj.scale(s0 * t.k);
             __.resize();
             __.refresh();

@@ -72,7 +72,7 @@ export default () => {
         render(fn, drawTo, options=[]) {
             const __ = this._;
             if (__.options.showCanvas) {
-                var rChange = false;
+                let rChange = false;
                 const proj = __.proj;
                 const r = proj.rotate();
                 const _this = this;

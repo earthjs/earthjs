@@ -6,8 +6,8 @@ export default (worldUrl='../d/world.geometry.json', landUrl='../globe/gold.jpg'
 
     function loadCountry() {
         const data = _.world;
-        for (var name in data) {
-            var geometry = new Map3DGeometry(data[name], inner);
+        for (let name in data) {
+            const geometry = new Map3DGeometry(data[name], inner);
             _.sphereObject.add(data[name].mesh = new THREE.Mesh(geometry, _.material));
         }
         _.loaded = true;

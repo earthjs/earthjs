@@ -61,7 +61,7 @@ export default () => {
         .duration(1500)
         .tween('rotate', function() {
             __.rotate(__.proj.rotate());
-            var r = d3.interpolate(__.proj.rotate(), [0, 0, 0]);
+            const r = d3.interpolate(__.proj.rotate(), [0, 0, 0]);
             return function(t) {
                 __.rotate(r(t));
             };

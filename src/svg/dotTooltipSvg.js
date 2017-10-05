@@ -18,7 +18,7 @@ export default () => {
                 _.visible = true;
                 _.mouseXY = [d3.event.pageX + 7, d3.event.pageY - 15];
                 const i = +this.dataset.index;
-                var data = _this.dotsSvg.data().features[i];
+                const data = _this.dotsSvg.data().features[i];
                 (_.me.show || show)(data, dotTooltip)
                 .style('display', 'block')
                 .style('opacity', 1);

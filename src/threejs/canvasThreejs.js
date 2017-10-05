@@ -49,7 +49,7 @@ export default (worldUrl, scw=6.279, height=2048) => {
     }
 
     function hover(event){
-        for (var v of _.onHoverVals) {
+        for (let v of _.onHoverVals) {
             v.call(event.target, event);
         }
     }
@@ -77,7 +77,7 @@ export default (worldUrl, scw=6.279, height=2048) => {
         if (o.choropleth) {
             let i = _.countries.features.length;
             while (i--) {
-                var obj = _.countries.features[i];
+                const obj = _.countries.features[i];
                 _.context.beginPath();
                 _.path(obj);
                 _.context.fillStyle = obj.properties.color || _.style.countries || 'rgba(2, 20, 37,0.8)';

@@ -5,8 +5,8 @@
 export default () => {
     /*eslint no-console: 0 */
     const _ = {}, datumGraticule = d3.geoGraticule()();
-    var material = new THREE.MeshBasicMaterial();
-    var geometry;
+    const material = new THREE.MeshBasicMaterial();
+    let geometry;
 
     function init() {
         const __ = this._;
@@ -24,7 +24,7 @@ export default () => {
         _.texture.needsUpdate = true;
         material.map = _.texture;
 
-        var projection = d3.geoMercator().scale(width/2/Math.PI)
+        const projection = d3.geoMercator().scale(width/2/Math.PI)
             .translate([width/2, height/2]).precision(0.5);
 
         _.path = d3.geoPath(projection, _.context);
@@ -33,8 +33,7 @@ export default () => {
     function create() {
         const __ = this._;
         const tj = this.threejsPlugin;
-        var width  = __.options.width;
-        var height = __.options.height;
+        const {width, height}  = __.options;
         if (!_.sphereObject) {
             _.context.fillStyle = 'white';
             _.context.fillRect(0, 0, width, height);

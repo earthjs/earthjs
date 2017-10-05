@@ -120,7 +120,7 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
         }
 
         function dragsended() {
-            var drag = __.drag;
+            let drag = __.drag;
             __.drag = false;
             if (drag===null) {
                 _.event = d3.event;

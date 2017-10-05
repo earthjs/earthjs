@@ -16,7 +16,7 @@ export default (urlJson) => { //imgUrl='../globe/point3.png'
     }
 
     function hover(event){
-        for (var v of _.onHoverVals) {
+        for (let v of _.onHoverVals) {
             v.call(event.target, event);
         }
     }

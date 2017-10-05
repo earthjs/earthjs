@@ -309,9 +309,9 @@ var earthjs$2 = function earthjs() {
 
         try {
             for (var _iterator2 = _.onIntervalVals[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                var fn = _step2.value;
+                var fn1 = _step2.value;
 
-                fn.call(globe, t);
+                fn1.call(globe, t);
             }
         } catch (err) {
             _didIteratorError2 = true;
@@ -346,9 +346,9 @@ var earthjs$2 = function earthjs() {
 
             try {
                 for (var _iterator3 = _.onRefreshVals[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                    var fn = _step3.value;
+                    var fn2 = _step3.value;
 
-                    fn.call(globe);
+                    fn2.call(globe);
                 }
             } catch (err) {
                 _didIteratorError3 = true;
@@ -375,9 +375,9 @@ var earthjs$2 = function earthjs() {
 
         try {
             for (var _iterator4 = _.onResizeVals[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                var fn = _step4.value;
+                var fn3 = _step4.value;
 
-                fn.call(globe);
+                fn3.call(globe);
             }
         } catch (err) {
             _didIteratorError4 = true;
@@ -3918,6 +3918,8 @@ var worldCanvas = (function (worldUrl) {
     };
 
     function create() {
+        var _this = this;
+
         var __ = this._;
         if (_.world) {
             if (__.options.transparent || __.options.transparentLand) {
@@ -3955,15 +3957,19 @@ var worldCanvas = (function (worldUrl) {
                         var _iteratorError = undefined;
 
                         try {
-                            for (var _iterator = _.selected.features[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                            var _loop = function _loop() {
                                 var scountry = _step.value;
 
-                                this.canvasPlugin.render(function (context, path) {
+                                _this.canvasPlugin.render(function (context, path) {
                                     context.beginPath();
                                     path(scountry);
                                     context.fillStyle = scountry.color;
                                     context.fill();
                                 }, _.drawTo, _.options);
+                            };
+
+                            for (var _iterator = _.selected.features[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                _loop();
                             }
                         } catch (err) {
                             _didIteratorError = true;
@@ -4049,7 +4055,7 @@ var worldCanvas = (function (worldUrl) {
             options.transparentLand = false;
         },
         onCreate: function onCreate() {
-            var _this = this;
+            var _this2 = this;
 
             if (this.worldJson && !_.world) {
                 _.me.allData(this.worldJson.allData());
@@ -4058,8 +4064,8 @@ var worldCanvas = (function (worldUrl) {
             if (this.hoverCanvas) {
                 var hover = {};
                 hover[_.me.name] = function () {
-                    if (!_this._.options.spin) {
-                        _this._.refresh();
+                    if (!_this2._.options.spin) {
+                        _this2._.refresh();
                     }
                 };
                 this.hoverCanvas.onCountry(hover);
@@ -5527,7 +5533,7 @@ var textureThreejs = (function () {
     var _ = {},
         datumGraticule = d3.geoGraticule()();
     var material = new THREE.MeshBasicMaterial();
-    var geometry;
+    var geometry = void 0;
 
     function init() {
         var __ = this._;
@@ -5553,8 +5559,10 @@ var textureThreejs = (function () {
     function create() {
         var __ = this._;
         var tj = this.threejsPlugin;
-        var width = __.options.width;
-        var height = __.options.height;
+        var _$options = __.options,
+            width = _$options.width,
+            height = _$options.height;
+
         if (!_.sphereObject) {
             _.context.fillStyle = 'white';
             _.context.fillRect(0, 0, width, height);
@@ -7141,7 +7149,7 @@ var selectCountryMix = (function () {
             var _iteratorError = undefined;
 
             try {
-                for (var _iterator = mregion[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var _loop = function _loop() {
                     var obj = _step.value;
 
                     var arr = g.worldCanvas.countries().filter(function (x) {
@@ -7150,6 +7158,10 @@ var selectCountryMix = (function () {
                         return bool;
                     });
                     reg = reg.concat(arr);
+                };
+
+                for (var _iterator = mregion[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    _loop();
                 }
             } catch (err) {
                 _didIteratorError = true;
@@ -7229,7 +7241,7 @@ var selectCountryMix2 = (function () {
             var _iteratorError = undefined;
 
             try {
-                for (var _iterator = mregion[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var _loop = function _loop() {
                     var obj = _step.value;
 
                     var arr = g.canvasThreejs.countries().filter(function (x) {
@@ -7238,6 +7250,10 @@ var selectCountryMix2 = (function () {
                         return bool;
                     });
                     reg = reg.concat(arr);
+                };
+
+                for (var _iterator = mregion[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    _loop();
                 }
             } catch (err) {
                 _didIteratorError = true;

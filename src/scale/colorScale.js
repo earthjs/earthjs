@@ -23,7 +23,7 @@ export default (data, colorRange=[d3.rgb('#FFAAFF'),d3.rgb("#FF0000")]) => {
             let ttl = 0;
             let arr = [[0,_.me.color(0)]];
             const max = _.mnMax[1]/length;
-            for (var i=0;i<length;i++) {
+            for (let i=0;i<length;i++) {
                 ttl+=max;
                 arr.push([ttl,_.me.color(ttl)]);
             }

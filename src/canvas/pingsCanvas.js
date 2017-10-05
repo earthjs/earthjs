@@ -1,7 +1,7 @@
 export default () => {
     const _ = {dataPings: null, pings: []};
 
-    var start = 0;
+    let start = 0;
     function interval(timestamp) {
         if ((timestamp - start) > 40) {
             start = timestamp;

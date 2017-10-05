@@ -26,7 +26,7 @@ export default () => {
     }
 
     function animate() {
-        var nodes = $.ping2.nodes().filter(d => d.style.display=='inline');
+        const nodes = $.ping2.nodes().filter(d => d.style.display=='inline');
         if (nodes.length>0) {
             d3.select(`#${nodes[Math.floor(Math.random() * (nodes.length-1))].id}`)
                 .attr('r', 2)

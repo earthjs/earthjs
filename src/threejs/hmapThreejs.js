@@ -29,16 +29,16 @@ export default hmapUrl => {
 
         if (!hmapUrl) {
             $.canvas.style('display','inherit');
-            var paintAtCoord = function(x, y){
-                var count = 0;
+            const paintAtCoord = function(x, y){
+                let count = 0;
                 while(count < 200){
-                    var xoff = Math.random()*2-1;
-                    var yoff = Math.random()*2-1;
-                    var l = xoff*xoff + yoff*yoff;
+                    let xoff = Math.random()*2-1;
+                    let yoff = Math.random()*2-1;
+                    const l = xoff*xoff + yoff*yoff;
                     if(l > 1){
                         continue;
                     }
-                    var ls = Math.sqrt(l);
+                    const ls = Math.sqrt(l);
                     xoff/=ls; yoff/=ls;
                     xoff*=1-l; yoff*=1-l;
                     count += 1;
@@ -46,18 +46,18 @@ export default hmapUrl => {
                 }
             }
             // event handling
-            var onTouchMove = function(evt){
+            const onTouchMove = function(evt){
                 evt.preventDefault();
-                var touches = evt.changedTouches;
-                for(var i=0; i<touches.length; i++){
-                    var touch = touches[i];
+                const touches = evt.changedTouches;
+                for(let i=0; i<touches.length; i++){
+                    const touch = touches[i];
                     paintAtCoord(touch.pageX, touch.pageY);
                 }
             };
             _.canvas.addEventListener("touchmove", onTouchMove, false);
             _.canvas.onmousemove = function(event){
-                var x = event.offsetX || event.clientX;
-                var y = event.offsetY || event.clientY;
+                const x = event.offsetX || event.clientX;
+                const y = event.offsetY || event.clientY;
                 paintAtCoord(x, y);
 
             }

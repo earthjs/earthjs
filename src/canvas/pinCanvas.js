@@ -22,9 +22,9 @@ export default (urlJson, urlImage, wh=[15,25]) => {
             const center = __.proj.invert(__.center);
             this.canvasPlugin.render(function(context) {
                 _.dataPin.features.forEach(function(d) {
-                    var coordinates = d.geometry.coordinates;
+                    const coordinates = d.geometry.coordinates;
                     if (d3.geoDistance(coordinates, center) <= 1.57) {
-                        var a = __.path.centroid(d);
+                        const a = __.path.centroid(d);
                         context.drawImage(_.image,
                             a[0]-_.pX,
                             a[1]-_.pY,

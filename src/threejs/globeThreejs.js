@@ -32,14 +32,14 @@ export default (
             _.sphereObject.name = _.me.name;
             if (this.threejsPlugin.domEvents) {
                 this.threejsPlugin.domEvents.addEventListener(_.sphereObject, 'mousemove', function(event){
-                    for (var v of _.onHoverVals) {
+                    for (let v of _.onHoverVals) {
                         v.call(event.target, event);
                     }
                 }, false);
             }
-            var ambient= new THREE.AmbientLight(0x777777);
-            var light1 = new THREE.DirectionalLight(0xffffff, 0.2);
-            var light2 = new THREE.DirectionalLight(0xffffff, 0.2);
+            const ambient= new THREE.AmbientLight(0x777777);
+            const light1 = new THREE.DirectionalLight(0xffffff, 0.2);
+            const light2 = new THREE.DirectionalLight(0xffffff, 0.2);
             light1.position.set(5, 3,  6);
             light2.position.set(5, 3, -6);
             tj.addGroup(ambient);

@@ -50,7 +50,7 @@ export default (worldUrl='../d/world-110m.json', worldImg) => {
         multiRegion(mregion, centeroid) {
             let reg = [];
             const g = this;
-            for (var obj of mregion) {
+            for (let obj of mregion) {
                 const arr = g.canvasThreejs.countries().filter(x=>{
                     const bool = obj.countries.indexOf(x.id)>-1;
                     if (bool) x.color = obj.color;

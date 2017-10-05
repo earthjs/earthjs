@@ -364,7 +364,7 @@ export default (jsonUrl, imgUrl, height=150) => {
         group.name = 'flightLineThreejs';
         if (this.threejsPlugin.domEvents) {
             this.threejsPlugin.domEvents.addEventListener(_.track_lines_object, 'mousemove', function(event){
-                for (var v of _.onHoverVals) {
+                for (let v of _.onHoverVals) {
                     v.call(event.target, event);
                 }
             }, false);
