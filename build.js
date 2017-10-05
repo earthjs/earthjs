@@ -8,6 +8,7 @@ import countryNamesCsv from './src/data/countryNamesCsv';
 
 import colorScale      from './src/scale/colorScale';
 
+import dotRegion        from './src/base/dotRegion';
 import zoomPlugin       from './src/base/zoomPlugin';
 import hoverCanvas      from './src/base/hoverCanvas';
 import clickCanvas      from './src/base/clickCanvas';
@@ -49,24 +50,24 @@ import countrySelectCanvas  from './src/canvas/countrySelectCanvas';
 import countryTooltipCanvas from './src/canvas/countryTooltipCanvas';
 
 
-import barThreejs         from './src/threejs/barThreejs';
-import hmapThreejs        from './src/threejs/hmapThreejs';
-import dotsThreejs        from './src/threejs/dotsThreejs';
-import dotsCThreejs       from './src/threejs/dotsCThreejs';
-import iconsThreejs       from './src/threejs/iconsThreejs';
-import canvasThreejs      from './src/threejs/canvasThreejs';
-import pointsThreejs      from './src/threejs/pointsThreejs';
-import textureThreejs     from './src/threejs/textureThreejs';
-import graticuleThreejs   from './src/threejs/graticuleThreejs';
-import flightLineThreejs  from './src/threejs/flightLineThreejs';
-import debugThreejs       from './src/threejs/debugThreejs';
-import oceanThreejs       from './src/threejs/oceanThreejs';
-import imageThreejs       from './src/threejs/imageThreejs';
-import worldThreejs       from './src/threejs/worldThreejs';
-import globeThreejs       from './src/threejs/globeThreejs';
-import sphereThreejs      from './src/threejs/sphereThreejs';
-import world3d            from './src/threejs/world3d';
-import world3d2           from './src/threejs/world3d2';
+import barThreejs        from './src/threejs/barThreejs';
+import hmapThreejs       from './src/threejs/hmapThreejs';
+import dotsThreejs       from './src/threejs/dotsThreejs';
+import dotsCThreejs      from './src/threejs/dotsCThreejs';
+import iconsThreejs      from './src/threejs/iconsThreejs';
+import canvasThreejs     from './src/threejs/canvasThreejs';
+import pointsThreejs     from './src/threejs/pointsThreejs';
+import textureThreejs    from './src/threejs/textureThreejs';
+import graticuleThreejs  from './src/threejs/graticuleThreejs';
+import flightLineThreejs from './src/threejs/flightLineThreejs';
+import debugThreejs      from './src/threejs/debugThreejs';
+import oceanThreejs      from './src/threejs/oceanThreejs';
+import imageThreejs      from './src/threejs/imageThreejs';
+import worldThreejs      from './src/threejs/worldThreejs';
+import globeThreejs      from './src/threejs/globeThreejs';
+import sphereThreejs     from './src/threejs/sphereThreejs';
+import world3d           from './src/threejs/world3d';
+import world3d2          from './src/threejs/world3d2';
 
 import commonPlugins     from './src/mixed/commonPlugins';
 import selectCountryMix  from './src/mixed/selectCountryMix';
@@ -81,6 +82,7 @@ earthjs.plugins= {
 
     colorScale,
 
+    dotRegion,
     hoverCanvas,
     clickCanvas,
     mousePlugin,

@@ -3,7 +3,6 @@
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
     <script type='text/javascript' src='../js/three.min.js'></script>
-    <script type='text/javascript' src='../js/threex.domevents.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
     <style>
@@ -21,6 +20,8 @@
         g.register(earthjs.plugins.threejsPlugin())
         // g.register(earthjs.plugins.autorotatePlugin());
         g.register(earthjs.plugins.mousePlugin());
+        g.register(earthjs.plugins.hoverCanvas());
+        g.register(earthjs.plugins.dotRegion());
         g.register(earthjs.plugins.graticuleThreejs());
         g.register(earthjs.plugins.canvasThreejs('../d/world-110m.json'));
         g.register(earthjs.plugins.pointsThreejs('../data/geonames_cities100k.csv'));
@@ -31,7 +32,7 @@
                     type: 'Feature',
                     properties: {
                         name: d.name,
-                        population: d.population
+                        population: d.population,
                     },
                     geometry: {
                         type: 'Point',
@@ -39,24 +40,34 @@
                 }
             });
             g.pointsThreejs.data({features});
+            g.dotRegion.data({features});
         };
+        g._.options.showDots = true;
         let hovering = null;
-        g.pointsThreejs.onHover({
-            dotHoverIn(event) {
+        g.hoverCanvas.onCircle({
+            dotHoverIn(event, latlong) {
                 hovering = event;
-                const {point} = event.intersect;
-                const {vertices} = event.target.geometry;
-                console.log('hovering in:', event);
+                const data = g.dotRegion.detect(latlong);
+                if (data) console.log('detect', data.properties);
             }
         })
-        g.canvasThreejs.onHover({
-            dotHoverOut(event) {
-                if (hovering) {
-                    hovering = null
-                    console.log('hovering out...');
-                }
-            }
-        })
+        // g.pointsThreejs.onHover({
+        //     dotHoverIn(event) {
+        //         hovering = event;
+        //         const {pageX, pageY} = event.origDomEvent;
+        //         const latlong = g._.proj.invert([pageX, pageY]);
+        //         const data = g.dotClickCanvas.detect(latlong);
+        //         if (data) console.log('detect', data.properties);
+        //     }
+        // })
+        // g.canvasThreejs.onHover({
+        //     dotHoverOut(event) {
+        //         if (hovering) {
+        //             hovering = null
+        //             console.log('hovering out...');
+        //         }
+        //     }
+        // })
         g.ready(function(){
             g.create();
         })
