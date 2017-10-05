@@ -1,7 +1,10 @@
 // http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
 export default (jsonUrl, height=2) => {
     /*eslint no-console: 0 */
-    const _ = {sphereObject: null, data: null};
+    const _ = {
+        sphereObject: null,
+        data: null
+    };
     const material = new THREE.MeshBasicMaterial({
         vertexColors: THREE.FaceColors,
         morphTargets: false,
@@ -26,10 +29,6 @@ export default (jsonUrl, height=2) => {
         mesh.position.y = sc * Math.cos(phi);
         mesh.position.z = sc * Math.sin(phi) * Math.sin(the);
         mesh.lookAt({x:0,y:0,z:0});
-    }
-
-    function init() {
-        this._.options.showBars = true;
     }
 
     function create() {
@@ -63,7 +62,6 @@ export default (jsonUrl, height=2) => {
         },
         onInit(me) {
             _.me = me;
-            init.call(this);
         },
         onCreate() {
             create.call(this);

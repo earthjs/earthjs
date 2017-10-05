@@ -2116,7 +2116,7 @@ var autorotatePlugin = (function () {
         if (timestamp - start > 40) {
             start = timestamp;
             var now = new Date();
-            if (this._.options.spin && !this._.drag) {
+            if (this._.options.spin && this._.drag === false) {
                 var delta = now - _.lastTick;
                 rotate.call(this, delta);
                 _.sync.forEach(function (g) {
@@ -4669,7 +4669,10 @@ var barThreejs = (function (jsonUrl) {
     var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2;
 
     /*eslint no-console: 0 */
-    var _ = { sphereObject: null, data: null };
+    var _ = {
+        sphereObject: null,
+        data: null
+    };
     var material = new THREE.MeshBasicMaterial({
         vertexColors: THREE.FaceColors,
         morphTargets: false,
@@ -4694,10 +4697,6 @@ var barThreejs = (function (jsonUrl) {
         mesh.position.y = sc * Math.cos(phi);
         mesh.position.z = sc * Math.sin(phi) * Math.sin(the);
         mesh.lookAt({ x: 0, y: 0, z: 0 });
-    }
-
-    function init() {
-        this._.options.showBars = true;
     }
 
     function create() {
@@ -4733,7 +4732,6 @@ var barThreejs = (function (jsonUrl) {
         },
         onInit: function onInit(me) {
             _.me = me;
-            init.call(this);
         },
         onCreate: function onCreate() {
             create.call(this);
