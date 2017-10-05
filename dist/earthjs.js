@@ -1331,6 +1331,7 @@ var mousePlugin = (function () {
         onDblClick: {},
         onDblClickVals: []
     };
+    window._mouse = _;
 
     if (zoomScale === undefined) {
         zoomScale = [0, 50000];
@@ -1820,6 +1821,11 @@ var threejsPlugin = (function () {
         if (window.THREEx && window.THREEx.DomEvents) {
             _.domEvents = new window.THREEx.DomEvents(_.camera, _.renderer.domElement);
         }
+        Object.defineProperty(_.me, 'group', {
+            get: function get() {
+                return _.group;
+            }
+        });
         Object.defineProperty(_.me, 'camera', {
             get: function get() {
                 return _.camera;
@@ -6392,6 +6398,126 @@ var imageThreejs = (function () {
     };
 });
 
+var inertiaThreejs = (function () {
+    /*eslint no-console: 0 */
+    var _ = {};
+
+    var mouseX = 0,
+        mouseY = 0,
+        pmouseX = 0,
+        pmouseY = 0;
+
+    var rotateX = 0,
+        rotateY = 0,
+        rotateVX = 0,
+        rotateVY = 0;
+
+    var dragging = false,
+        rendering = false;
+
+    var rotateTargetX = undefined,
+        rotateTargetY = undefined;
+
+    var rotateXMax = 90 * Math.PI / 180;
+
+    function animate() {
+        if (!rendering) return;
+
+        if (rotateTargetX !== undefined && rotateTargetY !== undefined) {
+
+            rotateVX += (rotateTargetX - rotateX) * 0.012;
+            rotateVY += (rotateTargetY - rotateY) * 0.012;
+
+            if (Math.abs(rotateTargetX - rotateX) < 0.1 && Math.abs(rotateTargetY - rotateY) < 0.1) {
+                rotateTargetX = undefined;
+                rotateTargetY = undefined;
+            }
+        }
+
+        rotateX += rotateVX;
+        rotateY += rotateVY;
+
+        rotateVX *= 0.98;
+        rotateVY *= 0.98;
+
+        if (dragging || rotateTargetX !== undefined) {
+            rotateVX *= 0.6;
+            rotateVY *= 0.6;
+        }
+
+        if (rotateX < -rotateXMax) {
+            rotateX = -rotateXMax;
+            rotateVX *= -0.95;
+        }
+
+        if (rotateX > rotateXMax) {
+            rotateX = rotateXMax;
+            rotateVX *= -0.95;
+        }
+
+        if (!dragging && _.rotation.x.toPrecision(5) === rotateX.toPrecision(5) && _.rotation.y.toPrecision(5) === rotateY.toPrecision(5)) {
+            rendering = false;
+        }
+
+        _.rotation.x = rotateX;
+        _.rotation.y = rotateY;
+        _.renderThree(true);
+    }
+
+    function onDocumentMouseMove(event) {
+
+        pmouseX = mouseX;
+        pmouseY = mouseY;
+
+        mouseX = event.clientX - window.innerWidth * 0.5;
+        mouseY = event.clientY - window.innerHeight * 0.5;
+
+        if (dragging) {
+            rotateVY += (mouseX - pmouseX) / 2 * Math.PI / 180 * 0.3;
+            rotateVX += (mouseY - pmouseY) / 2 * Math.PI / 180 * 0.3;
+        }
+    }
+
+    function onDocumentMouseDown() {
+        dragging = true;
+        rendering = true;
+        rotateTargetX = undefined;
+        rotateTargetX = undefined;
+    }
+
+    function onDocumentMouseUp() {
+        dragging = false;
+    }
+
+    function init() {
+        document.addEventListener('mousemove', onDocumentMouseMove, true);
+        document.addEventListener('mousedown', onDocumentMouseDown, true);
+        document.addEventListener('mouseup', onDocumentMouseUp, false);
+    }
+
+    function create() {
+        var tj = this.threejsPlugin;
+        _.rotation = tj.group.rotation;
+        _.renderThree = tj.renderThree;
+        this._.options.tween = animate; // requestAnimationFrame()
+    }
+
+    return {
+        name: 'inertiaThreejs',
+        onInit: function onInit(me) {
+            _.me = me;
+            init.call(this);
+        },
+        onCreate: function onCreate() {
+            create.call(this);
+            setTimeout(function () {
+                rotateX = _.rotation.x;
+                rotateY = _.rotation.y;
+            }, 0);
+        }
+    };
+});
+
 var worldThreejs = (function () {
     var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../globe/world.png';
 
@@ -7339,6 +7465,7 @@ earthjs$2.plugins = {
     debugThreejs: debugThreejs,
     oceanThreejs: oceanThreejs,
     imageThreejs: imageThreejs,
+    inertiaThreejs: inertiaThreejs,
     worldThreejs: worldThreejs,
     globeThreejs: globeThreejs,
     sphereThreejs: sphereThreejs,

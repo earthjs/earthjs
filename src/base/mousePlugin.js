@@ -19,6 +19,7 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
         onDblClick: {},
         onDblClickVals: []
     };
+    window._mouse = _;
 
     if (zoomScale===undefined) {
         zoomScale = [0,50000];

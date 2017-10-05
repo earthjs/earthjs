@@ -59,6 +59,7 @@ export default (threejs='three-js') => {
         if (window.THREEx &&  window.THREEx.DomEvents) {
             _.domEvents	= new window.THREEx.DomEvents(_.camera, _.renderer.domElement);
         }
+        Object.defineProperty(_.me, 'group', {get() {return _.group;}});
         Object.defineProperty(_.me, 'camera', {get() {return _.camera;}});
         Object.defineProperty(_.me, 'renderer', {get() {return _.renderer;}});
         Object.defineProperty(_.me, 'domEvents', {get() {return _.domEvents;}});
