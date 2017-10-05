@@ -1,3 +1,4 @@
+// https://armsglobe.chromeexperiments.com/
 export default () => {
     /*eslint no-console: 0 */
     const _ = {};
@@ -76,8 +77,8 @@ export default () => {
         mouseY = event.clientY - window.innerHeight * 0.5;
 
         if(dragging){
-            rotateVY += (mouseX - pmouseX) / 2 * Math.PI / 180 * 0.3;
-            rotateVX += (mouseY - pmouseY) / 2 * Math.PI / 180 * 0.3;
+            rotateVY += (mouseX - pmouseX) / 2 * 0.005235987755982988; // Math.PI / 180 * 0.3;
+            rotateVX += (mouseY - pmouseY) / 2 * 0.005235987755982988; // Math.PI / 180 * 0.3;
         }
     }
 
