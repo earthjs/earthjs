@@ -16,9 +16,6 @@ export default () => {
     let dragging = false,
         rendering = false;
 
-    let rotateTargetX = undefined,
-        rotateTargetY = undefined;
-
     const rotateXMax = 90 * Math.PI/180;
 
     function animate() {
@@ -27,24 +24,13 @@ export default () => {
             return;
         }
 
-        if (rotateTargetX !== undefined && rotateTargetY !== undefined) {
-
-            rotateVX += (rotateTargetX - rotateX) * 0.012;
-            rotateVY += (rotateTargetY - rotateY) * 0.012;
-
-            if (Math.abs(rotateTargetX - rotateX) < 0.1 && Math.abs(rotateTargetY - rotateY) < 0.1) {
-                rotateTargetX = undefined;
-                rotateTargetY = undefined;
-            }
-        }
-
         rotateX += rotateVX;
         rotateY += rotateVY;
 
         rotateVX *= 0.98;
         rotateVY *= 0.98;
 
-        if (dragging || rotateTargetX !== undefined) {
+        if (dragging) {
             rotateVX *= 0.6;
             rotateVY *= 0.6;
         }
@@ -67,16 +53,15 @@ export default () => {
 
         _.rotation.x = rotateX;
         _.rotation.y = rotateY;
-        _.renderThree(true);
+        _.renderThree();
     }
 
-    function onDocumentMouseMove( event ) {
-
+    function onDocumentMouseMove() {
         pmouseX = mouseX;
         pmouseY = mouseY;
 
-        mouseX = event.clientX - window.innerWidth * 0.5;
-        mouseY = event.clientY - window.innerHeight * 0.5;
+        mouseX = d3.event.clientX - window.innerWidth * 0.5;
+        mouseY = d3.event.clientY - window.innerHeight * 0.5;
 
         if(dragging){
             rotateVY += (mouseX - pmouseX) / 2 * 0.005235987755982988; // Math.PI / 180 * 0.3;
@@ -89,8 +74,6 @@ export default () => {
         rendering = true;
         rotateX = _.rotation.x;
         rotateY = _.rotation.y;
-        rotateTargetX = undefined;
-        rotateTargetX = undefined;
         _.addEventQueue(_.me.name, 'onTween');
     }
 
@@ -99,9 +82,10 @@ export default () => {
     }
 
     function init() {
-        document.addEventListener( 'mousemove', onDocumentMouseMove, true );
-        document.addEventListener( 'mousedown', onDocumentMouseDown, true );
-        document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+        this._.svg
+        .on('mousedown', onDocumentMouseDown)
+        .on('mousemove', onDocumentMouseMove)
+        .on('mouseup', onDocumentMouseUp);
     }
 
     function create() {
