@@ -97,6 +97,9 @@ var earthjs$2 = function earthjs() {
         onInterval: {},
         onIntervalVals: [],
 
+        onTween: {},
+        onTweenVals: [],
+
         ready: null,
         promeses: [],
         loadingData: null,
@@ -191,7 +194,7 @@ var earthjs$2 = function earthjs() {
             var ar = { name: name || obj.name, __on__: {} };
             globe[ar.name] = ar;
             Object.keys(obj).forEach(function (fn) {
-                if (['urls', 'onReady', 'onInit', 'onCreate', 'onRefresh', 'onResize', 'onInterval'].indexOf(fn) === -1) {
+                if (['urls', 'onReady', 'onInit', 'onTween', 'onCreate', 'onResize', 'onRefresh', 'onInterval'].indexOf(fn) === -1) {
                     if (typeof obj[fn] === 'function') {
                         ar[fn] = function () {
                             return obj[fn].apply(globe, arguments);
@@ -202,6 +205,7 @@ var earthjs$2 = function earthjs() {
             if (obj.onInit) {
                 obj.onInit.call(globe, ar);
             }
+            qEvent(obj, 'onTween', ar.name);
             qEvent(obj, 'onCreate', ar.name);
             qEvent(obj, 'onResize', ar.name);
             qEvent(obj, 'onRefresh', ar.name);
@@ -280,7 +284,33 @@ var earthjs$2 = function earthjs() {
                     }
                 }
             }
-            if (__.options.tween && !__.drag) __.options.tween(timestamp);
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = _.onTweenVals[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var twn = _step2.value;
+
+                    twn.call(globe, timestamp);
+                }
+                // if (__.options.tween && !__.drag)
+                //     __.options.tween(timestamp);
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
+            }
+
             earthjs.ticker = requestAnimationFrame(step);
         }
         earthjs.ticker = requestAnimationFrame(step);
@@ -303,27 +333,27 @@ var earthjs$2 = function earthjs() {
     };
 
     __.interval = function (t) {
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
 
         try {
-            for (var _iterator2 = _.onIntervalVals[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                var fn1 = _step2.value;
+            for (var _iterator3 = _.onIntervalVals[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                var fn1 = _step3.value;
 
                 fn1.call(globe, t);
             }
         } catch (err) {
-            _didIteratorError2 = true;
-            _iteratorError2 = err;
+            _didIteratorError3 = true;
+            _iteratorError3 = err;
         } finally {
             try {
-                if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                    _iterator2.return();
+                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                    _iterator3.return();
                 }
             } finally {
-                if (_didIteratorError2) {
-                    throw _iteratorError2;
+                if (_didIteratorError3) {
+                    throw _iteratorError3;
                 }
             }
         }
@@ -340,27 +370,27 @@ var earthjs$2 = function earthjs() {
                 _.onRefresh[fn].call(globe);
             });
         } else {
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
 
             try {
-                for (var _iterator3 = _.onRefreshVals[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                    var fn2 = _step3.value;
+                for (var _iterator4 = _.onRefreshVals[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var fn2 = _step4.value;
 
                     fn2.call(globe);
                 }
             } catch (err) {
-                _didIteratorError3 = true;
-                _iteratorError3 = err;
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                        _iterator3.return();
+                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                        _iterator4.return();
                     }
                 } finally {
-                    if (_didIteratorError3) {
-                        throw _iteratorError3;
+                    if (_didIteratorError4) {
+                        throw _iteratorError4;
                     }
                 }
             }
@@ -369,27 +399,27 @@ var earthjs$2 = function earthjs() {
     };
 
     __.resize = function () {
-        var _iteratorNormalCompletion4 = true;
-        var _didIteratorError4 = false;
-        var _iteratorError4 = undefined;
+        var _iteratorNormalCompletion5 = true;
+        var _didIteratorError5 = false;
+        var _iteratorError5 = undefined;
 
         try {
-            for (var _iterator4 = _.onResizeVals[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                var fn3 = _step4.value;
+            for (var _iterator5 = _.onResizeVals[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                var fn3 = _step5.value;
 
                 fn3.call(globe);
             }
         } catch (err) {
-            _didIteratorError4 = true;
-            _iteratorError4 = err;
+            _didIteratorError5 = true;
+            _iteratorError5 = err;
         } finally {
             try {
-                if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                    _iterator4.return();
+                if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                    _iterator5.return();
                 }
             } finally {
-                if (_didIteratorError4) {
-                    throw _iteratorError4;
+                if (_didIteratorError5) {
+                    throw _iteratorError5;
                 }
             }
         }
@@ -425,22 +455,34 @@ var earthjs$2 = function earthjs() {
     __.proj = __.projection();
     __.path = d3.geoPath().projection(__.proj);
 
-    globe.__addEventQueue = function (name) {
+    globe.__addEventQueue = function (name, qname) {
         var obj = globe[name].__on__;
-        obj && Object.keys(obj).forEach(function (qname) {
-            return AddQueueEvent(obj, qname, name);
-        });
+        if (qname) {
+            AddQueueEvent(obj, qname, name);
+        } else {
+            obj && Object.keys(obj).forEach(function (qname) {
+                return AddQueueEvent(obj, qname, name);
+            });
+        }
     };
-    globe.__removeEventQueue = function (name) {
+    globe.__removeEventQueue = function (name, qname) {
         var obj = globe[name].__on__;
         if (obj) {
-            Object.keys(obj).forEach(function (qname) {
+            if (qname) {
                 delete _[qname][name];
                 _[qname + 'Keys'] = Object.keys(_[qname]);
                 _[qname + 'Vals'] = _[qname + 'Keys'].map(function (k) {
                     return _[qname][k];
                 });
-            });
+            } else {
+                Object.keys(obj).forEach(function (qname) {
+                    delete _[qname][name];
+                    _[qname + 'Keys'] = Object.keys(_[qname]);
+                    _[qname + 'Vals'] = _[qname + 'Keys'].map(function (k) {
+                        return _[qname][k];
+                    });
+                });
+            }
         }
     };
     return globe;
@@ -6422,7 +6464,10 @@ var inertiaThreejs = (function () {
     var rotateXMax = 90 * Math.PI / 180;
 
     function animate() {
-        if (!rendering) return;
+        if (!rendering) {
+            _.removeEventQueue(_.me.name, 'onTween');
+            return;
+        }
 
         if (rotateTargetX !== undefined && rotateTargetY !== undefined) {
 
@@ -6482,8 +6527,11 @@ var inertiaThreejs = (function () {
     function onDocumentMouseDown() {
         dragging = true;
         rendering = true;
+        rotateX = _.rotation.x;
+        rotateY = _.rotation.y;
         rotateTargetX = undefined;
         rotateTargetX = undefined;
+        _.addEventQueue(_.me.name, 'onTween');
     }
 
     function onDocumentMouseUp() {
@@ -6500,7 +6548,8 @@ var inertiaThreejs = (function () {
         var tj = this.threejsPlugin;
         _.rotation = tj.group.rotation;
         _.renderThree = tj.renderThree;
-        this._.options.tween = animate; // requestAnimationFrame()
+        _.addEventQueue = this.__addEventQueue;
+        _.removeEventQueue = this.__removeEventQueue;
     }
 
     return {
@@ -6511,10 +6560,10 @@ var inertiaThreejs = (function () {
         },
         onCreate: function onCreate() {
             create.call(this);
-            setTimeout(function () {
-                rotateX = _.rotation.x;
-                rotateY = _.rotation.y;
-            }, 0);
+        },
+        onTween: function onTween() {
+            // requestAnimationFrame()
+            animate.call(this);
         }
     };
 });
@@ -6870,7 +6919,10 @@ var world3d = (function () {
     var rtt = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : -1.57;
 
     /*eslint no-console: 0 */
-    var _ = { sphereObject: new THREE.Object3D() };
+    var _ = {
+        sphereObject: new THREE.Object3D(),
+        tween: null
+    };
 
     function loadCountry() {
         var data = _.world;
@@ -6928,9 +6980,21 @@ var world3d = (function () {
         onInit: function onInit(me) {
             _.me = me;
             init.call(this);
+            Object.defineProperty(me, 'tween', {
+                get: function get() {
+                    return _.tween;
+                },
+                set: function set(x) {
+                    _.tween = x;
+                    // this.__addEventQueue(_.me.name, 'onTween');
+                }
+            });
         },
         onCreate: function onCreate() {
             create.call(this);
+        },
+        onTween: function onTween() {
+            _.tween && _.tween.call(this);
         },
         rotate: function rotate(rtt) {
             _.sphereObject.rotation.y = rtt;

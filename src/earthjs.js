@@ -25,6 +25,9 @@ const earthjs = (options={}) => {
         onInterval: {},
         onIntervalVals: [],
 
+        onTween: {},
+        onTweenVals: [],
+
         ready: null,
         promeses: [],
         loadingData: null,
@@ -119,9 +122,10 @@ const earthjs = (options={}) => {
                     'urls',
                     'onReady',
                     'onInit',
+                    'onTween',
                     'onCreate',
-                    'onRefresh',
                     'onResize',
+                    'onRefresh',
                     'onInterval'].indexOf(fn)===-1) {
                     if (typeof(obj[fn])==='function') {
                         ar[fn] = function() {
@@ -133,6 +137,7 @@ const earthjs = (options={}) => {
             if (obj.onInit) {
                 obj.onInit.call(globe, ar);
             }
+            qEvent(obj,'onTween', ar.name);
             qEvent(obj,'onCreate', ar.name);
             qEvent(obj,'onResize', ar.name);
             qEvent(obj,'onRefresh', ar.name);
@@ -188,8 +193,11 @@ const earthjs = (options={}) => {
                     }
                 }
             }
-            if (__.options.tween && !__.drag)
-                __.options.tween(timestamp);
+            for (let twn of _.onTweenVals) {
+                twn.call(globe, timestamp);
+            }
+            // if (__.options.tween && !__.drag)
+            //     __.options.tween(timestamp);
             earthjs.ticker = requestAnimationFrame(step);
         }
         earthjs.ticker = requestAnimationFrame(step);
@@ -271,18 +279,28 @@ const earthjs = (options={}) => {
     __.proj = __.projection();
     __.path = d3.geoPath().projection(__.proj);
 
-    globe.__addEventQueue = function(name) {
+    globe.__addEventQueue = function(name, qname) {
         const obj = globe[name].__on__;
-        obj && Object.keys(obj).forEach(qname => AddQueueEvent(obj, qname, name));
+        if (qname) {
+            AddQueueEvent(obj, qname, name);
+        } else {
+            obj && Object.keys(obj).forEach(qname => AddQueueEvent(obj, qname, name));
+        }
     }
-    globe.__removeEventQueue = function(name) {
+    globe.__removeEventQueue = function(name, qname) {
         const obj = globe[name].__on__;
         if (obj) {
-            Object.keys(obj).forEach(qname => {
+            if (qname) {
                 delete _[qname][name];
                 _[qname+'Keys'] = Object.keys(_[qname]);
                 _[qname+'Vals'] = _[qname+'Keys'].map(k => _[qname][k]);
-            });
+            } else {
+                Object.keys(obj).forEach(qname => {
+                    delete _[qname][name];
+                    _[qname+'Keys'] = Object.keys(_[qname]);
+                    _[qname+'Vals'] = _[qname+'Keys'].map(k => _[qname][k]);
+                });
+            }
         }
     }
     return globe;

@@ -2,7 +2,10 @@
 import Map3DGeometry from './map3d';
 export default (worldUrl='../d/world.geometry.json', landUrl='../globe/gold.jpg', inner=0.9, rtt=-1.57) => {
     /*eslint no-console: 0 */
-    const _ = {sphereObject: new THREE.Object3D()};
+    const _ = {
+        sphereObject: new THREE.Object3D(),
+        tween: null,
+    };
 
     function loadCountry() {
         const data = _.world;
@@ -78,9 +81,19 @@ export default (worldUrl='../d/world.geometry.json', landUrl='../globe/gold.jpg'
         onInit(me) {
             _.me = me;
             init.call(this);
+            Object.defineProperty(me, 'tween', {
+                get: () => _.tween,
+                set: (x) => {
+                    _.tween = x;
+                    // this.__addEventQueue(_.me.name, 'onTween');
+                }
+            });
         },
         onCreate() {
             create.call(this);
+        },
+        onTween() {
+            _.tween && _.tween.call(this);
         },
         rotate(rtt) {
             _.sphereObject.rotation.y = rtt;

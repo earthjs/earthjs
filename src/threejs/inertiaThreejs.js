@@ -22,8 +22,10 @@ export default () => {
     const rotateXMax = 90 * Math.PI/180;
 
     function animate() {
-        if (!rendering)
+        if (!rendering) {
+            _.removeEventQueue(_.me.name, 'onTween');
             return;
+        }
 
         if (rotateTargetX !== undefined && rotateTargetY !== undefined) {
 
@@ -85,8 +87,11 @@ export default () => {
     function onDocumentMouseDown() {
         dragging = true;
         rendering = true;
+        rotateX = _.rotation.x;
+        rotateY = _.rotation.y;
         rotateTargetX = undefined;
         rotateTargetX = undefined;
+        _.addEventQueue(_.me.name, 'onTween');
     }
 
     function onDocumentMouseUp(){
@@ -103,7 +108,8 @@ export default () => {
         const tj = this.threejsPlugin;
         _.rotation = tj.group.rotation;
         _.renderThree = tj.renderThree;
-        this._.options.tween = animate;  // requestAnimationFrame()
+        _.addEventQueue = this.__addEventQueue;
+        _.removeEventQueue = this.__removeEventQueue;
     }
 
     return {
@@ -114,10 +120,9 @@ export default () => {
         },
         onCreate() {
             create.call(this);
-            setTimeout(() => {
-                rotateX = _.rotation.x;
-                rotateY = _.rotation.y;
-            }, 0);
         },
+        onTween() {   // requestAnimationFrame()
+            animate.call(this);
+        }
     }
 }
