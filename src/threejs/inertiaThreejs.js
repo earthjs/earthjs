@@ -1,5 +1,5 @@
 // https://armsglobe.chromeexperiments.com/
-export default () => {
+export default ({zoomScale}={zoomScale:[0,50000]}) => {
     /*eslint no-console: 0 */
     const _ = {};
 
@@ -53,19 +53,9 @@ export default () => {
     }
 
     function mouseLocation() {
-        const rects = _.node.getClientRects()[0];
-        if (d3.event.touches) {
-            const t = d3.event.touches[0];
-            return [
-                t.clientX - rects.width * 0.5,
-                t.clientY - rects.height * 0.5
-            ];
-        } else {
-            return [
-                d3.event.clientX - rects.width * 0.5,
-                d3.event.clientY - rects.height * 0.5
-            ]
-        }
+        const r = _.node.getClientRects()[0];
+        const t = d3.event.touches ? d3.event.touches[0] : d3.event;
+        return [t.clientX - r.width * 0.5, t.clientY - r.height * 0.5];
     }
 
     let cmouse, pmouse;
@@ -99,15 +89,45 @@ export default () => {
     }
 
     function init() {
+        const s0 = proj.scale();
+        const {proj, options} = this._;
+        const {width, height} = options;
+        const scale = d3.scaleLinear().domain([0,s0]).range([0,1]);
+        function zoom() {
+            const z = zoomScale;
+            const r1 = s0 * d3.event.transform.k;
+            if (r1>=z[0] && r1<=z[1]) {
+                const s = scale(r1);
+                proj.scale(r1);
+                _.scale.x = s;
+                _.scale.y = s;
+                _.scale.z = s;
+                _.renderThree(true);
+            }
+        }
+
         this._.svg
         .on('mousedown touchstart', onStartDrag)
         .on('mousemove touchmove', onDragging)
         .on('mouseup touchend', onEndDrag);
+
+        this._.svg.call(
+            d3.zoom()
+            .on('zoom', zoom)
+            .scaleExtent([0.1,160])
+            .translateExtent([[0,0], [width, height]])
+            .filter(function() {
+                const {touches, type} = d3.event;
+                return (type==='wheel' || touches);
+            })
+        );
+
     }
 
     function create() {
         _.tj = this.threejsPlugin;
         _.node = this._.svg.node();
+        _.scale = _.tj.group.scale;
         _.rotation = _.tj.group.rotation;
         _.renderThree = _.tj.renderThree;
         _.addEventQueue = this.__addEventQueue;
