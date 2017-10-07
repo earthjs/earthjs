@@ -171,6 +171,12 @@ export default (threejs='three-js') => {
         },
         node() {
             return _.node;
+        },
+        q2rotate(q=_.group.quaternion) {
+            const trans = [q._w, q._y, -q._x, q._z];
+            const euler = this._.versor.rotation(trans);
+            euler[0]   += 90;
+            return euler;
         }
     }
 }

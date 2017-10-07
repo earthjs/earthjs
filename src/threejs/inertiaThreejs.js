@@ -45,11 +45,11 @@ export default () => {
             _.rotation.x.toPrecision(5) === rotateX.toPrecision(5) &&
             _.rotation.y.toPrecision(5) === rotateY.toPrecision(5)) {
             rendering = false;
+        } else {
+            _.rotation.x = rotateX;
+            _.rotation.y = rotateY;
+            _.renderThree(true);
         }
-
-        _.rotation.x = rotateX;
-        _.rotation.y = rotateY;
-        _.renderThree(true);
     }
 
     function mouseLocation() {
@@ -80,13 +80,13 @@ export default () => {
     function onDragging() {
         if(dragging){
             pmouse = cmouse;
+            draggMove = true;
             cmouse = mouseLocation()
             rotateVY += (cmouse[0] - pmouse[0]) / 2 * 0.005235987755982988; // Math.PI / 180 * 0.3;
             rotateVX += (cmouse[1] - pmouse[1]) / 2 * 0.005235987755982988; // Math.PI / 180 * 0.3;
             rotateX = _.rotation.x;
             rotateY = _.rotation.y;
-            draggMove = true;
-            inertiaDrag()
+            inertiaDrag.call(_.this);
         }
     }
 
@@ -106,10 +106,10 @@ export default () => {
     }
 
     function create() {
-        const tj = this.threejsPlugin;
+        _.tj = this.threejsPlugin;
         _.node = this._.svg.node();
-        _.rotation = tj.group.rotation;
-        _.renderThree = tj.renderThree;
+        _.rotation = _.tj.group.rotation;
+        _.renderThree = _.tj.renderThree;
         _.addEventQueue = this.__addEventQueue;
         _.removeEventQueue = this.__removeEventQueue;
     }
@@ -118,6 +118,7 @@ export default () => {
         name: 'inertiaThreejs',
         onInit(me) {
             _.me = me;
+            _.this = this;
             init.call(this);
         },
         onCreate() {
