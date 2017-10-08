@@ -89,7 +89,7 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
     }
 
     function init() {
-        const s0 = proj.scale();
+        const s0 = this._.proj.scale();
         const {proj, options} = this._;
         const {width, height} = options;
         const scale = d3.scaleLinear().domain([0,s0]).range([0,1]);

@@ -64,7 +64,6 @@ import debugThreejs      from './src/threejs/debugThreejs';
 import oceanThreejs      from './src/threejs/oceanThreejs';
 import imageThreejs      from './src/threejs/imageThreejs';
 import inertiaThreejs    from './src/threejs/inertiaThreejs';
-import inertia2Threejs   from './src/threejs/inertia2Threejs';
 import worldThreejs      from './src/threejs/worldThreejs';
 import globeThreejs      from './src/threejs/globeThreejs';
 import sphereThreejs     from './src/threejs/sphereThreejs';
@@ -138,7 +137,6 @@ earthjs.plugins= {
     oceanThreejs,
     imageThreejs,
     inertiaThreejs,
-    inertia2Threejs,
     worldThreejs,
     globeThreejs,
     sphereThreejs,
