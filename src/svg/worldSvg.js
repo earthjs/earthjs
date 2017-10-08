@@ -37,57 +37,61 @@ export default worldUrl => {
         const __ = this._;
         if (_.world) {
             if (__.options.transparent || __.options.transparentLand) {
-                if (!$.worldBg) {
+                if (!$.worldBgPath) {
                     svgAddWorldBg();
                 }
                 __.proj.clipAngle(180);
-                $.worldBg.attr('d', __.path);
+                $.worldBgPath.attr('d', __.path);
                 __.proj.clipAngle(90);
-            } else if ($.worldBg) {
-                $.worldBg.remove();
-                $.worldBg = null;
+            } else if ($.worldBgPath) {
+                $.worldBgG.remove();
+                $.worldBgPath = null;
             }
             if (__.options.showLand) {
                 if (__.options.showCountries) {
-                    if (!$.countries) {
-                        $.world.remove();
-                        $.world = null;
+                    if (!$.countriesPath) {
+                        $.worldG.remove();
+                        $.worldPath = null;
                         svgAddCountries();
                     }
-                    $.countries.attr('d', __.path);
+                    $.countriesPath.attr('d', __.path);
                 } else {
-                    if (!$.world) {
-                        $.countries.remove();
-                        $.countries = null;
+                    if (!$.worldPath) {
+                        $.countriesG.remove();
+                        $.countriesPath = null;
                         svgAddWorld();
                     }
-                    $.world.attr('d', __.path);
+                    $.worldPath.attr('d', __.path);
                 }
                 if (__.options.showLakes) {
-                    $.lakes.attr('d', __.path);
+                    $.lakesPath.attr('d', __.path);
                 }
             }
         }
     }
 
     function svgAddWorldBg() {
-        $.worldBg = $.g.append('g').attr('class','landbg').append('path').datum(_.land)
-        .attr('fill', 'rgba(119,119,119,0.2)');
+        $.worldBgG = $.g.append('g').attr('class','landbg');
+        $.worldBgPath = $.worldBgG.append('path').datum(_.land)
+            .attr('fill', 'rgba(119,119,119,0.2)');
     }
 
     function svgAddWorld() {
-        $.world = $.g.append('g').attr('class','land').append('path').datum(_.land);
+        $.worldG = $.g.append('g').attr('class','land');
+        $.worldPath = $.worldG.append('path').datum(_.land);
     }
 
     function svgAddCountries() {
-        $.countries = $.g.append('g').attr('class','countries')
+        $.countriesG = $.g.append('g').attr('class','countries');
+        $.countriesPath = $.countriesG
             .selectAll('path').data(_.countries.features).enter().append('path')
             .attr('class',function(d) {return `cid-${d.properties.cid}`})
             .attr('id',function(d) {return 'x'+d.id});
     }
 
     function svgAddLakes() {
-        $.lakes = $.g.append('g').attr('class','lakes').append('path').datum(_.lakes);
+        $.lakesG = $.g.append('g').attr('class','lakes').append('path').datum(_.lakes);
+        $.lakesPath = $.lakesG.append('path').datum(_.lakes);
     }
 
     return {
@@ -154,8 +158,8 @@ export default worldUrl => {
             }
             return _.svg;
         },
-        $world()     {return $.world;},
-        $lakes()     {return $.lakes;},
-        $countries() {return $.countries;},
+        $world()     {return $.worldPath;},
+        $lakes()     {return $.lakesPath;},
+        $countries() {return $.countriesPath;},
     };
 }
