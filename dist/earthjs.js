@@ -1421,13 +1421,16 @@ var mousePlugin = (function () {
         var wh = [__.options.width, __.options.height];
         _.scale = d3.scaleLinear().domain([30, __.proj.scale()]).range([0.1, 1]);
 
-        _.zoom = d3.zoom().on('zoom', zoom).scaleExtent([0.1, 160]).translateExtent([[0, 0], wh]);
+        _.svg.call(d3.drag().on('start', onStartDrag).on('drag', onDragging).on('end', onEndDrag));
 
-        _.svg.call(d3.drag().filter(function () {
-            var touches = d3.event.touches;
+        _.zoom = d3.zoom().on('zoom', zoom).scaleExtent([0.1, 160]).translateExtent([[0, 0], wh]).filter(function () {
+            var _d3$event = d3.event,
+                touches = _d3$event.touches,
+                type = _d3$event.type;
 
-            return touches === undefined || touches.length === 1;
-        }).on('start', dragstarted).on('end', dragsended).on('drag', dragged));
+            return type === 'wheel' || touches;
+        });
+
         _.svg.call(_.zoom);
 
         // todo: add zoom lifecycle to optimize plugins zoom-able
@@ -1450,7 +1453,7 @@ var mousePlugin = (function () {
             this._.rotate(r);
         }
 
-        function dragstarted() {
+        function onStartDrag() {
             var _this2 = this;
 
             var mouse = d3.mouse(this);
@@ -1471,7 +1474,7 @@ var mousePlugin = (function () {
             _.t2 = 0;
         }
 
-        function dragged() {
+        function onDragging() {
             // DOM update must be onInterval!
             __.drag = true;
             _._this = this;
@@ -1480,7 +1483,7 @@ var mousePlugin = (function () {
             // _.t1+=1; // twice call compare to onInterval
         }
 
-        function dragsended() {
+        function onEndDrag() {
             var _this3 = this;
 
             var drag = __.drag;
@@ -1545,8 +1548,8 @@ var mousePlugin = (function () {
         selectAll: function selectAll(q) {
             if (q) {
                 _.q = q;
-                _.svg.call(d3.zoom().on('zoom start end', null));
-                _.svg.call(d3.drag().on('start', null).on('end', null).on('drag', null));
+                _.svg.call(d3.drag().on('start', null).on('drag', null).on('end', null));
+                _.svg.call(d3.zoom().on('zoom', null));
                 _.svg = d3.selectAll(q);
                 init.call(this);
                 if (this.hoverCanvas) {

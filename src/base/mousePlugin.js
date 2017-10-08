@@ -63,19 +63,20 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
         const wh = [__.options.width, __.options.height];
         _.scale  = d3.scaleLinear().domain([30,__.proj.scale()]).range([0.1,1]);
 
+        _.svg.call(d3.drag()
+        .on('start',onStartDrag)
+        .on('drag', onDragging)
+        .on('end',  onEndDrag));
+
         _.zoom = d3.zoom()
             .on('zoom', zoom)
             .scaleExtent([0.1,160])
-            .translateExtent([[0,0], wh]);
-
-        _.svg.call(d3.drag()
+            .translateExtent([[0,0], wh])
             .filter(function() {
-                const {touches} = d3.event;
-                return (touches===undefined || touches.length===1);
+                const {touches, type} = d3.event;
+                return (type==='wheel' || touches);
             })
-            .on('start',dragstarted)
-            .on('end',  dragsended)
-            .on('drag', dragged));
+
         _.svg.call(_.zoom);
 
         // todo: add zoom lifecycle to optimize plugins zoom-able
@@ -97,7 +98,7 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
             this._.rotate(r);
         }
 
-        function dragstarted() {
+        function onStartDrag() {
             const mouse = d3.mouse(this);
             v0 = versor.cartesian(__.proj.invert(mouse));
             r0 = __.proj.rotate();
@@ -112,7 +113,7 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
             _.t2 = 0;
         }
 
-        function dragged() { // DOM update must be onInterval!
+        function onDragging() { // DOM update must be onInterval!
             __.drag = true;
             _._this = this;
             _.mouse = d3.mouse(this);
@@ -120,7 +121,7 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
             // _.t1+=1; // twice call compare to onInterval
         }
 
-        function dragsended() {
+        function onEndDrag() {
             let drag = __.drag;
             __.drag = false;
             if (drag===null) {
@@ -178,12 +179,12 @@ export default ({zoomScale,intervalDrag}={zoomScale:[0,50000]}) => {
         selectAll(q) {
             if (q) {
                 _.q = q;
-                _.svg.call(d3.zoom()
-                    .on('zoom start end', null));
                 _.svg.call(d3.drag()
-                    .on('start',null)
-                    .on('end',  null)
-                    .on('drag', null));
+                .on('start',null)
+                .on('drag', null)
+                .on('end',  null));
+                _.svg.call(d3.zoom()
+                    .on('zoom', null));
                 _.svg = d3.selectAll(q);
                 init.call(this);
                 if (this.hoverCanvas) {
