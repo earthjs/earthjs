@@ -599,8 +599,8 @@ var worldJson = (function (jsonUrl) {
             if (_data) {
                 _.world = _data;
                 _.land = topojson.feature(_data, _data.objects.land);
-                _.lakes.features = topojson.feature(_data, _data.objects.ne_110m_lakes).features;
                 _.countries.features = topojson.feature(_data, _data.objects.countries).features;
+                if (_data.objects.ne_110m_lakes) _.lakes.features = topojson.feature(_data, _data.objects.ne_110m_lakes).features;
             } else {
                 return _.world;
             }
@@ -2495,8 +2495,8 @@ var mapSvg = (function (worldUrl) {
             if (_data) {
                 _.world = _data;
                 _.land = topojson.feature(_data, _data.objects.land);
-                _.lakes.features = topojson.feature(_data, _data.objects.ne_110m_lakes).features;
                 _.countries.features = topojson.feature(_data, _data.objects.countries).features;
+                if (_data.objects.ne_110m_lakes) _.lakes.features = topojson.feature(_data, _data.objects.ne_110m_lakes).features;
             } else {
                 return _.world;
             }
@@ -2856,8 +2856,8 @@ var worldSvg = (function (worldUrl) {
             if (_data) {
                 _.world = _data;
                 _.land = topojson.feature(_data, _data.objects.land);
-                _.lakes.features = topojson.feature(_data, _data.objects.ne_110m_lakes).features;
                 _.countries.features = topojson.feature(_data, _data.objects.countries).features;
+                if (_data.objects.ne_110m_lakes) _.lakes.features = topojson.feature(_data, _data.objects.ne_110m_lakes).features;
             } else {
                 return _.world;
             }
@@ -4158,8 +4158,8 @@ var worldCanvas = (function (worldUrl) {
             if (_data) {
                 _.world = _data;
                 _.land = topojson.feature(_data, _data.objects.land);
-                _.lakes.features = topojson.feature(_data, _data.objects.ne_110m_lakes).features;
                 _.countries.features = topojson.feature(_data, _data.objects.countries).features;
+                if (_data.objects.ne_110m_lakes) _.lakes.features = topojson.feature(_data, _data.objects.ne_110m_lakes).features;
             } else {
                 return _.world;
             }
@@ -6647,8 +6647,8 @@ var worldThreejs = (function () {
             if (_data) {
                 _.world = _data;
                 _.land = topojson.feature(_data, _data.objects.land);
-                _.lakes.features = topojson.feature(_data, _data.objects.ne_110m_lakes).features;
                 _.countries.features = topojson.feature(_data, _data.objects.countries).features;
+                if (_data.objects.ne_110m_lakes) _.lakes.features = topojson.feature(_data, _data.objects.ne_110m_lakes).features;
             } else {
                 return _.world;
             }

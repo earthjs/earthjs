@@ -21,8 +21,9 @@ export default jsonUrl => {
             if (data) {
                 _.world = data;
                 _.land  = topojson.feature(data, data.objects.land);
-                _.lakes.features = topojson.feature(data, data.objects.ne_110m_lakes).features;
                 _.countries.features = topojson.feature(data, data.objects.countries).features;
+                if (data.objects.ne_110m_lakes)
+                    _.lakes.features = topojson.feature(data, data.objects.ne_110m_lakes).features;
             } else {
                 return _.world;
             }
