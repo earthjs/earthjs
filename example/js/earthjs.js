@@ -3378,23 +3378,25 @@ var fauxGlobeSvg = (function () {
 
     function svgAddGlobeShading() {
         var __ = this._;
-        _.svg.selectAll('#shading,.shading').remove();
+        var klas = _.me.name;
+        _.svg.selectAll('#shading,.shading.' + klas).remove();
         if (__.options.showGlobeShading) {
             var globe_shading = this.$slc.defs.append('radialGradient').attr('id', 'shading').attr('cx', '50%').attr('cy', '40%');
             globe_shading.append('stop').attr('offset', '50%').attr('stop-color', '#9ab').attr('stop-opacity', '0');
             globe_shading.append('stop').attr('offset', '100%').attr('stop-color', '#3e6184').attr('stop-opacity', '0.3');
-            $.globeShading = _.svg.append('g').attr('class', 'shading').append('circle').attr('cx', __.center[0]).attr('cy', __.center[1]).attr('r', __.proj.scale()).attr('class', 'noclicks').style('fill', 'url(#shading)');
+            $.globeShading = _.svg.append('g').attr('class', 'shading ' + klas).append('circle').attr('cx', __.center[0]).attr('cy', __.center[1]).attr('r', __.proj.scale()).attr('class', 'noclicks').style('fill', 'url(#shading)');
         }
     }
 
     function svgAddGlobeHilight() {
         var __ = this._;
-        _.svg.selectAll('#hilight,.hilight').remove();
+        var klas = _.me.name;
+        _.svg.selectAll('#hilight,.hilight.' + klas).remove();
         if (__.options.showGlobeHilight) {
             var globe_highlight = this.$slc.defs.append('radialGradient').attr('id', 'hilight').attr('cx', '75%').attr('cy', '25%');
             globe_highlight.append('stop').attr('offset', '5%').attr('stop-color', '#ffd').attr('stop-opacity', '0.6');
             globe_highlight.append('stop').attr('offset', '100%').attr('stop-color', '#ba9').attr('stop-opacity', '0.2');
-            $.globeHilight = _.svg.append('g').attr('class', 'hilight').append('circle').attr('cx', __.center[0]).attr('cy', __.center[1]).attr('r', __.proj.scale()).attr('class', 'noclicks').style('fill', 'url(#hilight)');
+            $.globeHilight = _.svg.append('g').attr('class', 'hilight ' + klas).append('circle').attr('cx', __.center[0]).attr('cy', __.center[1]).attr('r', __.proj.scale()).attr('class', 'noclicks').style('fill', 'url(#hilight)');
         }
     }
 
