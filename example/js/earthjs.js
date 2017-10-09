@@ -3511,12 +3511,13 @@ var dropShadowSvg = (function () {
 
     function create() {
         var __ = this._;
-        _.svg.selectAll('#drop_shadow,.drop_shadow').remove();
+        var klas = _.me.name;
+        _.svg.selectAll('#drop_shadow,.drop_shadow.' + klas).remove();
         if (__.options.showDropShadow) {
             var drop_shadow = this.$slc.defs.append('radialGradient').attr('id', 'drop_shadow').attr('cx', '50%').attr('cy', '50%');
             drop_shadow.append('stop').attr('offset', '20%').attr('stop-color', '#000').attr('stop-opacity', '.5');
             drop_shadow.append('stop').attr('offset', '100%').attr('stop-color', '#000').attr('stop-opacity', '0');
-            $.dropShadow = _.svg.append('g').attr('class', 'drop_shadow').append('ellipse').attr('cx', __.center[0]).attr('class', 'noclicks').style('fill', 'url(#drop_shadow)');
+            $.dropShadow = _.svg.append('g').attr('class', 'drop_shadow ' + klas).append('ellipse').attr('cx', __.center[0]).attr('class', 'noclicks').style('fill', 'url(#drop_shadow)');
             resize.call(this);
         }
     }
