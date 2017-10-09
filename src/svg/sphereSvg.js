@@ -9,7 +9,8 @@ export default () => {
     }
 
     function create() {
-        _.svg.selectAll('#glow,.sphere').remove();
+        const klas = _.me.name;
+        _.svg.selectAll(`#glow,.sphere.${klas}`).remove();
         if (this._.options.showSphere) {
             this.$slc.defs.nodes()[0].append(`
 <filter id='glow'>
@@ -26,7 +27,7 @@ export default () => {
     </feMerge>
 </filter>
 `);
-            $.sphere = _.svg.append('g').attr('class','sphere').append('circle')
+            $.sphere = _.svg.append('g').attr('class',`sphere ${klas}`).append('circle')
             .attr('cx',this._.center[0]).attr('cy', this._.center[1])
             .attr('class', 'noclicks').attr('filter', 'url(#glow)');
             resize.call(this);

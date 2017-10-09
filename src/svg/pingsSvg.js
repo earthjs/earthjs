@@ -11,9 +11,10 @@ export default () => {
     }
 
     function create() {
-        _.svg.selectAll('.pings').remove();
+        const klas = _.me.name;
+        _.svg.selectAll(`.pings.${klas}`).remove();
         if (_.dataPings && this._.options.showPings) {
-            const g = _.svg.append('g').attr('class','pings');
+            const g = _.svg.append('g').attr('class',`pings ${klas}`);
             $.ping2 = g.selectAll('.ping-2')
                 .data(_.dataPings.features).enter().append('circle')
                 .attr('class', 'ping-2')

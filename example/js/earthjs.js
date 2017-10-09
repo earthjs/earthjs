@@ -2390,10 +2390,11 @@ var mapSvg = (function (worldUrl) {
 
     function create() {
         var _this = this;
+        var klas = _.me.name;
         _.flexBox = d3.selectAll(flexbox);
-        _.svg.selectAll('.countries').remove();
+        _.svg.selectAll('.countries.' + klas).remove();
         if (this._.options.showMap) {
-            $.g = _.svg.append('g').attr('class', 'countries');
+            $.g = _.svg.append('g').attr('class', 'countries ' + klas);
             $.countries = $.g.selectAll('path').data(_.countries.features).enter().append('path').attr('class', function (d) {
                 return 'cid-' + d.properties.cid;
             }).attr('id', function (d) {
@@ -2738,9 +2739,10 @@ var worldSvg = (function (worldUrl) {
 
     function create() {
         var __ = this._;
-        _.svg.selectAll('.' + _.me.name).remove();
+        var klas = _.me.name;
+        _.svg.selectAll('.world.' + klas).remove();
         if (__.options.showLand) {
-            $.g = _.svg.append('g').attr('class', _.me.name);
+            $.g = _.svg.append('g').attr('class', 'world ' + klas);
             if (_.world) {
                 if (__.options.transparent || __.options.transparentLand) {
                     _.svgAddWorldBg.call(this);
@@ -2916,9 +2918,10 @@ var pingsSvg = (function () {
     }
 
     function create() {
-        _.svg.selectAll('.pings').remove();
+        var klas = _.me.name;
+        _.svg.selectAll('.pings.' + klas).remove();
         if (_.dataPings && this._.options.showPings) {
-            var g = _.svg.append('g').attr('class', 'pings');
+            var g = _.svg.append('g').attr('class', 'pings ' + klas);
             $.ping2 = g.selectAll('.ping-2').data(_.dataPings.features).enter().append('circle').attr('class', 'ping-2').attr('id', function (d, i) {
                 return 'ping-' + i;
             });
@@ -3009,7 +3012,8 @@ var oceanSvg = (function () {
     }
 
     function create() {
-        _.svg.selectAll('#ocean,.ocean').remove();
+        var klas = _.me.name;
+        _.svg.selectAll('#ocean,.ocean.' + klas).remove();
         if (this._.options.showOcean) {
             var c = _.oceanColor;
             var ocean_fill = this.$slc.defs.append('radialGradient').attr('id', 'ocean').attr('cx', '75%').attr('cy', '25%');
@@ -3017,7 +3021,7 @@ var oceanSvg = (function () {
                 c = [c, c];
             }
             ocean_fill.append('stop').attr('offset', '100%').attr('stop-color', c[1]);
-            $.ocean = _.svg.append('g').attr('class', 'ocean').append('circle').attr('cx', this._.center[0]).attr('cy', this._.center[1]).attr('class', 'noclicks');
+            $.ocean = _.svg.append('g').attr('class', 'ocean ' + klas).append('circle').attr('cx', this._.center[0]).attr('cy', this._.center[1]).attr('class', 'noclicks');
             resize.call(this);
         }
     }
@@ -3075,10 +3079,11 @@ var sphereSvg = (function () {
     }
 
     function create() {
-        _.svg.selectAll('#glow,.sphere').remove();
+        var klas = _.me.name;
+        _.svg.selectAll('#glow,.sphere.' + klas).remove();
         if (this._.options.showSphere) {
             this.$slc.defs.nodes()[0].append('\n<filter id=\'glow\'>\n    <feColorMatrix type=\'matrix\'\n        values=\n        \'0 0 0 0   0\n         0 0 0 0.9 0\n         0 0 0 0.9 0\n         0 0 0 1   0\'/>\n    <feGaussianBlur stdDeviation=\'5.5\' result=\'coloredBlur\'/>\n    <feMerge>\n        <feMergeNode in=\'coloredBlur\'/>\n        <feMergeNode in=\'SourceGraphic\'/>\n    </feMerge>\n</filter>\n');
-            $.sphere = _.svg.append('g').attr('class', 'sphere').append('circle').attr('cx', this._.center[0]).attr('cy', this._.center[1]).attr('class', 'noclicks').attr('filter', 'url(#glow)');
+            $.sphere = _.svg.append('g').attr('class', 'sphere ' + klas).append('circle').attr('cx', this._.center[0]).attr('cy', this._.center[1]).attr('class', 'noclicks').attr('filter', 'url(#glow)');
             resize.call(this);
         }
     }
@@ -3183,7 +3188,8 @@ var placesSvg = (function (urlPlaces) {
     }
 
     function create() {
-        _.svg.selectAll('.points,.labels').remove();
+        var klas = _.me.name;
+        _.svg.selectAll('.points.' + klas + ',.labels.' + klas).remove();
         if (_.places) {
             if (this._.options.showPlaces) {
                 svgAddPlacePoints.call(this);
@@ -3194,11 +3200,13 @@ var placesSvg = (function (urlPlaces) {
     }
 
     function svgAddPlacePoints() {
-        $.placePoints = _.svg.append('g').attr('class', 'points').selectAll('path').data(_.places.features).enter().append('path').attr('class', 'point');
+        var klas = _.me.name;
+        $.placePoints = _.svg.append('g').attr('class', 'points ' + klas).selectAll('path').data(_.places.features).enter().append('path').attr('class', 'point');
     }
 
     function svgAddPlaceLabels() {
-        $.placeLabels = _.svg.append('g').attr('class', 'labels').selectAll('text').data(_.places.features).enter().append('text').attr('class', 'label').text(function (d) {
+        var klas = _.me.name;
+        $.placeLabels = _.svg.append('g').attr('class', 'labels ' + klas).selectAll('text').data(_.places.features).enter().append('text').attr('class', 'label').text(function (d) {
             return d.properties.name;
         });
     }

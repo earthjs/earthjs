@@ -33,10 +33,11 @@ export default (worldUrl, flexbox='.ej-flexbox') => {
 
     function create() {
         const _this = this;
+        const klas = _.me.name;
         _.flexBox = d3.selectAll(flexbox);
-        _.svg.selectAll('.countries').remove();
+        _.svg.selectAll(`.countries.${klas}`).remove();
         if (this._.options.showMap) {
-            $.g = _.svg.append('g').attr('class','countries');
+            $.g = _.svg.append('g').attr('class',`countries ${klas}`);
             $.countries = $.g.selectAll('path')
                 .data(_.countries.features).enter().append('path')
                 .attr('class', d => `cid-${d.properties.cid}`)

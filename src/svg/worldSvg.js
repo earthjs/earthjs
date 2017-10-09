@@ -13,9 +13,10 @@ export default worldUrl => {
 
     function create() {
         const __ = this._;
-        _.svg.selectAll(`.${_.me.name}`).remove();
+        const klas = _.me.name;
+        _.svg.selectAll(`.world.${klas}`).remove();
         if (__.options.showLand) {
-            $.g = _.svg.append('g').attr('class', _.me.name);
+            $.g = _.svg.append('g').attr('class', `world ${klas}`);
             if (_.world) {
                 if (__.options.transparent || __.options.transparentLand) {
                     _.svgAddWorldBg.call(this);

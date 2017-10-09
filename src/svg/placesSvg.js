@@ -9,7 +9,8 @@ export default urlPlaces => {
     }
 
     function create() {
-        _.svg.selectAll('.points,.labels').remove();
+        const klas = _.me.name;
+        _.svg.selectAll(`.points.${klas},.labels.${klas}`).remove();
         if (_.places) {
             if (this._.options.showPlaces) {
                 svgAddPlacePoints.call(this);
@@ -20,13 +21,15 @@ export default urlPlaces => {
     }
 
     function svgAddPlacePoints() {
-        $.placePoints = _.svg.append('g').attr('class','points').selectAll('path')
+        const klas = _.me.name;
+        $.placePoints = _.svg.append('g').attr('class',`points ${klas}`).selectAll('path')
             .data(_.places.features).enter().append('path')
             .attr('class', 'point');
     }
 
     function svgAddPlaceLabels() {
-        $.placeLabels = _.svg.append('g').attr('class','labels').selectAll('text')
+        const klas = _.me.name;
+        $.placeLabels = _.svg.append('g').attr('class',`labels ${klas}`).selectAll('text')
             .data(_.places.features).enter().append('text')
             .attr('class', 'label')
             .text(function(d) { return d.properties.name });
