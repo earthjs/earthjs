@@ -13,10 +13,11 @@ export default urlBars => {
 
     function create() {
         const __ = this._;
+        const klas = _.me.name;
         svgClipPath.call(this);
-        _.svg.selectAll('.bar').remove();
+        _.svg.selectAll(`.bar.${klas}`).remove();
         if (_.bars && __.options.showBars) {
-            const gBar = _.svg.append('g').attr('class','bar');
+            const gBar = _.svg.append('g').attr('class', `bar ${klas}`);
             const mask = gBar.append('mask')
                 .attr('id', 'edge');
             mask.append('rect')

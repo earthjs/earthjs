@@ -2241,10 +2241,11 @@ var barSvg = (function (urlBars) {
 
     function create() {
         var __ = this._;
+        var klas = _.me.name;
         svgClipPath.call(this);
-        _.svg.selectAll('.bar').remove();
+        _.svg.selectAll('.bar.' + klas).remove();
         if (_.bars && __.options.showBars) {
-            var gBar = _.svg.append('g').attr('class', 'bar');
+            var gBar = _.svg.append('g').attr('class', 'bar ' + klas);
             var mask = gBar.append('mask').attr('id', 'edge');
             mask.append('rect').attr('x', 0).attr('y', 0).attr('width', '100%').attr('height', '100%').attr('fill', 'white');
             mask.append('use').attr('xlink:href', '#edgeCircle').attr('fill', 'black');
