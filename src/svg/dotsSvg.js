@@ -11,13 +11,14 @@ export default (urlDots, {important}={}) => {
 
     function create() {
         const __ = this._;
-        _.svg.selectAll('.dot').remove();
+        const klas = _.me.name;
+        _.svg.selectAll(`.dot.${klas}`).remove();
         if (_.dataDots && __.options.showDots) {
             const circles = [];
             _.circles.forEach(function(d) {
                 circles.push(d.circle);
             });
-            $.dots = _.svg.append('g').attr('class','dot').selectAll('path')
+            $.dots = _.svg.append('g').attr('class', `dot ${klas}`).selectAll('path')
             .data(circles).enter().append('path');
             if (_.dataDots.geometry) {
                 const _g = _.dataDots.geometry || {};
