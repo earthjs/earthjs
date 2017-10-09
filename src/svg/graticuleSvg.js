@@ -10,9 +10,10 @@ export default () => {
     }
 
     function create() {
-        _.svg.selectAll('.graticule').remove();
+        const klas = _.me.name;
+        _.svg.selectAll(`.graticule.${klas}`).remove();
         if (this._.options.showGraticule) {
-            $.graticule = _.svg.append('g').attr('class','graticule').append('path')
+            $.graticule = _.svg.append('g').attr('class', `graticule ${klas}`).append('path')
                 .datum(_.graticule).attr('class', 'noclicks');
             refresh.call(this);
         }
