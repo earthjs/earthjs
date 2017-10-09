@@ -9,7 +9,8 @@ export default (haloColor='#fff') => {
     }
 
     function create() {
-        _.svg.selectAll('#halo,.halo').remove();
+        const klas = _.me.name;
+        _.svg.selectAll(`#halo,.halo.${klas}`).remove();
         if (this._.options.showHalo) {
             this.$slc.defs.append('radialGradient')
                 .attr('id','halo')
@@ -20,7 +21,7 @@ export default (haloColor='#fff') => {
 <stop offset="100%" stop-color="${haloColor}" stop-opacity="0"></stop>
 `);
             $.halo = _.svg
-                .append('g').attr('class','halo')
+                .append('g').attr('class',`halo ${klas}`)
                 .append('ellipse')
                     .attr('class', 'noclicks')
                     .attr('cx', this._.center[0])

@@ -2543,10 +2543,11 @@ var haloSvg = (function () {
     }
 
     function create() {
-        _.svg.selectAll('#halo,.halo').remove();
+        var klas = _.me.name;
+        _.svg.selectAll('#halo,.halo.' + klas).remove();
         if (this._.options.showHalo) {
             this.$slc.defs.append('radialGradient').attr('id', 'halo').attr('cx', '50%').attr('cy', '50%').html('\n<stop offset="85%" stop-color="' + haloColor + '" stop-opacity="1"></stop>\n<stop offset="100%" stop-color="' + haloColor + '" stop-opacity="0"></stop>\n');
-            $.halo = _.svg.append('g').attr('class', 'halo').append('ellipse').attr('class', 'noclicks').attr('cx', this._.center[0]).attr('cy', this._.center[1]);
+            $.halo = _.svg.append('g').attr('class', 'halo ' + klas).append('ellipse').attr('class', 'noclicks').attr('cx', this._.center[0]).attr('cy', this._.center[1]);
             resize.call(this);
         }
     }
