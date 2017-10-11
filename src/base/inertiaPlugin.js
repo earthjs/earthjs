@@ -91,8 +91,8 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
             rotateZ = _.proj.rotate();
             rotateX = rotateZ[0];
             rotateY = rotateZ[1];
-            rotateVX += (cmouse[0] - pmouse[0]);
-            rotateVY += (cmouse[1] - pmouse[1]);
+            rotateVX += cmouse[0] - pmouse[0];
+            rotateVY += cmouse[1] - pmouse[1];
             inertiaDrag.call(_.this);
         }
     }
@@ -107,33 +107,29 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
 
     function init() {
         const __ = this._;
-        const s0 = this._.proj.scale();
-        const {width, height} = __.options;
-        function zoom() {
-            const z = zoomScale;
-            const r1 = s0 * d3.event.transform.k;
-            if (r1>=z[0] && r1<=z[1]) {
-                __.scale(r1);
+        const s0 = __.proj.scale();
+        function zoomAndDrag() {
+            const {type, touches} = d3.event.sourceEvent;
+            if (type==='wheel' || (touches && touches.length===2)) {
+                const r1 = s0 * d3.event.transform.k;
+                if (r1>=zoomScale[0] && r1<=zoomScale[1]) {
+                    __.scale(r1);
+                }
+                rotateVX = 0;
+                rotateVY = 0;
+            } else {
+                onDragging.call(this);
             }
         }
 
-        this._.svg.call(d3.drag()
-            .on("start", onStartDrag)
-            .on("drag", onDragging)
-            .on("end", onEndDrag));
-        // .on('mousedown touchstart', onStartDrag)
-        // .on('mousemove touchmove', onDragging)
-        // .on('mouseup touchend', onEndDrag);
-
+        const {width, height} = __.options;
         this._.svg.call(
             d3.zoom()
-            .on('zoom', zoom)
+            .on("start", onStartDrag)
+            .on('zoom', zoomAndDrag)
+            .on("end", onEndDrag)
             .scaleExtent([0.1,160])
             .translateExtent([[0,0], [width, height]])
-            .filter(function() {
-                const {touches, type} = d3.event;
-                return (type==='wheel' || touches);
-            })
         );
 
     }

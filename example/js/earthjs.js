@@ -1811,9 +1811,6 @@ var inertiaPlugin = (function () {
 
         var t = sourceEvent.touches ? sourceEvent.touches[0] : sourceEvent;
         return [t.clientX, -t.clientY];
-        // const dx =  d3.event.sourceEvent.movementX;
-        // const dy = -d3.event.sourceEvent.movementY;
-        // return [dx, dy];
     }
 
     var cmouse = void 0,
@@ -1821,11 +1818,11 @@ var inertiaPlugin = (function () {
     function onStartDrag() {
         var _this2 = this;
 
+        rotateVX = 0;
+        rotateVY = 0;
         dragging = true;
         rendering = true;
         draggMove = null;
-        rotateVX = 0;
-        rotateVY = 0;
         cmouse = mouseMovement.call(this);
         _.onDragStartVals.forEach(function (v) {
             return v.call(_this2, _.mouse);
@@ -1860,31 +1857,29 @@ var inertiaPlugin = (function () {
 
     function init() {
         var __ = this._;
-        var s0 = this._.proj.scale();
+        var s0 = __.proj.scale();
+        function zoomAndDrag() {
+            var _d3$event$sourceEvent = d3.event.sourceEvent,
+                type = _d3$event$sourceEvent.type,
+                touches = _d3$event$sourceEvent.touches;
+
+            if (type === 'wheel' || touches && touches.length === 2) {
+                var r1 = s0 * d3.event.transform.k;
+                if (r1 >= zoomScale[0] && r1 <= zoomScale[1]) {
+                    __.scale(r1);
+                }
+                rotateVX = 0;
+                rotateVY = 0;
+            } else {
+                onDragging.call(this);
+            }
+        }
+
         var _$options = __.options,
             width = _$options.width,
             height = _$options.height;
 
-        function zoom() {
-            var z = zoomScale;
-            var r1 = s0 * d3.event.transform.k;
-            if (r1 >= z[0] && r1 <= z[1]) {
-                __.scale(r1);
-            }
-        }
-
-        this._.svg.call(d3.drag().on("start", onStartDrag).on("drag", onDragging).on("end", onEndDrag));
-        // .on('mousedown touchstart', onStartDrag)
-        // .on('mousemove touchmove', onDragging)
-        // .on('mouseup touchend', onEndDrag);
-
-        this._.svg.call(d3.zoom().on('zoom', zoom).scaleExtent([0.1, 160]).translateExtent([[0, 0], [width, height]]).filter(function () {
-            var _d3$event = d3.event,
-                touches = _d3$event.touches,
-                type = _d3$event.type;
-
-            return type === 'wheel' || touches;
-        }));
+        this._.svg.call(d3.zoom().on("start", onStartDrag).on('zoom', zoomAndDrag).on("end", onEndDrag).scaleExtent([0.1, 160]).translateExtent([[0, 0], [width, height]]));
     }
 
     function create() {
