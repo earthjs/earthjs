@@ -64,20 +64,20 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
     }
 
     function mouseMovement() {
-        const dx =  d3.event.sourceEvent.movementX;
-        const dy = -d3.event.sourceEvent.movementY;
         _.mouse = d3.mouse(this);
-        return [dx, dy];
+        const {sourceEvent} = d3.event;
+        const t = sourceEvent.touches ? sourceEvent.touches[0] : sourceEvent;
+        return [t.clientX, -t.clientY];
     }
 
-    let cmouse;
+    let cmouse, pmouse;
     function onStartDrag() {
+        rotateVX = 0;
+        rotateVY = 0;
         dragging = true;
         rendering = true;
         draggMove = null;
         cmouse = mouseMovement.call(this);
-        rotateVX = cmouse[0];
-        rotateVY = cmouse[1];
         _.onDragStartVals.forEach(v => v.call(this, _.mouse));
         _.onDragVals.forEach(     v => v.call(this, _.mouse));
         _.removeEventQueue(_.me.name, 'onTween');
@@ -86,12 +86,13 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
     function onDragging() {
         if(dragging){
             draggMove = true;
-            cmouse  = mouseMovement.call(this);
+            pmouse = cmouse;
+            cmouse = mouseMovement.call(this);
             rotateZ = _.proj.rotate();
             rotateX = rotateZ[0];
             rotateY = rotateZ[1];
-            rotateVX += cmouse[0];
-            rotateVY += cmouse[1];
+            rotateVX += (cmouse[0] - pmouse[0]);
+            rotateVY += (cmouse[1] - pmouse[1]);
             inertiaDrag.call(_.this);
         }
     }

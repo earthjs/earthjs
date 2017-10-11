@@ -1806,22 +1806,27 @@ var inertiaPlugin = (function () {
     }
 
     function mouseMovement() {
-        var dx = d3.event.sourceEvent.movementX;
-        var dy = -d3.event.sourceEvent.movementY;
         _.mouse = d3.mouse(this);
-        return [dx, dy];
+        var sourceEvent = d3.event.sourceEvent;
+
+        var t = sourceEvent.touches ? sourceEvent.touches[0] : sourceEvent;
+        return [t.clientX, -t.clientY];
+        // const dx =  d3.event.sourceEvent.movementX;
+        // const dy = -d3.event.sourceEvent.movementY;
+        // return [dx, dy];
     }
 
-    var cmouse = void 0;
+    var cmouse = void 0,
+        pmouse = void 0;
     function onStartDrag() {
         var _this2 = this;
 
         dragging = true;
         rendering = true;
         draggMove = null;
+        rotateVX = 0;
+        rotateVY = 0;
         cmouse = mouseMovement.call(this);
-        rotateVX = cmouse[0];
-        rotateVY = cmouse[1];
         _.onDragStartVals.forEach(function (v) {
             return v.call(_this2, _.mouse);
         });
@@ -1834,12 +1839,13 @@ var inertiaPlugin = (function () {
     function onDragging() {
         if (dragging) {
             draggMove = true;
+            pmouse = cmouse;
             cmouse = mouseMovement.call(this);
             rotateZ = _.proj.rotate();
             rotateX = rotateZ[0];
             rotateY = rotateZ[1];
-            rotateVX += cmouse[0];
-            rotateVY += cmouse[1];
+            rotateVX += cmouse[0] - pmouse[0];
+            rotateVY += cmouse[1] - pmouse[1];
             inertiaDrag.call(_.this);
         }
     }
