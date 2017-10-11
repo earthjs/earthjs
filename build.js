@@ -15,6 +15,7 @@ import clickCanvas      from './src/base/clickCanvas';
 import mousePlugin      from './src/base/mousePlugin';
 import configPlugin     from './src/base/configPlugin';
 import canvasPlugin     from './src/base/canvasPlugin';
+import inertiaPlugin    from './src/base/inertiaPlugin';
 import countryCanvas    from './src/base/countryCanvas';
 import threejsPlugin    from './src/base/threejsPlugin';
 import dblClickCanvas   from './src/base/dblClickCanvas';
@@ -89,6 +90,7 @@ earthjs.plugins= {
     mousePlugin,
     configPlugin,
     canvasPlugin,
+    inertiaPlugin,
     countryCanvas,
     threejsPlugin,
     dblClickCanvas,

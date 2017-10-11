@@ -8,8 +8,9 @@
     <svg id="earth-js"/>
     <script>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
-        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
-        .register(earthjs.plugins.mousePlugin())
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, rotate:[0,0,0]})
+        // .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.graticuleSvg())
         .create();
     </script>
