@@ -1771,16 +1771,17 @@ var inertiaPlugin = (function () {
             _.onDragEndVals.forEach(function (v) {
                 return v.call(_this, _.mouse);
             });
+            _.this._.drag = false;
             _.this._.refresh();
             return;
         }
 
-        rotateVX *= 0.95;
+        rotateVX *= 0.99;
         rotateVY *= 0.90;
 
         if (dragging) {
-            rotateVX *= 0.6;
-            rotateVY *= 0.65;
+            rotateVX *= 0.25;
+            rotateVY *= 0.20;
         }
 
         if (rotateY < -100) {
@@ -1809,8 +1810,11 @@ var inertiaPlugin = (function () {
         _.mouse = d3.mouse(this);
         var sourceEvent = d3.event.sourceEvent;
 
-        var t = sourceEvent.touches ? sourceEvent.touches[0] : sourceEvent;
-        return [t.clientX, -t.clientY];
+        if (sourceEvent) {
+            // sometime sourceEvent=null
+            var t = sourceEvent.touches ? sourceEvent.touches[0] : sourceEvent;
+            return [t.clientX, -t.clientY];
+        }
     }
 
     var cmouse = void 0,
@@ -1831,6 +1835,7 @@ var inertiaPlugin = (function () {
             return v.call(_this2, _.mouse);
         });
         _.removeEventQueue(_.me.name, 'onTween');
+        _.this._.drag = null;
     }
 
     function onDragging() {
@@ -1838,12 +1843,18 @@ var inertiaPlugin = (function () {
             draggMove = true;
             pmouse = cmouse;
             cmouse = mouseMovement.call(this);
-            rotateZ = _.proj.rotate();
-            rotateX = rotateZ[0];
-            rotateY = rotateZ[1];
-            rotateVX += cmouse[0] - pmouse[0];
-            rotateVY += cmouse[1] - pmouse[1];
-            inertiaDrag.call(_.this);
+            if (cmouse) {
+                // sometime sourceEvent=null
+                rotateZ = _.proj.rotate();
+                rotateX = rotateZ[0];
+                rotateY = rotateZ[1];
+                rotateVX += cmouse[0] - pmouse[0];
+                rotateVY += cmouse[1] - pmouse[1];
+                inertiaDrag.call(_.this);
+            } else {
+                cmouse = pmouse;
+            }
+            _.this._.drag = true;
         }
     }
 

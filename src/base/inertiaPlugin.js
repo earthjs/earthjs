@@ -27,16 +27,17 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         if (!rendering) {
             _.removeEventQueue(_.me.name, 'onTween');
             _.onDragEndVals.forEach(v => v.call(this, _.mouse));
+            _.this._.drag = false;
             _.this._.refresh();
             return;
         }
 
-        rotateVX *= 0.95;
+        rotateVX *= 0.99;
         rotateVY *= 0.90;
 
         if (dragging) {
-            rotateVX *= 0.6;
-            rotateVY *= 0.65;
+            rotateVX *= 0.25;
+            rotateVY *= 0.20;
         }
 
         if (rotateY < -100) {
@@ -66,8 +67,10 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
     function mouseMovement() {
         _.mouse = d3.mouse(this);
         const {sourceEvent} = d3.event;
-        const t = sourceEvent.touches ? sourceEvent.touches[0] : sourceEvent;
-        return [t.clientX, -t.clientY];
+        if (sourceEvent) { // sometime sourceEvent=null
+            const t = sourceEvent.touches ? sourceEvent.touches[0] : sourceEvent;
+            return [t.clientX, -t.clientY];
+        }
     }
 
     let cmouse, pmouse;
@@ -81,6 +84,7 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         _.onDragStartVals.forEach(v => v.call(this, _.mouse));
         _.onDragVals.forEach(     v => v.call(this, _.mouse));
         _.removeEventQueue(_.me.name, 'onTween');
+        _.this._.drag = null;
     }
 
     function onDragging() {
@@ -88,12 +92,17 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
             draggMove = true;
             pmouse = cmouse;
             cmouse = mouseMovement.call(this);
-            rotateZ = _.proj.rotate();
-            rotateX = rotateZ[0];
-            rotateY = rotateZ[1];
-            rotateVX += cmouse[0] - pmouse[0];
-            rotateVY += cmouse[1] - pmouse[1];
-            inertiaDrag.call(_.this);
+            if (cmouse) { // sometime sourceEvent=null
+                rotateZ = _.proj.rotate();
+                rotateX = rotateZ[0];
+                rotateY = rotateZ[1];
+                rotateVX += cmouse[0] - pmouse[0];
+                rotateVY += cmouse[1] - pmouse[1];
+                inertiaDrag.call(_.this);
+            } else {
+                cmouse = pmouse;
+            }
+            _.this._.drag = true;
         }
     }
 
