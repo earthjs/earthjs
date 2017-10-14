@@ -10,7 +10,7 @@
     <script>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent:true})
-        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.oceanSvg())
@@ -18,13 +18,13 @@
         .register(earthjs.plugins.worldCanvas('../d/world-110m.json'))
         .register(earthjs.plugins.fauxGlobeSvg());
         var o = g._.options;
-        g.mousePlugin.onDragStart({
+        g.inertiaPlugin.onDragStart({
             app() {
                 o.showCountries = false;
                 o.transparent = false;
             }
         });
-        g.mousePlugin.onDragEnd({
+        g.inertiaPlugin.onDragEnd({
             app() {
                 o.showCountries = true;
                 o.transparent = true;

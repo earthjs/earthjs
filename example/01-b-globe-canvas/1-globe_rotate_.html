@@ -10,14 +10,14 @@
     <script>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
-        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.oceanSvg())
         .register(earthjs.plugins.worldCanvas('../d/world-110m.json'))
         var o = g._.options;
-        g.mousePlugin.onDragStart({app() {o.showCountries = false;}});
-        g.mousePlugin.onDragEnd(  {app() {o.showCountries = true; }});
+        g.inertiaPlugin.onDragStart({app() {o.showCountries = false;}});
+        g.inertiaPlugin.onDragEnd(  {app() {o.showCountries = true; }});
         g.ready(function(){
             g.create();
         })
