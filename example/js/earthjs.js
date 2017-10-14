@@ -1644,6 +1644,9 @@ var canvasPlugin = (function () {
                 _.canvas = fBody.append('canvas');
             }
             _.canvas.attr('x', 0).attr('y', 0).attr('width', __.options.width).attr('height', __.options.height);
+            _.contexts = _.canvas.nodes().map(function (obj) {
+                return obj.getContext('2d');
+            });
         }
         if (_.canvas) {
             refresh.call(this);
@@ -1655,9 +1658,10 @@ var canvasPlugin = (function () {
             width = _$options.width,
             height = _$options.height;
 
-        _.canvas.each(function () {
-            this.getContext('2d').clearRect(0, 0, width, height);
-        });
+        var l = _.contexts.length;
+        while (l--) {
+            _.contexts[l].clearRect(0, 0, width, height);
+        }
     }
 
     return {

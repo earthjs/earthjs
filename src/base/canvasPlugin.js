@@ -37,6 +37,7 @@ export default () => {
             .attr('y', 0)
             .attr('width', __.options.width)
             .attr('height', __.options.height);
+            _.contexts = _.canvas.nodes().map(obj => obj.getContext('2d'));
         }
         if (_.canvas) {
             refresh.call(this);
@@ -45,9 +46,10 @@ export default () => {
 
     function refresh() {
         const {width, height} = this._.options;
-        _.canvas.each(function() {
-            this.getContext('2d').clearRect(0, 0, width, height);
-        });
+        let l = _.contexts.length;
+        while(l--) {
+            _.contexts[l].clearRect(0, 0, width, height);
+        }
     }
 
     return {
