@@ -17,12 +17,12 @@
     <canvas class="ej-canvas"></canvas>
     <script>
         const g = earthjs({transparent:true})
-        .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.graticuleCanvas())
         .register(earthjs.plugins.autorotatePlugin());
         g.canvasPlugin.selectAll('.ej-canvas');
-        g.mousePlugin.selectAll('.ej-canvas');
+        g.inertiaPlugin.selectAll('.ej-canvas');
         g.create();
     </script>
 </body>

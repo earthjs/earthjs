@@ -1896,7 +1896,7 @@ var inertiaPlugin = (function () {
             width = _$options.width,
             height = _$options.height;
 
-        this._.svg.call(d3.zoom().on("start", onStartDrag).on('zoom', zoomAndDrag).on("end", onEndDrag).scaleExtent([0.1, 160]).translateExtent([[0, 0], [width, height]]));
+        _.svg.call(d3.zoom().on("start", onStartDrag).on('zoom', zoomAndDrag).on("end", onEndDrag).scaleExtent([0.1, 160]).translateExtent([[0, 0], [width, height]]));
     }
 
     function create() {
@@ -1911,10 +1911,23 @@ var inertiaPlugin = (function () {
         onInit: function onInit(me) {
             _.me = me;
             _.this = this;
+            _.svg = this._.svg;
             init.call(this);
         },
         onCreate: function onCreate() {
             create.call(this);
+        },
+        selectAll: function selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg.call(d3.zoom().on('start', null).on('zoom', null).on('end', null));
+                _.svg = d3.selectAll(q);
+                init.call(this);
+                if (this.hoverCanvas) {
+                    this.hoverCanvas.selectAll(q);
+                }
+            }
+            return _.svg;
         },
         onTween: function onTween() {
             // requestAnimationFrame()

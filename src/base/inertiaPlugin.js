@@ -134,7 +134,7 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         }
 
         const {width, height} = __.options;
-        this._.svg.call(
+        _.svg.call(
             d3.zoom()
             .on("start", onStartDrag)
             .on('zoom', zoomAndDrag)
@@ -157,10 +157,26 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         onInit(me) {
             _.me = me;
             _.this = this;
+            _.svg = this._.svg;
             init.call(this);
         },
         onCreate() {
             create.call(this);
+        },
+        selectAll(q) {
+            if (q) {
+                _.q = q;
+                _.svg.call(d3.zoom()
+                .on('start',null)
+                .on('zoom', null)
+                .on('end',  null));
+                _.svg = d3.selectAll(q);
+                init.call(this);
+                if (this.hoverCanvas) {
+                    this.hoverCanvas.selectAll(q);
+                }
+            }
+            return _.svg;
         },
         onTween() { // requestAnimationFrame()
             inertiaDrag.call(this);

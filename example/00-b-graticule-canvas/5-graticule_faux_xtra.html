@@ -32,8 +32,8 @@
     </div>
     <script>
         const g = earthjs({selector:'.ej-svg', padding:50})
-        .register(earthjs.plugins.mousePlugin())
         .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.dropShadowSvg())
         .register(earthjs.plugins.oceanSvg())
