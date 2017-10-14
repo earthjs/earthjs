@@ -10,7 +10,7 @@
     <svg class="ej-svg"></svg>
     <script>
         const g = earthjs({selector:'.ej-svg'})
-        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.graticuleSvg())
         .register(earthjs.plugins.autorotatePlugin())
         .create();

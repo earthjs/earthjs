@@ -111,6 +111,8 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         if (draggMove) {
             draggMove = false;
             _.addEventQueue(_.me.name, 'onTween');
+        } else {
+            _.this._.drag = false;
         }
     }
 
