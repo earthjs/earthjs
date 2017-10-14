@@ -1863,11 +1863,16 @@ var inertiaPlugin = (function () {
     }
 
     function onEndDrag() {
+        var _this3 = this;
+
         dragging = false;
         if (draggMove) {
             draggMove = false;
             _.addEventQueue(_.me.name, 'onTween');
         } else {
+            _.onDragEndVals.forEach(function (v) {
+                return v.call(_this3, _.mouse);
+            });
             _.this._.drag = false;
         }
     }

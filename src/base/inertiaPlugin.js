@@ -112,6 +112,7 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
             draggMove = false;
             _.addEventQueue(_.me.name, 'onTween');
         } else {
+            _.onDragEndVals.forEach(v => v.call(this, _.mouse));
             _.this._.drag = false;
         }
     }
