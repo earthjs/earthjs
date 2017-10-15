@@ -19,7 +19,7 @@
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
         .register(earthjs.plugins.threejsPlugin())
-        .register(earthjs.plugins.inertiaThreejs())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.oceanThreejs())
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
         .register(earthjs.plugins.world3d('../d/world.geometry.json','../globe/blue.jpg', 0.95));
