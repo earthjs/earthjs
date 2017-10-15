@@ -1956,6 +1956,9 @@ var inertiaPlugin = (function () {
             _.onDragEndVals = Object.keys(_.onDragEnd).map(function (k) {
                 return _.onDragEnd[k];
             });
+        },
+        stopDrag: function stopDrag() {
+            rendering = false;
         }
     };
 });
@@ -2176,9 +2179,6 @@ var threejsPlugin = (function () {
         },
         onResize: function onResize() {
             _scale.call(this);
-        },
-        group: function group() {
-            return _.group;
         },
         addGroup: function addGroup(obj) {
             var _this2 = this;
@@ -4560,6 +4560,9 @@ var centerCanvas = (function () {
             var c = this.worldCanvas.countries();
             var focusedCountry = country(c, id),
                 p = d3.geoCentroid(focusedCountry);
+            if (this.inertiaPlugin) {
+                this.inertiaPlugin.stopDrag();
+            }
             transition.call(this, p);
         },
         focused: function focused(fn) {
@@ -6402,15 +6405,14 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
     function _reload() {
         all_tracks = [];
         point_cache = [];
-        var tj = this.threejsPlugin;
         loadFlights.call(this);
-        var grp = tj.group();
-        var arr = grp.children;
+        var tj = this.threejsPlugin;
+        var arr = tj.group.children;
         var idx = arr.findIndex(function (obj) {
             return obj.name === 'flightLineThreejs';
         });
-        grp.remove(arr[idx]);
-        grp.add(_.sphereObject);
+        tj.group.remove(arr[idx]);
+        tj.group.add(_.sphereObject);
         tj.renderThree();
     }
 

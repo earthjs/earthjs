@@ -30,7 +30,7 @@
     <script type='text/javascript'>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
-        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.clickCanvas())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
@@ -38,7 +38,7 @@
         .register(earthjs.plugins.globeThreejs('../globe/world_1.jpg'))
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
         .register(earthjs.plugins.flightLineThreejs('../data/flights2.json','../globe/point3.png'))
-        g.mousePlugin.selectAll('#three-js');
+        g.inertiaPlugin.selectAll('#three-js');
         g.worldThreejs.ready = function(err, csv) {
             g.worldThreejs.data(csv);
             g.clickCanvas.data(csv);

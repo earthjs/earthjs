@@ -33,7 +33,7 @@
         .register(earthjs.plugins.selectCountryMix())
         .register(earthjs.plugins.imageThreejs('../globe/world_1.jpg'))
         .register(earthjs.plugins.countryTooltipCanvas('../d/world-110m-country-names.tsv'));
-        g.mousePlugin.selectAll('#three-js');
+        g.inertiaPlugin.selectAll('#three-js');
         g.ready(function(){
             g.create();
         })

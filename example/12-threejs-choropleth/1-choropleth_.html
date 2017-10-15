@@ -18,7 +18,7 @@
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const scale = d3.min([offsetWidth, offsetHeight])/3;
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, scale})
-        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.oceanThreejs())

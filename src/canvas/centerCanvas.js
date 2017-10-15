@@ -51,6 +51,9 @@ export default () => {
             const c = this.worldCanvas.countries();
             const focusedCountry = country(c, id),
                 p = d3.geoCentroid(focusedCountry);
+            if (this.inertiaPlugin) {
+                this.inertiaPlugin.stopDrag();
+            }
             transition.call(this, p);
         },
         focused(fn) {

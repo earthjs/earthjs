@@ -197,5 +197,8 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
             Object.assign(_.onDragEnd, obj);
             _.onDragEndVals = Object.keys(_.onDragEnd).map(k => _.onDragEnd[k]);
         },
+        stopDrag() {
+            rendering = false;
+        },
     }
 }

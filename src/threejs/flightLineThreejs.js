@@ -390,13 +390,12 @@ export default (jsonUrl, imgUrl, height=150) => {
     function reload() {
         all_tracks = [];
         point_cache = [];
-        const tj = this.threejsPlugin;
         loadFlights.call(this);
-        const grp = tj.group();
-        const arr = grp.children;
+        const tj = this.threejsPlugin;
+        const arr = tj.group.children;
         const idx = arr.findIndex(obj=>obj.name==='flightLineThreejs');
-        grp.remove(arr[idx]);
-        grp.add(_.sphereObject);
+        tj.group.remove(arr[idx]);
+        tj.group.add(_.sphereObject);
         tj.renderThree();
     }
 

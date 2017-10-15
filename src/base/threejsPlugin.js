@@ -119,9 +119,6 @@ export default (threejs='three-js') => {
         onResize() {
             scale.call(this);
         },
-        group() {
-            return _.group;
-        },
         addGroup(obj) {
             _.group.add(obj);
             if (obj.name && this[obj.name]) {
