@@ -21,7 +21,7 @@
     <canvas id="three-js"></canvas>
     <script>
         const g = earthjs({padding:60})
-        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.dropShadowSvg(),'dropshadow')

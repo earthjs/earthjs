@@ -20,14 +20,14 @@
             rotate:[47.29637916005367, -2.050804868735837, 1.2794284579135258],
             scale:120,
         })
-        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.dropShadowSvg())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.globeThreejs('../globe/world_1.jpg'))
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
         .register(earthjs.plugins.flightLineThreejs('../data/flights2.json','../globe/point3.png'),'flightThreejs')
-        g.mousePlugin.selectAll('#three-js');
+        g.inertiaPlugin.selectAll('#three-js');
         g.flightThreejs.ready = function(err, csv) {
             g.flightThreejs.data(csv, true, [30,60],55,1);
         }
