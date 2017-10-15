@@ -32,18 +32,18 @@
         <canvas class="ej-svg c4 ej-canvas"></canvas>
     </div>
     <script>
-        const g = earthjs({selector:'.s1,.s2,.s3,.s4',transparent:true,padding:47});
-        g.register(earthjs.plugins.canvasPlugin());
-        g.register(earthjs.plugins.autorotatePlugin());
-        g.register(earthjs.plugins.mousePlugin({intervalDrag:true}));
-        g.register(earthjs.plugins.dropShadowSvg());
-        g.register(earthjs.plugins.oceanSvg());
-        g.register(earthjs.plugins.graticuleCanvas());
-        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
-        g.register(earthjs.plugins.dotsCanvas());
-        g.register(earthjs.plugins.pinCanvas('../data/bars.json', '../images/pin.png'));
-        g.register(earthjs.plugins.fauxGlobeSvg());
-        g.register(earthjs.plugins.barSvg());
+        const g = earthjs({selector:'.s1,.s2,.s3,.s4',transparent:true,padding:47})
+        .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
+        .register(earthjs.plugins.dropShadowSvg())
+        .register(earthjs.plugins.oceanSvg())
+        .register(earthjs.plugins.graticuleCanvas())
+        .register(earthjs.plugins.worldCanvas('../d/world-110m.json'))
+        .register(earthjs.plugins.dotsCanvas())
+        .register(earthjs.plugins.pinCanvas('../data/bars.json', '../images/pin.png'))
+        .register(earthjs.plugins.fauxGlobeSvg())
+        .register(earthjs.plugins.barSvg());
         g._.options.showCountries = false;
         g._.options.showLakes = false;
         g.canvasPlugin.selectAll('.ej-canvas');

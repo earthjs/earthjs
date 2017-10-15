@@ -11,11 +11,11 @@
     <script>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent: true})
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.canvasPlugin());
-        g.register(earthjs.plugins.autorotatePlugin());
-        g.register(earthjs.plugins.graticuleCanvas());
-        g.register(earthjs.plugins.pinCanvas('../data/bars.json', '../images/pin.png'));
+        .register(earthjs.plugins.inertiaPlugin())
+        .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.graticuleCanvas())
+        .register(earthjs.plugins.pinCanvas('../data/bars.json', '../images/pin.png'));
         g.canvasPlugin.selectAll('.ej-canvas');
         g.ready(function(){
             g.create();

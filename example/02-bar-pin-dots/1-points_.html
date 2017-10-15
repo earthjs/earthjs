@@ -17,15 +17,15 @@
     <script>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent: true})
-        g.register(earthjs.plugins.threejsPlugin())
-        // g.register(earthjs.plugins.autorotatePlugin());
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.hoverCanvas());
-        g.register(earthjs.plugins.dotRegion());
-        g.register(earthjs.plugins.graticuleThreejs());
-        g.register(earthjs.plugins.canvasThreejs('../d/world-110m.json'));
-        g.register(earthjs.plugins.pointsThreejs('../data/geonames_cities100k.csv'));
-        g.mousePlugin.selectAll('#three-js');
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.inertiaPlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.hoverCanvas())
+        .register(earthjs.plugins.dotRegion())
+        .register(earthjs.plugins.graticuleThreejs())
+        .register(earthjs.plugins.canvasThreejs('../d/world-110m.json'))
+        .register(earthjs.plugins.pointsThreejs('../data/geonames_cities100k.csv'));
+        g.inertiaPlugin.selectAll('#three-js');
         g.pointsThreejs.ready = function(err, csv) {
             const features = csv.map(d => {
                 return {

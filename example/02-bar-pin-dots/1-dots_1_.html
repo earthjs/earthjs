@@ -10,10 +10,10 @@
     <script>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent: true})
-        g.register(earthjs.plugins.autorotatePlugin());
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.graticuleSvg());
-        g.register(earthjs.plugins.dotsSvg('../data/bars.json',{important:true}));
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
+        .register(earthjs.plugins.graticuleSvg())
+        .register(earthjs.plugins.dotsSvg('../data/bars.json',{important:true}));
         g.dotsSvg.ready = function(err, json) {
             json.geometry = {radius: 2}
             g.dotsSvg.data(json);

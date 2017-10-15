@@ -11,15 +11,15 @@
     <script>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent: true})
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.canvasPlugin());
-        g.register(earthjs.plugins.autorotatePlugin());
-        g.register(earthjs.plugins.oceanSvg());
-        g.register(earthjs.plugins.graticuleCanvas());
-        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
-        g.register(earthjs.plugins.dotsCanvas('../data/bars.json'));
-        g.register(earthjs.plugins.barSvg());
-        g.register(earthjs.plugins.fauxGlobeSvg());
+        .register(earthjs.plugins.inertiaPlugin())
+        .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.oceanSvg())
+        .register(earthjs.plugins.graticuleCanvas())
+        .register(earthjs.plugins.worldCanvas('../d/world-110m.json'))
+        .register(earthjs.plugins.dotsCanvas('../data/bars.json'))
+        .register(earthjs.plugins.barSvg())
+        .register(earthjs.plugins.fauxGlobeSvg())
         g._.options.showCountries = false;
         g._.options.showLakes = false;
         g.canvasPlugin.selectAll('.ej-canvas');

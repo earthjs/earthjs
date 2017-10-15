@@ -13,12 +13,12 @@
     <script>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent: true})
-        g.register(earthjs.plugins.threejsPlugin())
-        g.register(earthjs.plugins.autorotatePlugin());
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.graticuleThreejs())
-        g.register(earthjs.plugins.canvasThreejs('../d/world-110m.json'))
-        g.register(earthjs.plugins.dotsThreejs('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson'))
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.inertiaPlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.graticuleThreejs())
+        .register(earthjs.plugins.canvasThreejs('../d/world-110m.json'))
+        .register(earthjs.plugins.dotsThreejs('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson'));
         g.dotsThreejs.ready = function(err, json) {
             const arr    = json.features;
             const range  = d3.range.apply(d3, [1,8]);

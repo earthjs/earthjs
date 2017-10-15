@@ -13,13 +13,13 @@
     <script>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent: true})
-        g.register(earthjs.plugins.threejsPlugin())
-        g.register(earthjs.plugins.autorotatePlugin());
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.clickCanvas());
-        g.register(earthjs.plugins.graticuleThreejs());
-        g.register(earthjs.plugins.canvasThreejs('../d/world-110m.json'));
-        g.register(earthjs.plugins.dotsThreejs('../data/geonames_cities100k.csv'));
+        .register(earthjs.plugins.threejsPlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
+        .register(earthjs.plugins.clickCanvas())
+        .register(earthjs.plugins.graticuleThreejs())
+        .register(earthjs.plugins.canvasThreejs('../d/world-110m.json'))
+        .register(earthjs.plugins.dotsThreejs('../data/geonames_cities100k.csv'));
         g.canvasThreejs.ready = function(err, json) {
             g.canvasThreejs.data(json);
             g.clickCanvas.data(json);
