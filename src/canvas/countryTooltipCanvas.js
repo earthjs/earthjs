@@ -26,6 +26,7 @@ export default countryNameUrl => {
     }
 
     function showTooltip(event, country) {
+        _.mouse = [event.clientX, event.clientY];
         refresh([event.clientX, event.clientY]);
         (_.me.show || show)(country, countryTooltip)
         .style('display', 'block')
@@ -75,7 +76,7 @@ export default countryNameUrl => {
         },
         onRefresh() {
             if (this._.drag) {
-                refresh(this.mousePlugin.mouse());
+                refresh.call(this, _.mouse);
             }
         },
         data(data) {

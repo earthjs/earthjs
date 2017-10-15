@@ -38,6 +38,7 @@ export default countryNameUrl => {
             .style('display', 'none');
         })
         .on('mousemove', function() {
+            _.mouse = d3.mouse(this);
             if (_this._.options.showCountryTooltip) {
                 refresh();
             }
@@ -68,7 +69,7 @@ export default countryNameUrl => {
         },
         onRefresh() {
             if (this._.drag && _.show) {
-                refresh(this.mousePlugin.mouse());
+                refresh.call(this, _.mouse);
             }
         },
         data(data) {

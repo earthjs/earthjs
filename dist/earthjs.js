@@ -3959,6 +3959,7 @@ var countryTooltipSvg = (function (countryNameUrl) {
             _.show = false;
             countryTooltip.style('opacity', 0).style('display', 'none');
         }).on('mousemove', function () {
+            _.mouse = d3.mouse(this);
             if (_this._.options.showCountryTooltip) {
                 refresh();
             }
@@ -3987,7 +3988,7 @@ var countryTooltipSvg = (function (countryNameUrl) {
         },
         onRefresh: function onRefresh() {
             if (this._.drag && _.show) {
-                refresh(this.mousePlugin.mouse());
+                refresh.call(this, _.mouse);
             }
         },
         data: function data(_data) {
@@ -4907,6 +4908,7 @@ var countryTooltipCanvas = (function (countryNameUrl) {
     }
 
     function showTooltip(event, country) {
+        _.mouse = [event.clientX, event.clientY];
         refresh([event.clientX, event.clientY]);
         (_.me.show || show)(country, countryTooltip).style('display', 'block').style('opacity', 1);
         _.hidden = false;
@@ -4955,7 +4957,7 @@ var countryTooltipCanvas = (function (countryNameUrl) {
         },
         onRefresh: function onRefresh() {
             if (this._.drag) {
-                refresh(this.mousePlugin.mouse());
+                refresh.call(this, _.mouse);
             }
         },
         data: function data(_data) {
