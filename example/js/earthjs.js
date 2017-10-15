@@ -7570,7 +7570,7 @@ var selectCountryMix = (function () {
     var _ = {};
 
     function init() {
-        var g = this.register(earthjs.plugins.mousePlugin()).register(earthjs.plugins.hoverCanvas()).register(earthjs.plugins.clickCanvas()).register(earthjs.plugins.centerCanvas()).register(earthjs.plugins.canvasPlugin()).register(earthjs.plugins.countryCanvas()).register(earthjs.plugins.autorotatePlugin()).register(earthjs.plugins.worldCanvas(worldUrl)).register(earthjs.plugins.threejsPlugin());
+        var g = this.register(earthjs.plugins.inertiaPlugin()).register(earthjs.plugins.hoverCanvas()).register(earthjs.plugins.clickCanvas()).register(earthjs.plugins.centerCanvas()).register(earthjs.plugins.canvasPlugin()).register(earthjs.plugins.countryCanvas()).register(earthjs.plugins.autorotatePlugin()).register(earthjs.plugins.worldCanvas(worldUrl)).register(earthjs.plugins.threejsPlugin());
         g.canvasPlugin.selectAll('.ej-canvas');
         g._.options.showSelectedCountry = true;
         g._.options.showBorder = false;
@@ -7664,7 +7664,7 @@ var selectCountryMix2 = (function () {
     var _ = {};
 
     function init() {
-        var g = this.register(earthjs.plugins.worldJson(worldUrl)).register(earthjs.plugins.mousePlugin()).register(earthjs.plugins.hoverCanvas()).register(earthjs.plugins.clickCanvas()).register(earthjs.plugins.centerCanvas()).register(earthjs.plugins.countryCanvas()).register(earthjs.plugins.threejsPlugin()).register(earthjs.plugins.autorotatePlugin());
+        var g = this.register(earthjs.plugins.worldJson(worldUrl)).register(earthjs.plugins.inertiaPlugin()).register(earthjs.plugins.hoverCanvas()).register(earthjs.plugins.clickCanvas()).register(earthjs.plugins.centerCanvas()).register(earthjs.plugins.countryCanvas()).register(earthjs.plugins.threejsPlugin()).register(earthjs.plugins.autorotatePlugin());
         if (worldImg) {
             g.register(earthjs.plugins.imageThreejs(worldImg));
         }

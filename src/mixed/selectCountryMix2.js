@@ -5,7 +5,7 @@ export default (worldUrl='../d/world-110m.json', worldImg) => {
     function init() {
         const g = this
         .register(earthjs.plugins.worldJson(worldUrl))
-        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.hoverCanvas())
         .register(earthjs.plugins.clickCanvas())
         .register(earthjs.plugins.centerCanvas())
