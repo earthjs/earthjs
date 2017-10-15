@@ -33,7 +33,7 @@
     <script>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const g = earthjs({width: offsetWidth/3, height: offsetHeight, padding:5, transparent: true})
-        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.dropShadowSvg())
@@ -44,7 +44,7 @@
         .register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
         g._.options.showCountries = false;
         g._.options.showLakes = false;
-        g.mousePlugin.selectAll('.ej-svg');
+        g.inertiaPlugin.selectAll('.ej-svg');
         g.canvasPlugin.selectAll('.ej-canvas');
         g.fauxGlobeSvg.selectAll('.ej-svg');
         g.barSvg.selectAll('.ej-svg');

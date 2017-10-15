@@ -20,12 +20,13 @@
     <canvas class="ej-canvas"></canvas>
     <canvas class="ej-canvas"></canvas>
     <script>
-        const g = earthjs();
-        g.register(earthjs.plugins.autorotatePlugin());
-        g.register(earthjs.plugins.mousePlugin({intervalDrag:true}));
-        g.register(earthjs.plugins.oceanSvg());
-        g.register(earthjs.plugins.canvasPlugin());
-        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({rotate:-40, padding:50, width: offsetWidth/3, height: offsetHeight})
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
+        .register(earthjs.plugins.oceanSvg())
+        .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
         g.canvasPlugin.selectAll('canvas');
         g.ready(function(){
             g.create();

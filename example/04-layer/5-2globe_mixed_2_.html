@@ -35,12 +35,12 @@
         <canvas class="ej-svg c ej-canvas"></canvas>
     </div>
     <script>
-        const g = earthjs({selector:'.s',transparent:true,padding:50});
-        g.register(earthjs.plugins.autorotatePlugin());
-        g.register(earthjs.plugins.mousePlugin({intervalDrag:true}));
-        g.register(earthjs.plugins.oceanSvg());
-        g.register(earthjs.plugins.canvasPlugin());
-        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
+        const g = earthjs({selector:'.s',transparent:true,padding:50})
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
+        .register(earthjs.plugins.oceanSvg())
+        .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
         g.canvasPlugin.selectAll('canvas');
         g.ready(function(){
             g.create();

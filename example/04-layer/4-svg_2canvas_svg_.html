@@ -16,9 +16,9 @@
             top: 0px;
             left: 0px;
         }
-        #earth-js, .ej-canvas, .ej-svg {
+        /*#earth-js, .ej-canvas, .ej-svg {
             margin-left:-60
-        }
+        }*/
     </style>
 </head>
 <body>
@@ -29,31 +29,27 @@
     <svg id="earth-js"></svg>
     <canvas class="ej-canvas"></canvas>
     <canvas class="ej-canvas"></canvas>
-    <svg class="ej-svg" width="700" height="500"></svg>
+    <svg class="ej-svg"></svg>
     <script>
-        const g = earthjs({rotate:-40,padding:50});
-        g.register(earthjs.plugins.mousePlugin());
-        g.register(earthjs.plugins.autorotatePlugin());
-        g.mousePlugin.selectAll('.ej-svg');
-
-        g.register(earthjs.plugins.dropShadowSvg());
-        g.register(earthjs.plugins.oceanSvg());
-
-        g.register(earthjs.plugins.canvasPlugin());
-        g.register(earthjs.plugins.graticuleCanvas());
+        const {offsetWidth, offsetHeight} = d3.select('body').node();
+        const g = earthjs({rotate:-40, padding:50, width: offsetWidth/3, height: offsetHeight})
+        .register(earthjs.plugins.inertiaPlugin())
+        .register(earthjs.plugins.autorotatePlugin())
+        .register(earthjs.plugins.dropShadowSvg())
+        .register(earthjs.plugins.oceanSvg())
+        .register(earthjs.plugins.canvasPlugin())
+        .register(earthjs.plugins.graticuleCanvas())
+        // .register(earthjs.plugins.placesSvg('../d/places.json'))
+        .register(earthjs.plugins.worldCanvas('../d/world-110m.json'))
+        .register(earthjs.plugins.fauxGlobeSvg())
+        .register(earthjs.plugins.barSvg('../data/bars.json'));
+        g.inertiaPlugin.selectAll('.ej-svg');
         g.graticuleCanvas.style({line:'rgb(10,10,10)'});
-
-        // g.register(earthjs.plugins.placesSvg('../d/places.json'));
-        g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
         g.worldCanvas.style({land: 'green'});
         g.canvasPlugin.selectAll('.ej-canvas');
         g.graticuleCanvas.drawTo([0]);
         g.worldCanvas.drawTo([1]);
-
-        g.register(earthjs.plugins.fauxGlobeSvg());
         g.fauxGlobeSvg.selectAll('.ej-svg');
-
-        g.register(earthjs.plugins.barSvg('../data/bars.json'));
         g.barSvg.selectAll('.ej-svg');
         g.barSvg.ready = function(err, json) {
             json.features.forEach(d => d.geometry.value = d.properties.mag);
