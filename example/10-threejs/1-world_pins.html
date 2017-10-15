@@ -30,7 +30,7 @@
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const g = earthjs({width: offsetWidth/4, height: offsetHeight, padding:5})
         .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.hoverCanvas())
         .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.threejsPlugin())

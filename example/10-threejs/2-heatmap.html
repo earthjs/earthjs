@@ -12,9 +12,10 @@
     <svg id="earth-js"></svg>
     <canvas id="three-js"></canvas>
     <script>
-        const {offsetWidth, offsetHeight} = d3.select('body').node();
-        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
-        .register(earthjs.plugins.mousePlugin())
+        // const {offsetWidth, offsetHeight} = d3.select('body').node();
+        // const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
+        const g = earthjs({padding:5})
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.oceanThreejs())

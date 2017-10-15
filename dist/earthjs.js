@@ -1764,19 +1764,25 @@ var inertiaPlugin = (function () {
         rendering = false,
         draggMove = undefined;
 
-    function inertiaDrag() {
+    function stopDrag() {
         var _this = this;
 
-        _.onDragVals.forEach(function (v) {
+        _.this._.drag = false;
+        _.this._.refresh();
+        _.onDragEndVals.forEach(function (v) {
             return v.call(_this, _.mouse);
+        });
+    }
+
+    function inertiaDrag() {
+        var _this2 = this;
+
+        _.onDragVals.forEach(function (v) {
+            return v.call(_this2, _.mouse);
         });
         if (!rendering) {
             _.removeEventQueue(_.me.name, 'onTween');
-            _.onDragEndVals.forEach(function (v) {
-                return v.call(_this, _.mouse);
-            });
-            _.this._.drag = false;
-            _.this._.refresh();
+            stopDrag();
             return;
         }
 
@@ -1824,7 +1830,7 @@ var inertiaPlugin = (function () {
     var cmouse = void 0,
         pmouse = void 0;
     function onStartDrag() {
-        var _this2 = this;
+        var _this3 = this;
 
         rotateVX = 0;
         rotateVY = 0;
@@ -1833,10 +1839,10 @@ var inertiaPlugin = (function () {
         draggMove = null;
         cmouse = mouseMovement.call(this);
         _.onDragStartVals.forEach(function (v) {
-            return v.call(_this2, _.mouse);
+            return v.call(_this3, _.mouse);
         });
         _.onDragVals.forEach(function (v) {
-            return v.call(_this2, _.mouse);
+            return v.call(_this3, _.mouse);
         });
         _.removeEventQueue(_.me.name, 'onTween');
         _.this._.drag = null;
@@ -1863,17 +1869,12 @@ var inertiaPlugin = (function () {
     }
 
     function onEndDrag() {
-        var _this3 = this;
-
         dragging = false;
         if (draggMove) {
             draggMove = false;
             _.addEventQueue(_.me.name, 'onTween');
         } else {
-            _.onDragEndVals.forEach(function (v) {
-                return v.call(_this3, _.mouse);
-            });
-            _.this._.drag = false;
+            stopDrag();
         }
     }
 

@@ -20,7 +20,7 @@
     <script>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
-        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json')) //../globe/world.png
         .register(earthjs.plugins.imageThreejs('../globe/graticule.svg'))
@@ -28,7 +28,7 @@
         .register(earthjs.plugins.oceanSvg())
         .register(earthjs.plugins.barSvg())
         .register(earthjs.plugins.barTooltipSvg());
-        g.mousePlugin.selectAll('.ej-svg');
+        g.inertiaPlugin.selectAll('.ej-svg');
         g.barSvg.selectAll('.ej-svg');
         g.dotsThreejs.ready = function(err, json) {
             json.features.forEach(function(d) {

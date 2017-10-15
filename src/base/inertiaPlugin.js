@@ -22,13 +22,17 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         rendering = false,
         draggMove = undefined;
 
+    function stopDrag() {
+        _.this._.drag = false;
+        _.this._.refresh();
+        _.onDragEndVals.forEach(v => v.call(this, _.mouse));
+    }
+
     function inertiaDrag() {
         _.onDragVals.forEach(v => v.call(this, _.mouse));
         if (!rendering) {
             _.removeEventQueue(_.me.name, 'onTween');
-            _.onDragEndVals.forEach(v => v.call(this, _.mouse));
-            _.this._.drag = false;
-            _.this._.refresh();
+            stopDrag();
             return;
         }
 
@@ -112,8 +116,7 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
             draggMove = false;
             _.addEventQueue(_.me.name, 'onTween');
         } else {
-            _.onDragEndVals.forEach(v => v.call(this, _.mouse));
-            _.this._.drag = false;
+            stopDrag();
         }
     }
 
