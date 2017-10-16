@@ -2,6 +2,7 @@
 export default ({zoomScale}={zoomScale:[0,50000]}) => {
     /*eslint no-console: 0 */
     const _ = {
+        sync: [],
         onDrag: {},
         onDragVals: [],
         onDragStart: {},

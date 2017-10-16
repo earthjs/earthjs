@@ -1093,15 +1093,14 @@ var hoverCanvas = (function () {
         _.hoverHandler = function (event, mouse) {
             var _this2 = this;
 
-            // let event = d3.event;
             if (__.drag || !event) {
                 return;
             }
             if (event.sourceEvent) {
                 event = event.sourceEvent;
             }
-            var xmouse = [event.clientX, event.clientY]; //d3.mouse(this);
-            var pos = __.proj.invert(mouse); //d3.mouse(this));
+            var xmouse = [event.clientX, event.clientY];
+            var pos = __.proj.invert(mouse);
             _.pos = pos;
             _.dot = null;
             _.mouse = xmouse;
@@ -1136,12 +1135,6 @@ var hoverCanvas = (function () {
         _.svg.on('mousemove', function () {
             _.hoverHandler.call(this, d3.event, d3.mouse(this));
         });
-        // const hoverPlugin = (this.mousePlugin || this.inertiaPlugin);
-        // if (hoverPlugin) {
-        //     hoverPlugin.onDrag({
-        //         hoverCanvas: _.hoverHandler
-        //     });
-        // }
     }
 
     function findCountry(pos) {
@@ -1744,6 +1737,7 @@ var inertiaPlugin = (function () {
 
     /*eslint no-console: 0 */
     var _ = {
+        sync: [],
         onDrag: {},
         onDragVals: [],
         onDragStart: {},
