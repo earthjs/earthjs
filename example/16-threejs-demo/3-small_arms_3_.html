@@ -190,7 +190,7 @@
     .register(earthjs.plugins.world3d('../d/world.geometry.json','../globe/gold.jpg',0.975))
     .register(earthjs.plugins.flightLineThreejs(null,'../globe/point3.png'))
     .register(earthjs.plugins.countryTooltipCanvas());
-    g.mousePlugin.selectAll('#three-js');
+    g.inertiaPlugin.selectAll('#three-js');
     function reload(cc) {
         const csv = g.smallArmsJson.getData(cc);
         const arr = g.smallArmsJson.ids();
@@ -216,7 +216,7 @@
         delete g._.options.showBorder;
         reload('SG');
         g.create();
-        s = g._.proj.scale();
+        s = g._.proj.scale()-4;
         w = g.world3d.sphere();
         o = g.oceanThreejs.sphere();
         o.scale.set(0.95,0.95,0.95);
