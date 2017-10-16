@@ -20,7 +20,7 @@
     <script>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:50})
-        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.graticuleCanvas())
