@@ -24,19 +24,18 @@ export default () => {
         }
         const __ = this._;
         const _this = this;
-        _.hoverHandler = function() {
-            let event = d3.event;
+        _.hoverHandler = function(event, mouse) {
             if (__.drag || !event) {
                 return;
             }
             if (event.sourceEvent) {
                 event = event.sourceEvent;
             }
-            const mouse = [event.clientX, event.clientY]; //d3.mouse(this);
-            const pos = __.proj.invert(d3.mouse(this));
+            const xmouse = [event.clientX, event.clientY];
+            const pos = __.proj.invert(mouse);
             _.pos = pos;
             _.dot = null;
-            _.mouse = mouse;
+            _.mouse = xmouse;
             _.country = null;
             if (__.options.showDots) {
                 _.onCircleVals.forEach(v => {
@@ -65,12 +64,9 @@ export default () => {
                 _.ocountry2 = _.country;
             }
         }
-        _.svg.on('mousemove', _.hoverHandler);
-        if (this.mousePlugin) {
-            this.mousePlugin.onDrag({
-                hoverCanvas: _.hoverHandler
-            });
-        }
+        _.svg.on('mousemove', function() {
+            _.hoverHandler.call(this, d3.event, d3.mouse(this));
+        });
     }
 
     function findCountry(pos) {
@@ -138,11 +134,6 @@ export default () => {
                 mouse: _.mouse,
                 country: _.country,
             };
-        },
-        registerMouseDrag() {
-            this.mousePlugin.onDrag({
-                hoverCanvas: _.hoverHandler
-            });
         },
     }
 }

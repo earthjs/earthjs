@@ -8,6 +8,10 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         onDragStartVals: [],
         onDragEnd: {},
         onDragEndVals: [],
+        onClick: {},
+        onClickVals: [],
+        onDblClick: {},
+        onDblClickVals: []
     };
 
     let rotateX = 0,
@@ -22,14 +26,26 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         rendering = false,
         draggMove = undefined;
 
+    function onclick() {
+        _.onClickVals.forEach(v => {
+            v.call(_._this, _.event, _.mouse);
+        });
+    }
+
+    function ondblclick() {
+        _.onDblClickVals.forEach(v => {
+            v.call(_._this, _.event, _.mouse);
+        });
+    }
+
     function stopDrag() {
         _.this._.drag = false;
         _.this._.refresh();
-        _.onDragEndVals.forEach(v => v.call(this, _.mouse));
+        _.onDragEndVals.forEach(v => v.call(this, _.event, _.mouse));
     }
 
     function inertiaDrag() {
-        _.onDragVals.forEach(v => v.call(this, _.mouse));
+        _.onDragVals.forEach(v => v.call(this, _.event, _.mouse));
         if (!rendering) {
             _.removeEventQueue(_.me.name, 'onTween');
             stopDrag();
@@ -57,7 +73,12 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         rotateX += rotateVX;
         rotateY += rotateVY;
 
-        _.rotate([rotateX, rotateY, rotateZ[2]]);
+        const r = [rotateX, rotateY, rotateZ[2]];
+        let l = _.sync.length;
+        _.rotate(r);
+        while(l--) {
+            _.sync[l]._.rotate(r)
+        }
 
         if (!dragging &&
             previousX.toPrecision(5) === rotateX.toPrecision(5) &&
@@ -69,8 +90,9 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
     }
 
     function mouseMovement() {
+        _.event = d3.event;
         _.mouse = d3.mouse(this);
-        const {sourceEvent} = d3.event;
+        const {sourceEvent} = _.event;
         if (sourceEvent) { // sometime sourceEvent=null
             const t = sourceEvent.touches ? sourceEvent.touches[0] : sourceEvent;
             return [t.clientX, -t.clientY];
@@ -85,8 +107,8 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         rendering = true;
         draggMove = null;
         cmouse = mouseMovement.call(this);
-        _.onDragStartVals.forEach(v => v.call(this, _.mouse));
-        _.onDragVals.forEach(     v => v.call(this, _.mouse));
+        _.onDragStartVals.forEach(v => v.call(this, _.event, _.mouse));
+        _.onDragVals.forEach(     v => v.call(this, _.event, _.mouse));
         _.removeEventQueue(_.me.name, 'onTween');
         _.this._.drag = null;
     }
@@ -107,6 +129,7 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
                 cmouse = pmouse;
             }
             _.this._.drag = true;
+            _._this = this;
         }
     }
 
@@ -117,6 +140,19 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
             _.addEventQueue(_.me.name, 'onTween');
         } else {
             stopDrag();
+            _.event = d3.event;
+            if (draggMove===null) {
+                if (_.wait) {
+                    clearTimeout(_.wait);
+                    _.wait = null;
+                    ondblclick();
+                } else {
+                    _.wait = setTimeout(function() {
+                        _.wait = false;
+                        onclick();
+                    }, 250);
+                }
+            }
         }
     }
 
@@ -128,7 +164,11 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
             if (type==='wheel' || (touches && touches.length===2)) {
                 const r1 = s0 * d3.event.transform.k;
                 if (r1>=zoomScale[0] && r1<=zoomScale[1]) {
+                    let l = _.sync.length;
                     __.scale(r1);
+                    while(l--) {
+                        _.sync[l]._.scale(r1)
+                    }
                 }
                 rotateVX = 0;
                 rotateVY = 0;
@@ -185,6 +225,9 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         onTween() { // requestAnimationFrame()
             inertiaDrag.call(this);
         },
+        sync(arr) {
+            _.sync = arr;
+        },
         onDrag(obj) {
             Object.assign(_.onDrag, obj);
             _.onDragVals = Object.keys(_.onDrag).map(k => _.onDrag[k]);
@@ -200,5 +243,13 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         stopDrag() {
             rendering = false;
         },
+        onClick(obj) {
+            Object.assign(_.onClick, obj);
+            _.onClickVals = Object.keys(_.onClick).map(k => _.onClick[k]);
+        },
+        onDblClick(obj) {
+            Object.assign(_.onDblClick, obj);
+            _.onDblClickVals = Object.keys(_.onDblClick).map(k => _.onDblClick[k]);
+        }
     }
 }

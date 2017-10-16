@@ -15,9 +15,13 @@
         .register(earthjs.plugins.worldSvg('../d/world-110m.json'))
         .register(earthjs.plugins.countryTooltipSvg('../d/world-110m-country-names.tsv'));
         g.countryTooltipSvg.show = function(props, tooltip) {
-            const title = '<h3>Country:</h3>'+
-            Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
-            return tooltip.html(title);
+            if (props) {
+                const title = '<h3>Country:</h3>'+
+                Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
+                return tooltip.html(title);
+            } else {
+                return tooltip;
+            }
         };
         g.ready(function() {
             g.create();

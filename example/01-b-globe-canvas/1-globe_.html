@@ -9,7 +9,7 @@
     <svg id="earth-js"></svg>
     <script>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
-        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, rotate:[0,0,0]})
+        const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5})
         .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.canvasPlugin())
         .register(earthjs.plugins.oceanSvg())

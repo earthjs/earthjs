@@ -2,6 +2,7 @@
 export default () => {
     /*eslint no-console: 0 */
     const _ = {
+        contexts: [],
         canvas: null,
         path: null,
         q: null

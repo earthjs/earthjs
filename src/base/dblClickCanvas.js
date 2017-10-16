@@ -61,11 +61,13 @@ export default () => {
                 });
             }
         }
-        if (this.mousePlugin) {
-            this.mousePlugin.onDblClick({
+        const dblClickPlugin = (this.mousePlugin || this.inertiaPlugin);
+        if (dblClickPlugin) {
+            dblClickPlugin.onDblClick({
                 dblClickCanvas: mouseDblClickHandler
             });
         }
+        __.options.showLand = true;
     }
 
     return {

@@ -52,8 +52,9 @@ export default () => {
                 });
             }
         }
-        if (this.mousePlugin) {
-            this.mousePlugin.onClick({
+        const clickPlugin = (this.mousePlugin || this.inertiaPlugin);
+        if (clickPlugin) {
+            clickPlugin.onClick({
                 clickCanvas: mouseClickHandler
             });
         }

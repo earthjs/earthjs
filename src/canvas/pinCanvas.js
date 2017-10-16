@@ -21,19 +21,20 @@ export default (urlJson, urlImage, wh=[15,25]) => {
             const __ = this._;
             const center = __.proj.invert(__.center);
             this.canvasPlugin.render(function(context) {
-                _.dataPin.features.forEach(function(d) {
-                    const coordinates = d.geometry.coordinates;
-                    if (d3.geoDistance(coordinates, center) <= 1.57) {
-                        const a = __.path.centroid(d);
-                        context.drawImage(_.image,
-                            a[0]-_.pX,
-                            a[1]-_.pY,
-                            _.wh[0],
-                            _.wh[1]
-                        );
-                    }
-                });
-
+                if (_.dataPin) {
+                    _.dataPin.features.forEach(function(d) {
+                        const coordinates = d.geometry.coordinates;
+                        if (d3.geoDistance(coordinates, center) <= 1.57) {
+                            const a = __.path.centroid(d);
+                            context.drawImage(_.image,
+                                a[0]-_.pX,
+                                a[1]-_.pY,
+                                _.wh[0],
+                                _.wh[1]
+                            );
+                        }
+                    });
+                }
             }, _.drawTo);
         }
     }

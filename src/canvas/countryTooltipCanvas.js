@@ -26,7 +26,6 @@ export default countryNameUrl => {
     }
 
     function showTooltip(event, country) {
-        _.mouse = [event.clientX, event.clientY];
         refresh([event.clientX, event.clientY]);
         (_.me.show || show)(country, countryTooltip)
         .style('display', 'block')
@@ -45,6 +44,7 @@ export default countryNameUrl => {
 
     function init() {
         const hoverHandler = (event, data) => { // fn with  current context
+            _.mouse = [event.clientX, event.clientY];
             if (this._.drag!==null && data && this._.options.showCountryTooltip) {
                 const country = countryName(data);
                 if (country && !(this.barTooltipSvg && this.barTooltipSvg.visible())) {

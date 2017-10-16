@@ -45,7 +45,7 @@
             g.register(earthjs.plugins.canvasPlugin());
             g.register(earthjs.plugins.dropShadowSvg());
             g.register(earthjs.plugins.oceanSvg());
-            // g.register(earthjs.plugins.graticuleCanvas());
+            g.register(earthjs.plugins.graticuleCanvas());
             g.register(earthjs.plugins.worldCanvas('../d/world-110m.json'));
             g.register(earthjs.plugins.dotsCanvas());
             g.register(earthjs.plugins.dotSelectCanvas());
@@ -80,11 +80,10 @@
             const title = Object.keys(props).map(k => k+': '+props[k]).join('<br/>');
             return tooltip.html('<h3>Dot:</h3>'+title)
         }
-        g1.register(earthjs.plugins.mousePlugin());
-        g1.hoverCanvas.registerMouseDrag();
-        // g1.register(earthjs.plugins.autorotatePlugin());
-        // g1.autorotatePlugin.sync([g2]);
-        g1.mousePlugin.sync([g2]);
+        g1.register(earthjs.plugins.inertiaPlugin());
+        g1.register(earthjs.plugins.autorotatePlugin());
+        g1.autorotatePlugin.sync([g2]);
+        g1.inertiaPlugin.sync([g2]);
     </script>
 </body>
 </html>

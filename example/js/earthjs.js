@@ -1090,21 +1090,21 @@ var hoverCanvas = (function () {
         }
         var __ = this._;
         var _this = this;
-        _.hoverHandler = function () {
+        _.hoverHandler = function (event, mouse) {
             var _this2 = this;
 
-            var event = d3.event;
+            // let event = d3.event;
             if (__.drag || !event) {
                 return;
             }
             if (event.sourceEvent) {
                 event = event.sourceEvent;
             }
-            var mouse = [event.clientX, event.clientY]; //d3.mouse(this);
-            var pos = __.proj.invert(d3.mouse(this));
+            var xmouse = [event.clientX, event.clientY]; //d3.mouse(this);
+            var pos = __.proj.invert(mouse); //d3.mouse(this));
             _.pos = pos;
             _.dot = null;
-            _.mouse = mouse;
+            _.mouse = xmouse;
             _.country = null;
             if (__.options.showDots) {
                 _.onCircleVals.forEach(function (v) {
@@ -1133,12 +1133,15 @@ var hoverCanvas = (function () {
                 _.ocountry2 = _.country;
             }
         };
-        _.svg.on('mousemove', _.hoverHandler);
-        if (this.mousePlugin) {
-            this.mousePlugin.onDrag({
-                hoverCanvas: _.hoverHandler
-            });
-        }
+        _.svg.on('mousemove', function () {
+            _.hoverHandler.call(this, d3.event, d3.mouse(this));
+        });
+        // const hoverPlugin = (this.mousePlugin || this.inertiaPlugin);
+        // if (hoverPlugin) {
+        //     hoverPlugin.onDrag({
+        //         hoverCanvas: _.hoverHandler
+        //     });
+        // }
     }
 
     function findCountry(pos) {
@@ -1212,11 +1215,6 @@ var hoverCanvas = (function () {
                 mouse: _.mouse,
                 country: _.country
             };
-        },
-        registerMouseDrag: function registerMouseDrag() {
-            this.mousePlugin.onDrag({
-                hoverCanvas: _.hoverHandler
-            });
         }
     };
 });
@@ -1277,8 +1275,9 @@ var clickCanvas = (function () {
                 });
             }
         };
-        if (this.mousePlugin) {
-            this.mousePlugin.onClick({
+        var clickPlugin = this.mousePlugin || this.inertiaPlugin;
+        if (clickPlugin) {
+            clickPlugin.onClick({
                 clickCanvas: mouseClickHandler
             });
         }
@@ -1410,7 +1409,7 @@ var mousePlugin = (function () {
         r(__);
         __.rotate(_.r);
         _.onDragVals.forEach(function (v) {
-            v.call(_this, _.mouse);
+            v.call(_this, _.event, _.mouse);
         });
     }
 
@@ -1462,10 +1461,10 @@ var mousePlugin = (function () {
             q0 = versor(r0);
             __.drag = null;
             _.onDragStartVals.forEach(function (v) {
-                return v.call(_this2, mouse);
+                return v.call(_this2, _.event, mouse);
             });
             _.onDragVals.forEach(function (v) {
-                return v.call(_this2, mouse);
+                return v.call(_this2, _.event, mouse);
             });
             __.refresh();
             _.mouse = mouse;
@@ -1506,14 +1505,14 @@ var mousePlugin = (function () {
                 r(__);
                 __.rotate(_.r);
                 _.onDragVals.forEach(function (v) {
-                    return v.call(_._this, _.mouse);
+                    return v.call(_._this, _.event, _.mouse);
                 });
                 _.sync.forEach(function (g) {
                     return rotate.call(g, _.r);
                 });
             }
             _.onDragEndVals.forEach(function (v) {
-                return v.call(_this3, _.mouse);
+                return v.call(_this3, _.event, _.mouse);
             });
             __.refresh();
             // console.log('ttl:',_.t1,_.t2);
@@ -1622,6 +1621,7 @@ var configPlugin = (function () {
 var canvasPlugin = (function () {
     /*eslint no-console: 0 */
     var _ = {
+        contexts: [],
         canvas: null,
         path: null,
         q: null
@@ -1749,7 +1749,11 @@ var inertiaPlugin = (function () {
         onDragStart: {},
         onDragStartVals: [],
         onDragEnd: {},
-        onDragEndVals: []
+        onDragEndVals: [],
+        onClick: {},
+        onClickVals: [],
+        onDblClick: {},
+        onDblClickVals: []
     };
 
     var rotateX = 0,
@@ -1764,13 +1768,25 @@ var inertiaPlugin = (function () {
         rendering = false,
         draggMove = undefined;
 
+    function onclick() {
+        _.onClickVals.forEach(function (v) {
+            v.call(_._this, _.event, _.mouse);
+        });
+    }
+
+    function ondblclick() {
+        _.onDblClickVals.forEach(function (v) {
+            v.call(_._this, _.event, _.mouse);
+        });
+    }
+
     function stopDrag() {
         var _this = this;
 
         _.this._.drag = false;
         _.this._.refresh();
         _.onDragEndVals.forEach(function (v) {
-            return v.call(_this, _.mouse);
+            return v.call(_this, _.event, _.mouse);
         });
     }
 
@@ -1778,7 +1794,7 @@ var inertiaPlugin = (function () {
         var _this2 = this;
 
         _.onDragVals.forEach(function (v) {
-            return v.call(_this2, _.mouse);
+            return v.call(_this2, _.event, _.mouse);
         });
         if (!rendering) {
             _.removeEventQueue(_.me.name, 'onTween');
@@ -1807,7 +1823,12 @@ var inertiaPlugin = (function () {
         rotateX += rotateVX;
         rotateY += rotateVY;
 
-        _.rotate([rotateX, rotateY, rotateZ[2]]);
+        var r = [rotateX, rotateY, rotateZ[2]];
+        var l = _.sync.length;
+        _.rotate(r);
+        while (l--) {
+            _.sync[l]._.rotate(r);
+        }
 
         if (!dragging && previousX.toPrecision(5) === rotateX.toPrecision(5) && previousY.toPrecision(5) === rotateY.toPrecision(5)) {
             rendering = false;
@@ -1817,8 +1838,9 @@ var inertiaPlugin = (function () {
     }
 
     function mouseMovement() {
+        _.event = d3.event;
         _.mouse = d3.mouse(this);
-        var sourceEvent = d3.event.sourceEvent;
+        var sourceEvent = _.event.sourceEvent;
 
         if (sourceEvent) {
             // sometime sourceEvent=null
@@ -1839,10 +1861,10 @@ var inertiaPlugin = (function () {
         draggMove = null;
         cmouse = mouseMovement.call(this);
         _.onDragStartVals.forEach(function (v) {
-            return v.call(_this3, _.mouse);
+            return v.call(_this3, _.event, _.mouse);
         });
         _.onDragVals.forEach(function (v) {
-            return v.call(_this3, _.mouse);
+            return v.call(_this3, _.event, _.mouse);
         });
         _.removeEventQueue(_.me.name, 'onTween');
         _.this._.drag = null;
@@ -1865,6 +1887,7 @@ var inertiaPlugin = (function () {
                 cmouse = pmouse;
             }
             _.this._.drag = true;
+            _._this = this;
         }
     }
 
@@ -1875,6 +1898,19 @@ var inertiaPlugin = (function () {
             _.addEventQueue(_.me.name, 'onTween');
         } else {
             stopDrag();
+            _.event = d3.event;
+            if (draggMove === null) {
+                if (_.wait) {
+                    clearTimeout(_.wait);
+                    _.wait = null;
+                    ondblclick();
+                } else {
+                    _.wait = setTimeout(function () {
+                        _.wait = false;
+                        onclick();
+                    }, 250);
+                }
+            }
         }
     }
 
@@ -1889,7 +1925,11 @@ var inertiaPlugin = (function () {
             if (type === 'wheel' || touches && touches.length === 2) {
                 var r1 = s0 * d3.event.transform.k;
                 if (r1 >= zoomScale[0] && r1 <= zoomScale[1]) {
+                    var l = _.sync.length;
                     __.scale(r1);
+                    while (l--) {
+                        _.sync[l]._.scale(r1);
+                    }
                 }
                 rotateVX = 0;
                 rotateVY = 0;
@@ -1939,6 +1979,9 @@ var inertiaPlugin = (function () {
             // requestAnimationFrame()
             inertiaDrag.call(this);
         },
+        sync: function sync(arr) {
+            _.sync = arr;
+        },
         onDrag: function onDrag(obj) {
             Object.assign(_.onDrag, obj);
             _.onDragVals = Object.keys(_.onDrag).map(function (k) {
@@ -1959,6 +2002,18 @@ var inertiaPlugin = (function () {
         },
         stopDrag: function stopDrag() {
             rendering = false;
+        },
+        onClick: function onClick(obj) {
+            Object.assign(_.onClick, obj);
+            _.onClickVals = Object.keys(_.onClick).map(function (k) {
+                return _.onClick[k];
+            });
+        },
+        onDblClick: function onDblClick(obj) {
+            Object.assign(_.onDblClick, obj);
+            _.onDblClickVals = Object.keys(_.onDblClick).map(function (k) {
+                return _.onDblClick[k];
+            });
         }
     };
 });
@@ -2314,11 +2369,13 @@ var dblClickCanvas = (function () {
                 });
             }
         };
-        if (this.mousePlugin) {
-            this.mousePlugin.onDblClick({
+        var dblClickPlugin = this.mousePlugin || this.inertiaPlugin;
+        if (dblClickPlugin) {
+            dblClickPlugin.onDblClick({
                 dblClickCanvas: mouseDblClickHandler
             });
         }
+        __.options.showLand = true;
     }
 
     return {
@@ -4023,13 +4080,15 @@ var pinCanvas = (function (urlJson, urlImage) {
             var __ = this._;
             var center = __.proj.invert(__.center);
             this.canvasPlugin.render(function (context) {
-                _.dataPin.features.forEach(function (d) {
-                    var coordinates = d.geometry.coordinates;
-                    if (d3.geoDistance(coordinates, center) <= 1.57) {
-                        var a = __.path.centroid(d);
-                        context.drawImage(_.image, a[0] - _.pX, a[1] - _.pY, _.wh[0], _.wh[1]);
-                    }
-                });
+                if (_.dataPin) {
+                    _.dataPin.features.forEach(function (d) {
+                        var coordinates = d.geometry.coordinates;
+                        if (d3.geoDistance(coordinates, center) <= 1.57) {
+                            var a = __.path.centroid(d);
+                            context.drawImage(_.image, a[0] - _.pX, a[1] - _.pY, _.wh[0], _.wh[1]);
+                        }
+                    });
+                }
             }, _.drawTo);
         }
     }
@@ -4912,7 +4971,6 @@ var countryTooltipCanvas = (function (countryNameUrl) {
     }
 
     function showTooltip(event, country) {
-        _.mouse = [event.clientX, event.clientY];
         refresh([event.clientX, event.clientY]);
         (_.me.show || show)(country, countryTooltip).style('display', 'block').style('opacity', 1);
         _.hidden = false;
@@ -4930,6 +4988,7 @@ var countryTooltipCanvas = (function (countryNameUrl) {
 
         var hoverHandler = function hoverHandler(event, data) {
             // fn with  current context
+            _.mouse = [event.clientX, event.clientY];
             if (_this._.drag !== null && data && _this._.options.showCountryTooltip) {
                 var country = countryName(data);
                 if (country && !(_this.barTooltipSvg && _this.barTooltipSvg.visible())) {
