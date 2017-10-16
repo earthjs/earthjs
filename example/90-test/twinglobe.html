@@ -16,9 +16,9 @@
     <svg class="ej-svg e2"></svg>
     <script>
         const g = earthjs({selector:'.ej-svg', padding:50});
-        g.register(earthjs.plugins.mousePlugin());
+        g.register(earthjs.plugins.inertiaPlugin());
         g.register(earthjs.plugins.autorotatePlugin());
-        // g.mousePlugin.selectAll('.e1');
+        // g.inertiaPlugin.selectAll('.e1');
 
         g.register(earthjs.plugins.dropShadowSvg());
         g.register(earthjs.plugins.oceanSvg());

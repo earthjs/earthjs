@@ -15,7 +15,7 @@
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent: true})
         .register(earthjs.plugins.configPlugin())
         .register(earthjs.plugins.autorotatePlugin())
-        .register(earthjs.plugins.mousePlugin())
+        .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.dropShadowSvg())
         .register(earthjs.plugins.oceanSvg())
         .register(earthjs.plugins.graticuleSvg())

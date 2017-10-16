@@ -33,7 +33,7 @@
     </span>
     <script>
         const g1 = earthjs({selector:'.s1', rotate: 0, padding:50});
-        g1.register(earthjs.plugins.mousePlugin());
+        g1.register(earthjs.plugins.inertiaPlugin());
         g1.register(earthjs.plugins.autorotatePlugin());
 
         g1.register(earthjs.plugins.dropShadowSvg());
@@ -61,7 +61,7 @@
         g1.canvasPlugin.selectAll('.c1');
         g2.canvasPlugin.selectAll('.c2');
         g1.autorotatePlugin.sync([g2]);
-        g1.mousePlugin.sync([g2]);
+        g1.inertiaPlugin.sync([g2]);
         g1.ready(function(){
             const d = g1.worldCanvas.data();
             g2.worldCanvas.data(d);
