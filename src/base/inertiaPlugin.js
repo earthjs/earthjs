@@ -12,7 +12,8 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         onClick: {},
         onClickVals: [],
         onDblClick: {},
-        onDblClickVals: []
+        onDblClickVals: [],
+        stalledDrag: 0,
     };
 
     let rotateX = 0,
@@ -130,6 +131,7 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
                 cmouse = pmouse;
             }
             _.this._.drag = true;
+            _.stalledDrag = 0;
             _._this = this;
         }
     }
@@ -222,6 +224,13 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
                 }
             }
             return _.svg;
+        },
+        onInterval() {
+            if (draggMove && _.stalledDrag++ > 10) { // reset inertia
+                _.stalledDrag = 0;
+                rotateVX = 0;
+                rotateVY = 0;
+            }
         },
         onTween() { // requestAnimationFrame()
             inertiaDrag.call(this);

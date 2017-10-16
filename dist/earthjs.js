@@ -1747,7 +1747,8 @@ var inertiaPlugin = (function () {
         onClick: {},
         onClickVals: [],
         onDblClick: {},
-        onDblClickVals: []
+        onDblClickVals: [],
+        stalledDrag: 0
     };
 
     var rotateX = 0,
@@ -1881,6 +1882,7 @@ var inertiaPlugin = (function () {
                 cmouse = pmouse;
             }
             _.this._.drag = true;
+            _.stalledDrag = 0;
             _._this = this;
         }
     }
@@ -1968,6 +1970,14 @@ var inertiaPlugin = (function () {
                 }
             }
             return _.svg;
+        },
+        onInterval: function onInterval() {
+            if (draggMove && _.stalledDrag++ > 10) {
+                // reset inertia
+                _.stalledDrag = 0;
+                rotateVX = 0;
+                rotateVY = 0;
+            }
         },
         onTween: function onTween() {
             // requestAnimationFrame()
