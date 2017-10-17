@@ -31,7 +31,7 @@ export default (worldUrl='../d/world-110m.json') => {
             } else {
                 g.worldCanvas.selectedCountries([country]);
             }
-            console.log(country);
+            // console.log(country);
         })
     }
 

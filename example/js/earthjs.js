@@ -7657,7 +7657,7 @@ var selectCountryMix = (function () {
             } else {
                 g.worldCanvas.selectedCountries([country]);
             }
-            console.log(country);
+            // console.log(country);
         });
     }
 
@@ -7749,7 +7749,7 @@ var selectCountryMix2 = (function () {
                 g.canvasThreejs.selectedCountries([country]);
             }
             g.canvasThreejs.refresh();
-            console.log(country);
+            // console.log(country);
         });
     }
 

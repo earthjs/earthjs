@@ -28,7 +28,7 @@ export default (worldUrl='../d/world-110m.json', worldImg) => {
                 g.canvasThreejs.selectedCountries([country]);
             }
             g.canvasThreejs.refresh();
-            console.log(country);
+            // console.log(country);
         })
     }
 
