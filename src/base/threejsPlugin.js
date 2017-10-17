@@ -174,6 +174,18 @@ export default (threejs='three-js') => {
             const euler = this._.versor.rotation(trans);
             euler[0]   += 90;
             return euler;
+        },
+        light3d() {
+            const sphereObject = new THREE.Group();
+            const ambient= new THREE.AmbientLight(0x777777);
+            const light1 = new THREE.DirectionalLight(0xffffff);
+            const light2 = new THREE.DirectionalLight(0xffffff);
+            light1.position.set( 1, 0, 1);
+            light2.position.set(-1, 0, 1);
+            sphereObject.add(ambient);
+            sphereObject.add(light1);
+            sphereObject.add(light2);
+            return sphereObject;
         }
     }
 }

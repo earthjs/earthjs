@@ -3,20 +3,12 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../globe/gold.jpg',
     /*eslint no-console: 0 */
     const _ = {
         group: {},
-        sphereObject: new THREE.Group(), //new THREE.Object3D(),
+        sphereObject: null,
         material: new THREE.MeshPhongMaterial({
             color: new THREE.Color(0xaa9933),
             side: THREE.DoubleSide
         })
     };
-    const ambient= new THREE.AmbientLight(0x777777);
-    const light1 = new THREE.DirectionalLight(0xffffff);
-    const light2 = new THREE.DirectionalLight(0xffffff);
-    light1.position.set( 1, 0, 1);
-    light2.position.set(-1, 0, 1);
-    _.sphereObject.add(ambient);
-    _.sphereObject.add(light1);
-    _.sphereObject.add(light2);
 
     function extrude(geometry,_i=0.9,_o=0) {
         const half = geometry.vertices.length / 2;
@@ -95,13 +87,14 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../globe/gold.jpg',
     }
 
     function create() {
-        !_.loaded && loadCountry.call(this);
         this.threejsPlugin.addGroup(_.sphereObject);
+        loadCountry.call(this);
     }
 
     function init() {
         const r = this._.proj.scale();
         this._.options.showWorld = true;
+        _.sphereObject = this.threejsPlugin.light3d();
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r,r,r);
         _.sphereObject.name = _.me.name;

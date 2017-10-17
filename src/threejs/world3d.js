@@ -1,75 +1,74 @@
 // import data from './globe';
 import Map3DGeometry from './map3d';
-export default (worldUrl='../d/world.geometry.json', landUrl='../globe/gold.jpg', inner=0.9, rtt=-1.57) => {
+export default (worldUrl='../d/world.geometry.json', imgUrl='../globe/gold.jpg', inner=0.9, rtt=-1.57) => {
     /*eslint no-console: 0 */
     const _ = {
-        sphereObject: new THREE.Object3D(),
+        style: {},
         tween: null,
+        sphereObject: new THREE.Group(),
     };
 
-    function loadCountry() {
-        const data = _.world;
-        for (let name in data) {
-            const geometry = new Map3DGeometry(data[name], inner);
-            _.sphereObject.add(data[name].mesh = new THREE.Mesh(geometry, _.material));
-        }
-        _.loaded = true;
-    }
-
+    const vertexShader = `
+varying vec2 vN;
+void main() {
+vec4 p = vec4( position, 1. );
+vec3 e = normalize( vec3( modelViewMatrix * p ) );
+vec3 n = normalize( normalMatrix * normal );
+vec3 r = reflect( e, n );
+float m = 2. * length( vec3( r.xy, r.z + 1. ) );
+vN = r.xy / m + .5;
+gl_Position = projectionMatrix * modelViewMatrix * p;
+}`;
     function init() {
+        const tj = this.threejsPlugin;
         const r = this._.proj.scale()+5;
+//         const fragmentShader = `
+// uniform sampler2D sampler;
+// varying vec2 vN;
+// void main() {
+// vec3 tex = texture2D( sampler, vN ).rgb;
+// gl_FragColor = vec4( tex, 1. );
+// }`;
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r,r,r);
-        makeEnvMapMaterial.call(this, landUrl, function(material) {
-            _.material = material;
-            if (_.world && !_.loaded) {
-                loadCountry()
+        _.sphereObject.name = _.me.name;
+        _.uniforms = {sampler: {type: 't', value: tj.texture(imgUrl)}};
+    }
+
+    let material, uniforms;
+    function loadCountry() {
+        const {choropleth} = this._.options;
+        const data = _.world;
+        const fragmentShader = `
+uniform sampler2D sampler;
+uniform vec3 diffuse;
+varying vec2 vN;
+void main() {
+vec4 tex = texture2D( sampler, vN );
+gl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;
+}`;
+        _.uniforms.diffuse = {type: 'c', value: new THREE.Color(_.style.land || 'black')};
+        uniforms = _.uniforms;
+        material = new THREE.ShaderMaterial({uniforms, vertexShader, fragmentShader});
+        for (let name in data) {
+            if (choropleth) {
+                uniforms = Object.assign(_.uniforms, {
+                    diffuse: {
+                        type: 'c',
+                        value: new THREE.Color(data[name].color || _.style.countries || 'black')}
+                })
+                material = new THREE.ShaderMaterial({uniforms, vertexShader, fragmentShader});
             }
-        });
+            const geometry = new Map3DGeometry(data[name], inner);
+            _.sphereObject.add(data[name].mesh = new THREE.Mesh(geometry, material));
+        }
     }
 
     function create() {
-        if (_.material && !_.loaded) {
-            loadCountry()
-        }
-        _.sphereObject.name = _.me.name;
+        loadCountry.call(this);
         const tj = this.threejsPlugin;
         tj.addGroup(_.sphereObject);
-    }
-
-    const vertexShader = `
-    varying vec2 vN;
-    void main() {
-        vec4 p = vec4( position, 1. );
-        vec3 e = normalize( vec3( modelViewMatrix * p ) );
-        vec3 n = normalize( normalMatrix * normal );
-        vec3 r = reflect( e, n );
-        float m = 2. * length( vec3( r.xy, r.z + 1. ) );
-        vN = r.xy / m + .5;
-        gl_Position = projectionMatrix * modelViewMatrix * p;
-    }
-    `
-    const fragmentShader = `
-    uniform sampler2D tMatCap;
-    varying vec2 vN;
-    void main() {
-        vec3 base = texture2D( tMatCap, vN ).rgb;
-        gl_FragColor = vec4( base, 1. );
-    }
-    `
-    function makeEnvMapMaterial(imgUrl, cb) {
-        const type = 't';
-        const tj = this.threejsPlugin;
-        const shading  = THREE.SmoothShading;
-        const uniforms = {tMatCap:{type,value: tj.texture(imgUrl)}};
-        const material = new THREE.ShaderMaterial({
-            shading,
-            uniforms,
-            vertexShader,
-            fragmentShader
-        });
-        cb.call(this, material);
     }
 
     return {
@@ -107,6 +106,12 @@ export default (worldUrl='../d/world.geometry.json', landUrl='../globe/gold.jpg'
         },
         sphere() {
             return _.sphereObject;
+        },
+        style(s) {
+            if (s) {
+                _.style = s;
+            }
+            return _.style;
         },
         extrude(inner) {
             for (let name in _.world) {
