@@ -22,13 +22,6 @@ gl_Position = projectionMatrix * modelViewMatrix * p;
     function init() {
         const tj = this.threejsPlugin;
         const r = this._.proj.scale()+5;
-//         const fragmentShader = `
-// uniform sampler2D sampler;
-// varying vec2 vN;
-// void main() {
-// vec3 tex = texture2D( sampler, vN ).rgb;
-// gl_FragColor = vec4( tex, 1. );
-// }`;
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r,r,r);
@@ -53,11 +46,9 @@ gl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;
         material = new THREE.ShaderMaterial({uniforms, vertexShader, fragmentShader});
         for (let name in data) {
             if (choropleth) {
-                uniforms = Object.assign(_.uniforms, {
-                    diffuse: {
-                        type: 'c',
-                        value: new THREE.Color(data[name].color || _.style.countries || 'black')}
-                })
+                const properties = data[name].properties || {color: _.style.countries};
+                const diffuse = {type: 'c', value: new THREE.Color(properties.color || 'black')};
+                uniforms = Object.assign({}, _.uniforms, {diffuse});
                 material = new THREE.ShaderMaterial({uniforms, vertexShader, fragmentShader});
             }
             const geometry = new Map3DGeometry(data[name], inner);

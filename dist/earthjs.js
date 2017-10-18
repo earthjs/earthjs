@@ -630,6 +630,61 @@ var worldJson = (function (jsonUrl) {
     };
 });
 
+var world3dJson = function () {
+    // function is required for arguments works
+    /*eslint no-console: 0 */
+    var _ = {
+        data: {},
+        geometries: []
+    };
+    var args = arguments;
+
+    return {
+        name: 'world3dJson',
+        urls: Array.prototype.slice.call(args),
+        onReady: function onReady(err, json, nm_to_id) {
+            _.me.data(json);
+            if (nm_to_id) {
+                _.me.arrayOfGeometry(nm_to_id);
+            }
+        },
+        onInit: function onInit(me) {
+            _.me = me;
+        },
+        data: function data(_data) {
+            if (_data) {
+                _.data = _data;
+            } else {
+                return _.data;
+            }
+        },
+        message: function message(fn) {
+            _.data = _.data.map(fn);
+        },
+        allData: function allData(all) {
+            if (all) {
+                _.data = all.data;
+            } else {
+                var data = _.data,
+                    geometries = _.geometries;
+
+                return { data: data, geometries: geometries };
+            }
+        },
+        arrayOfGeometry: function arrayOfGeometry(data) {
+            var features = [];
+            for (var name in _.data) {
+                var geometry = _.data[name];
+                var cid = data[name.toUpperCase()];
+                var properties = { cid: cid };
+                geometry.properties = properties;
+                features.push({ properties: properties, geometry: geometry });
+            }
+            _.geometries = { features: features };
+        }
+    };
+};
+
 var toConsumableArray = function (arr) {
   if (Array.isArray(arr)) {
     for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
@@ -7289,13 +7344,6 @@ var world3d = (function () {
     function init() {
         var tj = this.threejsPlugin;
         var r = this._.proj.scale() + 5;
-        //         const fragmentShader = `
-        // uniform sampler2D sampler;
-        // varying vec2 vN;
-        // void main() {
-        // vec3 tex = texture2D( sampler, vN ).rgb;
-        // gl_FragColor = vec4( tex, 1. );
-        // }`;
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r, r, r);
@@ -7315,11 +7363,9 @@ var world3d = (function () {
         material = new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexShader, fragmentShader: fragmentShader });
         for (var name in data) {
             if (choropleth) {
-                uniforms = Object.assign(_.uniforms, {
-                    diffuse: {
-                        type: 'c',
-                        value: new THREE.Color(data[name].color || _.style.countries || 'black') }
-                });
+                var properties = data[name].properties || { color: _.style.countries };
+                var diffuse = { type: 'c', value: new THREE.Color(properties.color || 'black') };
+                uniforms = Object.assign({}, _.uniforms, { diffuse: diffuse });
                 material = new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexShader, fragmentShader: fragmentShader });
             }
             var geometry = new Map3DGeometry(data[name], inner);
@@ -7833,6 +7879,7 @@ earthjs$2.plugins = {
     baseCsv: baseCsv,
     baseGeoJson: baseGeoJson,
     worldJson: worldJson,
+    world3dJson: world3dJson,
     choroplethCsv: choroplethCsv,
     countryNamesCsv: countryNamesCsv,
 

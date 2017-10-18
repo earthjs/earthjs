@@ -3,6 +3,7 @@ import earthjs from './src/earthjs';
 import baseCsv         from './src/data/baseCsv';
 import baseGeoJson     from './src/data/baseGeoJson';
 import worldJson       from './src/data/worldJson';
+import world3dJson     from './src/data/world3dJson';
 import choroplethCsv   from './src/data/choroplethCsv';
 import countryNamesCsv from './src/data/countryNamesCsv';
 
@@ -79,6 +80,7 @@ earthjs.plugins= {
     baseCsv,
     baseGeoJson,
     worldJson,
+    world3dJson,
     choroplethCsv,
     countryNamesCsv,
 

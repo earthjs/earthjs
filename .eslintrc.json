@@ -20,6 +20,7 @@
         "topojson": true,
         "document": true,
         "onmessage": true,
+        "arguments": true,
         "MeshLine": true,
         "MeshLineMaterial": true,
         "createWebGLHeatmap": true,
