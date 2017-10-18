@@ -1,10 +1,11 @@
-export default csvUrl => {
+export default function() {
     /*eslint no-console: 0 */
-    const _ = {data: null};
+    const _ = {data: []};
+    const args = arguments;
 
     return {
         name: 'baseCsv',
-        urls: csvUrl && [csvUrl],
+        urls: Array.prototype.slice.call(args),
         onReady(err, csv) {
             _.me.data(csv);
         },
@@ -29,5 +30,10 @@ export default csvUrl => {
                 return {data};
             }
         },
+        arrToJson(k, v) {
+            const json = {};
+            _.data.forEach(x => json[x[k]] = x[v]);
+            return json;
+        }
     }
 }

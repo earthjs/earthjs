@@ -506,13 +506,14 @@ if (window.d3 === undefined) {
 }
 window.d3.earthjs = earthjs$2;
 
-var baseCsv = (function (csvUrl) {
+var baseCsv = function () {
     /*eslint no-console: 0 */
-    var _ = { data: null };
+    var _ = { data: [] };
+    var args = arguments;
 
     return {
         name: 'baseCsv',
-        urls: csvUrl && [csvUrl],
+        urls: Array.prototype.slice.call(args),
         onReady: function onReady(err, csv) {
             _.me.data(csv);
         },
@@ -537,9 +538,16 @@ var baseCsv = (function (csvUrl) {
 
                 return { data: data };
             }
+        },
+        arrToJson: function arrToJson(k, v) {
+            var json = {};
+            _.data.forEach(function (x) {
+                return json[x[k]] = x[v];
+            });
+            return json;
         }
     };
-});
+};
 
 var baseGeoJson = (function (jsonUrl) {
     /*eslint no-console: 0 */
@@ -635,6 +643,7 @@ var world3dJson = function () {
     /*eslint no-console: 0 */
     var _ = {
         data: {},
+        nm_to_id: {},
         geometries: []
     };
     var args = arguments;
@@ -666,9 +675,10 @@ var world3dJson = function () {
                 _.data = all.data;
             } else {
                 var data = _.data,
-                    geometries = _.geometries;
+                    geometries = _.geometries,
+                    nm_to_id = _.nm_to_id;
 
-                return { data: data, geometries: geometries };
+                return { data: data, geometries: geometries, nm_to_id: nm_to_id };
             }
         },
         arrayOfGeometry: function arrayOfGeometry(data) {
@@ -680,6 +690,7 @@ var world3dJson = function () {
                 geometry.properties = properties;
                 features.push({ properties: properties, geometry: geometry });
             }
+            _.nm_to_id = data;
             _.geometries = { features: features };
         }
     };
@@ -703,6 +714,7 @@ var choroplethCsv = (function (csvUrl) {
         cid: null,
         data: null,
         color: null,
+        oldData: null,
         selectedColorId: null,
         selectedCountryId: null,
         countries: { type: 'FeatureCollection', features: [] }
@@ -740,11 +752,15 @@ var choroplethCsv = (function (csvUrl) {
         data: function data(_data) {
             if (_data) {
                 _.data = _data;
+                _.oldData = _data;
                 _.data.getPath = getPath;
                 _.data.updatePath = updatePath;
             } else {
                 return _.data;
             }
+        },
+        filter: function filter(fn) {
+            _.data = _.oldData.filter(fn);
         },
         mergeData: function mergeData(json, arr) {
             var cn = _.data;
@@ -7339,8 +7355,8 @@ var world3d = (function () {
         tween: null,
         sphereObject: new THREE.Group()
     };
-
     var vertexShader = '\nvarying vec2 vN;\nvoid main() {\nvec4 p = vec4( position, 1. );\nvec3 e = normalize( vec3( modelViewMatrix * p ) );\nvec3 n = normalize( normalMatrix * normal );\nvec3 r = reflect( e, n );\nfloat m = 2. * length( vec3( r.xy, r.z + 1. ) );\nvN = r.xy / m + .5;\ngl_Position = projectionMatrix * modelViewMatrix * p;\n}';
+    var fragmentShader = '\nuniform sampler2D sampler;\nuniform vec3 diffuse;\nvarying vec2 vN;\nvoid main() {\nvec4 tex = texture2D( sampler, vN );\ngl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;\n}';
     function init() {
         var tj = this.threejsPlugin;
         var r = this._.proj.scale() + 5;
@@ -7348,18 +7364,19 @@ var world3d = (function () {
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r, r, r);
         _.sphereObject.name = _.me.name;
-        _.uniforms = { sampler: { type: 't', value: tj.texture(imgUrl) } };
+        _.uniforms = {
+            sampler: { type: 't', value: tj.texture(imgUrl) },
+            diffuse: { type: 'c', value: new THREE.Color(_.style.land || 'black') }
+        };
     }
 
     var material = void 0,
         uniforms = void 0;
     function loadCountry() {
+        var data = _.world;
+        uniforms = _.uniforms;
         var choropleth = this._.options.choropleth;
 
-        var data = _.world;
-        var fragmentShader = '\nuniform sampler2D sampler;\nuniform vec3 diffuse;\nvarying vec2 vN;\nvoid main() {\nvec4 tex = texture2D( sampler, vN );\ngl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;\n}';
-        _.uniforms.diffuse = { type: 'c', value: new THREE.Color(_.style.land || 'black') };
-        uniforms = _.uniforms;
         material = new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexShader, fragmentShader: fragmentShader });
         for (var name in data) {
             if (choropleth) {

@@ -108,6 +108,7 @@ id,cid,cid3,name
 372,IE,IRL,Ireland
 833,IM,IMN,Isle of Man
 376,IL,ISR,Israel
+378,XK,XKX,Kosovo
 380,IT,ITA,Italy
 388,JM,JAM,Jamaica
 392,JP,JPN,Japan
@@ -156,6 +157,7 @@ id,cid,cid3,name
 524,NP,NPL,Nepal
 528,NL,NLD,Netherlands
 530,AN,ANT,Netherlands Antilles
+534,SX,SXM,Sint Maarten
 540,NC,NCL,New Caledonia
 554,NZ,NZL,New Zealand
 558,NI,NIC,Nicaragua
@@ -166,6 +168,7 @@ id,cid,cid3,name
 580,MP,MNP,Northern Mariana Islands
 578,NO,NOR,Norway
 512,OM,OMN,Oman
+531,CW,CUW,Curacao
 586,PK,PAK,Pakistan
 585,PW,PLW,Palau
 275,PS,PSE,Palestinian Territory

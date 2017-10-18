@@ -4,6 +4,7 @@ export default (csvUrl, scheme='schemeReds') => {
         cid: null,
         data: null,
         color: null,
+        oldData: null,
         selectedColorId: null,
         selectedCountryId: null,
         countries: {type: 'FeatureCollection', features:[]},
@@ -37,11 +38,15 @@ export default (csvUrl, scheme='schemeReds') => {
         data(data) {
             if (data) {
                 _.data = data;
+                _.oldData = data;
                 _.data.getPath = getPath;
                 _.data.updatePath = updatePath;
             } else {
                 return _.data;
             }
+        },
+        filter(fn) {
+            _.data = _.oldData.filter(fn);
         },
         mergeData(json, arr) {
             const cn = _.data;

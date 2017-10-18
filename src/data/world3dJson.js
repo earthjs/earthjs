@@ -2,6 +2,7 @@ export default function() { // function is required for arguments works
     /*eslint no-console: 0 */
     const _ = {
         data: {},
+        nm_to_id: {},
         geometries: [],
     };
     const args = arguments;
@@ -32,8 +33,8 @@ export default function() { // function is required for arguments works
             if (all) {
                 _.data = all.data;
             } else {
-                const  {data, geometries} = _;
-                return {data, geometries};
+                const  {data, geometries, nm_to_id} = _;
+                return {data, geometries, nm_to_id};
             }
         },
         arrayOfGeometry(data) {
@@ -45,6 +46,7 @@ export default function() { // function is required for arguments works
                 geometry.properties = properties;
                 features.push({properties, geometry});
             }
+            _.nm_to_id = data;
             _.geometries = {features};
         }
     }
