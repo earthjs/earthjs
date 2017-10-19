@@ -7,15 +7,16 @@ export default function (worldUrl, scw, height) {
     var _ = {
         world: null,
         sphereObject:null,
+        onHover: {},
+        onHoverVals: [],
         style: {},
         onDraw: {},
         onDrawVals: [],
-        selected: {
-            type: 'FeatureCollection',
-            features:[]
-        },
+        countries: {type: 'FeatureCollection', features:[]},
+        selected:  {type: 'FeatureCollection', features:[]},
         material: new THREE.MeshBasicMaterial({
             side: THREE.DoubleSide,
+            transparent: true,
             alphaTest: 0.5
         })
     };
@@ -24,20 +25,20 @@ export default function (worldUrl, scw, height) {
         var width = height * 2;
         var SCALE = this._.proj.scale();
         _.geometry = new THREE.SphereGeometry(SCALE, 30, 30);
-        _.newCanvas = document.createElement('canvas');
+        _.newCanvas = d3.select('body').append('canvas') // document.createElement('canvas');
+            .style('display','none')
+            .attr('class','ej-canvas-new')
+            .node();
         _.newContext = _.newCanvas.getContext('2d');
-
         _.texture = new THREE.Texture(_.newCanvas);
         _.texture.transparent = true;
         _.material.map = _.texture;
 
         _.canvas = d3.select('body').append('canvas')
-            .style('position','absolute')
             .style('display','none')
-            .style('top','450px')
             .attr('width', width)
             .attr('height',height)
-            .attr('id','tjs-canvas')
+            .attr('class','ej-canvas-ctx')
             .node();
         _.context = _.canvas.getContext('2d');
         _.proj = d3.geoEquirectangular().scale(width/scw).translate([width/2, height/2]);
@@ -47,6 +48,15 @@ export default function (worldUrl, scw, height) {
         //set dimensions
         _.newCanvas.width = _.canvas.width;
         _.newCanvas.height = _.canvas.height;
+        _.me._ = _; // only for debugging
+    }
+
+    function hover(event){
+        for (var i = 0, list = _.onHoverVals; i < list.length; i += 1) {
+            var v = list[i];
+
+            v.call(event.target, event);
+        }
     }
 
     function create() {
@@ -56,6 +66,10 @@ export default function (worldUrl, scw, height) {
         if (!_.sphereObject) {
             resize.call(this);
             _.sphereObject= new THREE.Mesh(_.geometry, _.material);
+            _.sphereObject.name = _.me.name;
+            if (tj.domEvents) {
+                tj.domEvents.addEventListener(_.sphereObject, 'mousemove', hover, false);
+            }
         }
         _.onDrawVals.forEach(function (v) {
             v.call(this$1, _.newContext, _.path);
@@ -73,13 +87,13 @@ export default function (worldUrl, scw, height) {
                 var obj = _.countries.features[i];
                 _.context.beginPath();
                 _.path(obj);
-                _.context.fillStyle = obj.color || '#8f9fc1'; //"rgb(" + (i+1) + ",0,0)";
+                _.context.fillStyle = obj.properties.color || _.style.countries || 'rgba(2, 20, 37,0.8)';
                 _.context.fill();
             }
             return true;
         } else {
             _.path(_.countries);
-            _.context.fillStyle = '#8f9fc1'; // '#00ff00';
+            _.context.fillStyle = _.style.countries || 'rgba(2, 20, 37,0.8)';
             _.context.fill();
             return false;
         }
@@ -95,20 +109,20 @@ export default function (worldUrl, scw, height) {
         } else {
             _.context.clearRect(0, 0, _.canvas.width, _.canvas.height);
         }
-        var crp = true;
+        var border = o.showBorder;
         _.context.beginPath();
-        if (!o.showBorder) {
-            crp = choropleth.call(this);
+        if (!border) {
+            choropleth.call(this);
         }
         if (o.showBorder || o.showBorder===undefined) {
             var sc = scale10(this._.proj.scale());
             if (sc < 1)
                 { sc = 1; }
-            if (crp) {
-                _.path(_.countries);
+            if (border) {
+                _.path(_.allCountries);
             }
             _.context.lineWidth = sc;
-            _.context.strokeStyle = _.style.countries || 'rgb(239, 237, 234)'; //'rgb(0, 37, 34)';
+            _.context.strokeStyle = _.style.border || 'rgb(239, 237, 234)';
             _.context.stroke();
         }
         //apply the old canvas to the new one
@@ -126,7 +140,7 @@ export default function (worldUrl, scw, height) {
             if (_.selected.features.length>0) {
                 _.newContext.beginPath();
                 _.path2(_.selected);
-                _.newContext.fillStyle = _.style.selected || 'rgba(255, 235, 0, 0.4)'; // 'rgba(87, 255, 99, 0.4)';
+                _.newContext.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.5)'; // 0.4 'rgba(255, 235, 0, 0.4)'; // 'rgba(87, 255, 99, 0.4)';
                 _.newContext.fill();
             }
             var ref = this.hoverCanvas.states();
@@ -134,7 +148,7 @@ export default function (worldUrl, scw, height) {
             if (country && !_.selected.features.find(function (obj){ return obj.id===country.id; })) {
                 _.newContext.beginPath();
                 _.path2(country);
-                _.newContext.fillStyle = _.style.hover || 'rgba(117, 0, 0, 0.4)'; //'rgb(137, 138, 34)';
+                _.newContext.fillStyle = _.style.hover || 'rgba(117, 0, 0, 0.5)'; // 0.4 'rgb(137, 138, 34)';
                 _.newContext.fill();
             }
             _.texture.needsUpdate = true;
@@ -154,7 +168,7 @@ export default function (worldUrl, scw, height) {
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                _.me.allData(this.worldJson.allData());
+                _.me.data(this.worldJson.data());
             }
             create.call(this);
         },
@@ -168,6 +182,13 @@ export default function (worldUrl, scw, height) {
             Object.assign(_.onDraw, obj);
             _.onDrawVals = Object.keys(_.onDraw).map(function (k) { return _.onDraw[k]; });
         },
+        countries: function countries(arr) {
+            if (arr) {
+                _.countries.features = arr;
+            } else {
+                return _.countries.features;
+            }
+        },
         selectedCountries: function selectedCountries(arr) {
             if (arr) {
                 _.selected.features = arr;
@@ -178,7 +199,8 @@ export default function (worldUrl, scw, height) {
         data: function data(data$1) {
             if (data$1) {
                 _.world = data$1;
-                _.countries = topojson.feature(data$1, data$1.objects.countries);
+                _.allCountries = topojson.feature(data$1, data$1.objects.countries);
+                _.countries.features = _.allCountries.features;
             } else {
                 return  _.world;
             }
@@ -199,9 +221,17 @@ export default function (worldUrl, scw, height) {
             }
             return _.style;
         },
+        reload: function reload() {
+            resize.call(this);
+            refresh.call(this);
+        },
         refresh: function refresh$1() {
             _.refresh = true;
             refresh.call(this);
+        },
+        onHover: function onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverVals = Object.keys(_.onHover).map(function (k) { return _.onHover[k]; });
         },
         sphere: function sphere() {
             return _.sphereObject;

@@ -3,35 +3,16 @@
 // http://www.svgdiscovery.com/ThreeJS/Examples/17_three.js-D3-graticule.htm
 // https://stackoverflow.com/questions/22028288/how-to-optimize-rendering-of-many-spheregeometry-in-three-js
 // https://threejs.org/docs/#api/materials/PointsMaterial
-export default function (urlJson) {
+export default function (urlJson) { //imgUrl='../globe/point3.png'
     /*eslint no-console: 0 */
     var _ = {
-        dataDots: null,
+        dataPoints: null,
         onHover: {},
         onHoverVals: [],
 };
 
     function init() {
-        this._.options.showDots = true;
-    }
-
-    function createDot(feature) {
-        var tj = this.threejsPlugin,
-        material = new THREE.MeshBasicMaterial({
-            color: feature.geometry.color || 0xC19999, //F0C400,
-            side: THREE.DoubleSide,
-            transparent: true,
-            depthWrite: false,
-            depthTest: true,
-            opacity: 0.5,
-        }),
-        radius   = (feature.geometry.radius || 0.5) * 10,
-        geometry = new THREE.CircleBufferGeometry(radius, 25),
-        mesh     = new THREE.Mesh(geometry, material),
-        position = tj.vertex(feature.geometry.coordinates);
-        mesh.position.set(position.x, position.y, position.z);
-        mesh.lookAt({x:0,y:0,z:0});
-        return mesh;
+        this._.options.showPoints = true;
     }
 
     function hover(event){
@@ -43,26 +24,37 @@ export default function (urlJson) {
     }
 
     function create() {
-        var this$1 = this;
-
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
-            _.sphereObject = new THREE.Group();
-            _.sphereObject.name = _.me.name;
-            _.dataDots.features.forEach(function (d) {
-                var dot = createDot.call(this$1, d);
-                dot.__data__ = d;
-                _.sphereObject.add(dot);
-                if (tj.domEvents) {
-                    tj.domEvents.addEventListener(dot, 'mousemove', hover, false);
-                }
+            var particles = new THREE.Geometry();
+            _.dataPoints.features.forEach(function (d) {
+                var star = new THREE.Vector3();
+                var position = tj.vertex(d.geometry.coordinates);
+                star.x = position.x;
+                star.y = position.y;
+                star.z = position.z;
+                particles.vertices.push( star );
             });
+            var pMaterial = new THREE.PointsMaterial({
+                // blending: THREE.AdditiveBlending,
+                // map: tj.texture(imgUrl),
+                // transparent: true,
+                // depthTest: false,
+                color: 0xff0000,
+                size: 30
+             });
+            var starField = new THREE.Points( particles, pMaterial );
+            _.sphereObject = starField;
+            _.sphereObject.name = _.me.name;
+            if (tj.domEvents) {
+                tj.domEvents.addEventListener(starField, 'mousemove', hover, false);
+            }
         }
         tj.addGroup(_.sphereObject);
     }
 
     return {
-        name: 'dotsThreejs',
+        name: 'pointsThreejs',
         urls: urlJson && [urlJson],
         onReady: function onReady(err, data) {
             _.me.data(data);
@@ -76,9 +68,9 @@ export default function (urlJson) {
         },
         data: function data(data$1) {
             if (data$1) {
-                _.dataDots = data$1;
+                _.dataPoints = data$1;
             } else {
-                return _.dataDots;
+                return _.dataPoints;
             }
         },
         onHover: function onHover(obj) {
@@ -88,10 +80,5 @@ export default function (urlJson) {
         sphere: function sphere() {
             return _.sphereObject;
         },
-        // color(c) {
-        //     material.color.set(c);
-        //     material.needsUpdate = true;
-        //     this.threejsPlugin.renderThree();
-        // }
     }
 }

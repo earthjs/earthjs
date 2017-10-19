@@ -13,8 +13,10 @@ export default function (worldUrl) {
 
     function create() {
         var __ = this._;
-        _.svg.selectAll('.landbg,.land,.lakes,.countries').remove();
+        var klas = _.me.name;
+        _.svg.selectAll((".world." + klas)).remove();
         if (__.options.showLand) {
+            $.g = _.svg.append('g').attr('class', ("world " + klas));
             if (_.world) {
                 if (__.options.transparent || __.options.transparentLand) {
                     _.svgAddWorldBg.call(this);
@@ -36,56 +38,61 @@ export default function (worldUrl) {
         var __ = this._;
         if (_.world) {
             if (__.options.transparent || __.options.transparentLand) {
-                if (!$.worldBg) {
+                if (!$.worldBgPath) {
                     svgAddWorldBg();
                 }
                 __.proj.clipAngle(180);
-                $.worldBg.attr('d', __.path);
+                $.worldBgPath.attr('d', __.path);
                 __.proj.clipAngle(90);
-            } else if ($.worldBg) {
-                $.worldBg.remove();
-                $.worldBg = null;
+            } else if ($.worldBgPath) {
+                $.worldBgG.remove();
+                $.worldBgPath = null;
             }
             if (__.options.showLand) {
                 if (__.options.showCountries) {
-                    if (!$.countries) {
-                        $.world.remove();
-                        $.world = null;
+                    if (!$.countriesPath) {
+                        $.worldG.remove();
+                        $.worldPath = null;
                         svgAddCountries();
                     }
-                    $.countries.attr('d', __.path);
+                    $.countriesPath.attr('d', __.path);
                 } else {
-                    if (!$.world) {
-                        $.countries.remove();
-                        $.countries = null;
+                    if (!$.worldPath) {
+                        $.countriesG.remove();
+                        $.countriesPath = null;
                         svgAddWorld();
                     }
-                    $.world.attr('d', __.path);
+                    $.worldPath.attr('d', __.path);
                 }
                 if (__.options.showLakes) {
-                    $.lakes.attr('d', __.path);
+                    $.lakesPath.attr('d', __.path);
                 }
             }
         }
     }
 
     function svgAddWorldBg() {
-        $.worldBg = _.svg.append('g').attr('class','landbg').append('path').datum(_.land)
-        .attr('fill', 'rgba(119,119,119,0.2)');
+        $.worldBgG = $.g.append('g').attr('class','landbg');
+        $.worldBgPath = $.worldBgG.append('path').datum(_.land)
+            .attr('fill', 'rgba(119,119,119,0.2)');
     }
 
     function svgAddWorld() {
-        $.world = _.svg.append('g').attr('class','land').append('path').datum(_.land);
+        $.worldG = $.g.append('g').attr('class','land');
+        $.worldPath = $.worldG.append('path').datum(_.land);
     }
 
     function svgAddCountries() {
-        $.countries = _.svg.append('g').attr('class','countries').selectAll('path')
-            .data(_.countries.features).enter().append('path')
+        $.countriesG = $.g.append('g').attr('class','countries');
+        $.countriesPath = $.countriesG
+            .selectAll('path').data(_.countries.features).enter().append('path')
+            .attr('class',function(d) {return ("cid-" + (d.properties.cid))})
             .attr('id',function(d) {return 'x'+d.id});
     }
 
     function svgAddLakes() {
-        $.lakes = _.svg.append('g').attr('class','lakes').append('path').datum(_.lakes);
+        $.lakesG = $.g.append('g').attr('class','lakes').append('path').datum(_.lakes);
+        $.lakesPath = $.lakesG.append('path').datum(_.lakes);
     }
 
     return {
@@ -128,8 +135,9 @@ export default function (worldUrl) {
             if (data$1) {
                 _.world = data$1;
                 _.land = topojson.feature(data$1, data$1.objects.land);
-                _.lakes.features = topojson.feature(data$1, data$1.objects.ne_110m_lakes).features;
                 _.countries.features = topojson.feature(data$1, data$1.objects.countries).features;
+                if (data$1.objects.ne_110m_lakes)
+                    { _.lakes.features = topojson.feature(data$1, data$1.objects.ne_110m_lakes).features; }
             } else {
                 return  _.world;
             }
@@ -155,8 +163,8 @@ export default function (worldUrl) {
             }
             return _.svg;
         },
-        $world: function $world()     {return $.world;    },
-        $lakes: function $lakes()     {return $.lakes;    },
-        $countries: function $countries() {return $.countries;},
+        $world: function $world()     {return $.worldPath;},
+        $lakes: function $lakes()     {return $.lakesPath;},
+        $countries: function $countries() {return $.countriesPath;},
     };
 }

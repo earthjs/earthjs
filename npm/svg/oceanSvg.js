@@ -2,7 +2,7 @@ export default function () {
     var _ = {
         svg:null,
         q: null,
-        scale: 0, 
+        scale: 0,
         oceanColor: [
             'rgba(221, 221, 255, 0.6)',
             'rgba(153, 170, 187,0.8)'
@@ -22,7 +22,8 @@ export default function () {
     }
 
     function create() {
-        _.svg.selectAll('#ocean,.ocean').remove();
+        var klas = _.me.name;
+        _.svg.selectAll(("#ocean,.ocean." + klas)).remove();
         if (this._.options.showOcean) {
             var c = _.oceanColor;
             var ocean_fill = this.$slc.defs.append('radialGradient')
@@ -35,7 +36,7 @@ export default function () {
             ocean_fill.append('stop')
             .attr('offset', '100%')
             .attr('stop-color', c[1]);
-            $.ocean = _.svg.append('g').attr('class','ocean').append('circle')
+            $.ocean = _.svg.append('g').attr('class',("ocean " + klas)).append('circle')
             .attr('cx',this._.center[0]).attr('cy', this._.center[1])
             .attr('class', 'noclicks');
             resize.call(this);

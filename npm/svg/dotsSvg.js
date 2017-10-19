@@ -14,13 +14,14 @@ export default function (urlDots, ref) {
 
     function create() {
         var __ = this._;
-        _.svg.selectAll('.dot').remove();
+        var klas = _.me.name;
+        _.svg.selectAll((".dot." + klas)).remove();
         if (_.dataDots && __.options.showDots) {
             var circles = [];
             _.circles.forEach(function(d) {
                 circles.push(d.circle);
             });
-            $.dots = _.svg.append('g').attr('class','dot').selectAll('path')
+            $.dots = _.svg.append('g').attr('class', ("dot " + klas)).selectAll('path')
             .data(circles).enter().append('path');
             if (_.dataDots.geometry) {
                 var _g = _.dataDots.geometry || {};

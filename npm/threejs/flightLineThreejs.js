@@ -16,7 +16,7 @@ export default function (jsonUrl, imgUrl, height) {
         onHover: {},
         onHoverVals: [],
     };
-    var lineScale = d3.scaleLinear().domain([30,2500]).range([0.001, 0.01]);
+    var lineScale = d3.scaleLinear().domain([30,2500]).range([0.001, 0.005]);
     var PI180 = Math.PI / 180.0;
 
     var colorRange = [d3.rgb('#ff0000'),d3.rgb("#aaffff")];
@@ -307,12 +307,8 @@ export default function (jsonUrl, imgUrl, height) {
                 useMap: false,
                 opacity: 1,
                 lineWidth: lineWidth,
-                // near: this._.camera.near,
-                // far:  this._.camera.far
-                // resolution: resolution,
-                // sizeAttenuation: true,
             });
-            for (var j = 0; j < curve_length; ++j) {
+            for (var j = 0; j <= curve_length; ++j) {
                 var i_curve = j * 3;
                 var ref$1 = spline.getPoint(j / curve_length);
                 var x = ref$1.x;
@@ -366,8 +362,8 @@ export default function (jsonUrl, imgUrl, height) {
             generate_track_lines2.call(this));
         group.add(generate_point_cloud.call(this));
         group.name = 'flightLineThreejs';
-        if (this._.domEvents) {
-            this._.domEvents.addEventListener(_.track_lines_object, 'mousemove', function(event){
+        if (this.threejsPlugin.domEvents) {
+            this.threejsPlugin.domEvents.addEventListener(_.track_lines_object, 'mousemove', function(event){
                 for (var i = 0, list = _.onHoverVals; i < list.length; i += 1) {
                     var v = list[i];
 
@@ -376,18 +372,13 @@ export default function (jsonUrl, imgUrl, height) {
             }, false);
         }
         _.sphereObject = group;
+        _.sphereObject.name = _.me.name;
         _.loaded = true;
     }
 
     function init() {
         _.SCALE = this._.proj.scale();
-        var manager = new THREE.LoadingManager();
-        var loader = new THREE.TextureLoader(manager);
-        this._.options.showFlightLine = true;
-        _.texture = loader.load(imgUrl,
-            function(point_texture) {
-                return point_texture;
-            })
+        _.texture = this.threejsPlugin.texture(imgUrl);
     }
 
     function create() {
@@ -401,19 +392,18 @@ export default function (jsonUrl, imgUrl, height) {
     function reload() {
         all_tracks = [];
         point_cache = [];
-        var tj = this.threejsPlugin;
         loadFlights.call(this);
-        var grp = tj.group();
-        var arr = grp.children;
+        var tj = this.threejsPlugin;
+        var arr = tj.group.children;
         var idx = arr.findIndex(function (obj){ return obj.name==='flightLineThreejs'; });
-        grp.remove(arr[idx]);
-        grp.add(_.sphereObject);
+        tj.group.remove(arr[idx]);
+        tj.group.add(_.sphereObject);
         tj.renderThree();
     }
 
     var start = 0;
     function interval(timestamp) {
-        if ((timestamp - start)>30 && !this._.drag) {
+        if ((timestamp - start)>30) {
             start = timestamp;
             update_point_cloud();
             this.threejsPlugin.renderThree();
@@ -447,12 +437,14 @@ export default function (jsonUrl, imgUrl, height) {
         onInit: function onInit(me) {
             _.me = me;
             init.call(this);
+            this._.options.showFlightLine = true;
         },
         onResize: function onResize() {
             resize.call(this);
         },
         onInterval: function onInterval(t) {
-            _.lightFlow && interval.call(this, t);
+            if (!this._.drag && _.lightFlow)
+                { interval.call(this, t); }
         },
         onCreate: function onCreate() {
             create.call(this);

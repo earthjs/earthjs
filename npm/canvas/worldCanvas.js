@@ -43,11 +43,11 @@ export default function (worldUrl) {
                         this.canvasPlugin.render(function(context, path) {
                             context.beginPath();
                             path(_.selected);
-                            context.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.4)';
+                            context.fillStyle = _.style.selected || 'rgba(87, 255, 99, 0.5)';
                             context.fill();
                         }, _.drawTo, _.options);
                     } else {
-                        for (var i = 0, list = _.selected.features; i < list.length; i += 1) {
+                        var loop = function () {
                             var scountry = list[i];
 
                             this$1.canvasPlugin.render(function(context, path) {
@@ -56,7 +56,9 @@ export default function (worldUrl) {
                                 context.fillStyle = scountry.color;
                                 context.fill();
                             }, _.drawTo, _.options);
-                        }
+                        };
+
+                        for (var i = 0, list = _.selected.features; i < list.length; i += 1) loop();
                     }
                 }
                 var ref = this.hoverCanvas.states();
@@ -65,7 +67,7 @@ export default function (worldUrl) {
                     this.canvasPlugin.render(function(context, path) {
                         context.beginPath();
                         path(country);
-                        context.fillStyle = _.style.hover || 'rgba(117, 0, 0, 0.4)';
+                        context.fillStyle = _.style.hover || 'rgba(117, 0, 0, 0.5)';
                         context.fill();
                     }, _.drawTo, _.options);
                 }
@@ -102,7 +104,7 @@ export default function (worldUrl) {
         this.canvasPlugin.render(function(context, path) {
             context.beginPath();
             path(_.lakes);
-            context.fillStyle = _.style.lakes || 'rgba(80, 87, 97, 0.4)';
+            context.fillStyle = _.style.lakes || 'rgba(80, 87, 97, 0.5)';
             context.fill();
         }, _.drawTo, _.options);
     }
@@ -163,8 +165,9 @@ export default function (worldUrl) {
             if (data$1) {
                 _.world = data$1;
                 _.land  = topojson.feature(data$1, data$1.objects.land);
-                _.lakes.features = topojson.feature(data$1, data$1.objects.ne_110m_lakes).features;
                 _.countries.features = topojson.feature(data$1, data$1.objects.countries).features;
+                if (data$1.objects.ne_110m_lakes)
+                    { _.lakes.features = topojson.feature(data$1, data$1.objects.ne_110m_lakes).features; }
             } else {
                 return _.world;
             }

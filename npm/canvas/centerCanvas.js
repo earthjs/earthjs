@@ -28,6 +28,9 @@ export default function () {
                         transition.call(_this, d3.geoCentroid(country));
                         if (typeof(_.focused)==='function') {
                             _.focused.call(_this, event, country);
+                            if (_this.threejsPlugin) {
+                                _this.threejsPlugin.rotate();
+                            }
                         }
                     }
                 }
@@ -48,6 +51,9 @@ export default function () {
             var c = this.worldCanvas.countries();
             var focusedCountry = country(c, id),
                 p = d3.geoCentroid(focusedCountry);
+            if (this.inertiaPlugin) {
+                this.inertiaPlugin.stopDrag();
+            }
             transition.call(this, p);
         },
         focused: function focused(fn) {

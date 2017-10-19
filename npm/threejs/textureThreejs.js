@@ -33,8 +33,9 @@ export default function () {
     function create() {
         var __ = this._;
         var tj = this.threejsPlugin;
-        var width  = __.options.width;
-        var height = __.options.height;
+        var ref  = __.options;
+        var width = ref.width;
+        var height = ref.height;
         if (!_.sphereObject) {
             _.context.fillStyle = 'white';
             _.context.fillRect(0, 0, width, height);
@@ -44,6 +45,7 @@ export default function () {
             _.context.strokeStyle = 'rgba(119,119,119,0.6)';
             _.context.stroke();
             _.sphereObject = new THREE.Mesh( geometry, material );
+            _.sphereObject.name = _.me.name;
             _.texture.needsUpdate = false;
         }
         tj.addGroup(_.sphereObject);

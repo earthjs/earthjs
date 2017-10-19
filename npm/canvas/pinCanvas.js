@@ -23,19 +23,20 @@ export default function (urlJson, urlImage, wh) {
             var _$1 = this._;
             var center = _$1.proj.invert(_$1.center);
             this.canvasPlugin.render(function(context) {
-                _.dataPin.features.forEach(function(d) {
-                    var coordinates = d.geometry.coordinates;
-                    if (d3.geoDistance(coordinates, center) <= 1.57) {
-                        var a = _$1.path.centroid(d);
-                        context.drawImage(_.image,
-                            a[0]-_.pX,
-                            a[1]-_.pY,
-                            _.wh[0],
-                            _.wh[1]
-                        );
-                    }
-                });
-
+                if (_.dataPin) {
+                    _.dataPin.features.forEach(function(d) {
+                        var coordinates = d.geometry.coordinates;
+                        if (d3.geoDistance(coordinates, center) <= 1.57) {
+                            var a = _$1.path.centroid(d);
+                            context.drawImage(_.image,
+                                a[0]-_.pX,
+                                a[1]-_.pY,
+                                _.wh[0],
+                                _.wh[1]
+                            );
+                        }
+                    });
+                }
             }, _.drawTo);
         }
     }

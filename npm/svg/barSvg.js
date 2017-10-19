@@ -7,16 +7,17 @@ export default function (urlBars) {
     function init() {
         var __ = this._;
         __.options.showBars = true;
-        _.barProjection = __.orthoGraphic();
+        _.barProjection = __.projection();
         _.svg = __.svg;
     }
 
     function create() {
         var __ = this._;
+        var klas = _.me.name;
         svgClipPath.call(this);
-        _.svg.selectAll('.bar').remove();
+        _.svg.selectAll((".bar." + klas)).remove();
         if (_.bars && __.options.showBars) {
-            var gBar = _.svg.append('g').attr('class','bar');
+            var gBar = _.svg.append('g').attr('class', ("bar " + klas));
             var mask = gBar.append('mask')
                 .attr('id', 'edge');
             mask.append('rect')

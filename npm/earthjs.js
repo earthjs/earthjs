@@ -7,9 +7,11 @@ var earthjs = function (options) {
     /*eslint no-console: 0 */
     cancelAnimationFrame(earthjs.ticker);
     options = Object.assign({
+        svgCanvasSelector: '.ej-svg,.ej-canvas',
         selector: '#earth-js',
         rotate: [130,-33,-11],
         transparent: false,
+        map: false,
         padding: 0
     }, options);
     var _ = {
@@ -25,6 +27,9 @@ var earthjs = function (options) {
         onInterval: {},
         onIntervalVals: [],
 
+        onTween: {},
+        onTweenVals: [],
+
         ready: null,
         promeses: [],
         loadingData: null,
@@ -35,6 +40,7 @@ var earthjs = function (options) {
             return globe;
         }
     }
+    window._ = _;
     var drag = false;
     var svg = d3.selectAll(options.selector);
     var width = +svg.attr('width'), height = +svg.attr('height');
@@ -43,6 +49,8 @@ var earthjs = function (options) {
         height = options.height || 500;
         svg.attr('width', width).attr('height', height);
     }
+    d3.selectAll(options.svgCanvasSelector)
+        .attr('width', width).attr('height',height);
     var center = [width/2, height/2];
     Object.defineProperty(options, 'width', {
         get: function () { return width; },
@@ -68,52 +76,58 @@ var earthjs = function (options) {
         },
         $slc: {},
         ready: function ready(fn) {
-            if (fn && _.promeses.length>0) {
-                var q = d3.queue();
-                _.loadingData = true;
-                _.promeses.forEach(function (obj) {
-                    obj.urls.forEach(function (url) {
-                        var ext = url.split('.').pop();
-                        if (ext==='geojson') {
-                            ext = 'json';
-                        }
-                        q.defer(d3[ext], url);
-                    });
-                })
-                q.await(function() {
-                    var args = [].slice.call(arguments);
-                    var err = args.shift();
+            if (fn) {
+                globe._.readyFn = fn;
+                globe._.promeses = _.promeses;
+                if (_.promeses.length>0) {
+                    var q = d3.queue();
+                    _.loadingData = true;
                     _.promeses.forEach(function (obj) {
-                        var ln = obj.urls.length;
-                        var ar = args.slice(0,ln);
-                        var ready = globe[obj.name].ready;
-                        ar.unshift(err);
+                        obj.urls.forEach(function (url) {
+                            var ext = url.split('.').pop();
+                            if (ext==='geojson') {
+                                ext = 'json';
+                            }
+                            q.defer(d3[ext], url);
+                        });
+                    })
+                    q.await(function() {
+                        var args = [].slice.call(arguments);
+                        var err = args.shift();
+                        _.promeses.forEach(function (obj) {
+                            var ln = obj.urls.length;
+                            var ar = args.slice(0,ln);
+                            var ready = globe[obj.name].ready;
+                            ar.unshift(err);
 
-                        if (ready) {
-                            ready.apply(globe, ar);
-                        } else {
-                            obj.onReady.apply(globe, ar);
-                        }
-                        args = args.slice(ln);
+                            if (ready) {
+                                ready.apply(globe, ar);
+                            } else {
+                                obj.onReady.apply(globe, ar);
+                            }
+                            args = args.slice(ln);
+                        });
+                        _.loadingData = false;
+                        fn.called = true;
+                        fn.call(globe);
                     });
-                    _.loadingData = false;
-                    fn.call(globe);
-                });
+                }
             } else if (arguments.length===0) {
                 return _.loadingData;
             }
         },
         register: function register(obj, name) {
-            var ar = {name: name || obj.name};
+            var ar = {name: name || obj.name, __on__:{}};
             globe[ar.name] = ar;
             Object.keys(obj).forEach(function(fn) {
                 if ([
                     'urls',
                     'onReady',
                     'onInit',
+                    'onTween',
                     'onCreate',
-                    'onRefresh',
                     'onResize',
+                    'onRefresh',
                     'onInterval'].indexOf(fn)===-1) {
                     if (typeof(obj[fn])==='function') {
                         ar[fn] = function() {
@@ -125,6 +139,7 @@ var earthjs = function (options) {
             if (obj.onInit) {
                 obj.onInit.call(globe, ar);
             }
+            qEvent(obj,'onTween', ar.name);
             qEvent(obj,'onCreate', ar.name);
             qEvent(obj,'onResize', ar.name);
             qEvent(obj,'onRefresh', ar.name);
@@ -182,6 +197,13 @@ var earthjs = function (options) {
                     }
                 }
             }
+            for (var i$1 = 0, list$1 = _.onTweenVals; i$1 < list$1.length; i$1 += 1) {
+                var twn = list$1[i$1];
+
+                twn.call(globe, timestamp);
+            }
+            // if (__.options.tween && !__.drag)
+            //     __.options.tween(timestamp);
             earthjs.ticker = requestAnimationFrame(step);
         }
         earthjs.ticker = requestAnimationFrame(step);
@@ -205,9 +227,9 @@ var earthjs = function (options) {
 
     __.interval = function(t) {
         for (var i = 0, list = _.onIntervalVals; i < list.length; i += 1) {
-            var fn = list[i];
+            var fn1 = list[i];
 
-            fn.call(globe, t);
+            fn1.call(globe, t);
         }
         return globe;
     }
@@ -220,9 +242,9 @@ var earthjs = function (options) {
             });
         } else {
             for (var i = 0, list = _.onRefreshVals; i < list.length; i += 1) {
-                var fn = list[i];
+                var fn2 = list[i];
 
-                fn.call(globe);
+                fn2.call(globe);
             }
         }
         return globe;
@@ -230,44 +252,84 @@ var earthjs = function (options) {
 
     __.resize = function() {
         for (var i = 0, list = _.onResizeVals; i < list.length; i += 1) {
-            var fn = list[i];
+            var fn3 = list[i];
 
-            fn.call(globe);
+            fn3.call(globe);
         }
         return globe;
     }
 
-    __.orthoGraphic = function() {
-        var r = __.options.rotate;
-        if (typeof(r)==='number') {
-            __.options.rotate = [r,-33,-11];
-        }
+    __.projection = function() {
         var ref = __.options;
         var scale = ref.scale;
         var width = ref.width;
         var height = ref.height;
         var padding = ref.padding;
-        if (!scale) {
-            var mins = d3.min([width, height]);
-            scale =  mins / 2 - padding;
+        if (__.options.map) {
+            if (!scale) {
+                scale = (width/6.279) - padding;
+            }
+            return d3.geoEquirectangular()
+                .translate(__.center)
+                .precision(0.1)
+                .scale(scale);
+        } else {
+            if (!scale) {
+                var mins = d3.min([width, height]);
+                scale =  mins / 2 - padding;
+            }
+            var r = __.options.rotate;
+            if (typeof(r)==='number') {
+                __.options.rotate = [r,-33,-11];
+            }
+            return d3.geoOrthographic()
+                .rotate(__.options.rotate)
+                .translate(__.center)
+                .precision(0.1)
+                .clipAngle(90)
+                .scale(scale);
         }
-        return d3.geoOrthographic()
-            .rotate(__.options.rotate)
-            .translate(__.center)
-            .precision(0.1)
-            .clipAngle(90)
-            .scale(scale);
+
     }
 
-    __.proj = __.orthoGraphic();
+    __.proj = __.projection();
     __.path = d3.geoPath().projection(__.proj);
+
+    globe.__addEventQueue = function(name, qname) {
+        var obj = globe[name].__on__;
+        if (qname) {
+            AddQueueEvent(obj, qname, name);
+        } else {
+            obj && Object.keys(obj).forEach(function (qname) { return AddQueueEvent(obj, qname, name); });
+        }
+    }
+    globe.__removeEventQueue = function(name, qname) {
+        var obj = globe[name].__on__;
+        if (obj) {
+            if (qname) {
+                delete _[qname][name];
+                _[qname+'Keys'] = Object.keys(_[qname]);
+                _[qname+'Vals'] = _[qname+'Keys'].map(function (k) { return _[qname][k]; });
+            } else {
+                Object.keys(obj).forEach(function (qname) {
+                    delete _[qname][name];
+                    _[qname+'Keys'] = Object.keys(_[qname]);
+                    _[qname+'Vals'] = _[qname+'Keys'].map(function (k) { return _[qname][k]; });
+                });
+            }
+        }
+    }
     return globe;
     //----------------------------------------
+    function AddQueueEvent(obj, qname, name) {
+        _[qname][name]  = obj[qname];
+        _[qname+'Keys'] = Object.keys(_[qname]);
+        _[qname+'Vals'] = _[qname+'Keys'].map(function (k) { return _[qname][k]; });
+    }
     function qEvent(obj, qname, name) {
         if (obj[qname]) {
-            _[qname][name || obj.name] = obj[qname];
-            _[qname+'Keys'] = Object.keys(_[qname]);
-            _[qname+'Vals'] = _[qname+'Keys'].map(function (k) { return _[qname][k]; });
+            globe[name].__on__[qname] = obj[qname];
+            AddQueueEvent(obj, qname, name)
         }
     }
 }

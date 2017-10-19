@@ -30,6 +30,7 @@ export default function () {
 
             _.sphereObject = new THREE.Object3D();
             _.sphereObject.add(sphereMesh, dot1Mesh, dot2Mesh, dot3Mesh);
+            _.sphereObject.name = _.me.name;
         }
         tj.addGroup(_.sphereObject);
     }

@@ -3,7 +3,10 @@ export default function (jsonUrl, height) {
     if ( height === void 0 ) height=2;
 
     /*eslint no-console: 0 */
-    var _ = {sphereObject: null, data: null};
+    var _ = {
+        sphereObject: null,
+        data: null
+    };
     var material = new THREE.MeshBasicMaterial({
         vertexColors: THREE.FaceColors,
         morphTargets: false,
@@ -30,10 +33,6 @@ export default function (jsonUrl, height) {
         mesh.lookAt({x:0,y:0,z:0});
     }
 
-    function init() {
-        this._.options.showBars = true;
-    }
-
     function create() {
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
@@ -52,6 +51,7 @@ export default function (jsonUrl, height) {
                 group.add(mesh);
             })
             _.sphereObject = group;
+            _.sphereObject.name = _.me.name;
         }
         tj.addGroup(_.sphereObject);
     }
@@ -64,7 +64,6 @@ export default function (jsonUrl, height) {
         },
         onInit: function onInit(me) {
             _.me = me;
-            init.call(this);
         },
         onCreate: function onCreate() {
             create.call(this);

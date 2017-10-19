@@ -2,10 +2,12 @@
 export default function () {
     /*eslint no-console: 0 */
     var _ = {
+        contexts: [],
         canvas: null,
         path: null,
         q: null
     }
+    var $ = {};
 
     function init() {
         var __ = this._;
@@ -17,7 +19,8 @@ export default function () {
         var __ = this._;
         if (__.options.showCanvas) {
             if (!_.canvas) {
-                var fObject = __.svg.append('g').attr('class','canvas').append('foreignObject')
+                $.g = __.svg.append('g').attr('class', _.me.name);
+                var fObject = $.g.append('foreignObject')
                 .attr('x', 0)
                 .attr('y', 0)
                 .attr('width', __.options.width)
@@ -35,6 +38,7 @@ export default function () {
             .attr('y', 0)
             .attr('width', __.options.width)
             .attr('height', __.options.height);
+            _.contexts = _.canvas.nodes().map(function (obj) { return obj.getContext('2d'); });
         }
         if (_.canvas) {
             refresh.call(this);
@@ -45,9 +49,10 @@ export default function () {
         var ref = this._.options;
         var width = ref.width;
         var height = ref.height;
-        _.canvas.each(function() {
-            this.getContext('2d').clearRect(0, 0, width, height);
-        });
+        var l = _.contexts.length;
+        while(l--) {
+            _.contexts[l].clearRect(0, 0, width, height);
+        }
     }
 
     return {
@@ -119,6 +124,6 @@ export default function () {
                 context.restore();
                 __.proj.rotate(r);
             }, drawTo, options);
-        }
+        },
     }
 }

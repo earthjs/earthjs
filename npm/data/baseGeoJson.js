@@ -1,13 +1,12 @@
-export default function() {
+export default function (jsonUrl) {
     /*eslint no-console: 0 */
-    var _ = {data: []};
-    var args = arguments;
+    var _ = {data: null};
 
     return {
-        name: 'baseCsv',
-        urls: Array.prototype.slice.call(args),
-        onReady: function onReady(err, csv) {
-            _.me.data(csv);
+        name: 'baseGeoJson',
+        urls: jsonUrl && [jsonUrl],
+        onReady: function onReady(err, json) {
+            _.me.data(json);
         },
         onInit: function onInit(me) {
             _.me = me;
@@ -30,10 +29,5 @@ export default function() {
                 return {data: data};
             }
         },
-        arrToJson: function arrToJson(k, v) {
-            var json = {};
-            _.data.forEach(function (x) { return json[x[k]] = x[v]; });
-            return json;
-        }
     }
 }

@@ -1,10 +1,8 @@
 export default function (imgUrl) {
-    if ( imgUrl === void 0 ) imgUrl='../d/world.png';
+    if ( imgUrl === void 0 ) imgUrl='../globe/world.png';
 
     /*eslint no-console: 0 */
     var _ = {sphereObject: null};
-    var manager = new THREE.LoadingManager();
-    var loader = new THREE.TextureLoader(manager);
     var Shaders = {
       'earth' : {
         uniforms: {
@@ -57,7 +55,7 @@ export default function (imgUrl) {
             var geometry  = new THREE.SphereGeometry(SCALE, 30, 30);
             var uniforms1 = THREE.UniformsUtils.clone(Shaders.earth.uniforms);
             var uniforms2 = THREE.UniformsUtils.clone(Shaders.atmosphere.uniforms);
-            uniforms1['texture'].value = loader.load(imgUrl, function (image){ return image; });
+            uniforms1['texture'].value = tj.texture(imgUrl);
 
             var mesh1 = new THREE.Mesh(geometry, new THREE.ShaderMaterial({
                 uniforms: uniforms1,
@@ -78,8 +76,9 @@ export default function (imgUrl) {
             group.add(mesh1);
             group.add(mesh2);
             _.sphereObject = group;
+            _.sphereObject.name = _.me.name;
             tj.addGroup(_.sphereObject);
-            tj.rotate();
+            // tj.rotate();
         } else {
             tj.addGroup(_.sphereObject);
         }
@@ -97,10 +96,11 @@ export default function (imgUrl) {
         sphere: function sphere() {
             return _.sphereObject;
         },
-        imgSrc: function imgSrc(umgUrl) {
+        imgSrc: function imgSrc(imgUrl) {
+            var tj = this.threejsPlugin;
             var ref = _.me.sphere().children[0];
             var material = ref.material;
-            material.uniforms.texture.value = loader.load(umgUrl, function (image){ return image; });
+            material.uniforms.texture.value = tj.texture(imgUrl);
             material.needsUpdate = true;
         }
     }

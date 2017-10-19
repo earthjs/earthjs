@@ -9,10 +9,11 @@ export default function () {
     }
 
     function create() {
-        _.svg.selectAll('#glow,.sphere').remove();
+        var klas = _.me.name;
+        _.svg.selectAll(("#glow,.sphere." + klas)).remove();
         if (this._.options.showSphere) {
             this.$slc.defs.nodes()[0].append("\n<filter id='glow'>\n    <feColorMatrix type='matrix'\n        values=\n        '0 0 0 0   0\n         0 0 0 0.9 0\n         0 0 0 0.9 0\n         0 0 0 1   0'/>\n    <feGaussianBlur stdDeviation='5.5' result='coloredBlur'/>\n    <feMerge>\n        <feMergeNode in='coloredBlur'/>\n        <feMergeNode in='SourceGraphic'/>\n    </feMerge>\n</filter>\n");
-            $.sphere = _.svg.append('g').attr('class','sphere').append('circle')
+            $.sphere = _.svg.append('g').attr('class',("sphere " + klas)).append('circle')
             .attr('cx',this._.center[0]).attr('cy', this._.center[1])
             .attr('class', 'noclicks').attr('filter', 'url(#glow)');
             resize.call(this);

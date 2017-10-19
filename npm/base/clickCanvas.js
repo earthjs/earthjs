@@ -54,8 +54,9 @@ export default function () {
                 });
             }
         }
-        if (this.mousePlugin) {
-            this.mousePlugin.onClick({
+        var clickPlugin = (this.mousePlugin || this.inertiaPlugin);
+        if (clickPlugin) {
+            clickPlugin.onClick({
                 clickCanvas: mouseClickHandler
             });
         }
@@ -80,7 +81,7 @@ export default function () {
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                _.me.allData(this.worldJson.allData());
+                _.me.data(this.worldJson.data());
             }
         },
         onCircle: function onCircle(obj) {

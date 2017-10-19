@@ -71,6 +71,7 @@ export default function (hmapUrl) {
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
             _.sphereObject= new THREE.Mesh(_.geometry, _.material);
+            _.sphereObject.name = _.me.name;
         }
         _.texture.needsUpdate = true;
         tj.addGroup(_.sphereObject);

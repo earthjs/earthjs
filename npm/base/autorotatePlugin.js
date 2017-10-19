@@ -26,7 +26,7 @@ export default function (degPerSec) {
         if ((timestamp - start) > 40) {
             start = timestamp;
             var now = new Date();
-            if (this._.options.spin && !this._.drag) {
+            if (this._.options.spin && this._.drag===false) {
                 var delta = now - _.lastTick;
                 rotate.call(this, delta);
                 _.sync.forEach(function (g) { return rotate.call(g, delta); });

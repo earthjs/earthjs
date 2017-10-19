@@ -46,6 +46,7 @@ export default function (countryNameUrl) {
         var this$1 = this;
 
         var hoverHandler = function (event, data) { // fn with  current context
+            _.mouse = [event.clientX, event.clientY];
             if (this$1._.drag!==null && data && this$1._.options.showCountryTooltip) {
                 var country = countryName(data);
                 if (country && !(this$1.barTooltipSvg && this$1.barTooltipSvg.visible())) {
@@ -77,7 +78,7 @@ export default function (countryNameUrl) {
         },
         onRefresh: function onRefresh() {
             if (this._.drag) {
-                refresh(this.mousePlugin.mouse());
+                refresh.call(this, _.mouse);
             }
         },
         data: function data(data$1) {

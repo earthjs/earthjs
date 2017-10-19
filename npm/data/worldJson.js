@@ -21,8 +21,9 @@ export default function (jsonUrl) {
             if (data$1) {
                 _.world = data$1;
                 _.land  = topojson.feature(data$1, data$1.objects.land);
-                _.lakes.features = topojson.feature(data$1, data$1.objects.ne_110m_lakes).features;
                 _.countries.features = topojson.feature(data$1, data$1.objects.countries).features;
+                if (data$1.objects.ne_110m_lakes)
+                    { _.lakes.features = topojson.feature(data$1, data$1.objects.ne_110m_lakes).features; }
             } else {
                 return _.world;
             }
@@ -39,6 +40,13 @@ export default function (jsonUrl) {
                 var lakes = _.lakes;
                 var countries = _.countries;
                 return {world: world, land: land, lakes: lakes, countries: countries};
+            }
+        },
+        countries: function countries(arr) {
+            if (arr) {
+                _.countries.features = arr;
+            } else {
+                return _.countries.features;
             }
         },
     }

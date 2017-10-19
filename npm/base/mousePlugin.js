@@ -23,6 +23,7 @@ export default function (ref) {
         onDblClick: {},
         onDblClickVals: []
     };
+    window._mouse = _;
 
     if (zoomScale===undefined) {
         zoomScale = [0,50000];
@@ -57,7 +58,7 @@ export default function (ref) {
         r(__);
         __.rotate(_.r);
         _.onDragVals.forEach(function (v) {
-            v.call(this$1, _.mouse);
+            v.call(this$1, _.event, _.mouse);
         });
     }
 
@@ -68,15 +69,22 @@ export default function (ref) {
         var wh = [__.options.width, __.options.height];
         _.scale  = d3.scaleLinear().domain([30,__.proj.scale()]).range([0.1,1]);
 
+        _.svg.call(d3.drag()
+        .on('start',onStartDrag)
+        .on('drag', onDragging)
+        .on('end',  onEndDrag));
+
         _.zoom = d3.zoom()
             .on('zoom', zoom)
             .scaleExtent([0.1,160])
-            .translateExtent([[0,0], wh]);
+            .translateExtent([[0,0], wh])
+            .filter(function() {
+                var ref = d3.event;
+                var touches = ref.touches;
+                var type = ref.type;
+                return (type==='wheel' || touches);
+            })
 
-        _.svg.call(d3.drag()
-            .on('start',dragstarted)
-            .on('end',  dragsended)
-            .on('drag', dragged));
         _.svg.call(_.zoom);
 
         // todo: add zoom lifecycle to optimize plugins zoom-able
@@ -98,7 +106,7 @@ export default function (ref) {
             this._.rotate(r);
         }
 
-        function dragstarted() {
+        function onStartDrag() {
             var this$1 = this;
 
             var mouse = d3.mouse(this);
@@ -106,8 +114,8 @@ export default function (ref) {
             r0 = __.proj.rotate();
             q0 = versor(r0);
             __.drag = null;
-            _.onDragStartVals.forEach(function (v) { return v.call(this$1, mouse); });
-            _.onDragVals.forEach(     function (v) { return v.call(this$1, mouse); });
+            _.onDragStartVals.forEach(function (v) { return v.call(this$1, _.event, mouse); });
+            _.onDragVals.forEach(     function (v) { return v.call(this$1, _.event, mouse); });
             __.refresh();
             _.mouse = mouse;
             _._this = this;
@@ -115,7 +123,7 @@ export default function (ref) {
             _.t2 = 0;
         }
 
-        function dragged() { // DOM update must be onInterval!
+        function onDragging() { // DOM update must be onInterval!
             __.drag = true;
             _._this = this;
             _.mouse = d3.mouse(this);
@@ -123,7 +131,7 @@ export default function (ref) {
             // _.t1+=1; // twice call compare to onInterval
         }
 
-        function dragsended() {
+        function onEndDrag() {
             var this$1 = this;
 
             var drag = __.drag;
@@ -136,7 +144,7 @@ export default function (ref) {
                     _.wait = null;
                     ondblclick();
                 } else if (_.wait===null) {
-                    _.wait = window.setTimeout(function() {
+                    _.wait = setTimeout(function() {
                         if (_.wait) {
                             _.wait = false;
                         }
@@ -145,10 +153,10 @@ export default function (ref) {
             } else if (drag) {
                 r(__);
                 __.rotate(_.r);
-                _.onDragVals.forEach(function (v) { return v.call(_._this, _.mouse); });
+                _.onDragVals.forEach(function (v) { return v.call(_._this, _.event, _.mouse); });
                 _.sync.forEach(function (g){ return rotate.call(g, _.r); });
             }
-            _.onDragEndVals.forEach(function (v) { return v.call(this$1, _.mouse); });
+            _.onDragEndVals.forEach(function (v) { return v.call(this$1, _.event, _.mouse); });
             __.refresh();
             // console.log('ttl:',_.t1,_.t2);
         }
@@ -183,12 +191,12 @@ export default function (ref) {
         selectAll: function selectAll(q) {
             if (q) {
                 _.q = q;
-                _.svg.call(d3.zoom()
-                    .on('zoom start end', null));
                 _.svg.call(d3.drag()
-                    .on('start',null)
-                    .on('end',  null)
-                    .on('drag', null));
+                .on('start',null)
+                .on('drag', null)
+                .on('end',  null));
+                _.svg.call(d3.zoom()
+                    .on('zoom', null));
                 _.svg = d3.selectAll(q);
                 init.call(this);
                 if (this.hoverCanvas) {

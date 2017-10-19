@@ -63,11 +63,13 @@ export default function () {
                 });
             }
         }
-        if (this.mousePlugin) {
-            this.mousePlugin.onDblClick({
+        var dblClickPlugin = (this.mousePlugin || this.inertiaPlugin);
+        if (dblClickPlugin) {
+            dblClickPlugin.onDblClick({
                 dblClickCanvas: mouseDblClickHandler
             });
         }
+        __.options.showLand = true;
     }
 
     return {
@@ -78,7 +80,7 @@ export default function () {
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                _.me.allData(this.worldJson.allData());
+                _.me.data(this.worldJson.data());
             }
         },
         onCircle: function onCircle(obj) {

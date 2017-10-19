@@ -42,6 +42,7 @@ export default function () {
         if (!_.sphereObject) {
             var material = new THREE.LineBasicMaterial({color: 0xaaaaaa});
             _.sphereObject = tj.wireframe(_.graticule10, material); //0x800000
+            _.sphereObject.name = _.me.name;
         }
         tj.addGroup(_.sphereObject);
     }

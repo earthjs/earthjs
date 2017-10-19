@@ -24,21 +24,20 @@ export default function () {
         }
         var __ = this._;
         var _this = this;
-        _.hoverHandler = function() {
+        _.hoverHandler = function(event, mouse) {
             var this$1 = this;
 
-            var event = d3.event;
             if (__.drag || !event) {
                 return;
             }
             if (event.sourceEvent) {
                 event = event.sourceEvent;
             }
-            var mouse = [event.clientX, event.clientY]; //d3.mouse(this);
-            var pos = __.proj.invert(d3.mouse(this));
+            var xmouse = [event.clientX, event.clientY];
+            var pos = __.proj.invert(mouse);
             _.pos = pos;
             _.dot = null;
-            _.mouse = mouse;
+            _.mouse = xmouse;
             _.country = null;
             if (__.options.showDots) {
                 _.onCircleVals.forEach(function (v) {
@@ -67,12 +66,9 @@ export default function () {
                 _.ocountry2 = _.country;
             }
         }
-        _.svg.on('mousemove', _.hoverHandler);
-        if (this.mousePlugin) {
-            this.mousePlugin.onDrag({
-                hoverCanvas: _.hoverHandler
-            });
-        }
+        _.svg.on('mousemove', function() {
+            _.hoverHandler.call(this, d3.event, d3.mouse(this));
+        });
     }
 
     function findCountry(pos) {
@@ -105,7 +101,7 @@ export default function () {
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
-                _.me.allData(this.worldJson.allData());
+                _.me.data(this.worldJson.data());
             }
         },
         onCircle: function onCircle(obj) {
@@ -141,11 +137,6 @@ export default function () {
                 mouse: _.mouse,
                 country: _.country,
             };
-        },
-        registerMouseDrag: function registerMouseDrag() {
-            this.mousePlugin.onDrag({
-                hoverCanvas: _.hoverHandler
-            });
         },
     }
 }

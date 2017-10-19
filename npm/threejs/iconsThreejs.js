@@ -26,27 +26,23 @@ export default function (jsonUrl, iconUrl) {
                 group.add(mesh);
             })
             _.sphereObject = group;
+            _.sphereObject.name = _.me.name;
         }
         tj.addGroup(_.sphereObject);
     }
 
     function init() {
-        var this$1 = this;
-
         var tj = this.threejsPlugin;
         this._.options.showIcons = true;
-        var loader = new THREE.TextureLoader();
-        loader.load(iconUrl, function (map) {
-            _.material = new THREE.MeshPhongMaterial({
-                side: THREE.DoubleSide,
-                transparent: true,
-                map: map
-            });
-            if (_.data && !_.loaded) {
-                loadIcons.call(this$1);
-                tj.rotate();
-            }
+        _.material = new THREE.MeshPhongMaterial({
+            side: THREE.DoubleSide,
+            transparent: true,
+            map: tj.texture(iconUrl)
         });
+        if (_.data && !_.loaded) {
+            loadIcons.call(this);
+            tj.rotate();
+        }
     }
 
     function create() {

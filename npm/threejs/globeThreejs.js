@@ -2,9 +2,9 @@ export default function (
     imgUrl,
     elvUrl,
     wtrUrl) {
-    if ( imgUrl === void 0 ) imgUrl='../d/world.jpg';
-    if ( elvUrl === void 0 ) elvUrl='../d/elevation.jpg';
-    if ( wtrUrl === void 0 ) wtrUrl='../d/water.png';
+    if ( imgUrl === void 0 ) imgUrl='../globe/world_1.jpg';
+    if ( elvUrl === void 0 ) elvUrl='../globe/earth_elevation.jpg';
+    if ( wtrUrl === void 0 ) wtrUrl='../globe/earth_water.png';
 
     /*eslint no-console: 0 */
     var _ = {
@@ -12,8 +12,6 @@ export default function (
         onHover: {},
         onHoverVals: [],
     };
-    var manager = new THREE.LoadingManager();
-    var loader = new THREE.TextureLoader(manager);
 
     function init() {
         this._.options.showGlobe = true;
@@ -23,9 +21,9 @@ export default function (
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
             var SCALE = this._.proj.scale();
-            var earth_img = loader.load(imgUrl, function (image){ return image; });
-            var elevt_img = loader.load(elvUrl, function (image){ return image; });
-            var water_img = loader.load(wtrUrl, function (image){ return image; });
+            var earth_img = tj.texture(imgUrl);
+            var elevt_img = tj.texture(elvUrl);
+            var water_img = tj.texture(wtrUrl);
             var geometry  = new THREE.SphereGeometry(SCALE, 30, 30);
             var material  = new THREE.MeshPhongMaterial({
                 map: earth_img,
@@ -35,8 +33,9 @@ export default function (
                 specular: new THREE.Color('grey')
             })
             _.sphereObject = new THREE.Mesh(geometry, material);
-            if (this._.domEvents) {
-                this._.domEvents.addEventListener(_.sphereObject, 'mousemove', function(event){
+            _.sphereObject.name = _.me.name;
+            if (this.threejsPlugin.domEvents) {
+                this.threejsPlugin.domEvents.addEventListener(_.sphereObject, 'mousemove', function(event){
                     for (var i = 0, list = _.onHoverVals; i < list.length; i += 1) {
                         var v = list[i];
 
