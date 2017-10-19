@@ -20,19 +20,22 @@ WebGL/Threejs is a way to go if eye catchy of globe is needed and lots of data, 
 
 Interesting Data Visualization can be created by combining SVG, Canvas & Threejs(WebGL) like: choropleth globe using Canvas or Threejs, heatmap globe by rendering heatmap on canvas and use that canvas as a texture in Threejs, flightLine to connect two datapoint using Threejs and coloring target location (usually country) using Canvas. flashy bullet that travel along the way of flightLine is there including the mouse event using Threejs.
 
-## Internal Plugins (more than 50)
+## Internal Plugins (more than 60)
 Selected plugins bundled into library:
 
 * baseCsv,
+* baseGeoJson,
 * worldJson,
+* world3dJson,
 * choroplethCsv,
 * countryNamesCsv,
 * colorScale,
+* dotRegion,
 * hoverCanvas,
 * clickCanvas,
 * mousePlugin,
-* configPlugin,
 * canvasPlugin,
+* inertiaPlugin,
 * countryCanvas,
 * threejsPlugin,
 * dblClickCanvas,
@@ -57,6 +60,7 @@ Selected plugins bundled into library:
 * worldSvg,
 * barSvg,
 * mapSvg,
+* haloSvg,
 * dotsSvg,
 * pingsSvg,
 * pinCanvas,
@@ -70,12 +74,13 @@ Selected plugins bundled into library:
 * dotsCThreejs,
 * iconsThreejs,
 * canvasThreejs,
+* pointsThreejs,
 * textureThreejs,
 * graticuleThreejs,
 * flightLineThreejs,
-* debugThreejs,
 * oceanThreejs,
 * imageThreejs,
+* inertiaThreejs,
 * worldThreejs,
 * globeThreejs,
 * sphereThreejs,

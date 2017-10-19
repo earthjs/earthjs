@@ -14,7 +14,6 @@ import zoomPlugin       from './src/base/zoomPlugin';
 import hoverCanvas      from './src/base/hoverCanvas';
 import clickCanvas      from './src/base/clickCanvas';
 import mousePlugin      from './src/base/mousePlugin';
-import configPlugin     from './src/base/configPlugin';
 import canvasPlugin     from './src/base/canvasPlugin';
 import inertiaPlugin    from './src/base/inertiaPlugin';
 import countryCanvas    from './src/base/countryCanvas';
@@ -62,7 +61,6 @@ import pointsThreejs     from './src/threejs/pointsThreejs';
 import textureThreejs    from './src/threejs/textureThreejs';
 import graticuleThreejs  from './src/threejs/graticuleThreejs';
 import flightLineThreejs from './src/threejs/flightLineThreejs';
-import debugThreejs      from './src/threejs/debugThreejs';
 import oceanThreejs      from './src/threejs/oceanThreejs';
 import imageThreejs      from './src/threejs/imageThreejs';
 import inertiaThreejs    from './src/threejs/inertiaThreejs';
@@ -90,7 +88,6 @@ earthjs.plugins= {
     hoverCanvas,
     clickCanvas,
     mousePlugin,
-    configPlugin,
     canvasPlugin,
     inertiaPlugin,
     countryCanvas,
@@ -137,7 +134,6 @@ earthjs.plugins= {
     textureThreejs,
     graticuleThreejs,
     flightLineThreejs,
-    debugThreejs,
     oceanThreejs,
     imageThreejs,
     inertiaThreejs,

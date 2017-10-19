@@ -1663,24 +1663,6 @@ var mousePlugin = (function () {
     };
 });
 
-var configPlugin = (function () {
-    /*eslint no-console: 0 */
-    return {
-        name: 'configPlugin',
-        set: function set(newOpt) {
-            if (newOpt) {
-                Object.assign(this._.options, newOpt);
-                if (newOpt.spin !== undefined) {
-                    var rotate = this.autorotatePlugin;
-                    newOpt.spin ? rotate.start() : rotate.stop();
-                }
-                this.create();
-            }
-            return Object.assign({}, this._.options);
-        }
-    };
-});
-
 // Bo Ericsson’s Block http://bl.ocks.org/boeric/aa80b0048b7e39dd71c8fbe958d1b1d4
 var canvasPlugin = (function () {
     /*eslint no-console: 0 */
@@ -6677,58 +6659,6 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
     };
 });
 
-var debugThreejs = (function () {
-    var _ = { sphereObject: null, scale: null };
-
-    function init() {
-        this._.options.showDebugSpahre = true;
-    }
-
-    function create() {
-        var tj = this.threejsPlugin;
-        if (!_.sphereObject) {
-            var SCALE = this._.proj.scale();
-            _.scale = d3.scaleLinear().domain([0, SCALE]).range([0, 1]);
-            var sphere = new THREE.SphereGeometry(SCALE, 100, 100);
-            var sphereMaterial = new THREE.MeshNormalMaterial({ wireframe: false });
-            var sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
-
-            // For debug ...
-            var dot1 = new THREE.SphereGeometry(30, 10, 10);
-            var dot2 = new THREE.SphereGeometry(30, 10, 10);
-            var dot3 = new THREE.SphereGeometry(30, 10, 10);
-            dot1.translate(0, 0, SCALE);
-            dot2.translate(SCALE, 0, 0);
-            dot3.translate(0, -SCALE, 0);
-            var dot1Material = new THREE.MeshBasicMaterial({ color: 'blue' });
-            var dot2Material = new THREE.MeshBasicMaterial({ color: 'red' });
-            var dot3Material = new THREE.MeshBasicMaterial({ color: 'green' });
-            var dot1Mesh = new THREE.Mesh(dot1, dot1Material);
-            var dot2Mesh = new THREE.Mesh(dot2, dot2Material);
-            var dot3Mesh = new THREE.Mesh(dot3, dot3Material);
-
-            _.sphereObject = new THREE.Object3D();
-            _.sphereObject.add(sphereMesh, dot1Mesh, dot2Mesh, dot3Mesh);
-            _.sphereObject.name = _.me.name;
-        }
-        tj.addGroup(_.sphereObject);
-    }
-
-    return {
-        name: 'debugThreejs',
-        onInit: function onInit(me) {
-            _.me = me;
-            init.call(this);
-        },
-        onCreate: function onCreate() {
-            create.call(this);
-        },
-        sphere: function sphere() {
-            return _.sphereObject;
-        }
-    };
-});
-
 // http://davidscottlyons.com/threejs/presentations/frontporch14/offline-extended.html#slide-79
 var oceanThreejs = (function (color) {
     var color2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0xAAAAAA;
@@ -7906,7 +7836,6 @@ earthjs$2.plugins = {
     hoverCanvas: hoverCanvas,
     clickCanvas: clickCanvas,
     mousePlugin: mousePlugin,
-    configPlugin: configPlugin,
     canvasPlugin: canvasPlugin,
     inertiaPlugin: inertiaPlugin,
     countryCanvas: countryCanvas,
@@ -7953,7 +7882,6 @@ earthjs$2.plugins = {
     textureThreejs: textureThreejs,
     graticuleThreejs: graticuleThreejs,
     flightLineThreejs: flightLineThreejs,
-    debugThreejs: debugThreejs,
     oceanThreejs: oceanThreejs,
     imageThreejs: imageThreejs,
     inertiaThreejs: inertiaThreejs,

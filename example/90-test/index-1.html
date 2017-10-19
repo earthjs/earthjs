@@ -8,12 +8,10 @@
     <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
 <body>
-    <div class="set-options"></div>
     <svg id="earth-js"></svg>
     <script>
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, transparent: true})
-        .register(earthjs.plugins.configPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.dropShadowSvg())
@@ -38,39 +36,6 @@
             })
             g.create();
         })
-
-        var options = g.configPlugin.set();
-        var buttonClick = function(str) {
-            var arr = str.split(':'), key = arr[2];
-            var resultx = {};
-            options[key] = !options[key];
-            resultx[key] =  options[key];
-            console.log(resultx);
-            if (key=='hideCountries')
-                resultx.hideLand = false;
-            g.configPlugin.set(resultx);
-        };
-
-        var checker = [
-            ':Ocean:showOcean',
-            ':Shading:showGlobeShading',
-            ':Hilight:showGlobeHilight',
-            ':Graticule:showGraticule',
-            ':Land:showLand',
-            ':Country:showCountries',
-            ':Places:showPlaces',
-            ':Shadow:showDropShadow',
-            ':Bars:showBars',
-            ':Spin:spin',
-        ].map(function(d) {return d.split(':')});
-        var opt = d3.select('.set-options');
-        opt.selectAll('button').data(checker).enter().append('button')
-            .text(function(d) { return d[1]})
-            .attr('onclick', function(d) {
-                return 'buttonClick("'+d.join(':')+'")';
-            });
-
-        // opt.selectAll('input').data([1]).enter().append('input');
     </script>
 </body>
 </html>
