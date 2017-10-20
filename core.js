@@ -1,13 +1,11 @@
 import earthjs from './npm/earthjs';
-import configPlugin from './npm/plugins/configPlugin';
-import autorotatePlugin from './npm/plugins/autorotatePlugin';
-import countryCanvas from './npm/plugins/countryCanvas';
-import mousePlugin from './npm/plugins/mousePlugin';
+import autorotatePlugin from './npm/base/autorotatePlugin';
+import inertiaPlugin from './npm/base/inertiaPlugin';
+import mousePlugin from './npm/base/mousePlugin';
 
 earthjs.plugins= {
-    configPlugin,
     autorotatePlugin,
-    countryCanvas,
+    inertiaPlugin,
     mousePlugin,
 };
 export default earthjs;
