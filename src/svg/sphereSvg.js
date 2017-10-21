@@ -2,12 +2,6 @@ export default () => {
     const _ = {svg:null, q: null, sphereColor: 0};
     const $ = {};
 
-    function init() {
-        const __ = this._;
-        __.options.showSphere = true;
-        _.svg = __.svg;
-    }
-
     function create() {
         const klas = _.me.name;
         _.svg.selectAll(`#glow,.sphere.${klas}`).remove();
@@ -42,7 +36,9 @@ export default () => {
         name: 'sphereSvg',
         onInit(me) {
             _.me = me;
-            init.call(this);
+            _.svg = this._.svg;
+            const {options} = this._;
+            options.showSphere = true;
         },
         onCreate() {
             create.call(this);

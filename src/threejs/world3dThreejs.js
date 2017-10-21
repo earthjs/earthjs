@@ -64,7 +64,7 @@ gl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;
     }
 
     return {
-        name: 'world3d',
+        name: 'world3dThreejs',
         urls: worldUrl && [worldUrl],
         onReady(err, data) {
             _.me.data(data);

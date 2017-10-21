@@ -67,8 +67,8 @@ import inertiaThreejs    from './src/threejs/inertiaThreejs';
 import worldThreejs      from './src/threejs/worldThreejs';
 import globeThreejs      from './src/threejs/globeThreejs';
 import sphereThreejs     from './src/threejs/sphereThreejs';
-import world3d           from './src/threejs/world3d';
-import world3d2          from './src/threejs/world3d2';
+import world3dThreejs    from './src/threejs/world3dThreejs';
+import world3dThreejs2   from './src/threejs/world3dThreejs2';
 
 import commonPlugins     from './src/mixed/commonPlugins';
 import selectCountryMix  from './src/mixed/selectCountryMix';
@@ -140,8 +140,8 @@ earthjs.plugins= {
     worldThreejs,
     globeThreejs,
     sphereThreejs,
-    world3d,
-    world3d2,
+    world3dThreejs,
+    world3dThreejs2,
 
     commonPlugins,
     selectCountryMix,

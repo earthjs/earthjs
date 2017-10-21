@@ -23,10 +23,10 @@
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.oceanThreejs())
         .register(earthjs.plugins.graticuleThreejs())
-        .register(earthjs.plugins.world3d('../d/world.geometry.json','../globe/gold.jpg'))
+        .register(earthjs.plugins.world3dThreejs('../d/world.geometry.json','../globe/gold.jpg'))
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'));
-        g.world3d.ready = function(err, json) {
-            g.world3d.data({
+        g.world3dThreejs.ready = function(err, json) {
+            g.world3dThreejs.data({
                 'United States': json['United States'],
                 'Canada': json['Canada'],
                 'Mexico': json['Mexico']
@@ -36,7 +36,7 @@
         let c,t,o;
         g.ready(function(){
             g.create();
-            c = g.world3d.data()['United States'].mesh;
+            c = g.world3dThreejs.data()['United States'].mesh;
             t = g.worldThreejs.sphere();
             o = g.oceanThreejs.sphere();
             c.scale.set(1.46,1.46,1.46);

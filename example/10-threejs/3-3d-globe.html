@@ -23,13 +23,13 @@
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.oceanThreejs())
         .register(earthjs.plugins.graticuleThreejs())
-        .register(earthjs.plugins.world3d('../d/world.geometry.json','../globe/gold.jpg'))
+        .register(earthjs.plugins.world3dThreejs('../d/world.geometry.json','../globe/gold.jpg'))
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'));
 
         let c,t,o;
         g.ready(function(){
             g.create();
-            c = g.world3d.data().China.mesh;
+            c = g.world3dThreejs.data().China.mesh;
             t = g.worldThreejs.sphere();
             o = g.oceanThreejs.sphere();
             c.scale.set(1.2,1.2,1.2);

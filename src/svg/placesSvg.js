@@ -2,12 +2,6 @@ export default urlPlaces => {
     const _ = {svg:null, q: null, places: null};
     const $ = {};
 
-    function init() {
-        const __ = this._;
-        __.options.showPlaces = true;
-        _.svg = __.svg;
-    }
-
     function create() {
         const klas = _.me.name;
         _.svg.selectAll(`.points.${klas},.labels.${klas}`).remove();
@@ -73,7 +67,9 @@ export default urlPlaces => {
         },
         onInit(me) {
             _.me = me;
-            init.call(this);
+            _.svg = this._.svg;
+            const {options} = this._;
+            options.showPlaces = true;
         },
         onCreate() {
             create.call(this);

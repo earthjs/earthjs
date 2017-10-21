@@ -51,7 +51,7 @@ d3.select('#blue-marble').on('click', () => checked('ocean1,earth'));
 d3.select('#heat-map'   ).on('click', () => checked('border,ocean1,canvas'));
 d3.select('#float-3d'   ).on('click', () => {
     checked('graticule,ocean3,world3d,border');
-    if (!g.world3d.tween) {
+    if (!g.world3dThreejs.tween) {
         tmax = tval;
         tweening();
     } else {

@@ -2,7 +2,7 @@
 /* eslint no-undef:0 */
 let tween, tmax=tval=30;
 function tweening() {
-    if (g.world3d.tween)
+    if (g.world3dThreejs.tween)
         return;
     let cord, targ, ctr, mesh;
     let arr = keys.filter(s=>data[s].mesh.scale.x>1);
@@ -15,7 +15,7 @@ function tweening() {
         cord = {r:1.5};
         targ = {r:1};
     }
-    g.world3d.tween = time => TWEEN.update(time);
+    g.world3dThreejs.tween = time => TWEEN.update(time);
     tween = new TWEEN.Tween(cord).to(targ, 500)
     .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
     .onUpdate(function() {
@@ -28,7 +28,7 @@ function tweening() {
         g.threejsPlugin.renderThree();
     })
     .onComplete(function() {
-        g.world3d.tween = null
+        g.world3dThreejs.tween = null
         if (tmax===tval || keys.filter(s=>data[s].mesh.scale.x>1).length>0)
             setTimeout(()=>tweening(),50);
     })

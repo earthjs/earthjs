@@ -3174,63 +3174,11 @@ var worldSvg = (function (worldUrl) {
         $.lakesPath = $.lakesG.append('path').datum(_.lakes);
     }
 
-    var delay = null;
     function init() {
-        var _this2 = this;
-
-        var options = this._.options;
-
         _.svgAddCountries = svgAddCountries;
         _.svgAddWorldBg = svgAddWorldBg;
         _.svgAddLakes = svgAddLakes;
         _.svgAddWorld = svgAddWorld;
-        function delayCreate() {
-            var _this = this;
-
-            if (delay) {
-                clearTimeout(delay);
-            }
-            delay = setTimeout(function () {
-                create.call(_this);
-                delay = null;
-            }, 1);
-        }
-        Object.defineProperty(_.me, 'showLand', {
-            get: function get() {
-                return options.showLand;
-            },
-            set: function set(x) {
-                options.showLand = x;
-                delayCreate.call(_this2);
-            }
-        });
-        Object.defineProperty(_.me, 'showLakes', {
-            get: function get() {
-                return options.showLakes;
-            },
-            set: function set(x) {
-                options.showLakes = x;
-                delayCreate.call(_this2);
-            }
-        });
-        Object.defineProperty(_.me, 'showCountries', {
-            get: function get() {
-                return options.showCountries;
-            },
-            set: function set(x) {
-                options.showCountries = x;
-                delayCreate.call(_this2);
-            }
-        });
-        Object.defineProperty(_.me, 'transparentLand', {
-            get: function get() {
-                return options.transparentLand;
-            },
-            set: function set(x) {
-                options.transparentLand = x;
-                delayCreate.call(_this2);
-            }
-        });
     }
 
     return {
@@ -3481,12 +3429,6 @@ var sphereSvg = (function () {
     var _ = { svg: null, q: null, sphereColor: 0 };
     var $ = {};
 
-    function init() {
-        var __ = this._;
-        __.options.showSphere = true;
-        _.svg = __.svg;
-    }
-
     function create() {
         var klas = _.me.name;
         _.svg.selectAll('#glow,.sphere.' + klas).remove();
@@ -3505,7 +3447,10 @@ var sphereSvg = (function () {
         name: 'sphereSvg',
         onInit: function onInit(me) {
             _.me = me;
-            init.call(this);
+            _.svg = this._.svg;
+            var options = this._.options;
+
+            options.showSphere = true;
         },
         onCreate: function onCreate() {
             create.call(this);
@@ -3590,12 +3535,6 @@ var placesSvg = (function (urlPlaces) {
     var _ = { svg: null, q: null, places: null };
     var $ = {};
 
-    function init() {
-        var __ = this._;
-        __.options.showPlaces = true;
-        _.svg = __.svg;
-    }
-
     function create() {
         var klas = _.me.name;
         _.svg.selectAll('.points.' + klas + ',.labels.' + klas).remove();
@@ -3653,7 +3592,10 @@ var placesSvg = (function (urlPlaces) {
         },
         onInit: function onInit(me) {
             _.me = me;
-            init.call(this);
+            _.svg = this._.svg;
+            var options = this._.options;
+
+            options.showPlaces = true;
         },
         onCreate: function onCreate() {
             create.call(this);
@@ -7329,7 +7271,7 @@ if (window.THREE) {
 }
 
 // import data from './globe';
-var world3d = (function () {
+var world3dThreejs = (function () {
     var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/world.geometry.json';
     var imgUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '../globe/gold.jpg';
     var inner = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.9;
@@ -7383,7 +7325,7 @@ var world3d = (function () {
     }
 
     return {
-        name: 'world3d',
+        name: 'world3dThreejs',
         urls: worldUrl && [worldUrl],
         onReady: function onReady(err, data) {
             _.me.data(data);
@@ -7436,7 +7378,7 @@ var world3d = (function () {
 });
 
 // view-source:http://callumprentice.github.io/apps/extruded_earth/index.html
-var world3d2 = (function () {
+var world3dThreejs2 = (function () {
     var worldUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '../d/countries.geo.json';
     var landUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '../globe/gold.jpg';
     var inner = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.9;
@@ -7551,7 +7493,7 @@ var world3d2 = (function () {
     }
 
     return {
-        name: 'world3d2',
+        name: 'world3dThreejs2',
         urls: worldUrl && [worldUrl],
         onReady: function onReady(err, data) {
             _.me.data(data);
@@ -7944,8 +7886,8 @@ earthjs$2.plugins = {
     worldThreejs: worldThreejs,
     globeThreejs: globeThreejs,
     sphereThreejs: sphereThreejs,
-    world3d: world3d,
-    world3d2: world3d2,
+    world3dThreejs: world3dThreejs,
+    world3dThreejs2: world3dThreejs2,
 
     commonPlugins: commonPlugins,
     selectCountryMix: selectCountryMix,

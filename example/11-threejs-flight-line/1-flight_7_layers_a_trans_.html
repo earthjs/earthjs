@@ -14,7 +14,7 @@
     <script type='text/javascript' src='./flightline.js'></script>
     <script>
         g.register(earthjs.plugins.imageThreejs('../globe/earth_ocean-mask.png'),'earthThreejs')
-        .register(earthjs.plugins.world3d('../d/world.geometry.json','../globe/blue.jpg', 0.95))
+        .register(earthjs.plugins.world3dThreejs('../d/world.geometry.json','../globe/blue.jpg', 0.95))
         .register(earthjs.plugins.flightLineThreejs('../data/flights2.json','../globe/point3.png'));
         g.flightLineThreejs.ready = function(err, csv) {
             g.flightLineThreejs.data(csv,true,[30,200],100,1);
@@ -22,7 +22,7 @@
         var t;
         g.ready(function(){
             g.create();
-            t = g.world3d.sphere();
+            t = g.world3dThreejs.sphere();
             t.scale.set(298,298,298);
         });
     </script>

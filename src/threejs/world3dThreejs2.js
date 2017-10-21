@@ -101,7 +101,7 @@ export default (worldUrl='../d/countries.geo.json', landUrl='../globe/gold.jpg',
     }
 
     return {
-        name: 'world3d2',
+        name: 'world3dThreejs2',
         urls: worldUrl && [worldUrl],
         onReady(err, data) {
             _.me.data(data);

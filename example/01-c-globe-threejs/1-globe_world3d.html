@@ -18,8 +18,8 @@
         .register(earthjs.plugins.autorotatePlugin())
         .register(earthjs.plugins.oceanThreejs())
         .register(earthjs.plugins.worldThreejs('../d/world-110m.json'))
-        .register(earthjs.plugins.world3d('../d/world.geometry.json','../globe/blue.jpg', 0.95));
-        g.world3d.style({land: 'yellow'})
+        .register(earthjs.plugins.world3dThreejs('../d/world.geometry.json','../globe/blue.jpg', 0.95));
+        g.world3dThreejs.style({land: 'yellow'})
         g.ready(function(){
             g.create();
             const o = g.oceanThreejs.sphere();

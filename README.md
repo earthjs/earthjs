@@ -84,8 +84,8 @@ Selected plugins bundled into library:
 * worldThreejs,
 * globeThreejs,
 * sphereThreejs,
-* world3d,
-* world3d2,
+* world3dThreejs,
+* world3dThreejs2,
 * commonPlugins,
 * selectCountryMix,
 * selectCountryMix2,
@@ -189,10 +189,10 @@ const g = earthjs()
 .register(earthjs.plugins.graticuleSimple())
 .create();
 ```
-**convention**
+**Convention**
 
 For SVG create function:
-* when removing element, it should be removing same element that created from same plugin.
+* removing element should be removing same element that created from same plugin.
 * attributes often get updated (ex:"d"), it should be placed in refresh function.
 * at the end of create function, it should call refresh function.
 

@@ -1,7 +1,7 @@
 g.register(earthjs.plugins.baseCsv('../d/country-ids.csv'))
-g.register(earthjs.plugins.world3d2('...'))
+g.register(earthjs.plugins.world3dThreejs2('...'))
 
-q = g.world3d.data();
+q = g.world3dThreejs.data();
 ctr = g.baseCsv.data();
 
 q.features.forEach(x=>{
