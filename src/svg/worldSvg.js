@@ -95,6 +95,52 @@ export default worldUrl => {
         $.lakesPath = $.lakesG.append('path').datum(_.lakes);
     }
 
+    let delay = null;
+    function init() {
+        const {options} = this._;
+        _.svgAddCountries = svgAddCountries;
+        _.svgAddWorldBg = svgAddWorldBg;
+        _.svgAddLakes = svgAddLakes;
+        _.svgAddWorld = svgAddWorld;
+        function delayCreate() {
+            if (delay) {
+                clearTimeout(delay);
+            }
+            delay = setTimeout(() => {
+                create.call(this);
+                delay = null;              
+            },1);
+        }
+        Object.defineProperty(_.me, 'showLand', {
+            get: () => options.showLand,
+            set: (x) => {
+                options.showLand = x;
+                delayCreate.call(this);
+            }
+        });
+        Object.defineProperty(_.me, 'showLakes', {
+            get: () => options.showLakes,
+            set: (x) => {
+                options.showLakes = x;
+                delayCreate.call(this);
+            }
+        });
+        Object.defineProperty(_.me, 'showCountries', {
+            get: () => options.showCountries,
+            set: (x) => {
+                options.showCountries = x;
+                delayCreate.call(this);
+            }
+        });
+        Object.defineProperty(_.me, 'transparentLand', {
+            get: () => options.transparentLand,
+            set: (x) => {
+                options.transparentLand = x;
+                delayCreate.call(this);
+            }
+        });
+    }
+
     return {
         name: 'worldSvg',
         urls: worldUrl && [worldUrl],
@@ -103,17 +149,13 @@ export default worldUrl => {
         },
         onInit(me) {
             _.me = me;
-            const __ = this._;
-            const options = __.options;
+            _.svg = this._.svg;
+            const {options} = this._;
             options.showLand = true;
             options.showLakes = true;
             options.showCountries = true;
             options.transparentLand = false;
-            _.svgAddCountries = svgAddCountries;
-            _.svgAddWorldBg = svgAddWorldBg;
-            _.svgAddLakes = svgAddLakes;
-            _.svgAddWorld = svgAddWorld;
-            _.svg = __.svg;
+            init.call(this);
         },
         onCreate() {
             if (this.worldJson && !_.world) {

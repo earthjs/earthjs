@@ -3174,6 +3174,65 @@ var worldSvg = (function (worldUrl) {
         $.lakesPath = $.lakesG.append('path').datum(_.lakes);
     }
 
+    var delay = null;
+    function init() {
+        var _this2 = this;
+
+        var options = this._.options;
+
+        _.svgAddCountries = svgAddCountries;
+        _.svgAddWorldBg = svgAddWorldBg;
+        _.svgAddLakes = svgAddLakes;
+        _.svgAddWorld = svgAddWorld;
+        function delayCreate() {
+            var _this = this;
+
+            if (delay) {
+                clearTimeout(delay);
+            }
+            delay = setTimeout(function () {
+                create.call(_this);
+                delay = null;
+            }, 1);
+        }
+        Object.defineProperty(_.me, 'showLand', {
+            get: function get() {
+                return options.showLand;
+            },
+            set: function set(x) {
+                options.showLand = x;
+                delayCreate.call(_this2);
+            }
+        });
+        Object.defineProperty(_.me, 'showLakes', {
+            get: function get() {
+                return options.showLakes;
+            },
+            set: function set(x) {
+                options.showLakes = x;
+                delayCreate.call(_this2);
+            }
+        });
+        Object.defineProperty(_.me, 'showCountries', {
+            get: function get() {
+                return options.showCountries;
+            },
+            set: function set(x) {
+                options.showCountries = x;
+                delayCreate.call(_this2);
+            }
+        });
+        Object.defineProperty(_.me, 'transparentLand', {
+            get: function get() {
+                return options.transparentLand;
+            },
+            set: function set(x) {
+                options.transparentLand = x;
+                delayCreate.call(_this2);
+            }
+        });
+    }
+
     return {
         name: 'worldSvg',
         urls: worldUrl && [worldUrl],
@@ -3182,17 +3241,14 @@ var worldSvg = (function (worldUrl) {
         },
         onInit: function onInit(me) {
             _.me = me;
-            var __ = this._;
-            var options = __.options;
+            _.svg = this._.svg;
+            var options = this._.options;
+
             options.showLand = true;
             options.showLakes = true;
             options.showCountries = true;
             options.transparentLand = false;
-            _.svgAddCountries = svgAddCountries;
-            _.svgAddWorldBg = svgAddWorldBg;
-            _.svgAddLakes = svgAddLakes;
-            _.svgAddWorld = svgAddWorld;
-            _.svg = __.svg;
+            init.call(this);
         },
         onCreate: function onCreate() {
             if (this.worldJson && !_.world) {
