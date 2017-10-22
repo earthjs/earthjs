@@ -80,6 +80,7 @@ export default () => {
                 this._.path = d3.geoPath().projection(proj);
                 animation.call(this).on('end', () => {
                     this._.options.enableCenter = false;
+                    this._.options.map = true;
                 })
             })
         },
@@ -88,8 +89,9 @@ export default () => {
             const proj = interpolatedProjection(_.g2, _.g1);
             this._.path = d3.geoPath().projection(proj);
             animation.call(this).on('end', () => {
-                this._.path = d3.geoPath().projection(this._.proj);
+                this._.path = d3.geoPath().projection(_.g1);
                 this._.options.enableCenter = true;
+                this._.options.map = false;
                 this._.refresh();
             })
         }

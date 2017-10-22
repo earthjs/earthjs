@@ -3700,6 +3700,7 @@ var flattenSvg = (function () {
                 _this2._.path = d3.geoPath().projection(proj);
                 animation.call(_this2).on('end', function () {
                     _this2._.options.enableCenter = false;
+                    _this2._.options.map = true;
                 });
             });
         },
@@ -3710,8 +3711,9 @@ var flattenSvg = (function () {
             var proj = interpolatedProjection(_.g2, _.g1);
             this._.path = d3.geoPath().projection(proj);
             animation.call(this).on('end', function () {
-                _this3._.path = d3.geoPath().projection(_this3._.proj);
+                _this3._.path = d3.geoPath().projection(_.g1);
                 _this3._.options.enableCenter = true;
+                _this3._.options.map = false;
                 _this3._.refresh();
             });
         }
