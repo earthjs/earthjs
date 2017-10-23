@@ -74,7 +74,7 @@ import commonPlugins     from './src/mixed/commonPlugins';
 import selectCountryMix  from './src/mixed/selectCountryMix';
 import selectCountryMix2 from './src/mixed/selectCountryMix2';
 
-export default {
+export {
     earthjs,
 
     baseCsv,
