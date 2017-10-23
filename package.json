@@ -1,8 +1,9 @@
 {
   "name": "earthjs",
-  "version": "0.7.127",
+  "version": "0.7.128",
   "description": "D3 Earth JS using SVG, Canvas & THREE js, build with some plugins.",
-  "main": "core.js",
+  "main": "index.js",
+  "files": ["src"],
   "scripts": {
     "npm": "rm -rf npm && buble src --no  modules --yes dangerousForOf -o npm",
     "test": "browserify test/*-test.js | tape-run",
