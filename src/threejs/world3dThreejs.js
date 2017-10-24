@@ -27,39 +27,34 @@ vec4 tex = texture2D( sampler, vN );
 gl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;
 }`;
     function init() {
-        const tj = this.threejsPlugin;
         const r = this._.proj.scale()+5;
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r,r,r);
         _.sphereObject.name = _.me.name;
+    }
+
+    let material, uniforms;
+    function create() {
+        const data = _.world;
+        const tj = this.threejsPlugin;
+        const {choropleth} = this._.options;
         _.uniforms = {
             sampler: {type: 't', value: tj.texture(imgUrl)},
             diffuse: {type: 'c', value: new THREE.Color(_.style.land || 'black')},
         };
-    }
-
-    let material, uniforms;
-    function loadCountry() {
-        const data = _.world;
-        uniforms = _.uniforms;
-        const {choropleth} = this._.options;
-        material = new THREE.ShaderMaterial({uniforms, vertexShader, fragmentShader});
         for (let name in data) {
             if (choropleth) {
                 const properties = data[name].properties || {color: _.style.countries};
                 const diffuse = {type: 'c', value: new THREE.Color(properties.color || 'black')};
                 uniforms = Object.assign({}, _.uniforms, {diffuse});
-                material = new THREE.ShaderMaterial({uniforms, vertexShader, fragmentShader});
+            } else {
+                uniforms = _.uniforms;
             }
             const geometry = new Map3DGeometry(data[name], inner);
+            material = new THREE.ShaderMaterial({uniforms, vertexShader, fragmentShader});
             _.sphereObject.add(data[name].mesh = new THREE.Mesh(geometry, material));
         }
-    }
-
-    function create() {
-        loadCountry.call(this);
-        const tj = this.threejsPlugin;
         tj.addGroup(_.sphereObject);
     }
 

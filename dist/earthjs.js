@@ -7304,41 +7304,36 @@ var world3dThreejs = (function () {
     var vertexShader = '\nvarying vec2 vN;\nvoid main() {\nvec4 p = vec4( position, 1. );\nvec3 e = normalize( vec3( modelViewMatrix * p ) );\nvec3 n = normalize( normalMatrix * normal );\nvec3 r = reflect( e, n );\nfloat m = 2. * length( vec3( r.xy, r.z + 1. ) );\nvN = r.xy / m + .5;\ngl_Position = projectionMatrix * modelViewMatrix * p;\n}';
     var fragmentShader = '\nuniform sampler2D sampler;\nuniform vec3 diffuse;\nvarying vec2 vN;\nvoid main() {\nvec4 tex = texture2D( sampler, vN );\ngl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;\n}';
     function init() {
-        var tj = this.threejsPlugin;
         var r = this._.proj.scale() + 5;
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r, r, r);
         _.sphereObject.name = _.me.name;
-        _.uniforms = {
-            sampler: { type: 't', value: tj.texture(imgUrl) },
-            diffuse: { type: 'c', value: new THREE.Color(_.style.land || 'black') }
-        };
     }
 
     var material = void 0,
         uniforms = void 0;
-    function loadCountry() {
+    function create() {
         var data = _.world;
-        uniforms = _.uniforms;
+        var tj = this.threejsPlugin;
         var choropleth = this._.options.choropleth;
 
-        material = new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexShader, fragmentShader: fragmentShader });
+        _.uniforms = {
+            sampler: { type: 't', value: tj.texture(imgUrl) },
+            diffuse: { type: 'c', value: new THREE.Color(_.style.land || 'black') }
+        };
         for (var name in data) {
             if (choropleth) {
                 var properties = data[name].properties || { color: _.style.countries };
                 var diffuse = { type: 'c', value: new THREE.Color(properties.color || 'black') };
                 uniforms = Object.assign({}, _.uniforms, { diffuse: diffuse });
-                material = new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexShader, fragmentShader: fragmentShader });
+            } else {
+                uniforms = _.uniforms;
             }
             var geometry = new Map3DGeometry(data[name], inner);
+            material = new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexShader, fragmentShader: fragmentShader });
             _.sphereObject.add(data[name].mesh = new THREE.Mesh(geometry, material));
         }
-    }
-
-    function create() {
-        loadCountry.call(this);
-        var tj = this.threejsPlugin;
         tj.addGroup(_.sphereObject);
     }
 
