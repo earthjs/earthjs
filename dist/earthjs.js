@@ -86,6 +86,7 @@ var earthjs$2 = function earthjs() {
     }, options);
     var _ = {
         onCreate: {},
+        onCreateCall: 0,
         onCreateVals: [],
 
         onRefresh: {},
@@ -104,10 +105,31 @@ var earthjs$2 = function earthjs() {
         plugins: [],
         promeses: [],
         loadingData: null,
-        recreateSvgOrCanvas: function recreateSvgOrCanvas() {
-            _.onCreateVals.forEach(function (fn) {
-                fn.call(globe);
-            });
+        recreateSvgOrCanvas: function recreateSvgOrCanvas(allPlugins) {
+            if (allPlugins) {
+                globe.__plugins().forEach(function (g) {
+                    g.__on__.onCreate.call(globe);
+                });
+            } else {
+                _.onCreateVals.forEach(function (fn) {
+                    fn.call(globe);
+                });
+            }
+            if (_.onCreateCall === 0) {
+                var plugins = Object.keys(_.onCreate).map(function (s) {
+                    return globe[s];
+                }).filter(function (g) {
+                    return g.__name__.match(/^((?!threejs).)*$/i);
+                });
+                _.onCreate = {};
+                plugins.forEach(function (g) {
+                    return _.onCreate[g.name] = g.__on__.onCreate;
+                });
+                _.onCreateVals = Object.keys(_.onCreate).map(function (k) {
+                    return _.onCreate[k];
+                });
+            }
+            _.onCreateCall++;
             return globe;
         }
     };
@@ -238,8 +260,10 @@ var earthjs$2 = function earthjs() {
     var __ = globe._;
 
     globe.create = function (twinEarth) {
+        var allPlugins = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
         earths = twinEarth || [];
-        _.recreateSvgOrCanvas();
+        _.recreateSvgOrCanvas(allPlugins);
         earths.forEach(function (p) {
             p.create(null);
         });

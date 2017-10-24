@@ -14,6 +14,7 @@ const earthjs = (options={}) => {
     }, options);
     const _ = {
         onCreate: {},
+        onCreateCall: 0,
         onCreateVals: [],
 
         onRefresh: {},
@@ -32,10 +33,26 @@ const earthjs = (options={}) => {
         plugins: [],
         promeses: [],
         loadingData: null,
-        recreateSvgOrCanvas: function() {
-            _.onCreateVals.forEach(function(fn) {
-                fn.call(globe);
-            });
+        recreateSvgOrCanvas: function(allPlugins) {
+            if (allPlugins) {
+                globe.__plugins().forEach(g => {
+                    g.__on__.onCreate.call(globe);
+                });
+            } else {
+                _.onCreateVals.forEach(function(fn) {
+                    fn.call(globe);
+                });    
+            }
+            if (_.onCreateCall===0 ) {
+                const plugins = Object
+                    .keys(_.onCreate)
+                    .map(s=>globe[s])
+                    .filter(g=> g.__name__.match(/^((?!threejs).)*$/i));
+                _.onCreate = {};
+                plugins.forEach(g => _.onCreate[g.name] = g.__on__.onCreate);
+                _.onCreateVals = Object.keys(_.onCreate).map(k => _.onCreate[k]);
+            }
+            _.onCreateCall++;
             return globe;
         }
     }
@@ -167,9 +184,9 @@ const earthjs = (options={}) => {
     let ticker = null;
     const __ = globe._;
 
-    globe.create = function(twinEarth) {
+    globe.create = function(twinEarth, allPlugins=false) {
         earths = twinEarth || [];
-        _.recreateSvgOrCanvas();
+        _.recreateSvgOrCanvas(allPlugins);
         earths.forEach(function(p) {
             p.create(null);
         });
