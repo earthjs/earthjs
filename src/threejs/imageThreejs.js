@@ -33,6 +33,7 @@ export default (imgUrl='../globe/world.png') => {
             const SCALE = this._.proj.scale();
             const geometry = new THREE.SphereGeometry(SCALE, 30, 30);
             _.sphereObject = new THREE.Mesh(geometry, _.material);
+            // _.sphereObject.scale.set(1.02,1.02,1.02);
             _.sphereObject.name = _.me.name;
             tj.addGroup(_.sphereObject);
         } else {

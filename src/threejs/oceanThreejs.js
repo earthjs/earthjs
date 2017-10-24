@@ -3,9 +3,7 @@ export default (color, color2=0xAAAAAA) => {
     /*eslint no-console: 0 */
     const _ = {sphereObject: null}
     if (color) {
-        _.material = new THREE.MeshPhongMaterial({
-            color: color
-        });
+        _.material = new THREE.MeshPhongMaterial({color});
     } else {
         _.material = new THREE.MeshNormalMaterial({
             transparent: false,
@@ -13,10 +11,7 @@ export default (color, color2=0xAAAAAA) => {
             opacity: 0.8,
         });
     }
-
-    function init() {
-        this._.options.transparentOcean = false;
-    }
+    _.material.transparent = true;
 
     function create() {
         const tj = this.threejsPlugin;
@@ -41,7 +36,6 @@ export default (color, color2=0xAAAAAA) => {
         name: 'oceanThreejs',
         onInit(me) {
             _.me = me;
-            init.call(this);
         },
         onCreate() {
             create.call(this);

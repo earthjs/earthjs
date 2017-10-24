@@ -59,6 +59,7 @@ export default (worldUrl, scw=6.279, height=2048) => {
         if (!_.sphereObject) {
             resize.call(this);
             _.sphereObject= new THREE.Mesh(_.geometry, _.material);
+            // _.sphereObject.scale.set(1.02,1.02,1.02);
             _.sphereObject.name = _.me.name;
             if (tj.domEvents) {
                 tj.domEvents.addEventListener(_.sphereObject, 'mousemove', hover, false);

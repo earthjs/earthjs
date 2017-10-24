@@ -29,6 +29,7 @@ const earthjs = (options={}) => {
         onTweenVals: [],
 
         ready: null,
+        plugins: [],
         promeses: [],
         loadingData: null,
         recreateSvgOrCanvas: function() {
@@ -115,7 +116,12 @@ const earthjs = (options={}) => {
             }
         },
         register(obj, name) {
-            const ar = {name: name || obj.name, __on__:{}};
+            const ar = {
+                name: name || obj.name, 
+                __name__: obj.name, 
+                __on__: {}
+            };
+            _.plugins.push(ar);
             globe[ar.name] = ar;
             Object.keys(obj).forEach(function(fn) {
                 if ([
@@ -301,6 +307,13 @@ const earthjs = (options={}) => {
                     _[qname+'Vals'] = _[qname+'Keys'].map(k => _[qname][k]);
                 });
             }
+        }
+    }
+    globe.__plugins = function(filter) {
+        if (filter===undefined) {
+            return _.plugins;
+        } else {
+            return _.plugins.filter(obj => obj.__name__.match(filter));
         }
     }
     return globe;

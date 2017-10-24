@@ -101,6 +101,7 @@ var earthjs$2 = function earthjs() {
         onTweenVals: [],
 
         ready: null,
+        plugins: [],
         promeses: [],
         loadingData: null,
         recreateSvgOrCanvas: function recreateSvgOrCanvas() {
@@ -191,7 +192,12 @@ var earthjs$2 = function earthjs() {
             }
         },
         register: function register(obj, name) {
-            var ar = { name: name || obj.name, __on__: {} };
+            var ar = {
+                name: name || obj.name,
+                __name__: obj.name,
+                __on__: {}
+            };
+            _.plugins.push(ar);
             globe[ar.name] = ar;
             Object.keys(obj).forEach(function (fn) {
                 if (['urls', 'onReady', 'onInit', 'onTween', 'onCreate', 'onResize', 'onRefresh', 'onInterval'].indexOf(fn) === -1) {
@@ -483,6 +489,15 @@ var earthjs$2 = function earthjs() {
                     });
                 });
             }
+        }
+    };
+    globe.__plugins = function (filter) {
+        if (filter === undefined) {
+            return _.plugins;
+        } else {
+            return _.plugins.filter(function (obj) {
+                return obj.__name__.match(filter);
+            });
         }
     };
     return globe;
@@ -2337,7 +2352,10 @@ var threejsPlugin = (function () {
             return _wireframe(multilinestring, material);
         },
         texture: function texture(imgUrl) {
+            var _this3 = this;
+
             return loader.load(imgUrl, function (image) {
+                _renderThree.call(_this3);
                 return image;
             });
         },
@@ -5690,6 +5708,7 @@ var canvasThreejs = (function (worldUrl) {
         if (!_.sphereObject) {
             resize.call(this);
             _.sphereObject = new THREE.Mesh(_.geometry, _.material);
+            // _.sphereObject.scale.set(1.02,1.02,1.02);
             _.sphereObject.name = _.me.name;
             if (tj.domEvents) {
                 tj.domEvents.addEventListener(_.sphereObject, 'mousemove', hover, false);
@@ -6682,9 +6701,7 @@ var oceanThreejs = (function (color) {
     /*eslint no-console: 0 */
     var _ = { sphereObject: null };
     if (color) {
-        _.material = new THREE.MeshPhongMaterial({
-            color: color
-        });
+        _.material = new THREE.MeshPhongMaterial({ color: color });
     } else {
         _.material = new THREE.MeshNormalMaterial({
             transparent: false,
@@ -6692,10 +6709,7 @@ var oceanThreejs = (function (color) {
             opacity: 0.8
         });
     }
-
-    function init() {
-        this._.options.transparentOcean = false;
-    }
+    _.material.transparent = true;
 
     function create() {
         var tj = this.threejsPlugin;
@@ -6720,7 +6734,6 @@ var oceanThreejs = (function (color) {
         name: 'oceanThreejs',
         onInit: function onInit(me) {
             _.me = me;
-            init.call(this);
         },
         onCreate: function onCreate() {
             create.call(this);
@@ -6770,6 +6783,7 @@ var imageThreejs = (function () {
             var SCALE = this._.proj.scale();
             var geometry = new THREE.SphereGeometry(SCALE, 30, 30);
             _.sphereObject = new THREE.Mesh(geometry, _.material);
+            // _.sphereObject.scale.set(1.02,1.02,1.02);
             _.sphereObject.name = _.me.name;
             tj.addGroup(_.sphereObject);
         } else {
@@ -6963,6 +6977,7 @@ var worldThreejs = (function () {
             var mesh = topojson.mesh(_.world, _.world.objects.countries);
             var material = new THREE.MeshBasicMaterial({ color: 0x707070 });
             _.sphereObject = tj.wireframe(mesh, material);
+            // _.sphereObject.scale.set(1.02,1.02,1.02);
             _.sphereObject.name = _.me.name;
         }
         tj.addGroup(_.sphereObject);

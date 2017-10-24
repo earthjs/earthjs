@@ -158,7 +158,10 @@ export default (threejs='three-js') => {
             return wireframe(multilinestring, material);
         },
         texture(imgUrl) {
-            return loader.load(imgUrl, image=> image);
+            return loader.load(imgUrl, image=> {
+                renderThree.call(this);
+                return image;
+            });
         },
         renderThree() {
             renderThree.call(this);
