@@ -6,7 +6,6 @@ export default () => {
     const _ = {sphereObject: null};
 
     function init() {
-        this._.options.showGraticule = true;
         _.graticule10 = graticule10();
     }
 

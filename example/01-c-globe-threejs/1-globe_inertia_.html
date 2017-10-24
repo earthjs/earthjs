@@ -26,10 +26,6 @@
         let data,keys;
         g.ready(function(){
             g.create();
-            const o = g.oceanThreejs.sphere();
-            const t = g.worldThreejs.sphere();
-            o.material.transparent = true;
-            t.scale.set(1.02,1.02,1.02);
             data = g.world3dThreejs.data();
             keys = Object.keys(data);
             // tweening();

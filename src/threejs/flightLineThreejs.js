@@ -281,7 +281,7 @@ export default (jsonUrl, imgUrl, height=150) => {
     function generate_track_lines2() {
         const {length}= all_tracks;
         const group = new THREE.Group();
-        const lineWidth = lineScale(this._.proj.scale());
+        const lineWidth = lineScale(_.SCALE); // this._.proj.scale()
         for (let i = 0; i < length; ++i) {
             const {spline, color} = all_tracks[i];
             const lines = new Float32Array(3 * curve_points);
@@ -375,7 +375,7 @@ export default (jsonUrl, imgUrl, height=150) => {
     }
 
     function init() {
-        _.SCALE = this._.proj.scale();
+        _.SCALE = this._.proj.scale() + (this.__plugins('3d').length>0 ? 4 : 0);
         _.texture = this.threejsPlugin.texture(imgUrl);
     }
 

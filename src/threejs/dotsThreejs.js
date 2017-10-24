@@ -11,11 +11,7 @@ export default urlJson => {
         onHoverVals: [],
 };
 
-    function init() {
-        this._.options.showDots = true;
-    }
-
-    function createDot(feature) {
+    function createDot(feature, r) {
         const tj = this.threejsPlugin,
         material = new THREE.MeshBasicMaterial({
             color: feature.geometry.color || 0xC19999, //F0C400,
@@ -28,7 +24,7 @@ export default urlJson => {
         radius   = (feature.geometry.radius || 0.5) * 10,
         geometry = new THREE.CircleBufferGeometry(radius, 25),
         mesh     = new THREE.Mesh(geometry, material),
-        position = tj.vertex(feature.geometry.coordinates);
+        position = tj.vertex(feature.geometry.coordinates, r);
         mesh.position.set(position.x, position.y, position.z);
         mesh.lookAt({x:0,y:0,z:0});
         return mesh;
@@ -43,10 +39,11 @@ export default urlJson => {
     function create() {
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
+            const r = this._.proj.scale() + (this.__plugins('3d').length>0 ? 4 : 0);
             _.sphereObject = new THREE.Group();
             _.sphereObject.name = _.me.name;
             _.dataDots.features.forEach((d) => {
-                const dot = createDot.call(this, d);
+                const dot = createDot.call(this, d, r);
                 dot.__data__ = d;
                 _.sphereObject.add(dot);
                 if (tj.domEvents) {
@@ -65,7 +62,6 @@ export default urlJson => {
         },
         onInit(me) {
             _.me = me;
-            init.call(this);
         },
         onCreate() {
             create.call(this);

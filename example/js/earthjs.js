@@ -5400,11 +5400,7 @@ var dotsThreejs = (function (urlJson) {
         onHoverVals: []
     };
 
-    function init() {
-        this._.options.showDots = true;
-    }
-
-    function createDot(feature) {
+    function createDot(feature, r) {
         var tj = this.threejsPlugin,
             material = new THREE.MeshBasicMaterial({
             color: feature.geometry.color || 0xC19999, //F0C400,
@@ -5417,7 +5413,7 @@ var dotsThreejs = (function (urlJson) {
             radius = (feature.geometry.radius || 0.5) * 10,
             geometry = new THREE.CircleBufferGeometry(radius, 25),
             mesh = new THREE.Mesh(geometry, material),
-            position = tj.vertex(feature.geometry.coordinates);
+            position = tj.vertex(feature.geometry.coordinates, r);
         mesh.position.set(position.x, position.y, position.z);
         mesh.lookAt({ x: 0, y: 0, z: 0 });
         return mesh;
@@ -5455,10 +5451,11 @@ var dotsThreejs = (function (urlJson) {
 
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
+            var r = this._.proj.scale() + (this.__plugins('3d').length > 0 ? 4 : 0);
             _.sphereObject = new THREE.Group();
             _.sphereObject.name = _.me.name;
             _.dataDots.features.forEach(function (d) {
-                var dot = createDot.call(_this, d);
+                var dot = createDot.call(_this, d, r);
                 dot.__data__ = d;
                 _.sphereObject.add(dot);
                 if (tj.domEvents) {
@@ -5477,7 +5474,6 @@ var dotsThreejs = (function (urlJson) {
         },
         onInit: function onInit(me) {
             _.me = me;
-            init.call(this);
         },
         onCreate: function onCreate() {
             create.call(this);
@@ -5682,9 +5678,8 @@ var canvasThreejs = (function (worldUrl) {
     };
 
     function init() {
-        var width = height * 2;
-        var SCALE = this._.proj.scale();
-        _.geometry = new THREE.SphereGeometry(SCALE, 30, 30);
+        var r = this._.proj.scale() + (this.__plugins('3d').length > 0 ? 4 : 0);
+        _.geometry = new THREE.SphereGeometry(r, 30, 30);
         _.newCanvas = d3.select('body').append('canvas') // document.createElement('canvas');
         .style('display', 'none').attr('class', 'ej-canvas-new').node();
         _.newContext = _.newCanvas.getContext('2d');
@@ -5692,6 +5687,7 @@ var canvasThreejs = (function (worldUrl) {
         _.texture.transparent = true;
         _.material.map = _.texture;
 
+        var width = height * 2;
         _.canvas = d3.select('body').append('canvas').style('display', 'none').attr('width', width).attr('height', height).attr('class', 'ej-canvas-ctx').node();
         _.context = _.canvas.getContext('2d');
         _.proj = d3.geoEquirectangular().scale(width / scw).translate([width / 2, height / 2]);
@@ -6102,7 +6098,6 @@ var graticuleThreejs = (function () {
     var _ = { sphereObject: null };
 
     function init() {
-        this._.options.showGraticule = true;
         _.graticule10 = graticule10();
     }
 
@@ -6482,7 +6477,7 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
             length = _all_tracks2.length;
 
         var group = new THREE.Group();
-        var lineWidth = lineScale(this._.proj.scale());
+        var lineWidth = lineScale(_.SCALE); // this._.proj.scale()
         for (var i = 0; i < length; ++i) {
             var _all_tracks$i4 = all_tracks[i],
                 spline = _all_tracks$i4.spline,
@@ -6583,7 +6578,7 @@ var flightLineThreejs = (function (jsonUrl, imgUrl) {
     }
 
     function init() {
-        _.SCALE = this._.proj.scale();
+        _.SCALE = this._.proj.scale() + (this.__plugins('3d').length > 0 ? 4 : 0);
         _.texture = this.threejsPlugin.texture(imgUrl);
     }
 
@@ -7008,7 +7003,6 @@ var worldThreejs = (function () {
             var material = new THREE.MeshBasicMaterial({ color: 0x707070 });
             var r = this._.proj.scale() + (this.__plugins('3d').length > 0 ? 4 : 0);
             _.sphereObject = tj.wireframe(mesh, material, r);
-            // _.sphereObject.scale.set(1.02,1.02,1.02);
             _.sphereObject.name = _.me.name;
         }
         tj.addGroup(_.sphereObject);
