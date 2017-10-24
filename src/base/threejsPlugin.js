@@ -10,22 +10,22 @@ export default (threejs='three-js') => {
     let SCALE;
 
     // Converts a point [longitude, latitude] in degrees to a THREE.Vector3.
-    function vertex(point) {
+    function vertex(point, r) {
         const lambda = point[0] * Math.PI / 180,
             phi = point[1] * Math.PI / 180,
             cosPhi = Math.cos(phi);
         return new THREE.Vector3(
-            SCALE * cosPhi * Math.cos(lambda),
-            SCALE * Math.sin(phi),
-          - SCALE * cosPhi * Math.sin(lambda)
+            r * cosPhi * Math.cos(lambda),
+            r * Math.sin(phi),
+          - r * cosPhi * Math.sin(lambda)
       );
     }
 
     // Converts a GeoJSON MultiLineString in spherical coordinates to a THREE.LineSegments.
-    function wireframe(multilinestring, material) {
-        const geometry = new THREE.Geometry;
+    function wireframe(multilinestring, material, r) {
+        const geometry = new THREE.Geometry();
         multilinestring.coordinates.forEach(function(line) {
-            d3.pairs(line.map(vertex), function(a, b) {
+            d3.pairs(line.map(p => vertex(p, r)), function(a, b) {
                 geometry.vertices.push(a, b);
             });
         });
@@ -151,11 +151,11 @@ export default (threejs='three-js') => {
         rotate(obj) {
             rotate.call(this, obj);
         },
-        vertex(point) {
-            return vertex(point);
+        vertex(point, r=SCALE) {
+            return vertex(point, r);
         },
-        wireframe(multilinestring, material) {
-            return wireframe(multilinestring, material);
+        wireframe(multilinestring, material, r=SCALE) {
+            return wireframe(multilinestring, material, r);
         },
         texture(imgUrl) {
             return loader.load(imgUrl, image=> {

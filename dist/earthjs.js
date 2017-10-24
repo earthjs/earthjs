@@ -2175,18 +2175,20 @@ var threejsPlugin = (function () {
     var SCALE = void 0;
 
     // Converts a point [longitude, latitude] in degrees to a THREE.Vector3.
-    function _vertex(point) {
+    function _vertex(point, r) {
         var lambda = point[0] * Math.PI / 180,
             phi = point[1] * Math.PI / 180,
             cosPhi = Math.cos(phi);
-        return new THREE.Vector3(SCALE * cosPhi * Math.cos(lambda), SCALE * Math.sin(phi), -SCALE * cosPhi * Math.sin(lambda));
+        return new THREE.Vector3(r * cosPhi * Math.cos(lambda), r * Math.sin(phi), -r * cosPhi * Math.sin(lambda));
     }
 
     // Converts a GeoJSON MultiLineString in spherical coordinates to a THREE.LineSegments.
-    function _wireframe(multilinestring, material) {
+    function _wireframe(multilinestring, material, r) {
         var geometry = new THREE.Geometry();
         multilinestring.coordinates.forEach(function (line) {
-            d3.pairs(line.map(_vertex), function (a, b) {
+            d3.pairs(line.map(function (p) {
+                return _vertex(p, r);
+            }), function (a, b) {
                 geometry.vertices.push(a, b);
             });
         });
@@ -2346,10 +2348,14 @@ var threejsPlugin = (function () {
             _rotate.call(this, obj);
         },
         vertex: function vertex(point) {
-            return _vertex(point);
+            var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : SCALE;
+
+            return _vertex(point, r);
         },
         wireframe: function wireframe(multilinestring, material) {
-            return _wireframe(multilinestring, material);
+            var r = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : SCALE;
+
+            return _wireframe(multilinestring, material, r);
         },
         texture: function texture(imgUrl) {
             var _this3 = this;
@@ -6714,8 +6720,8 @@ var oceanThreejs = (function (color) {
     function create() {
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
-            var SCALE = this._.proj.scale();
-            var geometry = new THREE.SphereGeometry(SCALE, 30, 30);
+            var r = this._.proj.scale() - (this.__plugins('3d').length > 0 ? 5 : 0);
+            var geometry = new THREE.SphereGeometry(r, 30, 30);
             if (color) {
                 var ambient = new THREE.AmbientLight(color2);
                 var mesh = new THREE.Mesh(geometry, _.material);
@@ -6780,8 +6786,8 @@ var imageThreejs = (function () {
     function create() {
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
-            var SCALE = this._.proj.scale();
-            var geometry = new THREE.SphereGeometry(SCALE, 30, 30);
+            var r = this._.proj.scale() + (this.__plugins('3d').length > 0 ? 4 : 0);
+            var geometry = new THREE.SphereGeometry(r, 30, 30);
             _.sphereObject = new THREE.Mesh(geometry, _.material);
             // _.sphereObject.scale.set(1.02,1.02,1.02);
             _.sphereObject.name = _.me.name;
@@ -6976,7 +6982,8 @@ var worldThreejs = (function () {
         if (!_.sphereObject) {
             var mesh = topojson.mesh(_.world, _.world.objects.countries);
             var material = new THREE.MeshBasicMaterial({ color: 0x707070 });
-            _.sphereObject = tj.wireframe(mesh, material);
+            var r = this._.proj.scale() + (this.__plugins('3d').length > 0 ? 4 : 0);
+            _.sphereObject = tj.wireframe(mesh, material, r);
             // _.sphereObject.scale.set(1.02,1.02,1.02);
             _.sphereObject.name = _.me.name;
         }
@@ -7319,7 +7326,7 @@ var world3dThreejs = (function () {
     var vertexShader = '\nvarying vec2 vN;\nvoid main() {\nvec4 p = vec4( position, 1. );\nvec3 e = normalize( vec3( modelViewMatrix * p ) );\nvec3 n = normalize( normalMatrix * normal );\nvec3 r = reflect( e, n );\nfloat m = 2. * length( vec3( r.xy, r.z + 1. ) );\nvN = r.xy / m + .5;\ngl_Position = projectionMatrix * modelViewMatrix * p;\n}';
     var fragmentShader = '\nuniform sampler2D sampler;\nuniform vec3 diffuse;\nvarying vec2 vN;\nvoid main() {\nvec4 tex = texture2D( sampler, vN );\ngl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;\n}';
     function init() {
-        var r = this._.proj.scale() + 5;
+        var r = this._.proj.scale();
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r, r, r);

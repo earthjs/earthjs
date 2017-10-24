@@ -16,8 +16,8 @@ export default (color, color2=0xAAAAAA) => {
     function create() {
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
-            const SCALE = this._.proj.scale();
-            const geometry = new THREE.SphereGeometry(SCALE, 30, 30);
+            const r = this._.proj.scale() - (this.__plugins('3d').length>0 ? 5 : 0);
+            const geometry = new THREE.SphereGeometry(r, 30, 30);
             if (color) {
                 const ambient= new THREE.AmbientLight(color2);
                 const mesh   = new THREE.Mesh(geometry, _.material);

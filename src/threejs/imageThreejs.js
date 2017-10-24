@@ -30,8 +30,8 @@ export default (imgUrl='../globe/world.png') => {
     function create() {
         const tj = this.threejsPlugin;
         if (!_.sphereObject) {
-            const SCALE = this._.proj.scale();
-            const geometry = new THREE.SphereGeometry(SCALE, 30, 30);
+            const r = this._.proj.scale() + (this.__plugins('3d').length>0 ? 4 : 0);
+            const geometry = new THREE.SphereGeometry(r, 30, 30);
             _.sphereObject = new THREE.Mesh(geometry, _.material);
             // _.sphereObject.scale.set(1.02,1.02,1.02);
             _.sphereObject.name = _.me.name;

@@ -13,7 +13,8 @@ export default (worldUrl='../globe/world.png') => {
         if (!_.sphereObject) {
             const mesh = topojson.mesh(_.world, _.world.objects.countries);
             const material = new THREE.MeshBasicMaterial({color: 0x707070});
-            _.sphereObject = tj.wireframe(mesh, material);
+            const r = this._.proj.scale() + (this.__plugins('3d').length>0 ? 4 : 0);
+            _.sphereObject = tj.wireframe(mesh, material, r);
             // _.sphereObject.scale.set(1.02,1.02,1.02);
             _.sphereObject.name = _.me.name;
         }

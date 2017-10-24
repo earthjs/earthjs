@@ -27,7 +27,7 @@ vec4 tex = texture2D( sampler, vN );
 gl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;
 }`;
     function init() {
-        const r = this._.proj.scale()+5;
+        const r = this._.proj.scale();
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r,r,r);
