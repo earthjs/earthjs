@@ -112,6 +112,7 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         _.onDragStartVals.forEach(v => v.call(this, _.event, _.mouse));
         _.onDragVals.forEach(     v => v.call(this, _.event, _.mouse));
         _.removeEventQueue(_.me.name, 'onTween');
+        _.addEventQueue(_.me.name, 'onInterval');
         _.this._.drag = null;
     }
 
@@ -135,9 +136,10 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
             _._this = this;
         }
     }
-
+    
     function onEndDrag(){
         dragging = false;
+        _.removeEventQueue(_.me.name, 'onInterval');
         if (draggMove) {
             draggMove = false;
             _.addEventQueue(_.me.name, 'onTween');
@@ -197,6 +199,7 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         _.rotate = this._.rotate;
         _.addEventQueue = this.__addEventQueue;
         _.removeEventQueue = this.__removeEventQueue;
+        _.removeEventQueue(_.me.name, 'onInterval');
     }
 
     return {

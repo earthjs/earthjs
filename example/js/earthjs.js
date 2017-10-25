@@ -1913,6 +1913,7 @@ var inertiaPlugin = (function () {
             return v.call(_this3, _.event, _.mouse);
         });
         _.removeEventQueue(_.me.name, 'onTween');
+        _.addEventQueue(_.me.name, 'onInterval');
         _.this._.drag = null;
     }
 
@@ -1940,6 +1941,7 @@ var inertiaPlugin = (function () {
 
     function onEndDrag() {
         dragging = false;
+        _.removeEventQueue(_.me.name, 'onInterval');
         if (draggMove) {
             draggMove = false;
             _.addEventQueue(_.me.name, 'onTween');
@@ -1997,6 +1999,7 @@ var inertiaPlugin = (function () {
         _.rotate = this._.rotate;
         _.addEventQueue = this.__addEventQueue;
         _.removeEventQueue = this.__removeEventQueue;
+        _.removeEventQueue(_.me.name, 'onInterval');
     }
 
     return {
