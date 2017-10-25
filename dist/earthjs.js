@@ -7360,6 +7360,7 @@ var world3dThreejs = (function () {
         },
         onCreate: function onCreate() {
             create.call(this);
+            this.__removeEventQueue(_.me.name, 'onTween');
         },
         onTween: function onTween() {
             _.tween && _.tween.call(this);
