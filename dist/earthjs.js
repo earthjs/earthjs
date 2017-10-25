@@ -363,31 +363,10 @@ var earthjs$2 = function earthjs() {
     };
 
     __.interval = function (t) {
-        var _iteratorNormalCompletion3 = true;
-        var _didIteratorError3 = false;
-        var _iteratorError3 = undefined;
-
-        try {
-            for (var _iterator3 = _.onIntervalVals[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                var fn1 = _step3.value;
-
-                fn1.call(globe, t);
-            }
-        } catch (err) {
-            _didIteratorError3 = true;
-            _iteratorError3 = err;
-        } finally {
-            try {
-                if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                    _iterator3.return();
-                }
-            } finally {
-                if (_didIteratorError3) {
-                    throw _iteratorError3;
-                }
-            }
+        var l = _.onIntervalVals.length;
+        while (l--) {
+            _.onIntervalVals[l].call(globe, t);
         }
-
         return globe;
     };
 
@@ -400,56 +379,36 @@ var earthjs$2 = function earthjs() {
                 _.onRefresh[fn].call(globe);
             });
         } else {
-            var _iteratorNormalCompletion4 = true;
-            var _didIteratorError4 = false;
-            var _iteratorError4 = undefined;
-
-            try {
-                for (var _iterator4 = _.onRefreshVals[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                    var fn2 = _step4.value;
-
-                    fn2.call(globe);
-                }
-            } catch (err) {
-                _didIteratorError4 = true;
-                _iteratorError4 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                        _iterator4.return();
-                    }
-                } finally {
-                    if (_didIteratorError4) {
-                        throw _iteratorError4;
-                    }
-                }
+            var l = _.onRefreshVals.length;
+            while (l--) {
+                _.onRefreshVals[l].call(globe);
             }
         }
         return globe;
     };
 
     __.resize = function () {
-        var _iteratorNormalCompletion5 = true;
-        var _didIteratorError5 = false;
-        var _iteratorError5 = undefined;
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
 
         try {
-            for (var _iterator5 = _.onResizeVals[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                var fn3 = _step5.value;
+            for (var _iterator3 = _.onResizeVals[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                var fn3 = _step3.value;
 
                 fn3.call(globe);
             }
         } catch (err) {
-            _didIteratorError5 = true;
-            _iteratorError5 = err;
+            _didIteratorError3 = true;
+            _iteratorError3 = err;
         } finally {
             try {
-                if (!_iteratorNormalCompletion5 && _iterator5.return) {
-                    _iterator5.return();
+                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                    _iterator3.return();
                 }
             } finally {
-                if (_didIteratorError5) {
-                    throw _iteratorError5;
+                if (_didIteratorError3) {
+                    throw _iteratorError3;
                 }
             }
         }

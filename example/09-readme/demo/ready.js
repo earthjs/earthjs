@@ -52,10 +52,6 @@ g.ready(function(){
     g.graticule.sphere().scale.set(0.98,0.98,0.98);
     g.ocean1.sphere().scale.set(0.97,0.97,0.97);
     g.ocean2.sphere().scale.set(0.97,0.97,0.97);
-    // g.ocean3.sphere().scale.set(0.97,0.97,0.97);
-    // g.ocean3.sphere().material.transparent = true;
-    // r = g._.proj.scale()-3.5;
-    // g.world3d.sphere().scale.set(r,r,r);
 
     data = g.world3d.data();
     keys = Object.keys(data);

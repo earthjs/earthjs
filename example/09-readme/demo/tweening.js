@@ -2,7 +2,9 @@
 /* eslint no-undef:0 */
 let tween, tmax=tval=30;
 function tweening() {
-    if (g.world3dThreejs.tween)
+    const tj = g.threejsPlugin;
+    const t3 = g.world3dThreejs;
+        if (t3.tween)
         return;
     let cord, targ, ctr, mesh;
     let arr = keys.filter(s=>data[s].mesh.scale.x>1);
@@ -15,7 +17,8 @@ function tweening() {
         cord = {r:1.5};
         targ = {r:1};
     }
-    g.world3dThreejs.tween = time => TWEEN.update(time);
+    t3.tween = time => TWEEN.update(time);
+    g.__addEventQueue('world3dThreejs', 'onTween');
     tween = new TWEEN.Tween(cord).to(targ, 500)
     .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
     .onUpdate(function() {
@@ -23,12 +26,14 @@ function tweening() {
         if (arr.length<tmax && mesh)
             mesh.scale.set(r,r,r)
         else {
-            arr.forEach(k=>data[k].mesh.scale.set(r,r,r))
+            let l = arr.length;
+            while(l--) {data[arr[l]].mesh.scale.set(r,r,r);}
         }
-        g.threejsPlugin.renderThree();
+        tj.renderThree();
     })
     .onComplete(function() {
-        g.world3dThreejs.tween = null
+        t3.tween = null;
+        g.__removeEventQueue('world3dThreejs', 'onTween');
         if (tmax===tval || keys.filter(s=>data[s].mesh.scale.x>1).length>0)
             setTimeout(()=>tweening(),50);
     })

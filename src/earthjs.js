@@ -243,8 +243,9 @@ const earthjs = (options={}) => {
     }
 
     __.interval = function(t) {
-        for (let fn1 of _.onIntervalVals) {
-            fn1.call(globe, t);
+        let l = _.onIntervalVals.length;
+        while(l--) {
+            _.onIntervalVals[l].call(globe, t);
         }
         return globe;
     }
@@ -256,8 +257,9 @@ const earthjs = (options={}) => {
                 _.onRefresh[fn].call(globe);
             });
         } else {
-            for (let fn2 of _.onRefreshVals) {
-                fn2.call(globe);
+            let l = _.onRefreshVals.length;
+            while(l--) {
+                _.onRefreshVals[l].call(globe);
             }
         }
         return globe;
