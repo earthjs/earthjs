@@ -46,6 +46,9 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         _.onDragEndVals.forEach(v => v.call(this, _.event, _.mouse));
     }
 
+    const scaleX  = d3.scaleLinear().domain([65.3,184.5]).range([0.60,0.25]);
+    const scaleY  = d3.scaleLinear().domain([65.3,184.5]).range([0.55,0.20]);
+    
     function inertiaDrag() {
         _.onDragVals.forEach(v => v.call(this, _.event, _.mouse));
         if (!rendering) {
@@ -58,8 +61,8 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         rotateVY *= 0.90;
 
         if (dragging) {
-            rotateVX *= 0.25;
-            rotateVY *= 0.20;
+            rotateVX *= _.dragX // 0.25;
+            rotateVY *= _.dragY // 0.20;
         }
 
         if (rotateY < -100) {
@@ -200,6 +203,17 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         _.addEventQueue = this.__addEventQueue;
         _.removeEventQueue = this.__removeEventQueue;
         _.removeEventQueue(_.me.name, 'onInterval');
+        let r = _.proj.scale();
+        r = r > 200 ? 200 : r; // 184.5
+        _.dragX = scaleX(r);
+        _.dragY = scaleY(r);
+    }
+
+    function resize() {
+        let r = _.proj.scale();
+        r = r > 200 ? 200 : r; // 184.5
+        _.dragX = scaleX(r);
+        _.dragY = scaleY(r);
     }
 
     return {
@@ -212,6 +226,9 @@ export default ({zoomScale}={zoomScale:[0,50000]}) => {
         },
         onCreate() {
             create.call(this);
+        },
+        onResize() {
+            resize.call(this);
         },
         selectAll(q) {
             if (q) {
