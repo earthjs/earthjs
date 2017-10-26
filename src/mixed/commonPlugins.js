@@ -18,7 +18,6 @@ export default worldUrl => {
         const r = this.register;
         const p = earthjs.plugins;
         r(p.mousePlugin());
-        r(p.configPlugin());
         r(p.autorotatePlugin());
         r(p.dropShadowSvg());
         r(p.oceanSvg());
@@ -30,12 +29,12 @@ export default worldUrl => {
         this.graticuleCanvas.drawTo([1]);
         this.worldCanvas.drawTo([0]);
 
-        _.options = this.configPlugin.set();
+        _.options = this._.options;
         _.buttonClick = str => {
             const arr = str.split(':'),
                 key = arr[2],
                 resultx  = {},
-                options  = this.configPlugin.set();
+                options  = this._.options;
             options[key] = !options[key];
             resultx[key] =  options[key];
             if (key=='transparent') {
@@ -53,7 +52,7 @@ export default worldUrl => {
                 }
                 resultx.transparent = false;
             }
-            this.configPlugin.set(resultx);
+            // this.configPlugin.set(resultx);
         };
     }
 
@@ -107,7 +106,7 @@ export default worldUrl => {
         },
         addChecker(checker) {
             _.checker.push(checker);
-            _.options = this.configPlugin.set();
+            _.options = this._.options();
             enableController.call(this);
         }
     }
