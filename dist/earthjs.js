@@ -7576,7 +7576,6 @@ var commonPlugins = (function (worldUrl) {
         var r = this.register;
         var p = earthjs.plugins;
         r(p.mousePlugin());
-        r(p.configPlugin());
         r(p.autorotatePlugin());
         r(p.dropShadowSvg());
         r(p.oceanSvg());
@@ -7588,12 +7587,12 @@ var commonPlugins = (function (worldUrl) {
         this.graticuleCanvas.drawTo([1]);
         this.worldCanvas.drawTo([0]);
 
-        _.options = this.configPlugin.set();
+        _.options = this._.options;
         _.buttonClick = function (str) {
             var arr = str.split(':'),
                 key = arr[2],
                 resultx = {},
-                options = _this2.configPlugin.set();
+                options = _this2._.options;
             options[key] = !options[key];
             resultx[key] = options[key];
             if (key == 'transparent') {
@@ -7611,7 +7610,7 @@ var commonPlugins = (function (worldUrl) {
                 }
                 resultx.transparent = false;
             }
-            _this2.configPlugin.set(resultx);
+            // this.configPlugin.set(resultx);
         };
     }
 
@@ -7662,7 +7661,7 @@ var commonPlugins = (function (worldUrl) {
         },
         addChecker: function addChecker(checker) {
             _.checker.push(checker);
-            _.options = this.configPlugin.set();
+            _.options = this._.options();
             enableController.call(this);
         }
     };
