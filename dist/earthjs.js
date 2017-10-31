@@ -278,8 +278,11 @@ var earthjs$2 = function earthjs() {
         var interval = __.interval;
         intervalTicker = intervalTicker || 10;
 
-        var start1 = 0;
-        var start2 = 0;
+        var l1 = void 0,
+            start1 = 0;
+        var l2 = void 0,
+            start2 = 0,
+            p = void 0;
         function step(timestamp) {
             if (timestamp - start1 > intervalTicker) {
                 start1 = timestamp;
@@ -287,60 +290,22 @@ var earthjs$2 = function earthjs() {
                     interval.call(globe, timestamp);
                     if (timestamp - start2 > intervalTicker + 30) {
                         start2 = timestamp;
-                        var _iteratorNormalCompletion = true;
-                        var _didIteratorError = false;
-                        var _iteratorError = undefined;
 
-                        try {
-                            for (var _iterator = earths[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                                var p = _step.value;
-
-                                p._.interval.call(p, timestamp);
-                            }
-                        } catch (err) {
-                            _didIteratorError = true;
-                            _iteratorError = err;
-                        } finally {
-                            try {
-                                if (!_iteratorNormalCompletion && _iterator.return) {
-                                    _iterator.return();
-                                }
-                            } finally {
-                                if (_didIteratorError) {
-                                    throw _iteratorError;
-                                }
-                            }
+                        l1 = earths.length;
+                        l2 = l1 - 1;
+                        while (l1--) {
+                            p = earthjs[l2 - l1];
+                            p._.interval.call(p, timestamp);
                         }
                     }
                 }
             }
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
 
-            try {
-                for (var _iterator2 = _.onTweenVals[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var twn = _step2.value;
-
-                    twn.call(globe, timestamp);
-                }
-                // if (__.options.tween && !__.drag)
-                //     __.options.tween(timestamp);
-            } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                        _iterator2.return();
-                    }
-                } finally {
-                    if (_didIteratorError2) {
-                        throw _iteratorError2;
-                    }
-                }
+            l1 = _.onTweenVals.length;
+            l2 = l1 - 1;
+            while (l1--) {
+                _.onTweenVals[l2 - l1].call(globe, timestamp);
             }
-
             earthjs.ticker = requestAnimationFrame(step);
         }
         earthjs.ticker = requestAnimationFrame(step);
@@ -389,31 +354,11 @@ var earthjs$2 = function earthjs() {
     };
 
     __.resize = function () {
-        var _iteratorNormalCompletion3 = true;
-        var _didIteratorError3 = false;
-        var _iteratorError3 = undefined;
-
-        try {
-            for (var _iterator3 = _.onResizeVals[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                var fn3 = _step3.value;
-
-                fn3.call(globe);
-            }
-        } catch (err) {
-            _didIteratorError3 = true;
-            _iteratorError3 = err;
-        } finally {
-            try {
-                if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                    _iterator3.return();
-                }
-            } finally {
-                if (_didIteratorError3) {
-                    throw _iteratorError3;
-                }
-            }
+        var l1 = _.onResizeVals.length;
+        var l2 = l1 - 1;
+        while (l1--) {
+            _.onResizeVals[l2 - l1].call(globe);
         }
-
         return globe;
     };
 
@@ -4430,38 +4375,21 @@ var worldCanvas = (function (worldUrl) {
                             context.fill();
                         }, _.drawTo, _.options);
                     } else {
-                        var _iteratorNormalCompletion = true;
-                        var _didIteratorError = false;
-                        var _iteratorError = undefined;
+                        var l1 = _.selected.features.length;
+                        var l2 = l1 - 1;
 
-                        try {
-                            var _loop = function _loop() {
-                                var scountry = _step.value;
+                        var _loop = function _loop() {
+                            var scountry = _.selected.features[l2 - l1];
+                            _this.canvasPlugin.render(function (context, path) {
+                                context.beginPath();
+                                path(scountry);
+                                context.fillStyle = scountry.color;
+                                context.fill();
+                            }, _.drawTo, _.options);
+                        };
 
-                                _this.canvasPlugin.render(function (context, path) {
-                                    context.beginPath();
-                                    path(scountry);
-                                    context.fillStyle = scountry.color;
-                                    context.fill();
-                                }, _.drawTo, _.options);
-                            };
-
-                            for (var _iterator = _.selected.features[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                                _loop();
-                            }
-                        } catch (err) {
-                            _didIteratorError = true;
-                            _iteratorError = err;
-                        } finally {
-                            try {
-                                if (!_iteratorNormalCompletion && _iterator.return) {
-                                    _iterator.return();
-                                }
-                            } finally {
-                                if (_didIteratorError) {
-                                    throw _iteratorError;
-                                }
-                            }
+                        while (l1--) {
+                            _loop();
                         }
                     }
                 }

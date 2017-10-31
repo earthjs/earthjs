@@ -201,8 +201,8 @@ const earthjs = (options={}) => {
         const interval = __.interval;
         intervalTicker = intervalTicker || 10;
 
-        let start1 = 0;
-        let start2 = 0;
+        let l1, start1 = 0;
+        let l2, start2 = 0, p;
         function step(timestamp) {
             if ((timestamp - start1) > intervalTicker) {
                 start1 = timestamp;
@@ -210,17 +210,22 @@ const earthjs = (options={}) => {
                     interval.call(globe, timestamp);
                     if ((timestamp - start2) > intervalTicker+30) {
                         start2 = timestamp;
-                        for (let p of earths) {
+
+                        l1 = earths.length;
+                        l2 = l1-1;
+                        while(l1--) {
+                            p = earthjs[l2-l1];
                             p._.interval.call(p, timestamp);
                         }
                     }
                 }
             }
-            for (let twn of _.onTweenVals) {
-                twn.call(globe, timestamp);
+
+            l1 = _.onTweenVals.length;
+            l2 = l1-1;
+            while(l1--) {
+                _.onTweenVals[l2-l1].call(globe, timestamp);
             }
-            // if (__.options.tween && !__.drag)
-            //     __.options.tween(timestamp);
             earthjs.ticker = requestAnimationFrame(step);
         }
         earthjs.ticker = requestAnimationFrame(step);
@@ -267,8 +272,10 @@ const earthjs = (options={}) => {
     }
 
     __.resize = function() {
-        for (let fn3 of _.onResizeVals) {
-            fn3.call(globe);
+        let l1 = _.onResizeVals.length;
+        let l2 = l1-1;
+        while(l1--) {
+            _.onResizeVals[l2-l1].call(globe);
         }
         return globe;
     }

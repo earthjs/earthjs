@@ -45,7 +45,10 @@ export default worldUrl => {
                             context.fill();
                         }, _.drawTo, _.options);
                     } else {
-                        for (let scountry of _.selected.features) {
+                        let l1 = _.selected.features.length;
+                        let l2 = l1-1;
+                        while(l1--) {
+                            const scountry = _.selected.features[l2-l1]
                             this.canvasPlugin.render(function(context, path) {
                                 context.beginPath();
                                 path(scountry);

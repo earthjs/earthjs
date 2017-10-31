@@ -3,8 +3,7 @@
 let tween, tmax=tval=30;
 function tweening() {
     const tj = g.threejsPlugin;
-    const t3 = g.world3dThreejs;
-        if (t3.tween)
+    if (g.world3d.tween)
         return;
     let cord, targ, ctr, mesh;
     let arr = keys.filter(s=>data[s].mesh.scale.x>1);
@@ -17,8 +16,8 @@ function tweening() {
         cord = {r:1.5};
         targ = {r:1};
     }
-    t3.tween = time => TWEEN.update(time);
-    g.__addEventQueue('world3dThreejs', 'onTween');
+    g.world3d.tween = time => TWEEN.update(time);
+    // g.__addEventQueue('world3dThreejs', 'onTween');
     tween = new TWEEN.Tween(cord).to(targ, 500)
     .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
     .onUpdate(function() {
@@ -32,8 +31,8 @@ function tweening() {
         tj.renderThree();
     })
     .onComplete(function() {
-        t3.tween = null;
-        g.__removeEventQueue('world3dThreejs', 'onTween');
+        g.world3d.tween = null;
+        // g.__removeEventQueue('world3dThreejs', 'onTween');
         if (tmax===tval || keys.filter(s=>data[s].mesh.scale.x>1).length>0)
             setTimeout(()=>tweening(),50);
     })
