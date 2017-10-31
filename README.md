@@ -3,7 +3,7 @@
 #### Live Example
 * [3D Flight Line](https://earthjs.github.io/16-threejs-demo/3-small_arms_3_.html)
 
-![alt #D Flight Line](https://image.ibb.co/cpn8Cb/3d_globe.gif)
+![alt #D Flight Line](https://raw.githubusercontent.com/earthjs/earthjs.github.io/master/images/3d-globe.gif)
 
 Earthjs is a javascript library for easy building orthographic globe. Originally inspired by [planetary.js](https://github.com/BinaryMuse/planetary.js) (canvas) and [Faux-3d Shaded Globe](http://bl.ocks.org/dwtkns/4686432) (svg) and both were created using D3-v3.
 
