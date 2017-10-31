@@ -1,6 +1,6 @@
 {
   "name": "earthjs",
-  "version": "0.7.138",
+  "version": "0.7.139",
   "description": "D3 Earth JS using SVG, Canvas & THREE js, build with some plugins.",
   "files": ["src", "example"],
   "main": "index.js",
@@ -17,9 +17,12 @@
     "url": "git+https://github.com/earthjs/earthjs.git"
   },
   "keywords": [
+    "3d",
     "D3js",
     "globe",
     "earth",
+    "three",
+    "webgl",
     "dataviz",
     "orthographic",
     "visualization"
