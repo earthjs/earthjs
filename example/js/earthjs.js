@@ -379,9 +379,10 @@ var earthjs$2 = function earthjs() {
                 _.onRefresh[fn].call(globe);
             });
         } else {
-            var l = _.onRefreshVals.length;
-            while (l--) {
-                _.onRefreshVals[l].call(globe);
+            var l1 = _.onRefreshVals.length;
+            var l2 = l1 - 1;
+            while (l1--) {
+                _.onRefreshVals[l2 - l1].call(globe);
             }
         }
         return globe;

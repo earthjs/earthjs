@@ -257,9 +257,10 @@ const earthjs = (options={}) => {
                 _.onRefresh[fn].call(globe);
             });
         } else {
-            let l = _.onRefreshVals.length;
-            while(l--) {
-                _.onRefreshVals[l].call(globe);
+            let l1 = _.onRefreshVals.length;
+            let l2 = l1-1;
+            while(l1--) {
+                _.onRefreshVals[l2-l1].call(globe);
             }
         }
         return globe;
