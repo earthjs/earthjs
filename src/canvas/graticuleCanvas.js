@@ -17,7 +17,7 @@ export default () => {
             this.canvasPlugin.render(function(context, path) {
                 context.beginPath();
                 path(datumGraticule);
-                context.lineWidth = 0.4;
+                context.lineWidth = _.style.lineWidth || 0.4;
                 context.strokeStyle = _.style.line || 'rgba(119,119,119,0.6)';
                 context.stroke();
             }, _.drawTo);
