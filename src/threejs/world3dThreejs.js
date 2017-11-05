@@ -77,7 +77,7 @@ gl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;
         },
         onCreate() {
             create.call(this);
-            this.__removeEventQueue(_.me.name, 'onTween');
+            // this.__removeEventQueue(_.me.name, 'onTween');
         },
         onTween() {
             _.tween && _.tween.call(this);

@@ -201,8 +201,8 @@ const earthjs = (options={}) => {
         const interval = __.interval;
         intervalTicker = intervalTicker || 10;
 
-        let l1, start1 = 0;
-        let l2, start2 = 0, p;
+        let l1, start1 = 0, p;
+        let l2, start2 = 0, fn;
         function step(timestamp) {
             if ((timestamp - start1) > intervalTicker) {
                 start1 = timestamp;
@@ -211,20 +211,21 @@ const earthjs = (options={}) => {
                     if ((timestamp - start2) > intervalTicker+30) {
                         start2 = timestamp;
 
-                        l1 = earths.length;
-                        l2 = l1-1;
-                        while(l1--) {
+                        l2 = l1 = earths.length;
+                        while(l1)  {
                             p = earthjs[l2-l1];
                             p._.interval.call(p, timestamp);
+                            l1--;
                         }
                     }
                 }
             }
 
-            l1 = _.onTweenVals.length;
-            l2 = l1-1;
-            while(l1--) {
-                _.onTweenVals[l2-l1].call(globe, timestamp);
+            l2 = l1 = _.onTweenVals.length;  
+            while(l1) {
+                fn = _.onTweenVals[l2-l1];
+                fn && fn.call(globe, timestamp); // length can changed!
+                l1--;
             }
             earthjs.ticker = requestAnimationFrame(step);
         }
@@ -256,26 +257,28 @@ const earthjs = (options={}) => {
     }
 
     __.refresh = function(filter) {
+        let l2, l1;
         if (filter) {
             const keys = filter ? _.onRefreshKeys.filter(d => filter.test(d)) : _.onRefreshKeys;
             keys.forEach(function(fn) {
                 _.onRefresh[fn].call(globe);
             });
         } else {
-            let l1 = _.onRefreshVals.length;
-            let l2 = l1-1;
-            while(l1--) {
+            l2 = l1 = _.onRefreshVals.length;
+            while(l1) {
                 _.onRefreshVals[l2-l1].call(globe);
+                l1--
             }
         }
         return globe;
     }
 
     __.resize = function() {
-        let l1 = _.onResizeVals.length;
-        let l2 = l1-1;
-        while(l1--) {
+        let l2, l1;
+        l2 = l1 = _.onResizeVals.length;
+        while(l1) {
             _.onResizeVals[l2-l1].call(globe);
+            l1--;
         }
         return globe;
     }

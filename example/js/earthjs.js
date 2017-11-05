@@ -279,10 +279,11 @@ var earthjs$2 = function earthjs() {
         intervalTicker = intervalTicker || 10;
 
         var l1 = void 0,
-            start1 = 0;
+            start1 = 0,
+            p = void 0;
         var l2 = void 0,
             start2 = 0,
-            p = void 0;
+            fn = void 0;
         function step(timestamp) {
             if (timestamp - start1 > intervalTicker) {
                 start1 = timestamp;
@@ -291,20 +292,21 @@ var earthjs$2 = function earthjs() {
                     if (timestamp - start2 > intervalTicker + 30) {
                         start2 = timestamp;
 
-                        l1 = earths.length;
-                        l2 = l1 - 1;
-                        while (l1--) {
+                        l2 = l1 = earths.length;
+                        while (l1) {
                             p = earthjs[l2 - l1];
                             p._.interval.call(p, timestamp);
+                            l1--;
                         }
                     }
                 }
             }
 
-            l1 = _.onTweenVals.length;
-            l2 = l1 - 1;
-            while (l1--) {
-                _.onTweenVals[l2 - l1].call(globe, timestamp);
+            l2 = l1 = _.onTweenVals.length;
+            while (l1) {
+                fn = _.onTweenVals[l2 - l1];
+                fn && fn.call(globe, timestamp); // length can changed!
+                l1--;
             }
             earthjs.ticker = requestAnimationFrame(step);
         }
@@ -336,6 +338,8 @@ var earthjs$2 = function earthjs() {
     };
 
     __.refresh = function (filter) {
+        var l2 = void 0,
+            l1 = void 0;
         if (filter) {
             var keys = filter ? _.onRefreshKeys.filter(function (d) {
                 return filter.test(d);
@@ -344,20 +348,22 @@ var earthjs$2 = function earthjs() {
                 _.onRefresh[fn].call(globe);
             });
         } else {
-            var l1 = _.onRefreshVals.length;
-            var l2 = l1 - 1;
-            while (l1--) {
+            l2 = l1 = _.onRefreshVals.length;
+            while (l1) {
                 _.onRefreshVals[l2 - l1].call(globe);
+                l1--;
             }
         }
         return globe;
     };
 
     __.resize = function () {
-        var l1 = _.onResizeVals.length;
-        var l2 = l1 - 1;
-        while (l1--) {
+        var l2 = void 0,
+            l1 = void 0;
+        l2 = l1 = _.onResizeVals.length;
+        while (l1) {
             _.onResizeVals[l2 - l1].call(globe);
+            l1--;
         }
         return globe;
     };
@@ -6060,6 +6066,7 @@ var graticuleThreejs = (function () {
     function create() {
         var tj = this.threejsPlugin;
         if (!_.sphereObject) {
+            // linewidth always: 1
             var material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
             _.sphereObject = tj.wireframe(_.graticule10, material); //0x800000
             _.sphereObject.name = _.me.name;
@@ -7306,7 +7313,7 @@ var world3dThreejs = (function () {
         },
         onCreate: function onCreate() {
             create.call(this);
-            this.__removeEventQueue(_.me.name, 'onTween');
+            // this.__removeEventQueue(_.me.name, 'onTween');
         },
         onTween: function onTween() {
             _.tween && _.tween.call(this);
