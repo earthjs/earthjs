@@ -73,16 +73,22 @@ export default (worldUrl, scw=6.279, height=2048) => {
         tj.addGroup(_.sphereObject);
     }
 
+    // stroke adjustment when zooming
+    const scale10 = d3.scaleLinear().domain([30, 450]).range([10, 2]);
+
     function choropleth() {
         const o = this._.options;
         if (o.choropleth) {
             let i = _.countries.features.length;
             while (i--) {
                 const obj = _.countries.features[i];
+                const color = obj.properties.color || _.style.countries || 'rgba(2, 20, 37,0.8)';
                 _.context.beginPath();
                 _.path(obj);
-                _.context.fillStyle = obj.properties.color || _.style.countries || 'rgba(2, 20, 37,0.8)';
+                _.context.fillStyle = color;
+                _.context.strokeStyle = color;
                 _.context.fill();
+                _.context.stroke();
             }
             return true;
         } else {
@@ -93,8 +99,6 @@ export default (worldUrl, scw=6.279, height=2048) => {
         }
     }
 
-    // stroke adjustment when zooming
-    const scale10 = d3.scaleLinear().domain([30, 450]).range([10, 2]);
     function resize() {
         const o = this._.options;
         if (_.style.ocean) {
@@ -108,7 +112,7 @@ export default (worldUrl, scw=6.279, height=2048) => {
         if (!border) {
             choropleth.call(this);
         }
-        if (o.showBorder || o.showBorder===undefined) {
+        if (!o.choropleth && (o.showBorder || o.showBorder===undefined)) {
             let sc = scale10(this._.proj.scale());
             if (sc < 1)
                 sc = 1;

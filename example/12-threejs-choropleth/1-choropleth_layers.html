@@ -23,7 +23,7 @@
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         // .register(earthjs.plugins.oceanThreejs())
-        .register(earthjs.plugins.graticuleThreejs())
+        // .register(earthjs.plugins.graticuleThreejs())
         .register(earthjs.plugins.imageThreejs('../globe/earth_ocean-mask.png'))
         .register(earthjs.plugins.world3dThreejs(null,'../globe/blue.jpg', 0.95))
         .register(earthjs.plugins.choroplethCsv('../data/2010_alcohol_consumption_by_country.csv'))
@@ -39,14 +39,13 @@
             g.choroplethCsv  .mergeData(countries, ['properties.cid:cid', 'properties.value:alcohol']);
 
             const {data, geometries} = g.world3dJson.allData();
+            g.choroplethCsv  .colorize('alcohol', 'schemeReds');
             g.choroplethCsv.mergeData(geometries, ['properties.cid:cid', 'properties.color:color']);
             g.choroplethCsv.mergeData(geometries, ['properties.cid:cid', 'properties.value:alcohol']);
             g.world3dThreejs.data(data);
             g.create();
             t = g.canvasThreejs.sphere();
             t.scale.set(1.02,1.02,1.02);
-            o = g.oceanThreejs.sphere();
-            o.material.transparent = true;
         })
 
         d3.select('#frm').on('input', function() {

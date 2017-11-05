@@ -5662,16 +5662,22 @@ var canvasThreejs = (function (worldUrl) {
         tj.addGroup(_.sphereObject);
     }
 
+    // stroke adjustment when zooming
+    var scale10 = d3.scaleLinear().domain([30, 450]).range([10, 2]);
+
     function choropleth() {
         var o = this._.options;
         if (o.choropleth) {
             var i = _.countries.features.length;
             while (i--) {
                 var obj = _.countries.features[i];
+                var color = obj.properties.color || _.style.countries || 'rgba(2, 20, 37,0.8)';
                 _.context.beginPath();
                 _.path(obj);
-                _.context.fillStyle = obj.properties.color || _.style.countries || 'rgba(2, 20, 37,0.8)';
+                _.context.fillStyle = color;
+                _.context.strokeStyle = color;
                 _.context.fill();
+                _.context.stroke();
             }
             return true;
         } else {
@@ -5682,8 +5688,6 @@ var canvasThreejs = (function (worldUrl) {
         }
     }
 
-    // stroke adjustment when zooming
-    var scale10 = d3.scaleLinear().domain([30, 450]).range([10, 2]);
     function resize() {
         var o = this._.options;
         if (_.style.ocean) {
@@ -5697,7 +5701,7 @@ var canvasThreejs = (function (worldUrl) {
         if (!border) {
             choropleth.call(this);
         }
-        if (o.showBorder || o.showBorder === undefined) {
+        if (!o.choropleth && (o.showBorder || o.showBorder === undefined)) {
             var sc = scale10(this._.proj.scale());
             if (sc < 1) sc = 1;
             if (border) {
