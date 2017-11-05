@@ -38,7 +38,7 @@ export default () => {
 
     function create() {
         const tj = this.threejsPlugin;
-        if (!_.sphereObject) {
+        if (!_.sphereObject) { // linewidth always: 1
             const material = new THREE.LineBasicMaterial({color: 0xaaaaaa});
             _.sphereObject = tj.wireframe(_.graticule10, material); //0x800000
             _.sphereObject.name = _.me.name;
