@@ -23,7 +23,7 @@
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         // .register(earthjs.plugins.oceanThreejs())
-        // .register(earthjs.plugins.graticuleThreejs())
+        .register(earthjs.plugins.graticuleThreejs())
         .register(earthjs.plugins.imageThreejs('../globe/earth_ocean-mask.png'))
         .register(earthjs.plugins.world3dThreejs(null,'../globe/blue.jpg', 0.95))
         .register(earthjs.plugins.choroplethCsv('../data/2010_alcohol_consumption_by_country.csv'))
@@ -34,12 +34,12 @@
         let t,o;
         g.ready(function(){
             const countries = g.canvasThreejs.allData().countries;
-            g.choroplethCsv  .colorize('alcohol', 'schemeReds', 0.5);
-            g.choroplethCsv  .mergeData(countries, ['properties.cid:cid', 'properties.color:color']);
-            g.choroplethCsv  .mergeData(countries, ['properties.cid:cid', 'properties.value:alcohol']);
+            g.choroplethCsv.colorize('alcohol', 'schemeReds', 0.5); // add prop. color to countries
+            g.choroplethCsv.mergeData(countries, ['properties.cid:cid', 'properties.color:color']);
+            g.choroplethCsv.mergeData(countries, ['properties.cid:cid', 'properties.value:alcohol']);
 
             const {data, geometries} = g.world3dJson.allData();
-            g.choroplethCsv  .colorize('alcohol', 'schemeReds');
+            g.choroplethCsv.colorize('alcohol', 'schemeReds'); // add prop. color to geometries
             g.choroplethCsv.mergeData(geometries, ['properties.cid:cid', 'properties.color:color']);
             g.choroplethCsv.mergeData(geometries, ['properties.cid:cid', 'properties.value:alcohol']);
             g.world3dThreejs.data(data);
