@@ -18,15 +18,15 @@
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const scale = d3.min([offsetWidth, offsetHeight])/3;
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, scale})
+        .register(earthjs.plugins.choroplethCsv('../data/2010_alcohol_consumption_by_country.csv'))
         .register(earthjs.plugins.world3dJson('../d/world.geometry.json', '../d/country_nm_to_id.json'))
         .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.threejsPlugin())
         .register(earthjs.plugins.autorotatePlugin())
         // .register(earthjs.plugins.oceanThreejs())
         .register(earthjs.plugins.graticuleThreejs())
-        .register(earthjs.plugins.imageThreejs('../globe/earth_ocean-mask.png'))
         .register(earthjs.plugins.world3dThreejs(null,'../globe/blue.jpg', 0.95))
-        .register(earthjs.plugins.choroplethCsv('../data/2010_alcohol_consumption_by_country.csv'))
+        .register(earthjs.plugins.imageThreejs('../globe/earth_ocean-mask.png'))
         .register(earthjs.plugins.canvasThreejs('../d/world-110m.json'))
         g._.options.showSelectedCountry = true;
         g._.options.choropleth = true;
