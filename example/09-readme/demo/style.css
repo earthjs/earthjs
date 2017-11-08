@@ -1,6 +1,6 @@
 body {
     background: #555;
-    background-image: url("../../images/tiles.png");
+    /*background-image: url("../../images/tiles.png");*/
     height: 100vh;
     margin: 0;
 }
