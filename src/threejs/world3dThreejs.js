@@ -1,11 +1,16 @@
 // import data from './globe';
 import Map3DGeometry from './map3d';
-export default (worldUrl='../d/world.geometry.json', imgUrl='../globe/gold.jpg', inner=0.9, rtt=-1.57) => {
+export default (
+    worldUrl = '../d/world.geometry.json',
+    imgUrl = '../globe/gold.jpg',
+    inner = 0.9,
+    rtt = -1.57
+) => {
     /*eslint no-console: 0 */
     const _ = {
         style: {},
         tween: null,
-        sphereObject: new THREE.Group(),
+        sphereObject: new THREE.Group()
     };
     const vertexShader = `
 varying vec2 vN;
@@ -30,7 +35,7 @@ gl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;
         const r = this._.proj.scale();
         this._.options.showWorld = true;
         _.sphereObject.rotation.y = rtt;
-        _.sphereObject.scale.set(r,r,r);
+        _.sphereObject.scale.set(r, r, r);
         _.sphereObject.name = _.me.name;
     }
 
@@ -38,24 +43,49 @@ gl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;
     function create() {
         const data = _.world;
         const tj = this.threejsPlugin;
-        const {choropleth} = this._.options;
+        const { choropleth } = this._.options;
         _.uniforms = {
-            sampler: {type: 't', value: tj.texture(imgUrl)},
-            diffuse: {type: 'c', value: new THREE.Color(_.style.land || 'black')},
+            sampler: { type: 't', value: tj.texture(imgUrl) },
+            diffuse: {
+                type: 'c',
+                value: new THREE.Color(_.style.land || 'black')
+            }
         };
         for (let name in data) {
             if (choropleth) {
-                const properties = data[name].properties || {color: _.style.countries};
-                const diffuse = {type: 'c', value: new THREE.Color(properties.color || 'black')};
-                uniforms = Object.assign({}, _.uniforms, {diffuse});
+                const properties = data[name].properties || {
+                    color: _.style.countries
+                };
+                const diffuse = {
+                    type: 'c',
+                    value: new THREE.Color(properties.color || 'black')
+                };
+                uniforms = Object.assign({}, _.uniforms, { diffuse });
             } else {
                 uniforms = _.uniforms;
             }
             const geometry = new Map3DGeometry(data[name], inner);
-            material = new THREE.ShaderMaterial({uniforms, vertexShader, fragmentShader});
-            _.sphereObject.add(data[name].mesh = new THREE.Mesh(geometry, material));
+            material = new THREE.ShaderMaterial({
+                uniforms,
+                vertexShader,
+                fragmentShader
+            });
+            _.sphereObject.add(
+                (data[name].mesh = new THREE.Mesh(geometry, material))
+            );
         }
         tj.addGroup(_.sphereObject);
+    }
+
+    function reloadColor() {
+        const data = _.world;
+        const { choropleth } = this._.options;
+        for (let name in data) {
+            if (choropleth) {
+                const { properties, mesh } = data[name];
+                mesh.material.uniforms.diffuse.value.set(properties.color);
+            }
+        }
     }
 
     return {
@@ -69,7 +99,7 @@ gl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;
             init.call(this);
             Object.defineProperty(me, 'tween', {
                 get: () => _.tween,
-                set: (x) => {
+                set: x => {
                     _.tween = x;
                     // this.__addEventQueue(_.me.name, 'onTween');
                 }
@@ -85,11 +115,14 @@ gl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;
         rotate(rtt) {
             _.sphereObject.rotation.y = rtt;
         },
+        reloadColor() {
+            reloadColor.call(this);
+        },
         data(data) {
             if (data) {
                 _.world = data;
             } else {
-                return  _.world;
+                return _.world;
             }
         },
         sphere() {
@@ -107,5 +140,5 @@ gl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;
                 dataItem.mesh.geometry = new Map3DGeometry(dataItem, inner);
             }
         }
-    }
-}
+    };
+};

@@ -7279,21 +7279,48 @@ var world3dThreejs = (function () {
 
         _.uniforms = {
             sampler: { type: 't', value: tj.texture(imgUrl) },
-            diffuse: { type: 'c', value: new THREE.Color(_.style.land || 'black') }
+            diffuse: {
+                type: 'c',
+                value: new THREE.Color(_.style.land || 'black')
+            }
         };
         for (var name in data) {
             if (choropleth) {
-                var properties = data[name].properties || { color: _.style.countries };
-                var diffuse = { type: 'c', value: new THREE.Color(properties.color || 'black') };
+                var properties = data[name].properties || {
+                    color: _.style.countries
+                };
+                var diffuse = {
+                    type: 'c',
+                    value: new THREE.Color(properties.color || 'black')
+                };
                 uniforms = Object.assign({}, _.uniforms, { diffuse: diffuse });
             } else {
                 uniforms = _.uniforms;
             }
             var geometry = new Map3DGeometry(data[name], inner);
-            material = new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexShader, fragmentShader: fragmentShader });
+            material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: vertexShader,
+                fragmentShader: fragmentShader
+            });
             _.sphereObject.add(data[name].mesh = new THREE.Mesh(geometry, material));
         }
         tj.addGroup(_.sphereObject);
+    }
+
+    function _reloadColor() {
+        var data = _.world;
+        var choropleth = this._.options.choropleth;
+
+        for (var name in data) {
+            if (choropleth) {
+                var _data$name = data[name],
+                    properties = _data$name.properties,
+                    mesh = _data$name.mesh;
+
+                mesh.material.uniforms.diffuse.value.set(properties.color);
+            }
+        }
     }
 
     return {
@@ -7324,6 +7351,9 @@ var world3dThreejs = (function () {
         },
         rotate: function rotate(rtt) {
             _.sphereObject.rotation.y = rtt;
+        },
+        reloadColor: function reloadColor() {
+            _reloadColor.call(this);
         },
         data: function data(_data) {
             if (_data) {

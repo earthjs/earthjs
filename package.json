@@ -1,60 +1,64 @@
 {
-  "name": "earthjs",
-  "version": "0.7.143",
-  "description": "D3 Earth JS using SVG, Canvas & THREE js, build with some plugins.",
-  "files": ["src", "example"],
-  "main": "index.js",
-  "scripts": {
-    "npm": "rm -rf npm && buble src --no  modules --yes dangerousForOf -o npm",
-    "test": "browserify test/*-test.js | tape-run",
-    "pre-testem": "browserify test/_init_.js > test/bundle.js",
-    "build": "rollup -c && uglifyjs dist/earthjs.js -c -m -o dist/earthjs.min.js",
-    "build2": "rollup -c && squash dist/earthjs.js > dist/earthjs.min.js"
-  },
-  "homepage": "https://earthjs.github.io",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/earthjs/earthjs.git"
-  },
-  "keywords": [
-    "3d",
-    "D3js",
-    "globe",
-    "earth",
-    "three",
-    "webgl",
-    "dataviz",
-    "orthographic",
-    "visualization"
-  ],
-  "author": "Widi Harsojo",
-  "contributors": [
-    {
-      "name": "List of Earthjs contributors. Updated before every release."
+    "name": "earthjs",
+    "version": "0.7.144",
+    "description":
+        "D3 Earth JS using SVG, Canvas & THREE js, build with some plugins.",
+    "files": ["src", "example"],
+    "main": "index.js",
+    "scripts": {
+        "npm":
+            "rm -rf npm && buble src --no  modules --yes dangerousForOf -o npm",
+        "test": "browserify test/*-test.js | tape-run",
+        "pre-testem": "browserify test/_init_.js > test/bundle.js",
+        "build":
+            "rollup -c && uglifyjs dist/earthjs.js -c -m -o dist/earthjs.min.js",
+        "build2": "rollup -c && squash dist/earthjs.js > dist/earthjs.min.js"
     },
-    {
-      "name": "Widi Harsojo"
+    "homepage": "https://earthjs.github.io",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/earthjs/earthjs.git"
+    },
+    "keywords": [
+        "3d",
+        "D3js",
+        "globe",
+        "earth",
+        "three",
+        "webgl",
+        "dataviz",
+        "orthographic",
+        "visualization"
+    ],
+    "author": "Widi Harsojo",
+    "contributors": [
+        {
+            "name":
+                "List of Earthjs contributors. Updated before every release."
+        },
+        {
+            "name": "Widi Harsojo"
+        }
+    ],
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/earthjs/earthjs/issues"
+    },
+    "devDependencies": {
+        "babel-plugin-external-helpers": "^6.22.0",
+        "babel-preset-es2015": "^6.24.1",
+        "rollup": "^0.41.6",
+        "rollup-plugin-babel": "^2.7.1",
+        "rollup-plugin-bundle-worker": "^0.1.0",
+        "rollup-plugin-eslint": "^3.0.0",
+        "tape": "^4.6.3",
+        "uglify-es": "github:mishoo/UglifyJS2#harmony",
+        "uglify-js": "github:mishoo/UglifyJS2#harmony",
+        "uglifyjs": "^2.4.11"
+    },
+    "dependencies": {
+        "d3": "^4.8.0",
+        "three": "^0.86.0",
+        "topojson": "^3.0.0"
     }
-  ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/earthjs/earthjs/issues"
-  },
-  "devDependencies": {
-    "babel-plugin-external-helpers": "^6.22.0",
-    "babel-preset-es2015": "^6.24.1",
-    "rollup": "^0.41.6",
-    "rollup-plugin-babel": "^2.7.1",
-    "rollup-plugin-bundle-worker": "^0.1.0",
-    "rollup-plugin-eslint": "^3.0.0",
-    "tape": "^4.6.3",
-    "uglify-es": "github:mishoo/UglifyJS2#harmony",
-    "uglify-js": "github:mishoo/UglifyJS2#harmony",
-    "uglifyjs": "^2.4.11"
-  },
-  "dependencies": {
-    "d3": "^4.8.0",
-    "three": "^0.86.0",
-    "topojson": "^3.0.0"
-  }
 }
