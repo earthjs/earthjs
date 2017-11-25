@@ -900,6 +900,7 @@ var choroplethCsv = (function (csvUrl) {
 var choroplethData = (function (csvUrl) {
     var urlType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'json';
     var scheme = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'schemeReds';
+    var minMax = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
     /*eslint no-console: 0 */
     var _ = {
@@ -984,7 +985,7 @@ var choroplethData = (function (csvUrl) {
                 arr = [].concat(toConsumableArray(new Set(arr)));
                 var r = [1, 8];
                 _.scheme = schemeKey;
-                _.minMax = d3.extent(arr);
+                _.minMax = minMax ? minMax : d3.extent(arr);
                 _.range = d3.range.apply(d3, r); //_.scale(2990000) - 2
                 _.scale = d3.scaleLinear().domain(_.minMax).rangeRound(r);
                 _.color = d3.scaleThreshold().domain(_.range).range(colorList);
@@ -994,16 +995,18 @@ var choroplethData = (function (csvUrl) {
                 });
                 _.data.forEach(function (obj) {
                     var vl = +obj[key];
-                    var id = _.scale(vl);
-                    if (opacity === undefined) {
-                        obj.color = _.color(id);
-                    } else {
-                        var color = d3.color(_.color(id));
-                        color.opacity = opacity;
-                        obj.color = color + '';
+                    if (vl >= _.minMax[0] && vl <= _.minMax[1]) {
+                        var id = _.scale(vl);
+                        if (opacity === undefined) {
+                            obj.color = _.color(id);
+                        } else {
+                            var color = d3.color(_.color(id));
+                            color.opacity = opacity;
+                            obj.color = color + '';
+                        }
+                        obj.colorId = id - 1;
+                        _.colorValues[obj.colorId].totalValue += vl;
                     }
-                    obj.colorId = id - 1;
-                    _.colorValues[obj.colorId].totalValue += vl;
                 });
             }
             return _.colorValues;

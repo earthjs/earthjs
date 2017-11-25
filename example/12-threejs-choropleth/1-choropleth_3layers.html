@@ -18,7 +18,7 @@
         const {offsetWidth, offsetHeight} = d3.select('body').node();
         const scale = d3.min([offsetWidth, offsetHeight])/3;
         const g = earthjs({width: offsetWidth, height: offsetHeight, padding:5, scale})
-        .register(earthjs.plugins.choroplethCsv('../data/2010_alcohol_consumption_by_country.csv'))
+        .register(earthjs.plugins.choroplethData('../data/2010_alcohol_consumption_by_country.csv'))
         .register(earthjs.plugins.world3dJson('../d/world.geometry.json', '../d/country_nm_to_id.json'))
         .register(earthjs.plugins.inertiaPlugin())
         .register(earthjs.plugins.threejsPlugin())
@@ -34,14 +34,14 @@
         let t,o;
         g.ready(function(){
             const countries = g.canvasThreejs.allData().countries;
-            g.choroplethCsv.colorize('alcohol', 'schemeReds', 0.5); // add prop. color to countries
-            g.choroplethCsv.mergeData(countries, ['properties.cid:cid', 'properties.color:color']);
-            g.choroplethCsv.mergeData(countries, ['properties.cid:cid', 'properties.value:alcohol']);
+            g.choroplethData.colorize('alcohol', 'schemeReds', 0.5); // add prop. color to countries
+            g.choroplethData.mergeData(countries, ['properties.cid:cid', 'properties.color:color']);
+            g.choroplethData.mergeData(countries, ['properties.cid:cid', 'properties.value:alcohol']);
 
             const {data, geometries} = g.world3dJson.allData();
-            g.choroplethCsv.colorize('alcohol', 'schemeReds'); // add prop. color to geometries
-            g.choroplethCsv.mergeData(geometries, ['properties.cid:cid', 'properties.color:color']);
-            g.choroplethCsv.mergeData(geometries, ['properties.cid:cid', 'properties.value:alcohol']);
+            g.choroplethData.colorize('alcohol', 'schemeReds'); // add prop. color to geometries
+            g.choroplethData.mergeData(geometries, ['properties.cid:cid', 'properties.color:color']);
+            g.choroplethData.mergeData(geometries, ['properties.cid:cid', 'properties.value:alcohol']);
             g.world3dThreejs.data(data);
             g.create();
             t = g.canvasThreejs.sphere();

@@ -1,4 +1,9 @@
-export default (csvUrl, urlType = 'json', scheme = 'schemeReds') => {
+export default (
+    csvUrl,
+    urlType = 'json',
+    scheme = 'schemeReds',
+    minMax = null
+) => {
     /*eslint no-console: 0 */
     const _ = {
         cid: null,
@@ -76,7 +81,7 @@ export default (csvUrl, urlType = 'json', scheme = 'schemeReds') => {
                 arr = [...new Set(arr)];
                 const r = [1, 8];
                 _.scheme = schemeKey;
-                _.minMax = d3.extent(arr);
+                _.minMax = minMax ? minMax : d3.extent(arr);
                 _.range = d3.range.apply(d3, r); //_.scale(2990000) - 2
                 _.scale = d3
                     .scaleLinear()
@@ -92,16 +97,18 @@ export default (csvUrl, urlType = 'json', scheme = 'schemeReds') => {
                 });
                 _.data.forEach(function(obj) {
                     const vl = +obj[key];
-                    const id = _.scale(vl);
-                    if (opacity === undefined) {
-                        obj.color = _.color(id);
-                    } else {
-                        const color = d3.color(_.color(id));
-                        color.opacity = opacity;
-                        obj.color = color + '';
+                    if (vl >= _.minMax[0] && vl <= _.minMax[1]) {
+                        const id = _.scale(vl);
+                        if (opacity === undefined) {
+                            obj.color = _.color(id);
+                        } else {
+                            const color = d3.color(_.color(id));
+                            color.opacity = opacity;
+                            obj.color = color + '';
+                        }
+                        obj.colorId = id - 1;
+                        _.colorValues[obj.colorId].totalValue += vl;
                     }
-                    obj.colorId = id - 1;
-                    _.colorValues[obj.colorId].totalValue += vl;
                 });
             }
             return _.colorValues;
