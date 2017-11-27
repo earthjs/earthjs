@@ -10,7 +10,9 @@ export default (
     const _ = {
         style: {},
         tween: null,
-        sphereObject: new THREE.Group()
+        sphereObject: new THREE.Group(),
+        onHover: {},
+        onHoverVals: []
     };
     const vertexShader = `
 varying vec2 vN;
@@ -37,6 +39,12 @@ gl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r, r, r);
         _.sphereObject.name = _.me.name;
+    }
+
+    function hover(event){
+        for (let v of _.onHoverVals) {
+            v.call(event.target, event);
+        }
     }
 
     let material, uniforms;
@@ -70,9 +78,12 @@ gl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;
                 vertexShader,
                 fragmentShader
             });
-            _.sphereObject.add(
-                (data[name].mesh = new THREE.Mesh(geometry, material))
-            );
+            const mesh = new THREE.Mesh(geometry, material);
+            _.sphereObject.add(mesh);
+            data[name].mesh = mesh;
+            if (tj.domEvents) {
+                tj.domEvents.addEventListener(mesh, 'mousemove', hover, false);
+            }
         }
         tj.addGroup(_.sphereObject);
     }
@@ -124,6 +135,10 @@ gl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;
             } else {
                 return _.world;
             }
+        },
+        onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverVals = Object.keys(_.onHover).map(k => _.onHover[k]);
         },
         sphere() {
             return _.sphereObject;

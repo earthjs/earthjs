@@ -7503,7 +7503,9 @@ var world3dThreejs = (function () {
     var _ = {
         style: {},
         tween: null,
-        sphereObject: new THREE.Group()
+        sphereObject: new THREE.Group(),
+        onHover: {},
+        onHoverVals: []
     };
     var vertexShader = '\nvarying vec2 vN;\nvoid main() {\nvec4 p = vec4( position, 1. );\nvec3 e = normalize( vec3( modelViewMatrix * p ) );\nvec3 n = normalize( normalMatrix * normal );\nvec3 r = reflect( e, n );\nfloat m = 2. * length( vec3( r.xy, r.z + 1. ) );\nvN = r.xy / m + .5;\ngl_Position = projectionMatrix * modelViewMatrix * p;\n}';
     var fragmentShader = '\nuniform sampler2D sampler;\nuniform vec3 diffuse;\nvarying vec2 vN;\nvoid main() {\nvec4 tex = texture2D( sampler, vN );\ngl_FragColor = tex + vec4( diffuse, 0 ) * 0.5;\n}';
@@ -7513,6 +7515,33 @@ var world3dThreejs = (function () {
         _.sphereObject.rotation.y = rtt;
         _.sphereObject.scale.set(r, r, r);
         _.sphereObject.name = _.me.name;
+    }
+
+    function hover(event) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = _.onHoverVals[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var v = _step.value;
+
+                v.call(event.target, event);
+            }
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
+        }
     }
 
     var material = void 0,
@@ -7548,7 +7577,12 @@ var world3dThreejs = (function () {
                 vertexShader: vertexShader,
                 fragmentShader: fragmentShader
             });
-            _.sphereObject.add(data[name].mesh = new THREE.Mesh(geometry, material));
+            var mesh = new THREE.Mesh(geometry, material);
+            _.sphereObject.add(mesh);
+            data[name].mesh = mesh;
+            if (tj.domEvents) {
+                tj.domEvents.addEventListener(mesh, 'mousemove', hover, false);
+            }
         }
         tj.addGroup(_.sphereObject);
     }
@@ -7606,6 +7640,12 @@ var world3dThreejs = (function () {
             } else {
                 return _.world;
             }
+        },
+        onHover: function onHover(obj) {
+            Object.assign(_.onHover, obj);
+            _.onHoverVals = Object.keys(_.onHover).map(function (k) {
+                return _.onHover[k];
+            });
         },
         sphere: function sphere() {
             return _.sphereObject;

@@ -4,6 +4,7 @@
     <link type="text/css" rel="stylesheet" href="../css/earthjs.css">
     <script type='text/javascript' src="../js/d3.min.js"></script>
     <script type='text/javascript' src='../js/three.min.js'></script>
+    <script type='text/javascript' src='../js/threex.domevents.js'></script>
     <script type='text/javascript' src="../js/topojson.min.js"></script>
     <script type='text/javascript' src='../js/earthjs.js'></script>
 </head>
@@ -32,6 +33,11 @@
                 'Mexico': json['Mexico']
             })
         }
+        g.world3dThreejs.onHover({
+            check3d(event) {
+                console.log('check3d', event)
+            }
+        })
 
         let c,t,o;
         g.ready(function(){
