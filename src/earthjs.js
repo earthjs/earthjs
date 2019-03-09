@@ -101,6 +101,7 @@ const earthjs = (options = {}) => {
         $slc: {},
         ready(fn) {
             if (fn) {
+                const options = globe._.options;
                 globe._.readyFn = fn;
                 globe._.promeses = _.promeses;
                 if (_.promeses.length > 0) {
