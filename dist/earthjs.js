@@ -2169,11 +2169,12 @@ var inertiaPlugin = (function () {
         var __ = this._;
         var s0 = __.proj.scale();
         function zoomAndDrag() {
-            var _d3$event$sourceEvent = d3.event.sourceEvent,
-                type = _d3$event$sourceEvent.type,
-                touches = _d3$event$sourceEvent.touches;
+            var event = d3.event,
+                _ref2 = event && event.sourceEvent,
+                type = _ref2.type,
+                touches = _ref2.touches;
 
-            if (type === 'wheel' || touches && touches.length === 2) {
+            if (type && (type === 'wheel' || touches && touches.length === 2)) {
                 var r1 = s0 * d3.event.transform.k;
                 if (r1 >= zoomScale[0] && r1 <= zoomScale[1]) {
                     var l = _.sync.length;
@@ -2185,7 +2186,9 @@ var inertiaPlugin = (function () {
                 rotateVX = 0;
                 rotateVY = 0;
             } else {
-                onDragging.call(this);
+                if (type) {
+                    onDragging.call(this);
+                }
             }
         }
 
