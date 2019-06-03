@@ -82,7 +82,8 @@ var earthjs$2 = function earthjs() {
         rotate: [130, -33, -11],
         transparent: false,
         map: false,
-        padding: 0
+        padding: 0,
+        formats: {}
     }, options);
     var _ = {
         onCreate: {},
@@ -174,6 +175,7 @@ var earthjs$2 = function earthjs() {
         $slc: {},
         ready: function ready(fn) {
             if (fn) {
+                var _options = globe._.options;
                 globe._.readyFn = fn;
                 globe._.promeses = _.promeses;
                 if (_.promeses.length > 0) {
@@ -191,7 +193,7 @@ var earthjs$2 = function earthjs() {
                                     ext = 'json';
                                 }
                             }
-                            q.defer(d3[ext], url);
+                            q.defer(_options.formats[ext] || d3[ext], url);
                         });
                     });
                     q.await(function () {
@@ -2167,11 +2169,12 @@ var inertiaPlugin = (function () {
         var __ = this._;
         var s0 = __.proj.scale();
         function zoomAndDrag() {
-            var _d3$event$sourceEvent = d3.event.sourceEvent,
-                type = _d3$event$sourceEvent.type,
-                touches = _d3$event$sourceEvent.touches;
+            var event = d3.event,
+                _ref2 = event && event.sourceEvent,
+                type = _ref2.type,
+                touches = _ref2.touches;
 
-            if (type === 'wheel' || touches && touches.length === 2) {
+            if (type && (type === 'wheel' || touches && touches.length === 2)) {
                 var r1 = s0 * d3.event.transform.k;
                 if (r1 >= zoomScale[0] && r1 <= zoomScale[1]) {
                     var l = _.sync.length;
@@ -2183,7 +2186,9 @@ var inertiaPlugin = (function () {
                 rotateVX = 0;
                 rotateVY = 0;
             } else {
-                onDragging.call(this);
+                if (type) {
+                    onDragging.call(this);
+                }
             }
         }
 

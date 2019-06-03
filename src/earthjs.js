@@ -11,7 +11,8 @@ const earthjs = (options = {}) => {
             rotate: [130, -33, -11],
             transparent: false,
             map: false,
-            padding: 0
+            padding: 0,
+            formats: {}
         },
         options
     );
@@ -100,6 +101,7 @@ const earthjs = (options = {}) => {
         $slc: {},
         ready(fn) {
             if (fn) {
+                const options = globe._.options;
                 globe._.readyFn = fn;
                 globe._.promeses = _.promeses;
                 if (_.promeses.length > 0) {
@@ -117,7 +119,7 @@ const earthjs = (options = {}) => {
                                     ext = 'json';
                                 }
                             }
-                            q.defer(d3[ext], url);
+                            q.defer(options.formats[ext] || d3[ext], url);
                         });
                     });
                     q.await(function() {
